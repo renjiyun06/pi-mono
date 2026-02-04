@@ -47,6 +47,7 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 - 存放位置：/home/lamarck/repos/（第三方参考项目统一克隆到这里，不放在 pi-mono 内）
 - /home/lamarck/repos/NapCatQQ — NapNeko/NapCatQQ, QQ Bot 协议端 (OneBot 11), TypeScript, 用于对接 QQ 渠道
 - /home/lamarck/repos/WeChatFerry — wechatferry/wechatferry (社区接力版), 微信 PC Hook 机器人框架, TypeScript/Node.js
+- /home/lamarck/repos/openclaw — clawdbot/clawdbot, 150k+ stars 自托管 AI agent, 参考价值：多渠道接入架构（Telegram/Discord/Slack/Signal/飞书/Line/WhatsApp 等），channel 抽象层、monitor/send 模式
 
 ## Agent 渠道接入（规划中）
 - 目标：让用户能通过 QQ 或微信等 IM 渠道与本 agent 对话，不限于终端
