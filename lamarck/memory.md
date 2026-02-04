@@ -12,7 +12,9 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 - Host: WSL2 Ubuntu 24.04 on Windows (DESKTOP-Q5Q2VL9), user: lamarck
 - sudo password: lamarck123 (agent has full admin access to this WSL instance)
 - Node: v25.6.0, npm 11.8.0
-- Python: 3.12.3, default venv at lamarck/pyenv/ (auto-activated in .bashrc), use `uv pip install` for packages
+- Python: 3.12.3, default venv at lamarck/pyenv/, use `uv pip install` for packages
+  - venv 自动激活：~/.bash_env (激活脚本) + ~/.profile 设 BASH_ENV，交互式和非交互式 shell 均生效
+  - ~/.bashrc 中 venv 激活在交互守卫之前，确保交互式终端也能用
 - uv: 0.9.29 at ~/.local/bin/uv
 - Chrome CDP: 192.168.1.4:19222 (user's Windows machine, remote debugging)
 - mcporter chrome command: `mcporter call --stdio "chrome-devtools-mcp --browserUrl http://192.168.1.4:19222" <tool>`
