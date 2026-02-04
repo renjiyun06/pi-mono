@@ -8,9 +8,15 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 - Style: 技术导向，不要废话
 
 ## Environment
+- Host: WSL2 Ubuntu 24.04 on Windows (DESKTOP-Q5Q2VL9), user: lamarck
+- sudo password: lamarck123 (agent has full admin access to this WSL instance)
+- Node: v25.6.0, npm 11.8.0
+- Python: 3.12.3, default venv at lamarck/pyenv/ (auto-activated in .bashrc), use `uv pip install` for packages
+- uv: 0.9.29 at ~/.local/bin/uv
 - Chrome CDP: 192.168.1.4:19222 (user's Windows machine, remote debugging)
+- mcporter chrome command: `mcporter call --stdio "chrome-devtools-mcp --browserUrl http://192.168.1.4:19222" <tool>`
 - TAVILY_API_KEY: stored in project root .env file
-- Tavily DNS: api.tavily.com resolved via /etc/hosts to 52.202.178.45 (local DNS unreliable)
+- Tavily DNS: direct access works in new WSL env, no /etc/hosts hack needed
 
 ## Project Context
 - Project: Lamarck — self-growing agent experiment on pi-mono fork
