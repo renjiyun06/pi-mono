@@ -6,6 +6,7 @@
 	"scripts": {},
 	"dependencies": {
 		"commander": "^14.0.3",
+		"playwright": "^1.58.1",
 		"yt-dlp-wrap": "^2.3.12"
 	},
 	"devDependencies": {

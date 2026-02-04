@@ -197,6 +197,40 @@ The file `lamarck/memory.md` is the agent's cross-session memory. It stores key 
 2. Update or replace entries that are outdated (e.g., if an IP address changed, don't append — replace the old one)
 3. Append new entries to the appropriate section
 4. Keep the file concise — this is not a conversation log, it's key facts only
+5. Do NOT duplicate information that already lives elsewhere. For example, tools have their own INDEX.md — memory.md only records *where* to find them, not *what* each tool does.
+
+## Session Log
+
+Location: `lamarck/sessions/`. Each file records one conversation session.
+
+**Filename format**: `YYYY-MM-DD_NNN_short-title.md` (e.g., `2026-02-04_002_douyin-video-download.md`)
+
+**When to write**: At the end of every session (or when the user signals the session is ending), write a session log file.
+
+**File template**:
+```markdown
+# Session YYYY-MM-DD_NNN
+
+## Summary
+One sentence describing what was done.
+
+## Tags
+comma, separated, keywords
+
+## Key Points
+- Conclusions and results (not process details)
+
+## Issues Encountered
+- Problems hit and how they were resolved
+
+## Files Changed
+- path/to/file — brief description
+```
+
+**Rules**:
+- Do NOT read session logs at session start (only `memory.md` is read)
+- Session logs are for retrospective search only — use `grep -l "keyword" lamarck/sessions/*.md` when needed
+- Determine the next sequence number by listing existing files for the current date
 
 ## **CRITICAL** Tool Usage Rules **CRITICAL**
 - NEVER use sed/cat to read a file or a range of a file. Always use the read tool (use offset + limit for ranged reads).

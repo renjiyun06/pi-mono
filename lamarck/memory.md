@@ -38,7 +38,7 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
   - 需求：脚本撰写、选题规划、素材收集、数据分析等
 
 ## Tools
-- Scripts: lamarck/tools/ (index: lamarck/tools/INDEX.md)
+- lamarck/tools/ 下有一些实用小工具脚本，详见 lamarck/tools/INDEX.md
 
 ## Decisions
 - [2026-02-04] Extensions live in lamarck/extensions/, symlinked to .pi/extensions/ with relative paths
