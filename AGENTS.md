@@ -184,6 +184,18 @@ This is a fork of pi-mono with an experimental direction: letting the agent grow
 - When writing extensions, follow the patterns in `packages/coding-agent/docs/extensions.md` and `packages/coding-agent/examples/extensions/`.
 - Record each growth step in `lamarck/journal/` so future sessions understand what was built and why.
 
+## Memory
+
+The file `lamarck/memory.md` is the agent's cross-session memory. It stores key facts, environment details, user preferences, decisions, and anything else worth remembering across conversations.
+
+**On every new session**: Read `lamarck/memory.md` before doing anything else.
+
+**During conversations**: When there is something worth remembering (a new decision, a changed configuration, a user preference, etc.), update `lamarck/memory.md`:
+1. Read the current file first
+2. Update or replace entries that are outdated (e.g., if an IP address changed, don't append — replace the old one)
+3. Append new entries to the appropriate section
+4. Keep the file concise — this is not a conversation log, it's key facts only
+
 ## **CRITICAL** Tool Usage Rules **CRITICAL**
 - NEVER use sed/cat to read a file or a range of a file. Always use the read tool (use offset + limit for ranged reads).
 - You MUST read every file you modify in full before editing.
