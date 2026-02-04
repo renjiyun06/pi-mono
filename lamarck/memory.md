@@ -54,11 +54,14 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 - 核心入口：`createAgentSession()` from `@mariozechner/pi-coding-agent` SDK
 - 参考：mom（packages/mom/）的 AgentRunner 架构
 
-### QQ（NapCatQQ）
-- 评估结论：可行，优先考虑
+### QQ（NapCatQQ）— 开发中
+- 评估结论：可行，优先做
+- 代码位置：`lamarck/bridge/qq/`（独立 Node.js 项目，file link 引用 pi-coding-agent SDK）
+- 目录结构已搭建：index.ts（入口）、napcat.ts（WebSocket 客户端）、session-pool.ts（按 user_id 管理 AgentSession）
 - NapCatQQ: Docker 部署，Linux 直接跑，免费，OneBot 11 协议
-- 接入方式：WebSocket，JSON 消息格式
+- 接入方式：正向 WebSocket，JSON 消息格式
 - 需要一个 QQ 小号作为 bot 账号
+- 待实现：WebSocket 连接、消息解析、AgentSession 调用、回复发送
 
 ### 微信（WeChatFerry）
 - 评估结论：目前不可用，暂缓
