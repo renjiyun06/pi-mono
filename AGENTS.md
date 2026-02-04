@@ -168,6 +168,22 @@ For non-standard auth, create utility (e.g., `bedrock-utils.ts`) with credential
 
 The script handles: version bump, CHANGELOG finalization, commit, tag, publish, and adding new `[Unreleased]` sections.
 
+## Lamarck — Self-Growing Agent Experiment
+
+This is a fork of pi-mono with an experimental direction: letting the agent grow its own capabilities through conversation. The `lamarck/` directory at the project root contains:
+
+- `README.md` — the vision and experiment description
+- `journal/` — records of each growth iteration (what was discussed, what was built, what was learned)
+- `extensions/` — extensions written by the agent during conversations
+
+**Core idea**: the agent has 4 base tools (read, bash, edit, write) and a powerful extension mechanism. Through dialogue with the user, the agent writes new extensions that add tools, memory, and behaviors. These persist on disk and are loaded in future sessions. The agent grows incrementally — each session can produce new capabilities that become available in the next.
+
+**Key constraints to remember**:
+- You cannot trigger `/reload` yourself. After writing an extension, tell the user to run `/reload`.
+- You have no autonomous agency. You act only when the user prompts you.
+- When writing extensions, follow the patterns in `packages/coding-agent/docs/extensions.md` and `packages/coding-agent/examples/extensions/`.
+- Record each growth step in `lamarck/journal/` so future sessions understand what was built and why.
+
 ## **CRITICAL** Tool Usage Rules **CRITICAL**
 - NEVER use sed/cat to read a file or a range of a file. Always use the read tool (use offset + limit for ranged reads).
 - You MUST read every file you modify in full before editing.
