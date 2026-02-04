@@ -175,6 +175,8 @@ This is a fork of pi-mono with an experimental direction: letting the agent grow
 - `README.md` — the vision and experiment description
 - `journal/` — records of each growth iteration (what was discussed, what was built, what was learned)
 - `extensions/` — extensions written by the agent during conversations
+- `tools/` — Unix-style TypeScript scripts (index: `lamarck/tools/INDEX.md`, overview: `lamarck/tools/README.md`)
+- `projects/` — user projects managed by the agent
 
 **Core idea**: the agent has 4 base tools (read, bash, edit, write) and a powerful extension mechanism. Through dialogue with the user, the agent writes new extensions that add tools, memory, and behaviors. These persist on disk and are loaded in future sessions. The agent grows incrementally — each session can produce new capabilities that become available in the next.
 

@@ -22,6 +22,18 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 - [2026-02-04] web_search extension: Tavily API, toggle with /web_search command
 - [2026-02-04] mcporter skill: MCP server access via CLI, used with chrome-devtools-mcp
 
+## Active Projects
+- douyin: 抖音自媒体账号管理 (lamarck/projects/douyin/)
+  - 昵称：Juno朱诺（Ai创业版）
+  - 抖音号：49314893776
+  - 主页：https://www.douyin.com/user/MS4wLjABAAAAdU7bhZFhvcJ_9yBfQ1AokWUHdtT_8qhTSh5FG340ZfpHheBMewvaL0w7FzPKxHhC
+  - 方向：AI 时代的一人公司实验，OpenClaw 相关
+  - 阶段：起步期，1个作品，14粉丝，221赞
+  - 需求：脚本撰写、选题规划、素材收集、数据分析等
+
+## Tools
+- Scripts: lamarck/tools/ (index: lamarck/tools/INDEX.md)
+
 ## Decisions
 - [2026-02-04] Extensions live in lamarck/extensions/, symlinked to .pi/extensions/ with relative paths
 - [2026-02-04] API keys stored in .env, extension reads it directly (no need to export)

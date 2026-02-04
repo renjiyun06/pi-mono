@@ -1,0 +1,15 @@
+{
+	"name": "lamarck-tools",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"scripts": {},
+	"dependencies": {
+		"commander": "^14.0.3",
+		"yt-dlp-wrap": "^2.3.12"
+	},
+	"devDependencies": {
+		"@types/node": "^22.0.0",
+		"tsx": "^4.19.0"
+	}
+}
