@@ -8,6 +8,7 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 - Style: 技术导向，不要废话
 
 ## Environment
+- tmux: 3.4, available at /usr/bin/tmux — 长时间任务必须用 tmux 执行（非阻塞，可监控进度，可中途打断）
 - Host: WSL2 Ubuntu 24.04 on Windows (DESKTOP-Q5Q2VL9), user: lamarck
 - sudo password: lamarck123 (agent has full admin access to this WSL instance)
 - Node: v25.6.0, npm 11.8.0
@@ -39,6 +40,24 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 
 ## Tools
 - lamarck/tools/ 下有一些实用小工具脚本，详见 lamarck/tools/INDEX.md
+
+## Workflows
+
+### 长时间任务（tmux 后台执行）
+适用场景：下载、转码、爬取等耗时操作
+- `tmux new-session -d -s <name> "<command>"` 启动，不阻塞
+- `tmux capture-pane -t <name> -p -S -1000` 查看进度
+- `tmux send-keys -t <name> C-c` 中途打断
+- `tmux kill-session -t <name>` 销毁
+
+### 并行多任务（tmux + git worktree + 子 agent）
+适用场景：多个独立任务需要同时推进（写多个脚本、批量测试等）
+1. 与用户商量任务拆分，确保各任务操作不同文件
+2. 每个任务创建独立 worktree：`git worktree add /tmp/agent-N -b task/xxx`
+3. 每个 worktree 启动独立 tmux session 跑 pi 子 agent
+4. 主 agent 轮询 capture-pane 监控各任务进度
+5. 全部完成后由主 agent 合并分支、处理冲突、清理 worktree
+- 注意：子 agent 没有当前会话上下文，prompt 必须自包含；关注 API rate limit 和 token 成本
 
 ## Decisions
 - [2026-02-04] Extensions live in lamarck/extensions/, symlinked to .pi/extensions/ with relative paths
