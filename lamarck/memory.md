@@ -6,6 +6,7 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 - Language: 中文交流，代码和注释用英文
 - Git: commit message 用英文，简洁直接
 - Style: 技术导向，不要废话
+- 搜索时优先用 web_search 工具（/web_search 开启），不要直接 curl API 凑合
 
 ## Environment
 - tmux: 3.4, available at /usr/bin/tmux — 长时间任务必须用 tmux 执行（非阻塞，可监控进度，可中途打断）
@@ -17,7 +18,9 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
   - ~/.bashrc 中 venv 激活在交互守卫之前，确保交互式终端也能用
 - uv: 0.9.29 at ~/.local/bin/uv
 - Chrome CDP: 192.168.1.4:19222 (user's Windows machine, remote debugging)
-- mcporter chrome command: `mcporter call --stdio "chrome-devtools-mcp --browserUrl http://192.168.1.4:19222" <tool>`
+- mcporter: 项目级配置在 /home/lamarck/pi-mono/config/mcporter.json
+  - chrome-devtools: stdio server, `npx -y chrome-devtools-mcp --browser-url http://192.168.1.4:19222`
+  - 用法: `mcporter call chrome-devtools.<tool> key=value`
 - TAVILY_API_KEY: stored in project root .env file
 - Tavily DNS: direct access works in new WSL env, no /etc/hosts hack needed
 
@@ -39,6 +42,31 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
   - 方向：AI 时代的一人公司实验，OpenClaw 相关
   - 阶段：起步期，1个作品，14粉丝，221赞
   - 需求：脚本撰写、选题规划、素材收集、数据分析等
+
+## Reference Repos
+- 存放位置：/home/lamarck/repos/（第三方参考项目统一克隆到这里，不放在 pi-mono 内）
+- /home/lamarck/repos/NapCatQQ — NapNeko/NapCatQQ, QQ Bot 协议端 (OneBot 11), TypeScript, 用于对接 QQ 渠道
+- /home/lamarck/repos/WeChatFerry — wechatferry/wechatferry (社区接力版), 微信 PC Hook 机器人框架, TypeScript/Node.js
+
+## Agent 渠道接入（规划中）
+- 目标：让用户能通过 QQ 或微信等 IM 渠道与本 agent 对话，不限于终端
+- 核心入口：`createAgentSession()` from `@mariozechner/pi-coding-agent` SDK
+- 参考：mom（packages/mom/）的 AgentRunner 架构
+
+### QQ（NapCatQQ）
+- 评估结论：可行，优先考虑
+- NapCatQQ: Docker 部署，Linux 直接跑，免费，OneBot 11 协议
+- 接入方式：WebSocket，JSON 消息格式
+- 需要一个 QQ 小号作为 bot 账号
+
+### 微信（WeChatFerry）
+- 评估结论：目前不可用，暂缓
+- WeChatFerry 新仓库(wechatferry/wechatferry): 1.9k stars, 2025-07 最后更新
+- 底层 sdk.dll 绑定微信 3.9.12.17，微信已强制升级到 4.x，旧版无法登录
+- 多个 issue 反映版本兼容问题（#73 2026-01, #71 2026-01, #67 2025-11）
+- 封号风险：图片操作等有较高风险
+- 必须在 Windows 上运行（hook PC微信），WSL 宿主机是 Windows 所以理论可行
+- 用户更倾向微信，等 sdk.dll 适配新版微信后再尝试
 
 ## Tools
 - lamarck/tools/ 下有一些实用小工具脚本，详见 lamarck/tools/INDEX.md
