@@ -17,9 +17,9 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
   - venv 自动激活：~/.bash_env (激活脚本) + ~/.profile 设 BASH_ENV，交互式和非交互式 shell 均生效
   - ~/.bashrc 中 venv 激活在交互守卫之前，确保交互式终端也能用
 - uv: 0.9.29 at ~/.local/bin/uv
-- Chrome CDP: 192.168.1.4:19222 (user's Windows machine, remote debugging)
+- Chrome CDP: 192.168.2.238:19222 (user's Windows machine, remote debugging)
 - mcporter: 项目级配置在 /home/lamarck/pi-mono/config/mcporter.json
-  - chrome-devtools: stdio server, `npx -y chrome-devtools-mcp --browser-url http://192.168.1.4:19222`
+  - chrome-devtools: stdio server, `npx -y chrome-devtools-mcp --browser-url http://192.168.2.238:19222`
   - 用法: `mcporter call chrome-devtools.<tool> key=value`
 - TAVILY_API_KEY: stored in project root .env file
 - Tavily DNS: direct access works in new WSL env, no /etc/hosts hack needed
