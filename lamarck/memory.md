@@ -94,6 +94,23 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 5. 全部完成后由主 agent 合并分支、处理冲突、清理 worktree
 - 注意：子 agent 没有当前会话上下文，prompt 必须自包含；关注 API rate limit 和 token 成本
 
+### 定时任务（cron 调度）
+适用场景：7x24 自动执行的周期性任务（数据抓取、监控、定时报告等）
+- 任务目录：`lamarck/tasks/`
+- 任务格式：每个任务一个 `.md` 文件，YAML frontmatter 定义 cron 和 enabled
+  ```markdown
+  ---
+  cron: "0 9 * * *"
+  enabled: yes
+  ---
+  # 任务标题
+  任务描述（作为 prompt 发给 pi）
+  ```
+- 调度器：`lamarck/tasks/runner.ts`，由系统 cron 每分钟触发
+- 执行方式：`pi -p "任务内容"`，使用完整上下文（读 AGENTS.md、memory.md）
+- 日志：执行日志写入 `lamarck/tasks/logs/`
+- crontab 配置：`* * * * * cd /home/lamarck/pi-mono && ./lamarck/tasks/runner.ts >> lamarck/tasks/logs/runner.log 2>&1`
+
 ## Decisions
 - [2026-02-04] Extensions live in lamarck/extensions/, symlinked to .pi/extensions/ with relative paths
 - [2026-02-04] API keys stored in .env, extension reads it directly (no need to export)
