@@ -22,6 +22,7 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
   - chrome-devtools: stdio server, `npx -y chrome-devtools-mcp --browser-url http://192.168.2.238:19222`
   - 用法: `mcporter call chrome-devtools.<tool> key=value`
 - TAVILY_API_KEY: stored in project root .env file
+- GITHUB_TOKEN: stored in project root .env file, also configured in ~/.git-credentials for git push
 - Tavily DNS: direct access works in new WSL env, no /etc/hosts hack needed
 
 ## Project Context
