@@ -7,7 +7,7 @@
  * should run based on their cron expressions, and executes them.
  */
 
-import { readFileSync, readdirSync, appendFileSync, existsSync, mkdirSync } from "fs";
+import { readFileSync, readdirSync, appendFileSync, existsSync, mkdirSync, statSync } from "fs";
 import { join, basename } from "path";
 import { execSync } from "child_process";
 
@@ -23,6 +23,8 @@ if (!existsSync(LOGS_DIR)) {
 interface TaskConfig {
   cron: string;
   enabled: boolean;
+  provider?: string;
+  model?: string;
 }
 
 interface Task {
@@ -35,7 +37,6 @@ interface Task {
 function log(msg: string) {
   const timestamp = new Date().toISOString();
   const line = `[${timestamp}] ${msg}\n`;
-  console.log(line.trim());
   appendFileSync(join(LOGS_DIR, "runner.log"), line);
 }
 
@@ -56,6 +57,10 @@ function parseFrontmatter(content: string): { config: Partial<TaskConfig>; body:
       config.cron = value;
     } else if (key.trim() === "enabled") {
       config.enabled = value === "yes" || value === "true";
+    } else if (key.trim() === "provider") {
+      config.provider = value;
+    } else if (key.trim() === "model") {
+      config.model = value;
     }
   }
   
@@ -114,7 +119,12 @@ function matchField(field: string, value: number, min: number, max: number): boo
 
 function loadTasks(): Task[] {
   const tasks: Task[] = [];
-  const files = readdirSync(TASKS_DIR).filter(f => f.endsWith(".md"));
+  // Only read .md files in root directory, skip subdirectories
+  const files = readdirSync(TASKS_DIR).filter(f => {
+    if (!f.endsWith(".md")) return false;
+    const filePath = join(TASKS_DIR, f);
+    return statSync(filePath).isFile();
+  });
   
   for (const file of files) {
     const filePath = join(TASKS_DIR, file);
@@ -141,8 +151,10 @@ function executeTask(task: Task) {
   log(`Executing task: ${task.name}`);
   
   try {
+    const providerArg = task.config.provider ? `--provider ${task.config.provider}` : "";
+    const modelArg = task.config.model ? `--model ${task.config.model}` : "";
     const result = execSync(
-      `pi -p ${JSON.stringify(task.content)}`,
+      `pi ${providerArg} ${modelArg} -p ${JSON.stringify(task.content)}`,
       {
         cwd: PROJECT_ROOT,
         encoding: "utf-8",

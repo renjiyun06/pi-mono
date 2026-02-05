@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "chrome-devtools": {
-      "command": "npx -y chrome-devtools-mcp --browser-url http://192.168.2.238:19222"
+      "command": "npx -y chrome-devtools-mcp --browser-url http://172.30.144.1:19222"
     }
   },
   "imports": []

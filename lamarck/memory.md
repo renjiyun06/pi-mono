@@ -17,9 +17,9 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
   - venv 自动激活：~/.bash_env (激活脚本) + ~/.profile 设 BASH_ENV，交互式和非交互式 shell 均生效
   - ~/.bashrc 中 venv 激活在交互守卫之前，确保交互式终端也能用
 - uv: 0.9.29 at ~/.local/bin/uv
-- Chrome CDP: 192.168.2.238:19222 (user's Windows machine, remote debugging)
+- Chrome CDP: 172.30.144.1:19222 (Windows host via WSL gateway, remote debugging)
 - mcporter: 项目级配置在 /home/lamarck/pi-mono/config/mcporter.json
-  - chrome-devtools: stdio server, `npx -y chrome-devtools-mcp --browser-url http://192.168.2.238:19222`
+  - chrome-devtools: stdio server, `npx -y chrome-devtools-mcp --browser-url http://172.30.144.1:19222`
   - 用法: `mcporter call chrome-devtools.<tool> key=value`
 - TAVILY_API_KEY: stored in project root .env file
 - GITHUB_TOKEN: stored in project root .env file, also configured in ~/.git-credentials for git push
@@ -96,15 +96,19 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 
 ### 定时任务
 - 任务放在 `lamarck/tasks/` 下，每个任务一个 `.md` 文件
+- 任务数据放在 `lamarck/tasks/data/` 下
 - 格式：
   ```markdown
   ---
   cron: "0 9 * * *"
   enabled: yes
+  provider: anthropic
+  model: claude-sonnet-4-5
   ---
   任务描述（作为 prompt）
   ```
 - `enabled: yes` 即自动按 cron 时间执行
+- `provider` 和 `model` 可选，不填则用默认模型
 
 ## Decisions
 - [2026-02-04] Extensions live in lamarck/extensions/, symlinked to .pi/extensions/ with relative paths
