@@ -52,6 +52,29 @@ async function handlePrivateMessage(event: PrivateMessageEvent): Promise<void> {
 		return;
 	}
 
+	// Handle /session command
+	if (text === "/session") {
+		const session = await pool.getOrCreate(userId);
+		const stats = session.getSessionStats();
+
+		let info = `会话统计\n\n`;
+		info += `ID: ${stats.sessionId}\n`;
+		info += `消息数: ${stats.totalMessages}\n`;
+		info += `  用户: ${stats.userMessages}\n`;
+		info += `  助手: ${stats.assistantMessages}\n`;
+		info += `  工具调用: ${stats.toolCalls}\n\n`;
+		info += `Token 用量:\n`;
+		info += `  输入: ${stats.tokens.input.toLocaleString()}\n`;
+		info += `  输出: ${stats.tokens.output.toLocaleString()}\n`;
+		info += `  总计: ${stats.tokens.total.toLocaleString()}`;
+		if (stats.cost > 0) {
+			info += `\n\n费用: $${stats.cost.toFixed(4)}`;
+		}
+
+		await client.sendPrivateMessage(event.user_id, info);
+		return;
+	}
+
 	// Get or create session
 	const session = await pool.getOrCreate(userId);
 
