@@ -129,6 +129,9 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 - `enabled: yes` 即自动按 cron 时间执行
 - `provider` 和 `model` 可选，不填则用默认模型
 
+## TODO
+- [ ] 微信渠道接入 — 用户认为微信更有代表性，需要重新评估 WeChatFerry 或寻找替代方案
+
 ## Decisions
 - [2026-02-04] Extensions live in lamarck/extensions/, symlinked to .pi/extensions/ with relative paths
 - [2026-02-04] API keys stored in .env, extension reads it directly (no need to export)
