@@ -41,6 +41,7 @@ interface TaskConfig {
 interface Task {
   name: string;
   file: string;
+  type: "md" | "ts";
   config: TaskConfig;
   content: string;
 }
@@ -128,6 +129,34 @@ function matchField(field: string, value: number, min: number, max: number): boo
   return parseInt(field, 10) === value;
 }
 
+function parseTypeScriptConfig(content: string): Partial<TaskConfig> {
+  const config: Partial<TaskConfig> = {};
+  
+  // Parse comment-based config: // @cron ..., // @enabled ..., etc.
+  const cronMatch = content.match(/\/\/\s*@cron\s+(.+)/);
+  if (cronMatch) {
+    config.cron = cronMatch[1].trim();
+  }
+  
+  const enabledMatch = content.match(/\/\/\s*@enabled\s+(.+)/);
+  if (enabledMatch) {
+    const value = enabledMatch[1].trim().toLowerCase();
+    config.enabled = value === "yes" || value === "true";
+  }
+  
+  const providerMatch = content.match(/\/\/\s*@provider\s+(.+)/);
+  if (providerMatch) {
+    config.provider = providerMatch[1].trim();
+  }
+  
+  const modelMatch = content.match(/\/\/\s*@model\s+(.+)/);
+  if (modelMatch) {
+    config.model = modelMatch[1].trim();
+  }
+  
+  return config;
+}
+
 function loadTasks(): Task[] {
   const tasks: Task[] = [];
   const entries = readdirSync(TASKS_DIR);
@@ -137,19 +166,38 @@ function loadTasks(): Task[] {
     if (!statSync(entryPath).isDirectory()) continue;
     if (entry === "logs") continue;
     
-    const taskFile = join(entryPath, "task.md");
-    if (!existsSync(taskFile)) continue;
+    // Check for task.ts first, then task.md
+    const tsFile = join(entryPath, "task.ts");
+    const mdFile = join(entryPath, "task.md");
     
-    const content = readFileSync(taskFile, "utf-8");
-    const { config, body } = parseFrontmatter(content);
-    
-    if (config.cron && config.enabled !== undefined) {
-      tasks.push({
-        name: entry,
-        file: taskFile,
-        config: config as TaskConfig,
-        content: body,
-      });
+    if (existsSync(tsFile)) {
+      // TypeScript task
+      const content = readFileSync(tsFile, "utf-8");
+      const config = parseTypeScriptConfig(content);
+      
+      if (config.cron && config.enabled !== undefined) {
+        tasks.push({
+          name: entry,
+          file: tsFile,
+          type: "ts",
+          config: config as TaskConfig,
+          content: "", // Not needed for ts tasks
+        });
+      }
+    } else if (existsSync(mdFile)) {
+      // Markdown task
+      const content = readFileSync(mdFile, "utf-8");
+      const { config, body } = parseFrontmatter(content);
+      
+      if (config.cron && config.enabled !== undefined) {
+        tasks.push({
+          name: entry,
+          file: mdFile,
+          type: "md",
+          config: config as TaskConfig,
+          content: body,
+        });
+      }
     }
   }
   
@@ -191,8 +239,36 @@ function executeTask(task: Task, tuiMode: boolean = false): boolean {
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 16);
   const logFile = join(LOGS_DIR, `${task.name}_${timestamp}.md`);
   
-  log(`Starting task in tmux: ${task.name} (tui: ${tuiMode})`);
+  log(`Starting task in tmux: ${task.name} (type: ${task.type}, tui: ${tuiMode})`);
   
+  // Write log header
+  writeFileSync(logFile, `# ${task.name}\n\nStarted: ${new Date().toISOString()}\nType: ${task.type}\nMode: ${tuiMode ? "TUI" : "JSON"}\n\n## Output\n\n`);
+  
+  // TypeScript task: run directly with tsx
+  if (task.type === "ts") {
+    const taskDir = join(TASKS_DIR, task.name);
+    const tsCommand = `npx tsx task.ts 2>&1 | tee -a '${logFile}'`;
+    
+    const tmuxArgs = [
+      "new-session",
+      "-d",
+      "-s", sessionName,
+      "-c", taskDir,
+      tsCommand
+    ];
+    
+    const result = spawnSync("tmux", tmuxArgs, { stdio: "inherit" });
+    
+    if (result.status === 0) {
+      log(`Task ${task.name} (ts) started in tmux session: ${sessionName}`);
+      return true;
+    } else {
+      log(`Failed to start task ${task.name}`);
+      return false;
+    }
+  }
+  
+  // Markdown task: run with pi agent
   // Build pi command args
   const piArgs: string[] = [];
   if (task.config.provider) {
@@ -201,9 +277,6 @@ function executeTask(task: Task, tuiMode: boolean = false): boolean {
   if (task.config.model) {
     piArgs.push("--model", task.config.model);
   }
-  
-  // Write log header
-  writeFileSync(logFile, `# ${task.name}\n\nStarted: ${new Date().toISOString()}\nMode: ${tuiMode ? "TUI" : "JSON"}\n\n## Output\n\n`);
   
   if (tuiMode) {
     // TUI mode: start interactive pi, then send prompt
@@ -419,9 +492,10 @@ if (cliArgs.list) {
   console.log("Tasks:\n");
   const running = getRunningTasks();
   for (const task of tasks) {
+    const typeStr = task.type === "ts" ? "ts" : "md";
     const enabledStr = task.config.enabled ? "enabled" : "disabled";
     const runningStr = running.includes(task.name) ? " [RUNNING]" : "";
-    console.log(`  ${task.name} (${enabledStr}) - cron: ${task.config.cron}${runningStr}`);
+    console.log(`  ${task.name} [${typeStr}] (${enabledStr}) - cron: ${task.config.cron}${runningStr}`);
   }
   process.exit(0);
 }
