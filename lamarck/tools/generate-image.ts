@@ -9,7 +9,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { Command } from "commander";
 
-const DEFAULT_MODEL = "google/gemini-2.5-flash-image";
+const DEFAULT_MODEL = "google/gemini-3-pro-image-preview";
 
 interface OpenRouterResponse {
 	choices: Array<{
