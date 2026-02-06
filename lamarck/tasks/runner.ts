@@ -7,9 +7,9 @@
  * should run based on their cron expressions, and executes them.
  */
 
-import { readFileSync, readdirSync, appendFileSync, existsSync, mkdirSync, statSync } from "fs";
+import { readFileSync, readdirSync, appendFileSync, existsSync, mkdirSync, statSync, writeFileSync } from "fs";
 import { join, basename } from "path";
-import { execSync } from "child_process";
+import { spawn } from "child_process";
 
 const TASKS_DIR = join(import.meta.dirname, ".");
 const LOGS_DIR = join(TASKS_DIR, "logs");
@@ -148,30 +148,50 @@ function executeTask(task: Task) {
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 16);
   const logFile = join(LOGS_DIR, `${task.name}_${timestamp}.md`);
   
-  log(`Executing task: ${task.name}`);
+  log(`Spawning task: ${task.name}`);
   
-  try {
-    const providerArg = task.config.provider ? `--provider ${task.config.provider}` : "";
-    const modelArg = task.config.model ? `--model ${task.config.model}` : "";
-    const result = execSync(
-      `pi ${providerArg} ${modelArg} -p ${JSON.stringify(task.content)}`,
-      {
-        cwd: PROJECT_ROOT,
-        encoding: "utf-8",
-        timeout: 10 * 60 * 1000, // 10 minutes timeout
-        maxBuffer: 10 * 1024 * 1024, // 10MB buffer
-      }
-    );
-    
-    const logContent = `# ${task.name}\n\nExecuted: ${new Date().toISOString()}\n\n## Output\n\n${result}`;
-    appendFileSync(logFile, logContent);
-    log(`Task ${task.name} completed, log: ${logFile}`);
-  } catch (err: any) {
-    const errorMsg = err.message || String(err);
-    const logContent = `# ${task.name}\n\nExecuted: ${new Date().toISOString()}\n\n## Error\n\n${errorMsg}`;
-    appendFileSync(logFile, logContent);
-    log(`Task ${task.name} failed: ${errorMsg}`);
+  // Build command args
+  const args: string[] = [];
+  if (task.config.provider) {
+    args.push("--provider", task.config.provider);
   }
+  if (task.config.model) {
+    args.push("--model", task.config.model);
+  }
+  args.push("-p", task.content);
+  
+  // Write initial log header
+  writeFileSync(logFile, `# ${task.name}\n\nStarted: ${new Date().toISOString()}\n\n## Output\n\n`);
+  
+  // Spawn process (non-blocking)
+  const child = spawn("pi", args, {
+    cwd: PROJECT_ROOT,
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  
+  // Collect output
+  let output = "";
+  child.stdout.on("data", (data) => {
+    output += data.toString();
+  });
+  child.stderr.on("data", (data) => {
+    output += data.toString();
+  });
+  
+  child.on("close", (code) => {
+    appendFileSync(logFile, output);
+    if (code === 0) {
+      log(`Task ${task.name} completed, log: ${logFile}`);
+    } else {
+      appendFileSync(logFile, `\n\n## Exit Code: ${code}`);
+      log(`Task ${task.name} exited with code ${code}, log: ${logFile}`);
+    }
+  });
+  
+  child.on("error", (err) => {
+    appendFileSync(logFile, `\n\n## Error\n\n${err.message}`);
+    log(`Task ${task.name} failed: ${err.message}`);
+  });
 }
 
 // Main
