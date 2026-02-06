@@ -10,6 +10,13 @@ model: claude-sonnet-4-5
 ## 目标
 主动搜索"获客/线索"领域的内容，发现高质量帖子，并从中提取新概念词扩展搜索范围。
 
+## 浏览器操作
+**必须使用 `chrome-devtools-zhihu-search` 这个 MCP server 操作浏览器。**
+
+示例：`mcporter call chrome-devtools-zhihu-search.new_page url="..."`
+
+不要用 `chrome-devtools` 或其他 server，那是别的任务用的。
+
 ## 操作流程
 
 1. 使用 read 工具读取 `/home/lamarck/pi-mono/lamarck/tasks/zhihu-search/data.md` 获取关键词池
@@ -47,4 +54,8 @@ model: claude-sonnet-4-5
 ## 注意事项
 - 始终最多 2 个标签
 - 任务结束时关闭所有标签
-- 使用 mcporter 调用 chrome-devtools 工具操作浏览器
+- 使用 mcporter 调用 chrome-devtools-zhihu-search 工具操作浏览器
+
+## 临时文件
+
+临时文件写到 `/tmp/` 目录下。

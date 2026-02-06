@@ -10,6 +10,13 @@ model: claude-sonnet-4-5
 ## 目标
 定时扫描知乎热榜，筛选科技/AI/互联网相关热点，深入探索讨论内容，记录到素材库。
 
+## 浏览器操作
+**必须使用 `chrome-devtools-zhihu-hotlist` 这个 MCP server 操作浏览器。**
+
+示例：`mcporter call chrome-devtools-zhihu-hotlist.new_page url="..."`
+
+不要用 `chrome-devtools` 或其他 server，那是别的任务用的。
+
 ## 关心的主题
 - AI / 人工智能 / 大模型 / ChatGPT / Claude / 智能体
 - 科技产品 / 互联网公司 / 创业
@@ -25,7 +32,7 @@ model: claude-sonnet-4-5
    - 提取已记录的链接列表（用于去重）
 
 2. **扫描热榜**
-   - 使用 mcporter 调用 chrome-devtools 导航到 https://www.zhihu.com/hot
+   - 使用 mcporter 调用 chrome-devtools-zhihu-hotlist 导航到 https://www.zhihu.com/hot
    - 使用 take_snapshot 获取热榜内容
    - 解析热榜条目（标题、热度、链接）
 
@@ -87,7 +94,11 @@ model: claude-sonnet-4-5
 - 用 `list_pages` 可以查看当前所有标签页
 
 ### 其他
-- 使用 mcporter 调用 chrome-devtools 工具操作浏览器
+- 使用 mcporter 调用 chrome-devtools-zhihu-hotlist 工具操作浏览器
 - 每次最多探索 5 个新热点（避免耗时过长）
 - 如果没有新的相关热点，记录"无新增"
 - 确保目录存在：`/home/lamarck/pi-mono/lamarck/projects/douyin/hotlist/YYYY-MM-DD/`
+
+## 临时文件
+
+临时文件写到 `/tmp/` 目录下。

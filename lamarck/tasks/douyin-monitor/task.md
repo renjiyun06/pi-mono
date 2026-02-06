@@ -7,6 +7,12 @@ model: claude-sonnet-4-5
 
 # 抖音账号监控
 
+## 执行方式
+使用 `sub-agent` 技能分解执行。每个账号启动一个子 agent 处理，串行执行。
+
+## 浏览器操作
+**必须使用 `chrome-devtools-douyin-monitor` 这个 MCP server 操作浏览器。**
+
 ## 目标
 每天扫描种子账号，发现新视频，下载并转录，记录到数据库。
 
@@ -160,3 +166,7 @@ sqlite3 /home/lamarck/pi-mono/lamarck/data/lamarck.db \
 - [账号名] 遇到验证码，跳过
 - [视频ID] 下载失败：超时
 ```
+
+## 临时文件
+
+临时文件写到 `/tmp/` 目录下。

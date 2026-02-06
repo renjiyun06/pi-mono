@@ -21,12 +21,12 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 - Chrome CDP: 172.30.144.1:19222 (Windows host via WSL gateway, remote debugging)
 - NapCatQQ WebSocket: 172.30.144.1:3001 (Windows host, OneBot 11 正向 WS)
 - mcporter: 项目级配置在 /home/lamarck/pi-mono/config/mcporter.json
-  - chrome-devtools: stdio server, `npx -y chrome-devtools-mcp --browser-url http://172.30.144.1:19222`
-  - 用法: `mcporter call chrome-devtools.<tool> key=value`
+  - 用法: `mcporter call <server>.<tool> key=value`
 - TAVILY_API_KEY: stored in project root .env file
 - OPENROUTER_API_KEY: stored in project root .env file, for image generation
 - GITHUB_TOKEN: stored in project root .env file, also configured in ~/.git-credentials for git push
 - Tavily DNS: direct access works in new WSL env, no /etc/hosts hack needed
+- 临时文件目录: /tmp/（系统临时目录，任务生成的临时文件放这里）
 
 ## Project Context
 - Project: Lamarck — self-growing agent experiment on pi-mono fork

@@ -4,16 +4,27 @@
  * Task Runner
  * 
  * Triggered by cron every minute. Scans task files, checks which ones
- * should run based on their cron expressions, and executes them.
+ * should run based on their cron expressions, and executes them in tmux.
+ * 
+ * Commands:
+ *   (no args)           - Cron mode: check and run scheduled tasks
+ *   --list              - List all tasks and their status
+ *   --status            - Show running tasks (tmux sessions)
+ *   --run <task>        - Manually run a task (JSON mode, for automation)
+ *   --run <task> --tui  - Run in TUI mode (interactive, for debugging)
+ *   --stop <task>       - Stop a running task
+ *   --logs <task>       - Show latest log for a task
+ *   --attach <task>     - Attach to a running task's tmux session
  */
 
 import { readFileSync, readdirSync, appendFileSync, existsSync, mkdirSync, statSync, writeFileSync } from "fs";
-import { join, basename } from "path";
-import { spawn } from "child_process";
+import { join } from "path";
+import { execSync, spawnSync } from "child_process";
 
 const TASKS_DIR = join(import.meta.dirname, ".");
 const LOGS_DIR = join(TASKS_DIR, "logs");
 const PROJECT_ROOT = join(import.meta.dirname, "../..");
+const SESSION_PREFIX = "task-";
 
 // Ensure logs directory exists
 if (!existsSync(LOGS_DIR)) {
@@ -119,7 +130,6 @@ function matchField(field: string, value: number, min: number, max: number): boo
 
 function loadTasks(): Task[] {
   const tasks: Task[] = [];
-  // Scan subdirectories for task.md files
   const entries = readdirSync(TASKS_DIR);
   
   for (const entry of entries) {
@@ -135,7 +145,7 @@ function loadTasks(): Task[] {
     
     if (config.cron && config.enabled !== undefined) {
       tasks.push({
-        name: entry,  // directory name as task name
+        name: entry,
         file: taskFile,
         config: config as TaskConfig,
         content: body,
@@ -146,88 +156,314 @@ function loadTasks(): Task[] {
   return tasks;
 }
 
-function executeTask(task: Task) {
+function getSessionName(taskName: string): string {
+  return `${SESSION_PREFIX}${taskName}`;
+}
+
+function isTaskRunning(taskName: string): boolean {
+  const sessionName = getSessionName(taskName);
+  const result = spawnSync("tmux", ["has-session", "-t", sessionName], { stdio: "ignore" });
+  return result.status === 0;
+}
+
+function getRunningTasks(): string[] {
+  try {
+    const output = execSync("tmux list-sessions -F '#{session_name}' 2>/dev/null", { encoding: "utf-8" });
+    return output
+      .trim()
+      .split("\n")
+      .filter(s => s.startsWith(SESSION_PREFIX))
+      .map(s => s.slice(SESSION_PREFIX.length));
+  } catch {
+    return [];
+  }
+}
+
+function executeTask(task: Task, tuiMode: boolean = false): boolean {
+  const sessionName = getSessionName(task.name);
+  
+  // Check if already running
+  if (isTaskRunning(task.name)) {
+    log(`Task ${task.name} is already running, skipping`);
+    return false;
+  }
+  
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 16);
   const logFile = join(LOGS_DIR, `${task.name}_${timestamp}.md`);
   
-  log(`Spawning task: ${task.name}`);
+  log(`Starting task in tmux: ${task.name} (tui: ${tuiMode})`);
   
-  // Build command args
-  const args: string[] = [];
+  // Build pi command args
+  const piArgs: string[] = [];
   if (task.config.provider) {
-    args.push("--provider", task.config.provider);
+    piArgs.push("--provider", task.config.provider);
   }
   if (task.config.model) {
-    args.push("--model", task.config.model);
+    piArgs.push("--model", task.config.model);
   }
-  args.push("-p", task.content);
   
-  // Write initial log header
-  writeFileSync(logFile, `# ${task.name}\n\nStarted: ${new Date().toISOString()}\n\n## Output\n\n`);
+  // Write log header
+  writeFileSync(logFile, `# ${task.name}\n\nStarted: ${new Date().toISOString()}\nMode: ${tuiMode ? "TUI" : "JSON"}\n\n## Output\n\n`);
   
-  // Spawn process (non-blocking)
-  const child = spawn("pi", args, {
-    cwd: PROJECT_ROOT,
-    stdio: ["ignore", "pipe", "pipe"],
-  });
-  
-  // Collect output
-  let output = "";
-  child.stdout.on("data", (data) => {
-    output += data.toString();
-  });
-  child.stderr.on("data", (data) => {
-    output += data.toString();
-  });
-  
-  child.on("close", (code) => {
-    appendFileSync(logFile, output);
-    if (code === 0) {
-      log(`Task ${task.name} completed, log: ${logFile}`);
-    } else {
-      appendFileSync(logFile, `\n\n## Exit Code: ${code}`);
-      log(`Task ${task.name} exited with code ${code}, log: ${logFile}`);
+  if (tuiMode) {
+    // TUI mode: start interactive pi, then send prompt
+    const piCommand = `pi ${piArgs.join(" ")}`;
+    
+    // Start tmux session with interactive pi
+    const tmuxArgs = [
+      "new-session",
+      "-d",
+      "-s", sessionName,
+      "-c", PROJECT_ROOT,
+      piCommand
+    ];
+    
+    const result = spawnSync("tmux", tmuxArgs, { stdio: "inherit" });
+    
+    if (result.status !== 0) {
+      log(`Failed to start task ${task.name}`);
+      return false;
     }
-  });
+    
+    // Wait for pi to start
+    spawnSync("sleep", ["2"]);
+    
+    // Send the prompt via tmux send-keys
+    // Escape special characters for tmux
+    const escapedPrompt = task.content
+      .replace(/\\/g, "\\\\")
+      .replace(/"/g, '\\"')
+      .replace(/\$/g, "\\$")
+      .replace(/`/g, "\\`");
+    
+    spawnSync("tmux", ["send-keys", "-t", sessionName, escapedPrompt, "Enter"], { stdio: "inherit" });
+    
+    log(`Task ${task.name} started in TUI mode, prompt sent`);
+    return true;
+  } else {
+    // JSON mode: non-interactive with --mode json
+    const escapedPrompt = task.content.replace(/'/g, "'\\''");
+    piArgs.push("-p", `'${escapedPrompt}'`);
+    
+    const piCommand = `pi --mode json ${piArgs.join(" ")} 2>&1 | tee -a '${logFile}'`;
+    
+    const tmuxArgs = [
+      "new-session",
+      "-d",
+      "-s", sessionName,
+      "-c", PROJECT_ROOT,
+      piCommand
+    ];
+    
+    const result = spawnSync("tmux", tmuxArgs, { stdio: "inherit" });
+    
+    if (result.status === 0) {
+      log(`Task ${task.name} started in tmux session: ${sessionName}`);
+      return true;
+    } else {
+      log(`Failed to start task ${task.name}`);
+      return false;
+    }
+  }
+}
+
+function stopTask(taskName: string): boolean {
+  const sessionName = getSessionName(taskName);
   
-  child.on("error", (err) => {
-    appendFileSync(logFile, `\n\n## Error\n\n${err.message}`);
-    log(`Task ${task.name} failed: ${err.message}`);
-  });
+  if (!isTaskRunning(taskName)) {
+    console.error(`Task ${taskName} is not running`);
+    return false;
+  }
+  
+  const result = spawnSync("tmux", ["kill-session", "-t", sessionName], { stdio: "inherit" });
+  
+  if (result.status === 0) {
+    log(`Stopped task: ${taskName}`);
+    console.log(`Stopped task: ${taskName}`);
+    return true;
+  } else {
+    console.error(`Failed to stop task: ${taskName}`);
+    return false;
+  }
+}
+
+function showTaskOutput(taskName: string, lines: number = 50): void {
+  const sessionName = getSessionName(taskName);
+  
+  if (!isTaskRunning(taskName)) {
+    console.error(`Task ${taskName} is not running`);
+    console.log("\nShowing latest log file instead:\n");
+    showLatestLog(taskName);
+    return;
+  }
+  
+  try {
+    const output = execSync(`tmux capture-pane -t '${sessionName}' -p -S -${lines}`, { encoding: "utf-8" });
+    console.log(output);
+  } catch (err) {
+    console.error(`Failed to capture output: ${err}`);
+  }
+}
+
+function showLatestLog(taskName: string): void {
+  const files = readdirSync(LOGS_DIR)
+    .filter(f => f.startsWith(`${taskName}_`) && f.endsWith(".md"))
+    .sort()
+    .reverse();
+  
+  if (files.length === 0) {
+    console.error(`No logs found for task: ${taskName}`);
+    return;
+  }
+  
+  const latestLog = join(LOGS_DIR, files[0]);
+  console.log(`Log file: ${latestLog}\n`);
+  console.log(readFileSync(latestLog, "utf-8"));
+}
+
+function attachToTask(taskName: string): void {
+  const sessionName = getSessionName(taskName);
+  
+  if (!isTaskRunning(taskName)) {
+    console.error(`Task ${taskName} is not running`);
+    process.exit(1);
+  }
+  
+  // This replaces the current process
+  const result = spawnSync("tmux", ["attach", "-t", sessionName], { stdio: "inherit" });
+  process.exit(result.status ?? 1);
 }
 
 // Parse command line arguments
-function parseArgs(): { run?: string; list?: boolean } {
+interface CliArgs {
+  run?: string;
+  stop?: string;
+  logs?: string;
+  attach?: string;
+  output?: string;
+  list?: boolean;
+  status?: boolean;
+  tui?: boolean;
+  help?: boolean;
+}
+
+function parseArgs(): CliArgs {
   const args = process.argv.slice(2);
-  const result: { run?: string; list?: boolean } = {};
+  const result: CliArgs = {};
   
   for (let i = 0; i < args.length; i++) {
-    if (args[i] === "--run" && args[i + 1]) {
-      result.run = args[i + 1];
+    const arg = args[i];
+    const next = args[i + 1];
+    
+    if (arg === "--run" && next) {
+      result.run = next;
       i++;
-    } else if (args[i] === "--list") {
+    } else if (arg === "--stop" && next) {
+      result.stop = next;
+      i++;
+    } else if (arg === "--logs" && next) {
+      result.logs = next;
+      i++;
+    } else if (arg === "--attach" && next) {
+      result.attach = next;
+      i++;
+    } else if (arg === "--output" && next) {
+      result.output = next;
+      i++;
+    } else if (arg === "--list") {
       result.list = true;
+    } else if (arg === "--status") {
+      result.status = true;
+    } else if (arg === "--tui") {
+      result.tui = true;
+    } else if (arg === "--help" || arg === "-h") {
+      result.help = true;
     }
   }
   
   return result;
 }
 
+function showHelp(): void {
+  console.log(`Task Runner
+
+Usage: npx tsx runner.ts [options]
+
+Options:
+  (no args)           Cron mode: check and run scheduled tasks
+  --list              List all tasks and their status
+  --status            Show running tasks (tmux sessions)
+  --run <task>        Run a task (JSON mode, for automation)
+  --run <task> --tui  Run in TUI mode (interactive, for debugging)
+  --stop <task>       Stop a running task
+  --logs <task>       Show latest log for a task
+  --output <task>     Show current output (live from tmux)
+  --attach <task>     Attach to a running task's tmux session
+  --help, -h          Show this help
+`);
+}
+
 // Main
 const cliArgs = parseArgs();
+
+// --help
+if (cliArgs.help) {
+  showHelp();
+  process.exit(0);
+}
+
 const tasks = loadTasks();
 
 // --list: show all tasks
 if (cliArgs.list) {
-  console.log("Available tasks:\n");
+  console.log("Tasks:\n");
+  const running = getRunningTasks();
   for (const task of tasks) {
-    const status = task.config.enabled ? "enabled" : "disabled";
-    console.log(`  ${task.name} (${status}) - cron: ${task.config.cron}`);
+    const enabledStr = task.config.enabled ? "enabled" : "disabled";
+    const runningStr = running.includes(task.name) ? " [RUNNING]" : "";
+    console.log(`  ${task.name} (${enabledStr}) - cron: ${task.config.cron}${runningStr}`);
   }
   process.exit(0);
 }
 
-// --run <name>: manually run a specific task
+// --status: show running tasks
+if (cliArgs.status) {
+  const running = getRunningTasks();
+  if (running.length === 0) {
+    console.log("No tasks currently running");
+  } else {
+    console.log("Running tasks:\n");
+    for (const name of running) {
+      console.log(`  ${name} (session: ${getSessionName(name)})`);
+    }
+  }
+  process.exit(0);
+}
+
+// --stop <name>: stop a running task
+if (cliArgs.stop) {
+  process.exit(stopTask(cliArgs.stop) ? 0 : 1);
+}
+
+// --logs <name>: show latest log
+if (cliArgs.logs) {
+  showLatestLog(cliArgs.logs);
+  process.exit(0);
+}
+
+// --output <name>: show current output (live from tmux)
+if (cliArgs.output) {
+  showTaskOutput(cliArgs.output);
+  process.exit(0);
+}
+
+// --attach <name>: attach to tmux session
+if (cliArgs.attach) {
+  attachToTask(cliArgs.attach);
+  // Won't reach here - attachToTask exits
+}
+
+// --run <name> [--tui]: manually run a specific task
 if (cliArgs.run) {
   const task = tasks.find(t => t.name === cliArgs.run);
   if (!task) {
@@ -235,10 +471,22 @@ if (cliArgs.run) {
     console.error(`Available tasks: ${tasks.map(t => t.name).join(", ")}`);
     process.exit(1);
   }
-  console.log(`Manually running task: ${task.name}`);
-  log(`Manual run: ${task.name}`);
-  executeTask(task);
-  process.exit(0);
+  const mode = cliArgs.tui ? "TUI" : "JSON";
+  console.log(`Starting task: ${task.name} (${mode} mode)`);
+  log(`Manual run: ${task.name} (${mode})`);
+  const started = executeTask(task, cliArgs.tui);
+  if (started) {
+    console.log(`Task started in tmux session: ${getSessionName(task.name)}`);
+    if (cliArgs.tui) {
+      console.log(`\nTUI mode - attach to interact:`);
+      console.log(`  tmux attach -t ${getSessionName(task.name)}`);
+    } else {
+      console.log(`\nTo view output:  ./runner.ts --output ${task.name}`);
+      console.log(`To attach:       ./runner.ts --attach ${task.name}`);
+    }
+    console.log(`To stop:         ./runner.ts --stop ${task.name}`);
+  }
+  process.exit(started ? 0 : 1);
 }
 
 // Default: cron-triggered run

@@ -10,6 +10,13 @@ model: claude-sonnet-4-5
 ## 目标
 在知乎首页找 AI/智能体 相关的高质量帖子，点赞并关注作者。
 
+## 浏览器操作
+**必须使用 `chrome-devtools-zhihu-monitor` 这个 MCP server 操作浏览器。**
+
+示例：`mcporter call chrome-devtools-zhihu-monitor.new_page url="..."`
+
+不要用 `chrome-devtools` 或其他 server，那是别的任务用的。
+
 ## 关注主题
 AI、智能体、Agent、大模型、LLM、Claude、GPT、Anthropic 等相关内容。
 
@@ -39,4 +46,8 @@ AI、智能体、Agent、大模型、LLM、Claude、GPT、Anthropic 等相关内
 ## 注意事项
 - 始终最多 2 个标签：列表页 + 详情页
 - 任务结束时关闭所有标签
-- 使用 mcporter 调用 chrome-devtools 工具操作浏览器
+- 使用 mcporter 调用 chrome-devtools-zhihu-monitor 工具操作浏览器
+
+## 临时文件
+
+临时文件写到 `/tmp/` 目录下。
