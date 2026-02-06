@@ -24,6 +24,7 @@ read README.md, then ask which module(s) to work on. Based on the answer, read t
 - Note: `npm run check` does not run tests.
 - NEVER run: `npm run dev`, `npm run build`, `npm test`
 - Only run specific tests if user instructs: `npm test -- test/specific.test.ts`
+- Run tests from the package root, not the repo root.
 - When writing tests, run them, identify issues in either the test or implementation, and iterate until fixed.
 - NEVER commit unless user asks
 
@@ -255,6 +256,7 @@ These commands can destroy other agents' work:
 - `git clean -fd` - deletes untracked files
 - `git stash` - stashes ALL changes including other agents' work
 - `git add -A` / `git add .` - stages other agents' uncommitted work
+- `git commit --no-verify` - bypasses required checks and is never allowed
 
 ### Safe Workflow
 ```bash
