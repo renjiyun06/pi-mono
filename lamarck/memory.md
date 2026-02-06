@@ -95,9 +95,16 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 - 注意：子 agent 没有当前会话上下文，prompt 必须自包含；关注 API rate limit 和 token 成本
 
 ### 定时任务
-- 任务放在 `lamarck/tasks/` 下，每个任务一个 `.md` 文件
-- 任务数据放在 `lamarck/tasks/data/` 下
-- 格式：
+- 每个任务是 `lamarck/tasks/` 下的一个目录，目录结构：
+  ```
+  lamarck/tasks/
+  ├── runner.ts
+  ├── my-task/
+  │   ├── task.md      # 任务描述（必须）
+  │   └── data.md      # 数据文件（可选）
+  └── logs/
+  ```
+- task.md 格式：
   ```markdown
   ---
   cron: "0 9 * * *"
