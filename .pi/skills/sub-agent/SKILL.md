@@ -11,14 +11,13 @@ description: 启动子 agent 来完成部分任务。适用于需要分解执行
 
 **你（主 agent）必须在会话中直接执行 tmux 命令来启动和监控子 agent，保持控制权。**
 
-**允许**：
-- 写脚本批量生成 prompt 文件、整理数据等准备工作
-- 用脚本处理结果、汇总报告
+**建议用脚本**：
+- 批量生成 prompt 文件、整理数据等准备工作 —— 尽可能用脚本，避免手动逐个写
+- 处理结果、汇总报告
 
-**禁止**：
-- 写脚本来启动 tmux 子 agent
-- 写脚本来轮询/监控子 agent
-- 任何形式的"把启动和监控逻辑放进脚本"
+**禁止用脚本**：
+- 启动 tmux 子 agent
+- 轮询/监控子 agent
 
 **原因**：脚本无法真正观察和响应。只有你在会话中直接执行 tmux 命令，才能看到输出、判断问题、及时干预。
 
@@ -28,20 +27,21 @@ tmux session: `<主任务名>-sub-<序号>`，序号从 1 开始。
 
 ## 启动子 agent
 
-简单任务，直接传 prompt：
+输出必须重定向到日志文件，文件名与 session 名一致，放在 `/tmp/`：
 
 ```bash
-tmux new-session -d -s <session名> "cd /home/lamarck/pi-mono && pi --mode json -p --prompt '任务描述'"
+tmux new-session -d -s <session名> "cd /home/lamarck/pi-mono && pi --mode json -p --prompt '任务描述' 2>&1 | tee /tmp/<session名>.log"
 ```
 
 复杂任务，用文件：
 
 ```bash
-tmux new-session -d -s <session名> "cd /home/lamarck/pi-mono && pi --mode json -p --prompt-file <文件路径>"
+tmux new-session -d -s <session名> "cd /home/lamarck/pi-mono && pi --mode json -p --prompt-file <文件路径> 2>&1 | tee /tmp/<session名>.log"
 ```
 
-- `--mode json`：输出事件流，方便观察进度
+- `--mode json`：输出事件流
 - `-p`：处理完后自动退出
+- `2>&1 | tee /tmp/<session名>.log`：保存输出，session 退出后仍可查看
 
 ## 监控循环
 
@@ -60,15 +60,13 @@ echo $?
 ### 监控策略
 
 ```
-记录启动时间
-
 while session 存在:
     1. has-session 检查（零 token 消耗）
-    2. 如果已结束 → 跳出循环，检查结果
-    3. 如果运行时间超过阈值（如 5 分钟）→ capture-pane 看一眼，判断是否卡住
-    4. 等待一段时间（如 30-60 秒）
+    2. 如果已结束 → 跳出循环
+    3. 等待 5 分钟
 
-检查结果：看输出文件、数据库变化等，不看 tmux 输出
+任务结束后，查看日志文件最后几行判断结果：
+tail -50 /tmp/<session名>.log
 ```
 
 ### 只在怀疑卡住时才 capture-pane
