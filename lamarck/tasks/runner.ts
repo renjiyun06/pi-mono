@@ -119,22 +119,24 @@ function matchField(field: string, value: number, min: number, max: number): boo
 
 function loadTasks(): Task[] {
   const tasks: Task[] = [];
-  // Only read .md files in root directory, skip subdirectories
-  const files = readdirSync(TASKS_DIR).filter(f => {
-    if (!f.endsWith(".md")) return false;
-    const filePath = join(TASKS_DIR, f);
-    return statSync(filePath).isFile();
-  });
+  // Scan subdirectories for task.md files
+  const entries = readdirSync(TASKS_DIR);
   
-  for (const file of files) {
-    const filePath = join(TASKS_DIR, file);
-    const content = readFileSync(filePath, "utf-8");
+  for (const entry of entries) {
+    const entryPath = join(TASKS_DIR, entry);
+    if (!statSync(entryPath).isDirectory()) continue;
+    if (entry === "logs") continue;
+    
+    const taskFile = join(entryPath, "task.md");
+    if (!existsSync(taskFile)) continue;
+    
+    const content = readFileSync(taskFile, "utf-8");
     const { config, body } = parseFrontmatter(content);
     
     if (config.cron && config.enabled !== undefined) {
       tasks.push({
-        name: basename(file, ".md"),
-        file: filePath,
+        name: entry,  // directory name as task name
+        file: taskFile,
         config: config as TaskConfig,
         content: body,
       });

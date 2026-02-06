@@ -12,7 +12,7 @@ model: claude-sonnet-4-5
 
 ## 操作流程
 
-1. 使用 read 工具读取 `/home/lamarck/pi-mono/lamarck/tasks/data/zhihu-search.md` 获取关键词池
+1. 使用 read 工具读取 `/home/lamarck/pi-mono/lamarck/tasks/zhihu-search/data.md` 获取关键词池
 2. 从"待搜索"中选 5 个关键词
 3. 对每个关键词依次执行：
    a. 打开知乎搜索页，搜索该关键词（标签 1）
@@ -25,7 +25,7 @@ model: claude-sonnet-4-5
         - 有深度/有启发 → 点赞 + 关注，同时提取新概念词
       - 关闭标签 2
    d. 搜索完一个词后，继续下一个词
-4. 全部搜索完成后，使用 edit 工具更新 `/home/lamarck/pi-mono/lamarck/tasks/data/zhihu-search.md`：
+4. 全部搜索完成后，使用 edit 工具更新 `/home/lamarck/pi-mono/lamarck/tasks/zhihu-search/data.md`：
    - 新概念词 → 加入"待搜索"（去重）
    - 已搜索的关键词 → 移到"已搜索"（附带日期）
 5. 关闭所有标签
