@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@mariozechner/pi-coding-agent": "file:../../../packages/coding-agent",
-    "ws": "^8.18.0"
+    "ws": "^8.19.0"
   },
   "devDependencies": {
     "@types/ws": "^8.5.13",
