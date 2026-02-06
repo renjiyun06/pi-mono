@@ -80,14 +80,6 @@ interface TavilyResponse {
 }
 
 export default function (pi: ExtensionAPI) {
-	// Start inactive — registered but not sent to LLM until explicitly enabled.
-	pi.on("session_start", async () => {
-		const active = pi.getActiveTools();
-		if (active.includes("web_search")) {
-			pi.setActiveTools(active.filter((t) => t !== "web_search"));
-		}
-	});
-
 	// /web_search — toggle web_search tool on/off
 	pi.registerCommand("web_search", {
 		description: "Toggle web search tool on/off",
