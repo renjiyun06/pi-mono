@@ -196,10 +196,54 @@ function executeTask(task: Task) {
   });
 }
 
+// Parse command line arguments
+function parseArgs(): { run?: string; list?: boolean } {
+  const args = process.argv.slice(2);
+  const result: { run?: string; list?: boolean } = {};
+  
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === "--run" && args[i + 1]) {
+      result.run = args[i + 1];
+      i++;
+    } else if (args[i] === "--list") {
+      result.list = true;
+    }
+  }
+  
+  return result;
+}
+
 // Main
+const cliArgs = parseArgs();
+const tasks = loadTasks();
+
+// --list: show all tasks
+if (cliArgs.list) {
+  console.log("Available tasks:\n");
+  for (const task of tasks) {
+    const status = task.config.enabled ? "enabled" : "disabled";
+    console.log(`  ${task.name} (${status}) - cron: ${task.config.cron}`);
+  }
+  process.exit(0);
+}
+
+// --run <name>: manually run a specific task
+if (cliArgs.run) {
+  const task = tasks.find(t => t.name === cliArgs.run);
+  if (!task) {
+    console.error(`Task not found: ${cliArgs.run}`);
+    console.error(`Available tasks: ${tasks.map(t => t.name).join(", ")}`);
+    process.exit(1);
+  }
+  console.log(`Manually running task: ${task.name}`);
+  log(`Manual run: ${task.name}`);
+  executeTask(task);
+  process.exit(0);
+}
+
+// Default: cron-triggered run
 log("Runner triggered");
 
-const tasks = loadTasks();
 const tasksToRun = tasks.filter(t => t.config.enabled && cronMatchesNow(t.config.cron));
 
 if (tasksToRun.length === 0) {
