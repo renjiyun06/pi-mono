@@ -35,7 +35,7 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 ## Capabilities Grown
 - [2026-02-04] web_search extension: Tavily API, toggle with /web_search command
 - [2026-02-04] mcporter skill: MCP server access via CLI, used with chrome-devtools-mcp
-- [2026-02-06] NapCatQQ 部署成功，WebSocket 连接验证通过，QQ 渠道接入基础就绪
+- [2026-02-06] QQ Bridge 实现完成，可通过 QQ 私聊与 agent 对话
 
 ## Active Projects
 - douyin: 抖音自媒体账号管理 (lamarck/projects/douyin/)
@@ -57,28 +57,24 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 - 核心入口：`createAgentSession()` from `@mariozechner/pi-coding-agent` SDK
 - 参考：mom（packages/mom/）的 AgentRunner 架构
 
-### QQ（NapCatQQ）— WebSocket 已通，待实现 bridge
-- 评估结论：可行，优先做
+### QQ（NapCatQQ）— 已实现
 - 代码位置：`lamarck/bridge/qq/`（独立 Node.js 项目）
+- 启动：`cd lamarck/bridge/qq && npm start`（或用 tmux 后台运行）
+- tmux 启动：`tmux new-session -d -s qq-bridge "cd /home/lamarck/pi-mono/lamarck/bridge/qq && npm start"`
+
+#### 功能
+- 私聊消息 → AgentSession → 回复
+- 每个 user_id 一个 session，保持对话上下文
+- `/new` 命令：重置会话
+- 文本块实时发送（text_end 事件触发）
 
 #### NapCatQQ 部署（Windows）
 - 部署方式：一键包（NapCat.Shell.Windows.OneKey.zip），运行在 Windows 宿主机
 - 安装路径：`C:\Users\wozai\Downloads\NapCat.Shell.Windows.OneKey\`
 - 启动：`NapCat.44498.Shell\napcat.bat`
 - **配置文件正确路径**：`NapCat.44498.Shell\versions\9.9.26-44498\resources\app\napcat\config\onebot11_<QQ号>.json`
-  - 注意：不是 `NapCat.44498.Shell\config\`，那个是错误位置
 - WebSocket 服务：`ws://172.30.144.1:3001`（从 WSL 访问 Windows）
 - Bot QQ 号：3981351485
-
-#### 已验证
-- [2026-02-06] WebSocket 连接成功，能收到 OneBot 11 格式的消息事件
-- 测试脚本：`lamarck/bridge/qq/test-ws.mjs`
-
-#### 待实现
-- napcat.ts：WebSocket 客户端封装
-- session-pool.ts：按 user_id 管理 AgentSession
-- index.ts：主入口，消息解析 → AgentSession 调用 → 回复发送
-- 回复发送：调用 OneBot 11 的 send_private_msg / send_group_msg API
 
 ### 微信（WeChatFerry）
 - 评估结论：目前不可用，暂缓
