@@ -78,37 +78,83 @@ async function handlePrivateMessage(event: PrivateMessageEvent): Promise<void> {
 	// Get or create session
 	const session = await pool.getOrCreate(userId);
 
-	// Send each text block as it completes
+	// Track send failures for retry
+	const sendFailures: Array<{ content: string; error: string }> = [];
 	let sentCount = 0;
+
+	// Helper to send message and track failures
+	async function trySendMessage(content: string): Promise<boolean> {
+		try {
+			await client.sendPrivateMessage(event.user_id, content);
+			console.log(`[Bridge] Sent text block to ${userId}, length: ${content.length}`);
+			sentCount++;
+			return true;
+		} catch (err) {
+			const errorMsg = err instanceof Error ? err.message : String(err);
+			console.error(`[Bridge] Failed to send text block:`, errorMsg);
+			sendFailures.push({ content, error: errorMsg });
+			return false;
+		}
+	}
+
+	// Collect text blocks during agent run, send after each completes
+	const pendingSends: Promise<boolean>[] = [];
 
 	const unsubscribe = session.subscribe((agentEvent) => {
 		if (agentEvent.type === "message_update") {
 			const evt = agentEvent.assistantMessageEvent;
 			if (evt.type === "text_end" && evt.content.trim()) {
-				client.sendPrivateMessage(event.user_id, evt.content.trim()).then(() => {
-					console.log(`[Bridge] Sent text block to ${userId}, length: ${evt.content.length}`);
-					sentCount++;
-				}).catch((err) => {
-					console.error(`[Bridge] Failed to send text block:`, err);
-				});
+				pendingSends.push(trySendMessage(evt.content.trim()));
 			}
 		}
 	});
 
-	try {
-		// Send prompt to agent
-		console.log(`[Bridge] Sending prompt to agent for ${userId}...`);
-		await session.prompt(text);
-		console.log(`[Bridge] Agent finished, sent ${sentCount} text blocks`);
-	} catch (err) {
-		const errorMsg = err instanceof Error ? err.message : String(err);
-		console.error(`[Bridge] Agent error for ${userId}:`, errorMsg);
-		await client.sendPrivateMessage(event.user_id, `错误: ${errorMsg}`);
-	} finally {
-		unsubscribe();
-		// Small delay to ensure async sends complete
-		await new Promise((r) => setTimeout(r, 100));
+	// Run agent and handle retries
+	const MAX_RETRIES = 2;
+	let retryCount = 0;
+	let currentPrompt = text;
+
+	while (retryCount <= MAX_RETRIES) {
+		sendFailures.length = 0; // Clear previous failures
+
+		try {
+			console.log(`[Bridge] Sending prompt to agent for ${userId}...`);
+			await session.prompt(currentPrompt);
+
+			// Wait for all pending sends to complete
+			await Promise.all(pendingSends);
+			pendingSends.length = 0;
+
+			console.log(`[Bridge] Agent finished, sent ${sentCount} text blocks`);
+
+			// Check if there were send failures
+			if (sendFailures.length === 0) {
+				break; // Success, exit loop
+			}
+
+			// Build retry prompt with failure info
+			retryCount++;
+			if (retryCount > MAX_RETRIES) {
+				console.error(`[Bridge] Max retries reached for ${userId}`);
+				break;
+			}
+
+			const failureInfo = sendFailures
+				.map((f) => `发送失败 (${f.error}): "${f.content.slice(0, 100)}${f.content.length > 100 ? "..." : ""}"`)
+				.join("\n");
+
+			currentPrompt = `[系统提示] 你刚才的回复发送失败了，请调整后重新回复（可能是消息太长或格式问题）。\n\n失败详情:\n${failureInfo}`;
+			console.log(`[Bridge] Retrying (${retryCount}/${MAX_RETRIES}) for ${userId}...`);
+
+		} catch (err) {
+			const errorMsg = err instanceof Error ? err.message : String(err);
+			console.error(`[Bridge] Agent error for ${userId}:`, errorMsg);
+			await client.sendPrivateMessage(event.user_id, `错误: ${errorMsg}`);
+			break;
+		}
 	}
+
+	unsubscribe();
 }
 
 // Start
