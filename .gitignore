@@ -35,3 +35,10 @@ out.html
 packages/coding-agent/binaries/
 todo.md
 lamarck/tasks/logs/
+
+# Lamarck data (videos, db, transcripts)
+lamarck/data/videos/
+lamarck/data/transcripts/
+lamarck/data/*.db
+lamarck/data/*.db-*
+!lamarck/data/schema.sql

@@ -14,6 +14,7 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 - sudo password: lamarck123 (agent has full admin access to this WSL instance)
 - Node: v25.6.0, npm 11.8.0
 - Python: 3.12.3, default venv at lamarck/pyenv/, use `uv pip install` for packages
+  - faster-whisper: 已安装（small 模型已下载），用于语音转文字
   - venv 自动激活：~/.bash_env (激活脚本) + ~/.profile 设 BASH_ENV，交互式和非交互式 shell 均生效
   - ~/.bashrc 中 venv 激活在交互守卫之前，确保交互式终端也能用
 - uv: 0.9.29 at ~/.local/bin/uv
@@ -23,6 +24,7 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
   - chrome-devtools: stdio server, `npx -y chrome-devtools-mcp --browser-url http://172.30.144.1:19222`
   - 用法: `mcporter call chrome-devtools.<tool> key=value`
 - TAVILY_API_KEY: stored in project root .env file
+- OPENROUTER_API_KEY: stored in project root .env file, for image generation
 - GITHUB_TOKEN: stored in project root .env file, also configured in ~/.git-credentials for git push
 - Tavily DNS: direct access works in new WSL env, no /etc/hosts hack needed
 
@@ -36,6 +38,9 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 - [2026-02-04] web_search extension: Tavily API, toggle with /web_search command
 - [2026-02-04] mcporter skill: MCP server access via CLI, used with chrome-devtools-mcp
 - [2026-02-06] QQ Bridge 实现完成，可通过 QQ 私聊与 agent 对话
+- [2026-02-06] 视频转文字工具链：download-video.ts → extract-audio.ts → transcribe-audio.ts（faster-whisper small 模型）
+- [2026-02-06] 抖音账号监控任务 douyin-monitor：每天扫描30个种子账号，下载转录新视频
+- [2026-02-06] 图片生成工具 generate-image.ts：OpenRouter API，默认 Nano Banana 模型，支持图生图
 
 ## Active Projects
 - douyin: 抖音自媒体账号管理 (lamarck/projects/douyin/)
@@ -45,6 +50,10 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
   - 方向：AI 时代的一人公司实验，OpenClaw 相关
   - 阶段：起步期，1个作品，14粉丝，221赞
   - 需求：脚本撰写、选题规划、素材收集、数据分析等
+  - 工具：
+    - 监控任务：lamarck/tasks/douyin-monitor/task.md（每天 9 点自动扫描种子账号）
+    - 数据库：lamarck/data/lamarck.db (douyin_accounts, douyin_videos)
+    - 视频/转录存储：lamarck/data/videos/, lamarck/data/transcripts/（已加入 .gitignore）
 
 ## Reference Repos
 - 存放位置：/home/lamarck/repos/（第三方参考项目统一克隆到这里，不放在 pi-mono 内）
@@ -89,6 +98,13 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 - lamarck/tools/ 下有一些实用小工具脚本，详见 lamarck/tools/INDEX.md
 
 ## Workflows
+
+### 浏览器操作（共享资源）
+Chrome 浏览器是共享资源，多个任务/用户可能同时在用。操作原则：
+- **新开标签页**：任务开始时用 `new_page` 打开自己的标签页
+- **在自己标签页操作**：不要动别人的标签页
+- **关闭自己的标签页**：任务结束时用 `close_page` 关闭自己打开的所有标签页
+- **不污染环境**：保持浏览器状态干净，不影响其他任务
 
 ### 长时间任务（tmux 后台执行）
 适用场景：下载、转码、爬取等耗时操作
