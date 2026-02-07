@@ -42,3 +42,4 @@ lamarck/data/transcripts/
 lamarck/data/*.db
 lamarck/data/*.db-*
 !lamarck/data/schema.sql
+lamarck/tmp/

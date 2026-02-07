@@ -22,6 +22,7 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 - NapCatQQ WebSocket: 172.30.144.1:3001 (Windows host, OneBot 11 正向 WS)
 - mcporter: 项目级配置在 /home/lamarck/pi-mono/config/mcporter.json
   - 用法: `mcporter call <server>.<tool> key=value`
+  - **必须设置 `lifecycle: "ephemeral"`**：否则 mcporter 会自动启动 daemon，导致多个子 agent 共享同一个 MCP 进程，状态会互相干扰
 - TAVILY_API_KEY: stored in project root .env file
 - OPENROUTER_API_KEY: stored in project root .env file, for image generation
 - GITHUB_TOKEN: stored in project root .env file, also configured in ~/.git-credentials for git push
@@ -39,7 +40,7 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 - [2026-02-04] mcporter skill: MCP server access via CLI, used with chrome-devtools-mcp
 - [2026-02-06] QQ Bridge 实现完成，可通过 QQ 私聊与 agent 对话
 - [2026-02-06] 视频转文字工具链：download-video.ts → extract-audio.ts → transcribe-audio.ts（faster-whisper small 模型）
-- [2026-02-06] 抖音账号监控任务 douyin-monitor：每天扫描30个种子账号，下载转录新视频
+
 - [2026-02-06] 图片生成工具 generate-image.ts：OpenRouter API，默认 Nano Banana 模型，支持图生图
 
 ## Active Projects
@@ -51,7 +52,6 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
   - 阶段：起步期，1个作品，14粉丝，221赞
   - 需求：脚本撰写、选题规划、素材收集、数据分析等
   - 工具：
-    - 监控任务：lamarck/tasks/douyin-monitor/task.md（每天 9 点自动扫描种子账号）
     - 数据库：lamarck/data/lamarck.db (douyin_accounts, douyin_videos)
     - 视频/转录存储：lamarck/data/videos/, lamarck/data/transcripts/（已加入 .gitignore）
 
@@ -113,6 +113,48 @@ Chrome 浏览器是共享资源，多个任务/用户可能同时在用。操作
 - `tmux send-keys -t <name> C-c` 中途打断
 - `tmux kill-session -t <name>` 销毁
 
+### 探索性子任务（异步派发）
+适用场景：快速探索某个方向，不需要全程参与，边探索边调整
+
+**临时目录约定**：
+- 位置：`lamarck/tmp/<session-name>/`
+- 每个 tmux session 对应一个子目录
+- 子 agent 产生的所有文件放在对应目录里
+- 不同会话之间隔离，文件名不冲突
+
+**派发流程**：
+```bash
+# 1. 创建临时目录
+mkdir -p lamarck/tmp/<session-name>
+
+# 2. 启动子 agent（交互模式）
+tmux new-session -d -s <session-name> "cd /home/lamarck/pi-mono && pi"
+
+# 3. 发送任务（告诉它工作目录）
+tmux send-keys -t <session-name> "你的任务是... 所有产生的文件放在 lamarck/tmp/<session-name>/" Enter
+
+# 4. 派发后不等待，继续主对话
+```
+
+**监控和追加**：
+```bash
+# 查看进度
+tmux capture-pane -t <session-name> -p -S -30
+
+# 追加指令
+tmux send-keys -t <session-name> "继续深入这个方向..." Enter
+
+# 结束
+tmux send-keys -t <session-name> C-c
+tmux kill-session -t <session-name>
+```
+
+**原则**：
+- 派发后立即返回，不阻塞主对话
+- 子 agent 自主决定怎么探索、怎么存储
+- 通过 capture-pane 随时可查进度
+- 探索完成后结果在 `lamarck/tmp/<session-name>/` 里
+
 ### 并行多任务（tmux + git worktree + 子 agent）
 适用场景：多个独立任务需要同时推进（写多个脚本、批量测试等）
 1. 与用户商量任务拆分，确保各任务操作不同文件
@@ -122,38 +164,33 @@ Chrome 浏览器是共享资源，多个任务/用户可能同时在用。操作
 5. 全部完成后由主 agent 合并分支、处理冲突、清理 worktree
 - 注意：子 agent 没有当前会话上下文，prompt 必须自包含；关注 API rate limit 和 token 成本
 
-### 定时任务
-- 每个任务是 `lamarck/tasks/` 下的一个目录，目录结构：
-  ```
-  lamarck/tasks/
-  ├── runner.ts
-  ├── my-task/
-  │   ├── task.md      # 任务描述（必须）
-  │   └── data.md      # 数据文件（可选）
-  └── logs/
-  ```
-- task.md 格式：
-  ```markdown
-  ---
-  cron: "0 9 * * *"
-  enabled: yes
-  provider: anthropic
-  model: claude-sonnet-4-5
-  ---
-  任务描述（作为 prompt）
-  ```
-- `enabled: yes` 即自动按 cron 时间执行
-- `provider` 和 `model` 可选，不填则用默认模型
+## SQLite 使用约定
+
+### 查看表结构和注释
+SQLite 会保留 CREATE TABLE 语句中的 `--` 注释：
+```sql
+SELECT sql FROM sqlite_master WHERE type='table' AND name='表名';
+```
+
+### 新增列时保留注释
+SQLite 的 ALTER TABLE ADD COLUMN 无法添加注释。如需新增带注释的列，重建表：
+```sql
+-- 1. 创建新表（带完整注释）
+CREATE TABLE new_table (
+  col1 TEXT,  -- 注释1
+  col2 TEXT,  -- 注释2
+  new_col TEXT  -- 新列注释
+);
+-- 2. 迁移数据
+INSERT INTO new_table (col1, col2) SELECT col1, col2 FROM old_table;
+-- 3. 删旧表、重命名
+DROP TABLE old_table;
+ALTER TABLE new_table RENAME TO old_table;
+```
+数据量不大时直接用这种方式，保持注释完整。
 
 ## TODO
 - [ ] 微信渠道接入 — 用户认为微信更有代表性，需要重新评估 WeChatFerry 或寻找替代方案
-- [ ] Agent 自主觉醒机制 — agent 需要定期"醒来"，审视系统状态：
-  - 扫描最近产生的新数据（任务日志、数据库变化等）
-  - 思考这些数据与用户大目标的关系
-  - 发现任务/数据源之间缺失的连接
-  - 产出策略建议、问题发现、待决策事项
-  - 输出到 lamarck/insights/ 目录供用户查看
-  - 实现方式：一个特殊的"守护任务"，每天定时运行
 
 ## Decisions
 - [2026-02-04] Extensions live in lamarck/extensions/, symlinked to .pi/extensions/ with relative paths

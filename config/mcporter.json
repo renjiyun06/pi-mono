@@ -1,19 +1,8 @@
 {
   "mcpServers": {
     "chrome-devtools": {
-      "command": "npx -y chrome-devtools-mcp --browser-url http://172.30.144.1:19222"
-    },
-    "chrome-devtools-douyin-monitor": {
-      "command": "npx -y chrome-devtools-mcp --browser-url http://172.30.144.1:19222"
-    },
-    "chrome-devtools-zhihu-hotlist": {
-      "command": "npx -y chrome-devtools-mcp --browser-url http://172.30.144.1:19222"
-    },
-    "chrome-devtools-zhihu-monitor": {
-      "command": "npx -y chrome-devtools-mcp --browser-url http://172.30.144.1:19222"
-    },
-    "chrome-devtools-zhihu-search": {
-      "command": "npx -y chrome-devtools-mcp --browser-url http://172.30.144.1:19222"
+      "command": "npx -y chrome-devtools-mcp --browser-url http://172.30.144.1:19222",
+      "lifecycle": "ephemeral"
     }
   },
   "imports": []
