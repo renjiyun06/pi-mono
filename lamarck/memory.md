@@ -147,6 +147,13 @@ Chrome 浏览器是共享资源，多个任务/用户可能同时在用。操作
 
 ## TODO
 - [ ] 微信渠道接入 — 用户认为微信更有代表性，需要重新评估 WeChatFerry 或寻找替代方案
+- [ ] Agent 自主觉醒机制 — agent 需要定期"醒来"，审视系统状态：
+  - 扫描最近产生的新数据（任务日志、数据库变化等）
+  - 思考这些数据与用户大目标的关系
+  - 发现任务/数据源之间缺失的连接
+  - 产出策略建议、问题发现、待决策事项
+  - 输出到 lamarck/insights/ 目录供用户查看
+  - 实现方式：一个特殊的"守护任务"，每天定时运行
 
 ## Decisions
 - [2026-02-04] Extensions live in lamarck/extensions/, symlinked to .pi/extensions/ with relative paths

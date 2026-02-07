@@ -1,5 +1,5 @@
 // @cron 0 9 * * *
-// @enabled yes
+// @enabled no
 
 /**
  * 抖音账号监控任务

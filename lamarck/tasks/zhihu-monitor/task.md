@@ -1,6 +1,6 @@
 ---
 cron: "*/20 * * * *"
-enabled: yes
+enabled: no
 provider: anthropic
 model: claude-sonnet-4-5
 ---
