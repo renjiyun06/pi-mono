@@ -189,6 +189,42 @@ ALTER TABLE new_table RENAME TO old_table;
 ```
 数据量不大时直接用这种方式，保持注释完整。
 
+## 数据采集与任务系统
+
+### 设计思路
+- **数据湖模式**：先让数据进来，不追求一开始就规整
+- **解耦**：采集端只管往库里塞，处理端只管从库读，互不关心对方
+- **容忍混乱**：content 字段可以是任何格式（JSON、文本、链接、文件路径），大模型自己理解
+
+### inbox 表
+```sql
+CREATE TABLE inbox (
+  id INTEGER PRIMARY KEY,
+  source TEXT,           -- 来源
+  content TEXT,          -- 内容（什么格式都行）
+  created_at TEXT DEFAULT (datetime('now', 'localtime'))
+);
+```
+- 4 个字段，极简
+- 重复数据没关系，后续可去重
+- 质量可以通过后续流程逐步提升
+
+### 任务脚本（lamarck/tasks/）
+- 持续运行的后台任务，跑在 tmux 里
+- 与 tools/（一次性调用）区分
+- 每个脚本有 `--help`，用 commander.js 解析参数
+- 依赖：commander（参数解析）、tsx（运行 TypeScript）
+- 操作数据库：直接用 sqlite3 命令行
+
+### 部署方式
+- 一个脚本一个 tmux session
+- 轻量级脚本，系统可承受 200+ 个 session（测试过）
+- 启动：`tmux new-session -d -s <task-name> "npx tsx lamarck/tasks/<script>.ts --options"`
+
+### 两类任务
+1. **简单轮询**：纯脚本定时检测，不需要 LLM（如监控博主更新）
+2. **智能驱动**：需要 agent 参与（如搜索+分析）
+
 ## TODO
 - [ ] 微信渠道接入 — 用户认为微信更有代表性，需要重新评估 WeChatFerry 或寻找替代方案
 

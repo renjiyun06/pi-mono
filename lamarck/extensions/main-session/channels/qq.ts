@@ -1,8 +1,8 @@
 /**
- * NapCatQQ WebSocket client — OneBot 11 protocol
+ * QQ Channel — NapCatQQ WebSocket client
  *
- * Connects to NapCatQQ's forward WebSocket server,
- * receives message events and sends replies via API calls.
+ * Connects to NapCatQQ's forward WebSocket server (OneBot 11 protocol),
+ * receives private messages and sends replies.
  */
 
 import WebSocket from "ws";
@@ -26,29 +26,45 @@ export interface ApiResponse {
 	echo?: string;
 }
 
-export interface NapCatClientOptions {
+export interface QQChannelOptions {
 	url: string;
-	onPrivateMessage?: (event: PrivateMessageEvent) => void;
+	onMessage: (userId: number, text: string) => void;
 	onConnected?: () => void;
-	onDisconnected?: (code: number, reason: string) => void;
+	onDisconnected?: () => void;
 	onError?: (error: Error) => void;
 }
 
-export class NapCatClient {
+export interface QQChannelStats {
+	connected: boolean;
+	messagesReceived: number;
+	messagesSent: number;
+}
+
+export class QQChannel {
 	private ws: WebSocket | null = null;
-	private options: NapCatClientOptions;
+	private options: QQChannelOptions;
 	private echoCounter = 0;
 	private pendingRequests = new Map<string, { resolve: (data: unknown) => void; reject: (err: Error) => void }>();
+	private stats: QQChannelStats = {
+		connected: false,
+		messagesReceived: 0,
+		messagesSent: 0,
+	};
 
-	constructor(options: NapCatClientOptions) {
+	constructor(options: QQChannelOptions) {
 		this.options = options;
 	}
 
+	/** Connect to NapCat WebSocket server */
 	connect(): void {
+		if (this.ws) {
+			this.close();
+		}
+
 		this.ws = new WebSocket(this.options.url);
 
 		this.ws.on("open", () => {
-			console.log(`[NapCat] Connected to ${this.options.url}`);
+			this.stats.connected = true;
 			this.options.onConnected?.();
 		});
 
@@ -57,18 +73,17 @@ export class NapCatClient {
 				const msg = JSON.parse(data.toString());
 				this.handleMessage(msg);
 			} catch (e) {
-				console.error("[NapCat] Failed to parse message:", e);
+				console.error("[QQ] Failed to parse message:", e);
 			}
 		});
 
 		this.ws.on("error", (err) => {
-			console.error("[NapCat] WebSocket error:", err.message);
 			this.options.onError?.(err);
 		});
 
-		this.ws.on("close", (code, reason) => {
-			console.log(`[NapCat] Disconnected: ${code} ${reason}`);
-			this.options.onDisconnected?.(code, reason.toString());
+		this.ws.on("close", () => {
+			this.stats.connected = false;
+			this.options.onDisconnected?.();
 		});
 	}
 
@@ -89,7 +104,12 @@ export class NapCatClient {
 
 		// Event: private message
 		if (msg.post_type === "message" && msg.message_type === "private") {
-			this.options.onPrivateMessage?.(msg as unknown as PrivateMessageEvent);
+			const event = msg as unknown as PrivateMessageEvent;
+			const text = event.raw_message.trim();
+			if (text) {
+				this.stats.messagesReceived++;
+				this.options.onMessage(event.user_id, text);
+			}
 		}
 	}
 
@@ -116,16 +136,31 @@ export class NapCatClient {
 		});
 	}
 
-	/** Send private message */
-	async sendPrivateMessage(userId: number, message: string): Promise<number> {
-		const result = (await this.callApi("send_private_msg", {
+	/** Send private message to a user */
+	async sendMessage(userId: number, message: string): Promise<void> {
+		await this.callApi("send_private_msg", {
 			user_id: userId,
 			message,
-		})) as { message_id: number };
-		return result.message_id;
+		});
+		this.stats.messagesSent++;
 	}
 
+	/** Get channel statistics */
+	getStats(): QQChannelStats {
+		return { ...this.stats };
+	}
+
+	/** Check if connected */
+	isConnected(): boolean {
+		return this.stats.connected;
+	}
+
+	/** Close connection */
 	close(): void {
-		this.ws?.close();
+		if (this.ws) {
+			this.ws.close();
+			this.ws = null;
+		}
+		this.stats.connected = false;
 	}
 }
