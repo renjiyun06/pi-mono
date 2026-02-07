@@ -100,11 +100,32 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 ## Workflows
 
 ### 浏览器操作（共享资源）
-Chrome 浏览器是共享资源，多个任务/用户可能同时在用。操作原则：
-- **新开标签页**：任务开始时用 `new_page` 打开自己的标签页
-- **在自己标签页操作**：不要动别人的标签页
-- **关闭自己的标签页**：任务结束时用 `close_page` 关闭自己打开的所有标签页
-- **不污染环境**：保持浏览器状态干净，不影响其他任务
+Chrome 浏览器是共享资源，多个 agent/任务可能同时在用。
+
+**核心原则**：
+1. **只操作自己打开的页面** — 用 `new_page` 开自己的标签页，记住返回的 pageId
+2. **所有操作必须带 pageId** — 不带 pageId 会操作"当前活跃标签页"，多 agent 时会互相踩
+3. **用完必须关闭** — 任务结束时用 `close_page pageId=xxx` 关闭自己打开的标签页
+
+**正确流程**：
+```bash
+# 1. 开新标签页，拿到 pageId
+mcporter call chrome-devtools.new_page url="https://..." 
+# 返回 pageId=123
+
+# 2. 所有后续操作都带 pageId
+mcporter call chrome-devtools.take_snapshot pageId=123 filePath="..."
+mcporter call chrome-devtools.click pageId=123 uid="..."
+mcporter call chrome-devtools.type pageId=123 uid="..." text="..."
+
+# 3. 任务结束，关闭标签页
+mcporter call chrome-devtools.close_page pageId=123
+```
+
+**禁止**：
+- 不带 pageId 操作（会踩到别人）
+- 操作别人打开的标签页
+- 任务结束不关闭标签页（污染环境）
 
 ### 长时间任务（tmux 后台执行）
 适用场景：下载、转码、爬取等耗时操作
