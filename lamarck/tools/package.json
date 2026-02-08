@@ -5,8 +5,10 @@
 	"type": "module",
 	"scripts": {},
 	"dependencies": {
+		"chrome-remote-interface": "^0.33.3",
 		"commander": "^14.0.3",
 		"playwright": "^1.58.1",
+		"puppeteer-core": "^24.37.2",
 		"yt-dlp-wrap": "^2.3.12"
 	},
 	"devDependencies": {

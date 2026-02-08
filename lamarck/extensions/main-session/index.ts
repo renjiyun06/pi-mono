@@ -11,14 +11,64 @@
  */
 
 import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-agent";
+import { Type } from "@sinclair/typebox";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { acquireLock, releaseLock, isMainSession, hasActiveMainSession, readLock } from "./lock.js";
 import { ChannelManager } from "./channels/index.js";
+
+const MY_QQ = "1277260264";
+const QQ_IMAGE_DIR = "/mnt/c/Users/wozai/Pictures/qq-images";
+
+/**
+ * Convert WSL path to Windows path
+ * /mnt/c/Users/xxx → C:/Users/xxx
+ */
+function wslToWindows(wslPath: string): string {
+	return wslPath.replace(/^\/mnt\/([a-z])\//, (_, drive) => `${drive.toUpperCase()}:/`);
+}
+
+/**
+ * Process message text for QQ channel:
+ * - Convert [image:/path/to/file] to CQ code
+ * - Copy image to Windows-accessible directory
+ */
+function processMessageForQQ(text: string): string {
+	// Ensure QQ image directory exists
+	if (!fs.existsSync(QQ_IMAGE_DIR)) {
+		fs.mkdirSync(QQ_IMAGE_DIR, { recursive: true });
+	}
+
+	// Match [image:/path/to/file.ext]
+	return text.replace(/\[image:([^\]]+)\]/g, (match, imagePath) => {
+		try {
+			const srcPath = imagePath.trim();
+			if (!fs.existsSync(srcPath)) {
+				return `[图片不存在: ${srcPath}]`;
+			}
+
+			// Copy to QQ image directory
+			const fileName = path.basename(srcPath);
+			const destPath = path.join(QQ_IMAGE_DIR, fileName);
+			fs.copyFileSync(srcPath, destPath);
+
+			// Convert to Windows path and CQ code
+			const winPath = wslToWindows(destPath);
+			return `[CQ:image,file=file:///${winPath}]`;
+		} catch (err: any) {
+			return `[图片处理失败: ${err.message}]`;
+		}
+	});
+}
+
+const TOOL_NAME = "send_qq_message";
 
 export default function mainSessionExtension(pi: ExtensionAPI) {
 	let channelManager: ChannelManager | null = null;
 	let currentExternalUser: { channel: string; userId: string } | null = null;
 	let isExternalMessage = false;
 	let savedCtx: ExtensionContext | null = null;
+	let qqToolEnabled = false;
 
 	/** Start the main session */
 	async function startMainSession(ctx: ExtensionContext): Promise<boolean> {
@@ -155,6 +205,50 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 		return info.trim();
 	}
 
+	/** Enable or disable the QQ tool */
+	function setQqToolEnabled(enabled: boolean): void {
+		const active = pi.getActiveTools();
+		if (enabled && !active.includes(TOOL_NAME)) {
+			pi.setActiveTools([...active, TOOL_NAME]);
+			qqToolEnabled = true;
+		} else if (!enabled && active.includes(TOOL_NAME)) {
+			pi.setActiveTools(active.filter((t) => t !== TOOL_NAME));
+			qqToolEnabled = false;
+		}
+	}
+
+	// Register send_qq_message tool
+	pi.registerTool({
+		name: TOOL_NAME,
+		label: "Send QQ Message",
+		description: "Send a message to QQ. Only works in main session. Use [image:/path/to/file] to include images.",
+		parameters: Type.Object({
+			message: Type.String({ description: "Message content to send. Use [image:/path/to/file] for images." }),
+		}),
+		async execute(toolCallId, params, signal, onUpdate, ctx) {
+			if (!channelManager) {
+				return {
+					content: [{ type: "text", text: "Error: Not main session. Run /main on first." }],
+					details: {},
+				};
+			}
+			try {
+				// Process images before sending
+				const processedMessage = processMessageForQQ(params.message);
+				await channelManager.sendReply("qq", MY_QQ, processedMessage);
+				return {
+					content: [{ type: "text", text: `Message sent to QQ ${MY_QQ}` }],
+					details: {},
+				};
+			} catch (err: any) {
+				return {
+					content: [{ type: "text", text: `Error: ${err.message}` }],
+					details: {},
+				};
+			}
+		},
+	});
+
 	// Register /main command
 	pi.registerCommand("main", {
 		description: "Manage main session (receive external messages)",
@@ -205,9 +299,13 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 		if (message.role === "assistant") {
 			for (const content of message.content) {
 				if (content.type === "text" && content.text) {
-					const text = content.text.trim();
+					let text = content.text.trim();
 					if (text) {
 						try {
+							// Process images for QQ channel
+							if (currentExternalUser.channel === "qq") {
+								text = processMessageForQQ(text);
+							}
 							await channelManager.sendReply(
 								currentExternalUser.channel,
 								currentExternalUser.userId,
@@ -232,5 +330,33 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 		if (isMainSession()) {
 			stopMainSession();
 		}
+	});
+
+	// Disable QQ tool by default on session start
+	pi.on("session_start", async () => {
+		setQqToolEnabled(false);
+	});
+
+	// Register /send_qq_message command to toggle the tool
+	pi.registerCommand("send_qq_message", {
+		description: "Toggle send_qq_message tool (on/off)",
+		handler: async (args, ctx) => {
+			const subcommand = args?.trim().toLowerCase();
+
+			if (subcommand === "on") {
+				setQqToolEnabled(true);
+				ctx.ui.notify("send_qq_message tool enabled", "success");
+				return;
+			}
+
+			if (subcommand === "off") {
+				setQqToolEnabled(false);
+				ctx.ui.notify("send_qq_message tool disabled", "info");
+				return;
+			}
+
+			// Default: show status
+			ctx.ui.notify(`send_qq_message: ${qqToolEnabled ? "enabled" : "disabled"}`, "info");
+		},
 	});
 }

@@ -15,7 +15,7 @@ from faster_whisper import WhisperModel
 
 audio_file = sys.argv[1]
 model_size = sys.argv[2] if len(sys.argv) > 2 else "small"
-language = sys.argv[3] if len(sys.argv) > 3 else None
+language = sys.argv[3] if len(sys.argv) > 3 and sys.argv[3] else None
 with_timestamps = sys.argv[4] == "1" if len(sys.argv) > 4 else False
 
 model = WhisperModel(model_size, device="cpu", compute_type="int8")
@@ -50,7 +50,9 @@ function transcribe(
 
 		const args = ["-c", PYTHON_SCRIPT, audioFile, modelSize, language || "", timestamps ? "1" : "0"];
 
-		const proc = spawn("python3", args, { stdio: ["pipe", "pipe", "pipe"] });
+		// Use the venv Python to ensure faster_whisper is available
+		const pythonPath = "/home/lamarck/pi-mono/lamarck/pyenv/bin/python3";
+		const proc = spawn(pythonPath, args, { stdio: ["pipe", "pipe", "pipe"] });
 
 		let stdout = "";
 		let stderr = "";

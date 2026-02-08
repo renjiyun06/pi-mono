@@ -13,7 +13,7 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 - Host: WSL2 Ubuntu 24.04 on Windows (DESKTOP-Q5Q2VL9), user: lamarck
 - sudo password: lamarck123 (agent has full admin access to this WSL instance)
 - Node: v25.6.0, npm 11.8.0
-- Python: 3.12.3, default venv at lamarck/pyenv/, use `uv pip install` for packages
+- Python: 3.10.12, default venv at lamarck/pyenv/, use `uv pip install` for packages
   - faster-whisper: 已安装（small 模型已下载），用于语音转文字
   - venv 自动激活：~/.bash_env (激活脚本) + ~/.profile 设 BASH_ENV，交互式和非交互式 shell 均生效
   - ~/.bashrc 中 venv 激活在交互守卫之前，确保交互式终端也能用
@@ -22,7 +22,7 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 - NapCatQQ WebSocket: 172.30.144.1:3001 (Windows host, OneBot 11 正向 WS)
 - mcporter: 项目级配置在 /home/lamarck/pi-mono/config/mcporter.json
   - 用法: `mcporter call <server>.<tool> key=value`
-  - **必须设置 `lifecycle: "ephemeral"`**：否则 mcporter 会自动启动 daemon，导致多个子 agent 共享同一个 MCP 进程，状态会互相干扰
+  - 使用默认 daemon 模式（之前的 ephemeral 模式会导致 snapshot 状态在调用间丢失，无法完成多步操作）
 - TAVILY_API_KEY: stored in project root .env file
 - OPENROUTER_API_KEY: stored in project root .env file, for image generation
 - GITHUB_TOKEN: stored in project root .env file, also configured in ~/.git-credentials for git push
@@ -84,6 +84,9 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 - **配置文件正确路径**：`NapCat.44498.Shell\versions\9.9.26-44498\resources\app\napcat\config\onebot11_<QQ号>.json`
 - WebSocket 服务：`ws://172.30.144.1:3001`（从 WSL 访问 Windows）
 - Bot QQ 号：3981351485
+
+#### 图片格式
+发送图片统一使用：`[image:/path/to/file.png]`
 
 ### 微信（WeChatFerry）
 - 评估结论：目前不可用，暂缓
