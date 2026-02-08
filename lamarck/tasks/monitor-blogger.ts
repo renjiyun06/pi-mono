@@ -103,14 +103,52 @@ async function checkForNewVideos(page: Page, knownIds: Set<string>): Promise<voi
   }
 }
 
+// Detailed description for --describe
+const BLOGGER_URL = "https://www.douyin.com/user/MS4wLjABAAAAwbbVuf1W2DdgRe0xCa0oxg1ZIHbzuiTzyjq3NcOVgBuu6qIidYlMYqbL3ZFY2swu";
+const BLOGGER_NAME = "秋芝2046";
+
+const DESCRIPTION = `
+Monitor Douyin Blogger (抖音博主监控)
+
+目的：
+  监控抖音博主 ${BLOGGER_NAME} 的新视频，追踪竞品/对标账号动态
+
+监控博主：
+  - 名称: ${BLOGGER_NAME}
+  - 主页: ${BLOGGER_URL}
+
+采集内容：
+  - 视频 ID、标题、链接
+  - 封面图片
+
+存储位置：
+  - ${DB_PATH} → inbox 表
+  - source: "douyin:${BLOGGER_NAME}"
+
+与抖音账号关系：
+  - 对标账号 → 学习选题和内容形式
+  - 新视频 → 竞品分析参考
+
+运行参数：
+  --interval <seconds>  轮询间隔（默认 300 秒）
+  --describe            显示此详细描述
+`.trim();
+
 async function main(): Promise<void> {
   program
     .name("monitor-blogger")
     .description("Monitor 秋芝2046 Douyin page for new videos")
     .option("-i, --interval <seconds>", "Polling interval in seconds", "300")
+    .option("-d, --describe", "Show detailed description")
     .parse();
 
   const opts = program.opts();
+
+  if (opts.describe) {
+    console.log(DESCRIPTION);
+    process.exit(0);
+  }
+
   const interval = parseInt(opts.interval, 10) * 1000;
 
   console.log(`Starting monitor with interval: ${opts.interval}s`);

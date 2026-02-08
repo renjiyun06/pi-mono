@@ -155,13 +155,48 @@ async function runMonitor(subreddit: string, intervalMinutes: number): Promise<v
   console.log(`\nMonitoring... (next poll in ${intervalMinutes} min)`);
 }
 
+// Detailed description for --describe
+const DESCRIPTION = `
+Monitor Reddit Subreddit Hot Posts
+
+目的：
+  监控 Reddit 指定 subreddit 的热门帖子，追踪社区热点
+
+默认监控：
+  - r/sideproject（独立开发者社区）
+
+采集内容：
+  - 帖子 ID、标题、链接
+  - 分数、评论数、作者
+  - 发布时间
+
+存储位置：
+  - ${DB_PATH} → inbox 表
+  - source: "reddit"
+
+与抖音账号关系：
+  - 独立开发热点 → 可做项目介绍/分析
+  - 热门讨论 → 内容素材
+
+运行参数：
+  --subreddit <name>    监控的 subreddit（默认 sideproject）
+  --interval <minutes>  轮询间隔（默认 30 分钟）
+  --describe            显示此详细描述
+`.trim();
+
 // CLI
 program
   .name("monitor-reddit")
   .description("Monitor Reddit subreddit hot posts and save to inbox")
   .option("-s, --subreddit <name>", "Subreddit to monitor", "sideproject")
   .option("-i, --interval <minutes>", "Polling interval in minutes", "30")
+  .option("-d, --describe", "Show detailed description")
   .action(async (options) => {
+    if (options.describe) {
+      console.log(DESCRIPTION);
+      process.exit(0);
+    }
+
     const subreddit = options.subreddit;
     const interval = parseInt(options.interval, 10);
 

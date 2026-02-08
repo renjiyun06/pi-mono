@@ -182,13 +182,44 @@ async function runMonitor(intervalMinutes: number): Promise<void> {
   console.log(`\nMonitoring... (next poll in ${intervalMinutes} min)`);
 }
 
+// Detailed description for --describe
+const DESCRIPTION = `
+Monitor Product Hunt Daily Products
+
+目的：
+  监控 Product Hunt 每日新产品，第一时间发现 AI/技术领域的新工具
+
+采集内容：
+  - 产品 ID、名称、Tagline
+  - 链接、作者、发布时间
+  - 注：RSS 不提供投票/评论数
+
+存储位置：
+  - ${DB_PATH} → inbox 表
+  - source: "producthunt"
+
+与抖音账号关系：
+  - 新 AI 产品 → 可做首发测评/介绍视频
+  - 热门产品 → 选题参考
+
+运行参数：
+  --interval <minutes>  轮询间隔（默认 120 分钟）
+  --once                只运行一次
+  --describe            显示此详细描述
+`.trim();
+
 // CLI
 program
   .name("monitor-producthunt")
   .description("Monitor Product Hunt products via RSS feed and save to inbox")
   .option("-i, --interval <minutes>", "Polling interval in minutes", "120")
   .option("--once", "Run once and exit (no continuous polling)")
+  .option("-d, --describe", "Show detailed description")
   .action(async (options) => {
+    if (options.describe) {
+      console.log(DESCRIPTION);
+      process.exit(0);
+    }
     const interval = parseInt(options.interval, 10);
 
     if (isNaN(interval) || interval < 1) {

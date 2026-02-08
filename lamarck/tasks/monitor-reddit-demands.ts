@@ -179,15 +179,56 @@ async function runAllTasks(): Promise<void> {
   console.log(`当前记录数: ${getExistingUrls().size}`);
 }
 
+// Detailed description for --describe
+const DESCRIPTION = `
+Monitor Reddit for Demand Signals
+
+目的：
+  在 Reddit 搜索用户需求信号，发现真实痛点和付费意愿
+
+搜索关键词：
+  - 付费意愿: "would pay for", "shut up and take my money"
+  - 痛点抱怨: "frustrated with", "hate using", "waste of time"
+  - 期望需求: "I wish there was", "looking for alternative"
+
+搜索 Subreddit：
+  - r/SaaS, r/startups, r/webdev
+  - r/ChatGPT, r/LocalLLaMA
+
+采集内容：
+  - 帖子标题、URL、发布时间
+  - 核心痛点、用户原话
+
+存储位置：
+  - ${DB_PATH} → inbox 表
+  - source: "reddit_demand"
+
+与抖音账号关系：
+  - 用户痛点 → 可做解决方案介绍视频
+  - 需求趋势 → 选题方向参考
+  - 真实案例 → 内容素材
+
+运行参数：
+  --interval <hours>  轮询间隔（默认 24 小时）
+  --once              只运行一次
+  --describe          显示此详细描述
+`.trim();
+
 async function main(): Promise<void> {
   program
     .name("monitor-reddit-demands")
     .description("Monitor Reddit for demand signals using pi agent")
     .option("-i, --interval <hours>", "Polling interval in hours", "24")
     .option("-o, --once", "Run once and exit")
+    .option("-d, --describe", "Show detailed description")
     .parse();
 
   const opts = program.opts();
+
+  if (opts.describe) {
+    console.log(DESCRIPTION);
+    process.exit(0);
+  }
   
   if (opts.once) {
     await runAllTasks();

@@ -174,6 +174,35 @@ async function checkForNewLikes(
   }
 }
 
+// Detailed description for --describe
+const DESCRIPTION = `
+Monitor Zhihu Likes (知乎点赞记录)
+
+目的：
+  监控知乎用户 renjiyun 的点赞动态，追踪感兴趣的内容方向
+
+监控用户：
+  ${USER_PROFILE_URL}
+
+采集内容：
+  - 点赞类型（赞同了回答/文章/想法）
+  - 标题、链接、作者
+  - 点赞时间
+
+存储位置：
+  - ${DB_PATH} → inbox 表
+  - source: "zhihu_like"
+
+与抖音账号关系：
+  - 点赞内容 → 反映兴趣方向
+  - 高质量回答 → 内容素材来源
+  - 热门话题 → 选题参考
+
+运行参数：
+  --interval <minutes>  轮询间隔（默认 60 分钟）
+  --describe            显示此详细描述
+`.trim();
+
 async function main(): Promise<void> {
   program
     .name("monitor-zhihu-likes")
@@ -183,9 +212,16 @@ async function main(): Promise<void> {
       "Polling interval in minutes",
       "60"
     )
+    .option("-d, --describe", "Show detailed description")
     .parse();
 
   const opts = program.opts();
+
+  if (opts.describe) {
+    console.log(DESCRIPTION);
+    process.exit(0);
+  }
+
   const intervalMs = parseInt(opts.interval, 10) * 60 * 1000;
 
   console.log(`Starting Zhihu likes monitor with interval: ${opts.interval} minutes`);

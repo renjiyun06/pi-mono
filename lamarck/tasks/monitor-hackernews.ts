@@ -199,12 +199,42 @@ async function runMonitor(intervalMinutes: number): Promise<void> {
   console.log(`\nMonitoring... (next poll in ${intervalMinutes} min)`);
 }
 
+// Detailed description for --describe
+const DESCRIPTION = `
+Monitor Hacker News Front Page
+
+目的：
+  监控 Hacker News 首页热帖，发现技术/AI 领域的热点话题和新产品
+
+采集内容：
+  - 帖子 ID、标题、链接
+  - 分数、评论数、作者、发布时间
+
+存储位置：
+  - ${DB_PATH} → inbox 表
+  - source: "hackernews"
+
+与抖音账号关系：
+  - 海外技术热点 → 可做成中文科普/测评内容
+  - 高分帖子 = 热门话题 → 选题参考
+
+运行参数：
+  --interval <minutes>  轮询间隔（默认 60 分钟）
+  --describe            显示此详细描述
+`.trim();
+
 // CLI
 program
   .name("monitor-hackernews")
   .description("Monitor Hacker News front page and save to inbox")
   .option("-i, --interval <minutes>", "Polling interval in minutes", "60")
+  .option("-d, --describe", "Show detailed description")
   .action(async (options) => {
+    if (options.describe) {
+      console.log(DESCRIPTION);
+      process.exit(0);
+    }
+
     const interval = parseInt(options.interval, 10);
 
     if (isNaN(interval) || interval < 1) {
