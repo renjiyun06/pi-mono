@@ -45,15 +45,20 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 
 ## Active Projects
 - douyin: 抖音自媒体账号管理 (lamarck/projects/douyin/)
-  - 昵称：Juno朱诺（Ai创业版）
-  - 抖音号：49314893776
-  - 主页：https://www.douyin.com/user/MS4wLjABAAAAdU7bhZFhvcJ_9yBfQ1AokWUHdtT_8qhTSh5FG340ZfpHheBMewvaL0w7FzPKxHhC
-  - 方向：AI 时代的一人公司实验，OpenClaw 相关
-  - 阶段：起步期，1个作品，14粉丝，221赞
   - 需求：脚本撰写、选题规划、素材收集、数据分析等
   - 工具：
     - 数据库：lamarck/data/lamarck.db (douyin_accounts, douyin_videos)
     - 视频/转录存储：lamarck/data/videos/, lamarck/data/transcripts/（已加入 .gitignore）
+  - **账号1：Juno朱诺（Ai创业版）**
+    - 抖音号：49314893776
+    - 主页：https://www.douyin.com/user/MS4wLjABAAAAdU7bhZFhvcJ_9yBfQ1AokWUHdtT_8qhTSh5FG340ZfpHheBMewvaL0w7FzPKxHhC
+    - 方向：AI 时代的一人公司实验，OpenClaw 相关
+    - 阶段：试运营，2个作品，18粉丝，233赞（更新于 2026-02-08）
+  - **账号2：ren**
+    - 抖音号：369609811
+    - 主页：https://www.douyin.com/user/self（需登录查看）
+    - 粉丝：148，获赞：103，作品：3（老视频 2020-2021）
+    - 阶段：待重新激活
 
 ## Reference Repos
 - 存放位置：/home/lamarck/repos/（第三方参考项目统一克隆到这里，不放在 pi-mono 内）
@@ -236,9 +241,17 @@ CREATE TABLE inbox (
 ### 任务脚本（lamarck/tasks/）
 - 持续运行的后台任务，跑在 tmux 里
 - 与 tools/（一次性调用）区分
-- 每个脚本有 `--help`，用 commander.js 解析参数
 - 依赖：commander（参数解析）、tsx（运行 TypeScript）
 - 操作数据库：直接用 sqlite3 命令行
+
+**必须支持的参数**：
+1. `--help` / `-h` — 显示简要用法（commander 自动提供）
+2. `--describe` / `-d` — 显示详细描述，包括：
+   - 目的：脚本做什么
+   - 采集内容：具体采集哪些数据
+   - 存储位置：数据存到哪里
+   - 与抖音账号关系：如何用于内容创作
+   - 运行参数：可用的命令行参数
 
 ### 部署方式
 - 一个脚本一个 tmux session
