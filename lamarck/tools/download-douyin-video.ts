@@ -84,6 +84,7 @@ async function downloadVideo(videoId: string, outputDir: string): Promise<string
     return outputPath;
   } finally {
     await page.close();
+    await browser.close();
   }
 }
 

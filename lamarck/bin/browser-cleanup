@@ -1,0 +1,58 @@
+#!/bin/bash
+#
+# browser-cleanup - Clean up orphaned Chrome instances
+#
+# Checks for browser state files where the pi process no longer exists,
+# and cleans up the Chrome instance + state files.
+#
+
+WINDOWS_IP="172.30.144.1"
+
+echo "[browser-cleanup] 检查孤儿浏览器实例..."
+
+found=0
+cleaned=0
+
+for state_file in /tmp/pi-browser-*.json; do
+  [ -f "$state_file" ] || continue
+  found=$((found + 1))
+  
+  pid=$(jq -r .pi_pid "$state_file")
+  port=$(jq -r .chrome_port "$state_file")
+  profile=$(jq -r .chrome_profile "$state_file")
+  mcporter_config=$(jq -r .mcporter_config "$state_file")
+  
+  # Check if pi process still exists
+  if kill -0 "$pid" 2>/dev/null; then
+    echo "  $state_file: pi 进程 $pid 还在运行，跳过"
+    continue
+  fi
+  
+  echo "  $state_file: pi 进程 $pid 已不存在，清理中..."
+  
+  # 1. Close Chrome
+  if curl -s --connect-timeout 1 "http://${WINDOWS_IP}:${port}/json/version" >/dev/null 2>&1; then
+    echo "    关闭 Chrome (端口 $port)..."
+    powershell.exe -Command "Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id \$_.OwningProcess -Force -ErrorAction SilentlyContinue }" 2>/dev/null
+  fi
+  
+  # 2. Delete state file
+  rm -f "$state_file"
+  
+  # 3. Delete mcporter config
+  rm -f "$mcporter_config"
+  
+  # 4. Delete Chrome user data directory
+  if [ -d "/mnt/d/chromes/$profile" ]; then
+    echo "    删除用户目录 $profile..."
+    cmd.exe /c "rmdir /s /q D:\\chromes\\$profile" 2>/dev/null
+  fi
+  
+  cleaned=$((cleaned + 1))
+done
+
+if [ $found -eq 0 ]; then
+  echo "[browser-cleanup] 没有找到浏览器状态文件"
+else
+  echo "[browser-cleanup] 完成: 找到 $found 个，清理 $cleaned 个"
+fi

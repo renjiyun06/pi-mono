@@ -156,8 +156,21 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 				currentExternalUser = { channel, userId };
 				isExternalMessage = true;
 
-				// Send message to pi
-				pi.sendUserMessage(text);
+				// If agent is busy, abort first (like pressing ESC), wait for idle, then send
+				if (savedCtx && !savedCtx.isIdle()) {
+					savedCtx.abort();
+					// Poll until idle, then send
+					const waitAndSend = () => {
+						if (savedCtx?.isIdle()) {
+							pi.sendUserMessage(text);
+						} else {
+							setTimeout(waitAndSend, 100);
+						}
+					};
+					setTimeout(waitAndSend, 100);
+				} else {
+					pi.sendUserMessage(text);
+				}
 			},
 			onConnected: () => {},
 			onDisconnected: () => {},

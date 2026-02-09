@@ -1,0 +1,156 @@
+#!/bin/bash
+#
+# mcporter wrapper script
+# Provides per-pi-process browser isolation for chrome-devtools calls
+#
+
+REAL_MCPORTER="/home/lamarck/.nvm/versions/node/v22.22.0/bin/mcporter"
+CHROME_USER_DATA_SOURCE="D:\\chrome"
+CHROME_USER_DATA_BASE="D:\\chromes"
+WINDOWS_IP="172.30.144.1"
+PORT_RANGE_START=19301
+PORT_RANGE_END=19350
+LOCK_DIR="/tmp/mcporter-locks"
+
+# Ensure lock directory exists
+mkdir -p "$LOCK_DIR"
+
+# Find the pi process PID by walking up the process tree
+find_pi_pid() {
+  local pid=$$
+  while [ $pid -gt 1 ]; do
+    local name=$(cat /proc/$pid/comm 2>/dev/null)
+    if [ "$name" = "pi" ]; then
+      echo $pid
+      return 0
+    fi
+    pid=$(awk '{print $4}' /proc/$pid/stat 2>/dev/null)
+  done
+  return 1
+}
+
+# Find and lock a free port
+find_and_lock_port() {
+  for port in $(seq $PORT_RANGE_START $PORT_RANGE_END); do
+    local lock_file="$LOCK_DIR/port-$port.lock"
+    
+    # Try to acquire lock (atomic operation)
+    if (set -o noclobber; echo $$ > "$lock_file") 2>/dev/null; then
+      # Got the lock, now check if port is actually free
+      if ! curl -s --connect-timeout 0.5 http://${WINDOWS_IP}:$port/json/version >/dev/null 2>&1; then
+        echo $port
+        return 0
+      fi
+      # Port is in use, release lock and try next
+      rm -f "$lock_file"
+    fi
+  done
+  return 1
+}
+
+# Release port lock
+release_port_lock() {
+  local port=$1
+  rm -f "$LOCK_DIR/port-$port.lock"
+}
+
+# Check if this is a chrome-devtools call
+is_chrome_call() {
+  [[ "$*" == *"chrome-devtools"* ]]
+}
+
+# Main logic
+main() {
+  # If not a chrome-devtools call, just forward to real mcporter
+  if ! is_chrome_call "$@"; then
+    exec "$REAL_MCPORTER" "$@"
+  fi
+
+  # Find pi process PID
+  local pi_pid=$(find_pi_pid)
+  if [ -z "$pi_pid" ]; then
+    # Not running under pi, use current shell PID as fallback
+    pi_pid=$$
+  fi
+
+  local state_file="/tmp/pi-browser-${pi_pid}.json"
+  local config_file="/tmp/mcporter-${pi_pid}.json"
+
+  # Check if we already have a browser instance for this pi process
+  if [ -f "$state_file" ]; then
+    # Read existing config and use it
+    export MCPORTER_CONFIG="$config_file"
+    exec "$REAL_MCPORTER" "$@"
+  fi
+
+  # First call - need to set up a new browser instance
+  echo "[mcporter-wrapper] 首次调用，正在创建浏览器实例..." >&2
+
+  # Find and lock a free port (prevents race condition)
+  local port=$(find_and_lock_port)
+  if [ -z "$port" ]; then
+    echo "[mcporter-wrapper] 错误：没有可用端口 (${PORT_RANGE_START}-${PORT_RANGE_END})" >&2
+    exit 1
+  fi
+  echo "[mcporter-wrapper] 使用端口: $port (已锁定)" >&2
+
+  # Copy user data directory
+  local chrome_profile="chrome-${pi_pid}"
+  echo "[mcporter-wrapper] 复制用户目录..." >&2
+  cmd.exe /c "robocopy ${CHROME_USER_DATA_SOURCE} ${CHROME_USER_DATA_BASE}\\${chrome_profile} /E /NFL /NDL /NJH /NJS /nc /ns /np" >/dev/null 2>&1
+
+  # Start Chrome
+  echo "[mcporter-wrapper] 启动 Chrome..." >&2
+  powershell.exe -Command "Start-Process 'C:\Program Files\Google\Chrome\Application\chrome.exe' -ArgumentList '--remote-debugging-port=${port}','--user-data-dir=${CHROME_USER_DATA_BASE}\\${chrome_profile}'" >/dev/null 2>&1 &
+
+  # Wait for Chrome to start
+  local max_wait=10
+  local waited=0
+  while [ $waited -lt $max_wait ]; do
+    if curl -s --connect-timeout 1 http://${WINDOWS_IP}:${port}/json/version >/dev/null 2>&1; then
+      break
+    fi
+    sleep 1
+    waited=$((waited + 1))
+  done
+
+  if [ $waited -ge $max_wait ]; then
+    echo "[mcporter-wrapper] 错误：Chrome 启动超时" >&2
+    release_port_lock $port
+    exit 1
+  fi
+  echo "[mcporter-wrapper] Chrome 已启动" >&2
+  
+  # Release lock - Chrome is now listening, other scripts will detect it
+  release_port_lock $port
+
+  # Generate mcporter config
+  cat > "$config_file" << EOF
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "npx -y chrome-devtools-mcp --browserUrl http://${WINDOWS_IP}:${port}"
+    }
+  }
+}
+EOF
+
+  # Write state file
+  cat > "$state_file" << EOF
+{
+  "pi_pid": ${pi_pid},
+  "chrome_port": ${port},
+  "chrome_profile": "${chrome_profile}",
+  "mcporter_config": "${config_file}",
+  "created_at": "$(date -Iseconds)"
+}
+EOF
+
+  echo "[mcporter-wrapper] 配置完成" >&2
+
+  # Set config and run real mcporter
+  export MCPORTER_CONFIG="$config_file"
+  exec "$REAL_MCPORTER" "$@"
+}
+
+main "$@"

@@ -18,7 +18,14 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
   - venv 自动激活：~/.bash_env (激活脚本) + ~/.profile 设 BASH_ENV，交互式和非交互式 shell 均生效
   - ~/.bashrc 中 venv 激活在交互守卫之前，确保交互式终端也能用
 - uv: 0.9.29 at ~/.local/bin/uv
-- Chrome CDP: 172.30.144.1:19222 (Windows host via WSL gateway, remote debugging)
+- Chrome CDP: 通过 mcporter wrapper 实现多 agent 浏览器隔离
+  - **mcporter wrapper**: `lamarck/bin/mcporter` 拦截 chrome-devtools 调用，为每个 pi 进程创建独立 Chrome 实例
+  - 端口范围: 19301-19350（已在 Windows netsh portproxy 预配置）
+  - 用户目录: `D:\chromes\chrome-{pid}/`（从 `D:\chrome` 复制）
+  - 状态文件: `/tmp/pi-browser-{pid}.json`
+  - **自动清理**: `.pi/extensions/browser-cleanup.ts` 监听 `session_shutdown` 事件，pi 正常退出时自动关闭浏览器
+  - **手动清理**: 如果直接 kill tmux session，浏览器会残留，运行 `browser-cleanup` 脚本清理孤儿实例
+  - **Playwright CDP 连接必须断开**：用 `chromium.connectOverCDP()` 连接后，脚本结束前必须调用 `browser.close()` 断开连接，否则 Node.js 进程不会退出
 - NapCatQQ WebSocket: 172.30.144.1:3001 (Windows host, OneBot 11 正向 WS)
 - mcporter: 项目级配置在 /home/lamarck/pi-mono/config/mcporter.json
   - 用法: `mcporter call <server>.<tool> key=value`
@@ -52,11 +59,12 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
   - **账号1：Juno朱诺（Ai创业版）**
     - 抖音号：49314893776
     - 主页：https://www.douyin.com/user/MS4wLjABAAAAdU7bhZFhvcJ_9yBfQ1AokWUHdtT_8qhTSh5FG340ZfpHheBMewvaL0w7FzPKxHhC
-    - 方向：AI 时代的一人公司实验，OpenClaw 相关
+    - 方向：AI/智能体，真人出镜
     - 阶段：试运营，2个作品，18粉丝，233赞（更新于 2026-02-08）
   - **账号2：ren**
     - 抖音号：369609811
     - 主页：https://www.douyin.com/user/self（需登录查看）
+    - 方向：AI/智能体，纯 agent 运营（图文、AI生成视频，无真人）
     - 粉丝：148，获赞：103，作品：3（老视频 2020-2021）
     - 阶段：待重新激活
 
@@ -104,94 +112,6 @@ Cross-session memory for the Lamarck experiment. The agent reads this file at th
 
 ## Tools
 - lamarck/tools/ 下有一些实用小工具脚本，详见 lamarck/tools/INDEX.md
-
-## Workflows
-
-### 浏览器操作（共享资源）
-Chrome 浏览器是共享资源，多个 agent/任务可能同时在用。
-
-**核心原则**：
-1. **只操作自己打开的页面** — 用 `new_page` 开自己的标签页，记住返回的 pageId
-2. **所有操作必须带 pageId** — 不带 pageId 会操作"当前活跃标签页"，多 agent 时会互相踩
-3. **用完必须关闭** — 任务结束时用 `close_page pageId=xxx` 关闭自己打开的标签页
-
-**正确流程**：
-```bash
-# 1. 开新标签页，拿到 pageId
-mcporter call chrome-devtools.new_page url="https://..." 
-# 返回 pageId=123
-
-# 2. 所有后续操作都带 pageId
-mcporter call chrome-devtools.take_snapshot pageId=123 filePath="..."
-mcporter call chrome-devtools.click pageId=123 uid="..."
-mcporter call chrome-devtools.type pageId=123 uid="..." text="..."
-
-# 3. 任务结束，关闭标签页
-mcporter call chrome-devtools.close_page pageId=123
-```
-
-**禁止**：
-- 不带 pageId 操作（会踩到别人）
-- 操作别人打开的标签页
-- 任务结束不关闭标签页（污染环境）
-
-### 长时间任务（tmux 后台执行）
-适用场景：下载、转码、爬取等耗时操作
-- `tmux new-session -d -s <name> "<command>"` 启动，不阻塞
-- `tmux capture-pane -t <name> -p -S -1000` 查看进度
-- `tmux send-keys -t <name> C-c` 中途打断
-- `tmux kill-session -t <name>` 销毁
-
-### 探索性子任务（异步派发）
-适用场景：快速探索某个方向，不需要全程参与，边探索边调整
-
-**临时目录约定**：
-- 位置：`lamarck/tmp/<session-name>/`
-- 每个 tmux session 对应一个子目录
-- 子 agent 产生的所有文件放在对应目录里
-- 不同会话之间隔离，文件名不冲突
-
-**派发流程**：
-```bash
-# 1. 创建临时目录
-mkdir -p lamarck/tmp/<session-name>
-
-# 2. 启动子 agent（交互模式）
-tmux new-session -d -s <session-name> "cd /home/lamarck/pi-mono && pi"
-
-# 3. 发送任务（告诉它工作目录）
-tmux send-keys -t <session-name> "你的任务是... 所有产生的文件放在 lamarck/tmp/<session-name>/" Enter
-
-# 4. 派发后不等待，继续主对话
-```
-
-**监控和追加**：
-```bash
-# 查看进度
-tmux capture-pane -t <session-name> -p -S -30
-
-# 追加指令
-tmux send-keys -t <session-name> "继续深入这个方向..." Enter
-
-# 结束
-tmux send-keys -t <session-name> C-c
-tmux kill-session -t <session-name>
-```
-
-**原则**：
-- 派发后立即返回，不阻塞主对话
-- 子 agent 自主决定怎么探索、怎么存储
-- 通过 capture-pane 随时可查进度
-- 探索完成后结果在 `lamarck/tmp/<session-name>/` 里
-
-### 并行多任务（tmux + git worktree + 子 agent）
-适用场景：多个独立任务需要同时推进（写多个脚本、批量测试等）
-1. 与用户商量任务拆分，确保各任务操作不同文件
-2. 每个任务创建独立 worktree：`git worktree add /tmp/agent-N -b task/xxx`
-3. 每个 worktree 启动独立 tmux session 跑 pi 子 agent
-4. 主 agent 轮询 capture-pane 监控各任务进度
-5. 全部完成后由主 agent 合并分支、处理冲突、清理 worktree
-- 注意：子 agent 没有当前会话上下文，prompt 必须自包含；关注 API rate limit 和 token 成本
 
 ## SQLite 使用约定
 
@@ -258,12 +178,14 @@ CREATE TABLE inbox (
 - 轻量级脚本，系统可承受 200+ 个 session（测试过）
 - 启动：`tmux new-session -d -s <task-name> "npx tsx lamarck/tasks/<script>.ts --options"`
 
+### 子 agent 管理
+- **正常关闭**（推荐）：`tmux send-keys -t <session> C-d` — 触发 session_shutdown 事件，浏览器自动清理
+- **强制终止**（不推荐）：`tmux kill-session -t <session>` — 跳过清理，需手动运行 `browser-cleanup`
+- 详见 `.pi/skills/sub-agent/SKILL.md`
+
 ### 两类任务
 1. **简单轮询**：纯脚本定时检测，不需要 LLM（如监控博主更新）
 2. **智能驱动**：需要 agent 参与（如搜索+分析）
-
-## TODO
-- [ ] 微信渠道接入 — 用户认为微信更有代表性，需要重新评估 WeChatFerry 或寻找替代方案
 
 ## Decisions
 - [2026-02-04] Extensions live in lamarck/extensions/, symlinked to .pi/extensions/ with relative paths
