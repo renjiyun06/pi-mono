@@ -1,0 +1,28 @@
+# Environment
+
+## System
+- Host: WSL2 Ubuntu 24.04 on Windows (DESKTOP-Q5Q2VL9), user: lamarck
+- sudo password: lamarck123 (agent has full admin access)
+
+## Runtime
+- Node
+- Python: 3.10.12, default venv at /home/lamarck/pi-mono/lamarck/pyenv/
+- uv
+
+## Services
+
+## API Keys (stored in /home/lamarck/pi-mono/.env)
+- TAVILY_API_KEY
+- OPENROUTER_API_KEY
+- GITHUB_TOKEN
+
+## Data Storage
+- Database: /home/lamarck/pi-mono/lamarck/data/lamarck.db
+- Videos: /home/lamarck/pi-mono/lamarck/data/videos/
+- Transcripts: /home/lamarck/pi-mono/lamarck/data/transcripts/
+
+## Reference Repos
+Location: /home/lamarck/repos/ (all reference projects must be cloned here)
+- NapCatQQ — QQ Bot protocol (OneBot 11)
+- WeChatFerry — WeChat PC Hook (unusable, waiting for sdk.dll to support new WeChat version)
+- openclaw — Multi-channel architecture reference

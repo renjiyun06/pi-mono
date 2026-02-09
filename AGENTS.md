@@ -169,70 +169,6 @@ For non-standard auth, create utility (e.g., `bedrock-utils.ts`) with credential
 
 The script handles: version bump, CHANGELOG finalization, commit, tag, publish, and adding new `[Unreleased]` sections.
 
-## Lamarck — Self-Growing Agent Experiment
-
-This is a fork of pi-mono with an experimental direction: letting the agent grow its own capabilities through conversation. The `lamarck/` directory at the project root contains:
-
-- `README.md` — the vision and experiment description
-- `journal/` — records of each growth iteration (what was discussed, what was built, what was learned)
-- `extensions/` — extensions written by the agent during conversations
-- `tools/` — Unix-style TypeScript scripts (index: `lamarck/tools/INDEX.md`, overview: `lamarck/tools/README.md`)
-- `projects/` — user projects managed by the agent
-
-**Core idea**: the agent has 4 base tools (read, bash, edit, write) and a powerful extension mechanism. Through dialogue with the user, the agent writes new extensions that add tools, memory, and behaviors. These persist on disk and are loaded in future sessions. The agent grows incrementally — each session can produce new capabilities that become available in the next.
-
-**Key constraints to remember**:
-- You cannot trigger `/reload` yourself. After writing an extension, tell the user to run `/reload`.
-- You have no autonomous agency. You act only when the user prompts you.
-- When writing extensions, follow the patterns in `packages/coding-agent/docs/extensions.md` and `packages/coding-agent/examples/extensions/`.
-- Record each growth step in `lamarck/journal/` so future sessions understand what was built and why.
-
-## Memory
-
-The file `lamarck/memory.md` is the agent's cross-session memory. It stores key facts, environment details, user preferences, decisions, and anything else worth remembering across conversations.
-
-**On every new session**: Read `lamarck/memory.md` before doing anything else.
-
-**During conversations**: When there is something worth remembering (a new decision, a changed configuration, a user preference, etc.), update `lamarck/memory.md`:
-1. Read the current file first
-2. Update or replace entries that are outdated (e.g., if an IP address changed, don't append — replace the old one)
-3. Append new entries to the appropriate section
-4. Keep the file concise — this is not a conversation log, it's key facts only
-5. Do NOT duplicate information that already lives elsewhere. For example, tools have their own INDEX.md — memory.md only records *where* to find them, not *what* each tool does.
-
-## Session Log
-
-Location: `lamarck/sessions/`. Each file records one conversation session.
-
-**Filename format**: `YYYY-MM-DD_NNN_short-title.md` (e.g., `2026-02-04_002_douyin-video-download.md`)
-
-**When to write**: At the end of every session (or when the user signals the session is ending), write a session log file.
-
-**File template**:
-```markdown
-# Session YYYY-MM-DD_NNN
-
-## Summary
-One sentence describing what was done.
-
-## Tags
-comma, separated, keywords
-
-## Key Points
-- Conclusions and results (not process details)
-
-## Issues Encountered
-- Problems hit and how they were resolved
-
-## Files Changed
-- path/to/file — brief description
-```
-
-**Rules**:
-- Do NOT read session logs at session start (only `memory.md` is read)
-- Session logs are for retrospective search only — use `grep -l "keyword" lamarck/sessions/*.md` when needed
-- Determine the next sequence number by listing existing files for the current date
-
 ## **CRITICAL** Tool Usage Rules **CRITICAL**
 - NEVER use sed/cat to read a file or a range of a file. Always use the read tool (use offset + limit for ranged reads).
 - You MUST read every file you modify in full before editing.
@@ -278,3 +214,29 @@ git pull --rebase && git push
 - Resolve conflicts in YOUR files only
 - If conflict is in a file you didn't modify, abort and ask the user
 - NEVER force push
+
+## Lamarck — Self-Growing Agent Experiment
+
+You have a dual role:
+1. **pi-mono developer** — maintain this codebase, follow the development rules above
+2. **Lamarck agent** — an experimental agent that grows its own capabilities through conversation
+
+### Memory System
+
+Location: `lamarck/memory/`
+
+```
+lamarck/memory/
+├── environment.md     # System, runtime, services, API keys
+├── preferences.md     # User preferences
+├── notes.md           # Technical notes and gotchas
+└── projects/          # Project-specific memory
+```
+
+**On session start**: Read core files under `lamarck/memory/` in parallel.
+
+**During session**: Update the corresponding markdown file when something changes.
+
+**Language**: All memory files must be written in English, unless a term can only be expressed in Chinese.
+
+**Paths**: All paths in memory files must be absolute paths.
