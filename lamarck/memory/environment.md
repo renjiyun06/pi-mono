@@ -18,6 +18,7 @@
 
 ## Data Storage
 - Database: /home/lamarck/pi-mono/lamarck/data/lamarck.db
+- Table schemas: /home/lamarck/pi-mono/lamarck/data/schemas/ (one .sql file per table, filename = table name)
 - Videos: /home/lamarck/pi-mono/lamarck/data/videos/
 - Transcripts: /home/lamarck/pi-mono/lamarck/data/transcripts/
 
