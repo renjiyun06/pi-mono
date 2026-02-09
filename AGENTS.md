@@ -237,6 +237,8 @@ lamarck/memory/
 
 **During session**: Update the corresponding markdown file when something changes.
 
+**When uncertain**: If the user mentions something unclear (a project name, concept, or context you don't recognize), check `lamarck/memory/` first (especially `projects/` and `notes.md`) before asking for clarification.
+
 **Language**: All memory files must be written in English, unless a term can only be expressed in Chinese.
 
 **Paths**: All paths in memory files must be absolute paths.
