@@ -25,7 +25,7 @@ import { ChannelManager } from "./channels/index.js";
 // ============================================================================
 
 const TASKS_DIR = "/home/lamarck/pi-mono/lamarck/tasks";
-const PI_COMMAND = "/home/lamarck/pi-mono/pi-test.sh";
+const PI_COMMAND = "pi";
 
 interface TaskDefinition {
 	name: string;
@@ -177,27 +177,40 @@ function tmuxSessionExists(name: string): boolean {
 }
 
 /**
- * Gracefully stop a tmux session by sending Ctrl+D.
+ * Gracefully stop a tmux session by sending Ctrl+D and wait for it to close.
  * This triggers session_shutdown so cleanup extensions (e.g., browser) can run.
+ * Falls back to force kill if session doesn't close within timeout.
  */
 function tmuxKillSession(name: string): void {
 	try {
 		// Send Ctrl+D for graceful shutdown
 		execSync(`tmux send-keys -t "${name}" C-d`, { encoding: "utf-8" });
+
+		// Wait for session to close, max 10 seconds
+		for (let i = 0; i < 20; i++) {
+			execSync("sleep 0.5", { encoding: "utf-8" });
+			if (!tmuxSessionExists(name)) return;
+		}
+
+		// Timeout, force kill
+		execSync(`tmux kill-session -t "${name}"`, { encoding: "utf-8" });
 	} catch {
 		// Ignore errors
 	}
 }
 
+const PROJECT_ROOT = "/home/lamarck/pi-mono";
+
 /**
  * Start a new tmux session with pi --one-shot.
  */
 function tmuxStartTask(name: string, prompt: string): void {
-	// Escape single quotes in prompt for shell
-	const escapedPrompt = prompt.replace(/'/g, "'\\''");
+	// Write prompt to temp file to avoid shell escaping issues
+	const promptFile = `/tmp/task-${name}.prompt`;
+	fs.writeFileSync(promptFile, prompt);
 
-	// Create tmux session with pi --one-shot
-	const cmd = `tmux new-session -d -s "${name}" "${PI_COMMAND} --one-shot '${escapedPrompt}'"`;
+	// Simple command that tells pi to read the file, with working directory set
+	const cmd = `tmux new-session -d -s "${name}" -c "${PROJECT_ROOT}" "${PI_COMMAND} --one-shot '读取 ${promptFile} 文件，按照里面的指令完成任务'"`;
 	execSync(cmd, { encoding: "utf-8" });
 }
 
