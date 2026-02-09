@@ -1,5 +1,5 @@
 ---
-name: 网感
+name: wanggan
 description: 当用户要改写文案、写标题、写开头、增加网感、写带货文案时触发
 ---
 
