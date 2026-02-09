@@ -1,7 +1,8 @@
 ---
 cron: "0 * * * *"
 description: "从 Twitter 发现高质量 AI 领域账号"
-enabled: true
+enabled: false
+model: anthropic/claude-sonnet-4-5
 ---
 
 你的任务是从 Twitter 上发现高质量的 AI 领域账号。
@@ -46,6 +47,14 @@ sqlite3 "/home/lamarck/pi-mono/lamarck/data/lamarck.db" "SELECT username FROM tw
 2. 找一条高热度帖子（点赞或转发多的）
 3. 进入帖子详情，查看引用转发（Quotes）或回复（Replies）
 4. 从互动者中挑选看起来高质量的用户，打开他们主页查看
+
+## 反爬处理
+
+Twitter 有时会因为反爬机制导致页面加载失败，表现为：
+- 页面显示空白
+- 内容区域没有推文
+
+**处理方法**：检查页面上是否有 "Retry" 按钮，如果有就点击它，页面会重新加载。
 
 ## 第三步：评估标准
 

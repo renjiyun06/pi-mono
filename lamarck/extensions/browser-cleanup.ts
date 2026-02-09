@@ -32,12 +32,14 @@ export default function (pi: ExtensionAPI) {
     try {
       const state: BrowserState = JSON.parse(readFileSync(stateFile, "utf-8"));
 
-      // 1. Close Chrome by killing the process listening on the port
+      // 1. Kill ALL Chrome processes using this profile directory (including child processes)
       try {
         execSync(
-          `powershell.exe -Command 'Get-NetTCPConnection -LocalPort ${state.chrome_port} -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }'`,
-          { encoding: "utf-8", timeout: 10000 }
+          `powershell.exe -Command "Get-CimInstance Win32_Process | Where-Object { \\$_.CommandLine -like '*${state.chrome_profile}*' } | ForEach-Object { Stop-Process -Id \\$_.ProcessId -Force -ErrorAction SilentlyContinue }"`,
+          { encoding: "utf-8", timeout: 15000 }
         );
+        // Wait for processes to fully terminate
+        execSync("sleep 2", { encoding: "utf-8" });
       } catch {
         // Ignore errors - Chrome might already be closed
       }
@@ -54,18 +56,22 @@ export default function (pi: ExtensionAPI) {
         }
       } catch {}
 
-      // 4. Delete Chrome user data directory (optional - can be large)
-      try {
-        const profilePath = `/mnt/d/chromes/${state.chrome_profile}`;
-        if (existsSync(profilePath)) {
+      // 4. Delete Chrome user data directory with retry
+      const profilePath = `/mnt/d/chromes/${state.chrome_profile}`;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          if (!existsSync(profilePath)) break;
           // Use Windows command for faster deletion
           execSync(
             `cmd.exe /c "rmdir /s /q D:\\chromes\\${state.chrome_profile}"`,
             { encoding: "utf-8", timeout: 30000 }
           );
+          if (!existsSync(profilePath)) break;
+          // Still exists, wait and retry
+          execSync("sleep 1", { encoding: "utf-8" });
+        } catch {
+          // Ignore errors, will retry
         }
-      } catch {
-        // Ignore errors - directory might be locked or already deleted
       }
 
     } catch {

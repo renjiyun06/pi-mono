@@ -101,7 +101,31 @@ main() {
 
   # Start Chrome
   echo "[mcporter-wrapper] 启动 Chrome..." >&2
-  powershell.exe -Command "Start-Process 'C:\Program Files\Google\Chrome\Application\chrome.exe' -ArgumentList '--remote-debugging-port=${port}','--user-data-dir=${CHROME_USER_DATA_BASE}\\${chrome_profile}'" >/dev/null 2>&1 &
+  # 生成临时 bat 文件（无头模式）
+  local bat_file="/tmp/chrome-start-${pi_pid}.bat"
+  cat > "$bat_file" << BATEOF
+@echo off
+"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" ^
+  --headless ^
+  --remote-debugging-port=${port} ^
+  --user-data-dir=${CHROME_USER_DATA_BASE}\\${chrome_profile} ^
+  --disable-blink-features=AutomationControlled ^
+  --disable-dev-shm-usage ^
+  --disable-software-rasterizer ^
+  --disable-extensions ^
+  --no-sandbox ^
+  --disable-setuid-sandbox ^
+  --disable-gpu ^
+  --hide-scrollbars ^
+  --mute-audio ^
+  --disable-background-timer-throttling ^
+  --disable-backgrounding-occluded-windows ^
+  --disable-renderer-backgrounding ^
+  --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36"
+BATEOF
+  # 转换为 Windows 路径并执行
+  local win_bat=$(wslpath -w "$bat_file")
+  cmd.exe /c "start /b $win_bat" >/dev/null 2>&1 &
 
   # Wait for Chrome to start
   local max_wait=10

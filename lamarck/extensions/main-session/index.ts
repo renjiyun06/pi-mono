@@ -27,19 +27,24 @@ import { ChannelManager } from "./channels/index.js";
 const TASKS_DIR = "/home/lamarck/pi-mono/lamarck/tasks";
 const PI_COMMAND = "pi";
 
+const DEFAULT_TASK_MODEL = "anthropic/claude-sonnet-4-5";
+
 interface TaskDefinition {
 	name: string;
 	cron: string;
 	description: string;
 	prompt: string;
 	enabled: boolean;
+	model: string;
+	skipIfRunning: boolean; // If true, skip this schedule if task is already running
+	allowParallel: boolean; // If true, allow multiple instances with numbered suffixes
 }
 
 /**
  * Parse frontmatter from a markdown file.
  * Returns null if frontmatter is missing or invalid.
  */
-function parseFrontmatter(content: string): { cron?: string; description?: string; enabled?: boolean; body: string } | null {
+function parseFrontmatter(content: string): { cron?: string; description?: string; enabled?: boolean; model?: string; skipIfRunning?: boolean; allowParallel?: boolean; body: string } | null {
 	const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
 	if (!match) return null;
 
@@ -62,6 +67,9 @@ function parseFrontmatter(content: string): { cron?: string; description?: strin
 		cron: frontmatter.cron,
 		description: frontmatter.description,
 		enabled: frontmatter.enabled?.toLowerCase() === "true",
+		model: frontmatter.model,
+		skipIfRunning: frontmatter.skipIfRunning?.toLowerCase() === "true",
+		allowParallel: frontmatter.allowParallel?.toLowerCase() === "true",
 		body: match[2].trim(),
 	};
 }
@@ -154,6 +162,9 @@ function loadTasks(): TaskDefinition[] {
 					description: parsed.description,
 					prompt: parsed.body,
 					enabled: true,
+					model: parsed.model || DEFAULT_TASK_MODEL,
+					skipIfRunning: parsed.skipIfRunning || false,
+					allowParallel: parsed.allowParallel || false,
 				});
 			}
 		} catch {
@@ -204,13 +215,16 @@ const PROJECT_ROOT = "/home/lamarck/pi-mono";
 /**
  * Start a new tmux session with pi --one-shot.
  */
-function tmuxStartTask(name: string, prompt: string): void {
+function tmuxStartTask(name: string, prompt: string, model: string): void {
 	// Write prompt to temp file to avoid shell escaping issues
 	const promptFile = `/tmp/task-${name}.prompt`;
 	fs.writeFileSync(promptFile, prompt);
 
+	// Parse model string: "provider/model" -> --provider provider --model model
+	const [provider, modelId] = model.includes("/") ? model.split("/", 2) : ["anthropic", model];
+
 	// Simple command that tells pi to read the file, with working directory set
-	const cmd = `tmux new-session -d -s "${name}" -c "${PROJECT_ROOT}" "${PI_COMMAND} --one-shot '读取 ${promptFile} 文件，按照里面的指令完成任务'"`;
+	const cmd = `tmux new-session -d -s "${name}" -c "${PROJECT_ROOT}" "${PI_COMMAND} --provider ${provider} --model ${modelId} --one-shot '读取 ${promptFile} 文件，按照里面的指令完成任务'"`;
 	execSync(cmd, { encoding: "utf-8" });
 }
 
@@ -270,6 +284,22 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 	// Scheduler state
 	let schedulerInterval: NodeJS.Timeout | null = null;
 
+	/** Find an available session name for parallel tasks */
+	function findAvailableSessionName(baseName: string): string {
+		if (!tmuxSessionExists(baseName)) {
+			return baseName;
+		}
+		// Try numbered suffixes: task-1, task-2, ...
+		for (let i = 1; i <= 10; i++) {
+			const name = `${baseName}-${i}`;
+			if (!tmuxSessionExists(name)) {
+				return name;
+			}
+		}
+		// Fallback: use timestamp
+		return `${baseName}-${Date.now()}`;
+	}
+
 	/** Scheduler tick: check all tasks and run if cron matches */
 	function schedulerTick(): void {
 		const now = new Date();
@@ -277,14 +307,26 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 
 		for (const task of tasks) {
 			if (cronMatches(task.cron, now)) {
-				// If session exists, kill it first
+				let sessionName = task.name;
+
+				// Check if task is already running
 				if (tmuxSessionExists(task.name)) {
-					tmuxKillSession(task.name);
+					if (task.skipIfRunning) {
+						// Skip this schedule, let the previous run continue
+						continue;
+					}
+					if (task.allowParallel) {
+						// Find an available session name
+						sessionName = findAvailableSessionName(task.name);
+					} else {
+						// Kill the running task to start a new one
+						tmuxKillSession(task.name);
+					}
 				}
 
 				// Start new session with the task
 				try {
-					tmuxStartTask(task.name, task.prompt);
+					tmuxStartTask(sessionName, task.prompt, task.model);
 				} catch {
 					// Ignore startup errors
 				}
@@ -624,6 +666,105 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 
 			// Default: show status
 			ctx.ui.notify(`send_qq_message: ${qqToolEnabled ? "enabled" : "disabled"}`, "info");
+		},
+	});
+
+	// Register /task command to manage scheduled tasks
+	pi.registerCommand("task", {
+		description: "Manage scheduled tasks (list, run <name>, status <name>)",
+		handler: async (args, ctx) => {
+			// Must be main session to use this command
+			if (!isMainSession()) {
+				ctx.ui.notify("Not main session. Run /main on first.", "error");
+				return;
+			}
+
+			const parts = args?.trim().split(/\s+/) || [];
+			const subcommand = parts[0]?.toLowerCase();
+			const taskName = parts.slice(1).join(" ");
+
+			// /task list or /task (default)
+			if (!subcommand || subcommand === "list") {
+				const tasks = loadTasks();
+				if (tasks.length === 0) {
+					ctx.ui.notify("No enabled tasks found in lamarck/tasks/*.md", "info");
+					return;
+				}
+				let info = "Enabled tasks:\n";
+				for (const task of tasks) {
+					const running = tmuxSessionExists(task.name) ? " [running]" : "";
+					info += `  - ${task.name}: ${task.cron}${running}\n`;
+				}
+				ctx.ui.notify(info.trim(), "info");
+				return;
+			}
+
+			// /task run <name>
+			if (subcommand === "run") {
+				if (!taskName) {
+					ctx.ui.notify("Usage: /task run <name>", "error");
+					return;
+				}
+				const tasks = loadTasks();
+				const task = tasks.find((t) => t.name === taskName);
+				if (!task) {
+					ctx.ui.notify(`Task "${taskName}" not found or not enabled`, "error");
+					return;
+				}
+
+				let sessionName = task.name;
+
+				// Handle existing session
+				if (tmuxSessionExists(task.name)) {
+					if (task.skipIfRunning) {
+						ctx.ui.notify(`Task "${taskName}" is already running, skipped`, "info");
+						return;
+					}
+					if (task.allowParallel) {
+						// Find an available session name
+						sessionName = findAvailableSessionName(task.name);
+					} else {
+						// Kill the running task to start a new one
+						tmuxKillSession(task.name);
+					}
+				}
+
+				try {
+					tmuxStartTask(sessionName, task.prompt, task.model);
+					ctx.ui.notify(`Task "${sessionName}" started (model: ${task.model})`, "success");
+				} catch (err: any) {
+					ctx.ui.notify(`Failed to start task: ${err.message}`, "error");
+				}
+				return;
+			}
+
+			// /task status <name>
+			if (subcommand === "status") {
+				if (!taskName) {
+					ctx.ui.notify("Usage: /task status <name>", "error");
+					return;
+				}
+				const running = tmuxSessionExists(taskName);
+				ctx.ui.notify(`Task "${taskName}": ${running ? "running" : "not running"}`, "info");
+				return;
+			}
+
+			// /task stop <name>
+			if (subcommand === "stop") {
+				if (!taskName) {
+					ctx.ui.notify("Usage: /task stop <name>", "error");
+					return;
+				}
+				if (!tmuxSessionExists(taskName)) {
+					ctx.ui.notify(`Task "${taskName}" is not running`, "info");
+					return;
+				}
+				tmuxKillSession(taskName);
+				ctx.ui.notify(`Task "${taskName}" stopped`, "success");
+				return;
+			}
+
+			ctx.ui.notify("Usage: /task [list|run <name>|status <name>|stop <name>]", "info");
 		},
 	});
 }

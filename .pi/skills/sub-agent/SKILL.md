@@ -24,33 +24,24 @@ description: 启动子 agent 来完成任务。
 mkdir -p lamarck/tmp/<session-name>
 ```
 
-### 2. 启动子 agent
+### 2. 写入任务描述
+
+把任务描述写入 `lamarck/tmp/<session-name>/prompt.md`。
+
+### 3. 启动子 agent
+
+用固定的启动命令：
 
 ```bash
-tmux new-session -d -s <session-name> "cd /home/lamarck/pi-mono && pi"
-sleep 2
-tmux send-keys -t <session-name> "<任务描述>" Enter
+tmux new-session -d -s <session-name> \
+  "cd /home/lamarck/pi-mono && pi --one-shot '读取 lamarck/tmp/<session-name>/prompt.md，按其中的指令完成任务'"
 ```
 
-### 3. 记录任务
-
-派发完成后记录到数据库：
-
-```bash
-sqlite3 lamarck/data/lamarck.db "INSERT INTO tasks VALUES ('<session-name>', '任务目的简述', '<关联任务>', datetime('now', 'localtime'))"
-```
-
-**tasks 表结构**：
-| 字段 | 说明 |
-|------|------|
-| tmux_session_name | 主键，tmux session 名 |
-| purpose | 任务目的简述 |
-| related_tmux_session_names | 关联的其他任务 session 名，逗号分隔，无则留空 |
-| created_at | 创建时间 |
+任务完成后 pi 自动退出，session 随之关闭。
 
 ### 4. 派发后立即返回
 
-不要等待子任务完成，继续主对话。
+不要等待子任务完成，继续主对话。任务完成后 session 会自动关闭。
 
 ## 任务描述模板
 
@@ -61,51 +52,32 @@ sqlite3 lamarck/data/lamarck.db "INSERT INTO tasks VALUES ('<session-name>', '�
 3. **输出要求**：结果放哪里、什么格式
 4. **工作目录**：`lamarck/tmp/<session-name>/`
 
-## 监控和追加
+## 监控
 
 ```bash
 # 查看进度
 tmux capture-pane -t <session-name> -p -S -30
 
-# 追加指令
-tmux send-keys -t <session-name> "继续..." Enter
-
 # 查看任务是否还在运行
 tmux has-session -t <session-name> 2>/dev/null && echo "运行中" || echo "已结束"
 ```
 
+**注意**：`--one-shot` 模式下无法追加指令，任务描述必须一次性给全。
+
 ## 结束和清理
 
-### 正常关闭（推荐）
+`--one-shot` 模式下，pi 完成任务后会自动退出，tmux session 随之关闭，无需手动清理。
 
-**必须用 Ctrl+D 让 pi 正常退出**，这样 `session_shutdown` 事件会触发，浏览器实例会自动清理：
+### 中途终止
+
+如果需要提前终止正在运行的任务：
 
 ```bash
-# 正常关闭 - 触发清理钩子
+# 发送 Ctrl+D 让 pi 正常退出（会触发清理钩子）
 tmux send-keys -t <session-name> C-d
-sleep 3
-tmux kill-session -t <session-name> 2>/dev/null
 ```
 
-### 强制终止（不推荐）
-
-直接 kill session 会跳过清理，导致浏览器残留：
-
-```bash
-# 不推荐 - 浏览器不会自动关闭
-tmux kill-session -t <session-name>
-
-# 如果已经这样做了，运行清理脚本
-browser-cleanup
-```
-
-### 删除任务记录
-
-```bash
-sqlite3 lamarck/data/lamarck.db "DELETE FROM tasks WHERE tmux_session_name = '<session-name>'"
-```
-
-**注意**：工作目录 `lamarck/tmp/<session-name>/` 保留，不删除。
+工作目录 `lamarck/tmp/<session-name>/` 保留，包含 `prompt.md` 和任务输出。
 
 ---
 
