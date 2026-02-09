@@ -2971,9 +2971,9 @@ export const MODELS = {
 		} satisfies Model<"google-generative-ai">,
 	},
 	"google-antigravity": {
-		"claude-opus-4-6-thinking": {
-			id: "claude-opus-4-6-thinking",
-			name: "Claude Opus 4.6 Thinking (Antigravity)",
+		"claude-opus-4-5-thinking": {
+			id: "claude-opus-4-5-thinking",
+			name: "Claude Opus 4.5 Thinking (Antigravity)",
 			api: "google-gemini-cli",
 			provider: "google-antigravity",
 			baseUrl: "https://daily-cloudcode-pa.sandbox.googleapis.com",
@@ -5231,7 +5231,7 @@ export const MODELS = {
 				cacheRead: 0.3,
 				cacheWrite: 3.75,
 			},
-			contextWindow: 1000000,
+			contextWindow: 200000,
 			maxTokens: 64000,
 		} satisfies Model<"anthropic-messages">,
 		"claude-sonnet-4-5": {
@@ -5248,7 +5248,7 @@ export const MODELS = {
 				cacheRead: 0.3,
 				cacheWrite: 3.75,
 			},
-			contextWindow: 1000000,
+			contextWindow: 200000,
 			maxTokens: 64000,
 		} satisfies Model<"anthropic-messages">,
 		"gemini-3-flash": {
@@ -6051,6 +6051,23 @@ export const MODELS = {
 			},
 			contextWindow: 131072,
 			maxTokens: 64000,
+		} satisfies Model<"openai-completions">,
+		"auto": {
+			id: "auto",
+			name: "Auto",
+			api: "openai-completions",
+			provider: "openrouter",
+			baseUrl: "https://openrouter.ai/api/v1",
+			reasoning: true,
+			input: ["text", "image"],
+			cost: {
+				input: 0,
+				output: 0,
+				cacheRead: 0,
+				cacheWrite: 0,
+			},
+			contextWindow: 2000000,
+			maxTokens: 30000,
 		} satisfies Model<"openai-completions">,
 		"baidu/ernie-4.5-21b-a3b": {
 			id: "baidu/ernie-4.5-21b-a3b",
@@ -7319,9 +7336,9 @@ export const MODELS = {
 			reasoning: true,
 			input: ["text", "image"],
 			cost: {
-				input: 0.44999999999999996,
-				output: 2.25,
-				cacheRead: 0.075,
+				input: 0.3,
+				output: 1.5,
+				cacheRead: 0.049999999999999996,
 				cacheWrite: 0,
 			},
 			contextWindow: 262144,
