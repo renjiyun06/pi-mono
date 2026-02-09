@@ -23,6 +23,16 @@ For tasks that can be implemented purely with code, use TypeScript scripts inste
 - Example: `lamarck/tasks/foo.ts` → `tmux new-session -d -s foo 'npx tsx lamarck/tasks/foo.ts'`
 - Every script must use `commander` for arg parsing, and support two optional args: `--help` (usage info) and `--describe` (detailed explanation of what the task does)
 
+## Extensions
+
+All custom extensions live in `/home/lamarck/pi-mono/lamarck/extensions/`. To make pi discover them, create a symlink in `.pi/extensions/` pointing back:
+
+```bash
+ln -s ../../lamarck/extensions/<name>.ts .pi/extensions/<name>.ts
+# For directory extensions:
+ln -s ../../lamarck/extensions/<name> .pi/extensions/<name>
+```
+
 ## Browser
 
 Control Chrome via the `mcporter` skill using the `chrome-devtools` MCP server (navigate, click, fill, screenshot, etc.).

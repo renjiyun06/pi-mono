@@ -1,0 +1,1 @@
+../../lamarck/extensions/memory-loader.ts
