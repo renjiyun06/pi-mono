@@ -21,7 +21,7 @@ Frontmatter fields:
 For tasks that can be implemented purely with code, use TypeScript scripts instead of agent prompts. Deployment is manual via tmux:
 - tmux session name = task name = script filename (without extension)
 - Example: `lamarck/tasks/foo.ts` → `tmux new-session -d -s foo 'npx tsx lamarck/tasks/foo.ts'`
-- Every script must support two optional args: `--help` (usage info) and `--describe` (detailed explanation of what the task does)
+- Every script must use `commander` for arg parsing, and support two optional args: `--help` (usage info) and `--describe` (detailed explanation of what the task does)
 
 ## Playwright
 
