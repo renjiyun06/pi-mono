@@ -8,14 +8,198 @@
  * - /main on   — Set current session as main, start receiving external messages
  * - /main off  — Release main session, stop receiving external messages
  * - /main      — Show current status
+ *
+ * Also runs a task scheduler that scans lamarck/tasks/*.md for cron-based tasks.
  */
 
 import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-agent";
 import { Type } from "@sinclair/typebox";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { execSync } from "node:child_process";
 import { acquireLock, releaseLock, isMainSession, hasActiveMainSession, readLock } from "./lock.js";
 import { ChannelManager } from "./channels/index.js";
+
+// ============================================================================
+// Scheduler: Cron-based task execution
+// ============================================================================
+
+const TASKS_DIR = "/home/lamarck/pi-mono/lamarck/tasks";
+const PI_COMMAND = "/home/lamarck/pi-mono/pi-test.sh";
+
+interface TaskDefinition {
+	name: string;
+	cron: string;
+	description: string;
+	prompt: string;
+	enabled: boolean;
+}
+
+/**
+ * Parse frontmatter from a markdown file.
+ * Returns null if frontmatter is missing or invalid.
+ */
+function parseFrontmatter(content: string): { cron?: string; description?: string; enabled?: boolean; body: string } | null {
+	const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
+	if (!match) return null;
+
+	const frontmatter: Record<string, string> = {};
+	const lines = match[1].split(/\r?\n/);
+	for (const line of lines) {
+		const idx = line.indexOf(":");
+		if (idx > 0) {
+			const key = line.slice(0, idx).trim();
+			let value = line.slice(idx + 1).trim();
+			// Remove quotes if present
+			if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+				value = value.slice(1, -1);
+			}
+			frontmatter[key] = value;
+		}
+	}
+
+	return {
+		cron: frontmatter.cron,
+		description: frontmatter.description,
+		enabled: frontmatter.enabled?.toLowerCase() === "true",
+		body: match[2].trim(),
+	};
+}
+
+// Check if a cron field matches a value.
+// Supports: *, number, ranges (1-5), lists (1,2,3), steps like "every 5"
+function cronFieldMatches(field: string, value: number, max: number): boolean {
+	if (field === "*") return true;
+
+	// Handle step syntax: */5 or 1-10/2
+	if (field.includes("/")) {
+		const [range, stepStr] = field.split("/");
+		const step = parseInt(stepStr, 10);
+		if (isNaN(step) || step <= 0) return false;
+
+		let start = 0;
+		let end = max;
+		if (range !== "*") {
+			if (range.includes("-")) {
+				const [s, e] = range.split("-").map((n) => parseInt(n, 10));
+				start = s;
+				end = e;
+			} else {
+				start = parseInt(range, 10);
+				end = max;
+			}
+		}
+		if (value < start || value > end) return false;
+		return (value - start) % step === 0;
+	}
+
+	// Handle list syntax: 1,2,3
+	if (field.includes(",")) {
+		return field.split(",").some((part) => cronFieldMatches(part.trim(), value, max));
+	}
+
+	// Handle range syntax: 1-5
+	if (field.includes("-")) {
+		const [start, end] = field.split("-").map((n) => parseInt(n, 10));
+		return value >= start && value <= end;
+	}
+
+	// Simple number
+	return parseInt(field, 10) === value;
+}
+
+/**
+ * Check if a cron expression matches the current time.
+ * Format: minute hour day month weekday
+ */
+function cronMatches(cron: string, now: Date): boolean {
+	const parts = cron.trim().split(/\s+/);
+	if (parts.length !== 5) return false;
+
+	const [minute, hour, day, month, weekday] = parts;
+	const nowMinute = now.getMinutes();
+	const nowHour = now.getHours();
+	const nowDay = now.getDate();
+	const nowMonth = now.getMonth() + 1; // 1-12
+	const nowWeekday = now.getDay(); // 0-6, 0=Sunday
+
+	return (
+		cronFieldMatches(minute, nowMinute, 59) &&
+		cronFieldMatches(hour, nowHour, 23) &&
+		cronFieldMatches(day, nowDay, 31) &&
+		cronFieldMatches(month, nowMonth, 12) &&
+		cronFieldMatches(weekday, nowWeekday, 6)
+	);
+}
+
+/**
+ * Load all valid task definitions from the tasks directory.
+ */
+function loadTasks(): TaskDefinition[] {
+	const tasks: TaskDefinition[] = [];
+
+	if (!fs.existsSync(TASKS_DIR)) return tasks;
+
+	const files = fs.readdirSync(TASKS_DIR).filter((f) => f.endsWith(".md"));
+	for (const file of files) {
+		try {
+			const content = fs.readFileSync(path.join(TASKS_DIR, file), "utf-8");
+			const parsed = parseFrontmatter(content);
+
+			// Only valid if has cron, description, AND enabled: true
+			if (parsed?.cron && parsed?.description && parsed?.enabled) {
+				tasks.push({
+					name: file.replace(/\.md$/, ""),
+					cron: parsed.cron,
+					description: parsed.description,
+					prompt: parsed.body,
+					enabled: true,
+				});
+			}
+		} catch {
+			// Ignore files that can't be read
+		}
+	}
+
+	return tasks;
+}
+
+/**
+ * Check if a tmux session exists.
+ */
+function tmuxSessionExists(name: string): boolean {
+	try {
+		execSync(`tmux has-session -t "${name}" 2>/dev/null`, { encoding: "utf-8" });
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+/**
+ * Gracefully stop a tmux session by sending Ctrl+D.
+ * This triggers session_shutdown so cleanup extensions (e.g., browser) can run.
+ */
+function tmuxKillSession(name: string): void {
+	try {
+		// Send Ctrl+D for graceful shutdown
+		execSync(`tmux send-keys -t "${name}" C-d`, { encoding: "utf-8" });
+	} catch {
+		// Ignore errors
+	}
+}
+
+/**
+ * Start a new tmux session with pi --one-shot.
+ */
+function tmuxStartTask(name: string, prompt: string): void {
+	// Escape single quotes in prompt for shell
+	const escapedPrompt = prompt.replace(/'/g, "'\\''");
+
+	// Create tmux session with pi --one-shot
+	const cmd = `tmux new-session -d -s "${name}" "${PI_COMMAND} --one-shot '${escapedPrompt}'"`;
+	execSync(cmd, { encoding: "utf-8" });
+}
 
 const MY_QQ = "1277260264";
 const QQ_IMAGE_DIR = "/mnt/c/Users/wozai/Pictures/qq-images";
@@ -69,6 +253,48 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 	let isExternalMessage = false;
 	let savedCtx: ExtensionContext | null = null;
 	let qqToolEnabled = false;
+
+	// Scheduler state
+	let schedulerInterval: NodeJS.Timeout | null = null;
+
+	/** Scheduler tick: check all tasks and run if cron matches */
+	function schedulerTick(): void {
+		const now = new Date();
+		const tasks = loadTasks();
+
+		for (const task of tasks) {
+			if (cronMatches(task.cron, now)) {
+				// If session exists, kill it first
+				if (tmuxSessionExists(task.name)) {
+					tmuxKillSession(task.name);
+				}
+
+				// Start new session with the task
+				try {
+					tmuxStartTask(task.name, task.prompt);
+				} catch {
+					// Ignore startup errors
+				}
+			}
+		}
+	}
+
+	/** Start the scheduler */
+	function startScheduler(): void {
+		if (schedulerInterval) return;
+
+		// Run immediately, then every minute
+		schedulerTick();
+		schedulerInterval = setInterval(schedulerTick, 60000);
+	}
+
+	/** Stop the scheduler */
+	function stopScheduler(): void {
+		if (schedulerInterval) {
+			clearInterval(schedulerInterval);
+			schedulerInterval = null;
+		}
+	}
 
 	/** Start the main session */
 	async function startMainSession(ctx: ExtensionContext): Promise<boolean> {
@@ -180,11 +406,18 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 		});
 
 		channelManager.start();
+
+		// Start task scheduler
+		startScheduler();
+
 		return true;
 	}
 
 	/** Stop the main session */
 	function stopMainSession(): void {
+		// Stop task scheduler
+		stopScheduler();
+
 		if (channelManager) {
 			channelManager.stop();
 			channelManager = null;
@@ -212,6 +445,14 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 			for (const status of statuses) {
 				const connIcon = status.connected ? "✓" : "✗";
 				info += `  ${connIcon} ${status.name}: recv ${status.stats.messagesReceived} / sent ${status.stats.messagesSent}\n`;
+			}
+		}
+
+		if (isSelf && schedulerInterval) {
+			const tasks = loadTasks();
+			info += `\nScheduler: ${tasks.length} task(s) loaded\n`;
+			for (const task of tasks) {
+				info += `  - ${task.name}: ${task.cron}\n`;
 			}
 		}
 

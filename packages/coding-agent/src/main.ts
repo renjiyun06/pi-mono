@@ -708,6 +708,7 @@ export async function main(args: string[]) {
 			initialImages,
 			initialMessages: parsed.messages,
 			verbose: parsed.verbose,
+			oneShot: parsed.oneShot,
 		});
 		await mode.run();
 	} else {

@@ -5610,23 +5610,6 @@ export const MODELS = {
 			contextWindow: 256000,
 			maxTokens: 4096,
 		} satisfies Model<"openai-completions">,
-		"ai21/jamba-mini-1.7": {
-			id: "ai21/jamba-mini-1.7",
-			name: "AI21: Jamba Mini 1.7",
-			api: "openai-completions",
-			provider: "openrouter",
-			baseUrl: "https://openrouter.ai/api/v1",
-			reasoning: false,
-			input: ["text"],
-			cost: {
-				input: 0.19999999999999998,
-				output: 0.39999999999999997,
-				cacheRead: 0,
-				cacheWrite: 0,
-			},
-			contextWindow: 256000,
-			maxTokens: 4096,
-		} satisfies Model<"openai-completions">,
 		"alibaba/tongyi-deepresearch-30b-a3b": {
 			id: "alibaba/tongyi-deepresearch-30b-a3b",
 			name: "Tongyi DeepResearch 30B A3B",

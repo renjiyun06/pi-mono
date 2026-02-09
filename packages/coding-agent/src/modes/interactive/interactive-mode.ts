@@ -144,6 +144,8 @@ export interface InteractiveModeOptions {
 	initialMessages?: string[];
 	/** Force verbose startup (overrides quietStartup setting) */
 	verbose?: boolean;
+	/** Exit after processing initial messages (TUI mode but non-interactive) */
+	oneShot?: boolean;
 }
 
 export class InteractiveMode {
@@ -553,6 +555,12 @@ export class InteractiveMode {
 					this.showError(errorMessage);
 				}
 			}
+		}
+
+		// One-shot mode: exit after processing initial messages
+		if (this.options.oneShot) {
+			await this.shutdown();
+			return;
 		}
 
 		// Main interactive loop

@@ -54,26 +54,6 @@ ${accountList}
    sqlite3 "${DB_PATH}" "INSERT OR IGNORE INTO twitter_accounts (username, display_name, reason, discovered_from) VALUES ('handle', 'Display Name', '入选理由', '从哪个账号发现的')"
    \`\`\`
 
-## 浏览器操作规则（必须遵守）
-
-Chrome 是共享资源，你必须：
-
-1. **只操作自己打开的页面**
-   - 用 mcporter call chrome-devtools.new_page url="..." 开新标签页
-   - 记住返回的 pageId
-
-2. **可以同时开多个页面**
-   - 每个页面有独立的 pageId，都要记住
-   - 比如：主页 pageId=10，详情页 pageId=11，可以来回切换操作
-
-3. **所有操作必须带 pageId**
-   - 正确：mcporter call chrome-devtools.take_snapshot pageId=123 filePath="..."
-   - 错误：不带 pageId
-
-4. **任务结束必须关闭所有自己打开的标签页**
-   - mcporter call chrome-devtools.close_page pageId=123
-   - 开了几个就关几个，不要遗留
-
 ## 输出要求
 - 每发现一个合格账号，立即插入数据库
 - 最后输出本次发现的账号列表和理由

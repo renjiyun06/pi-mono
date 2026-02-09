@@ -30,6 +30,7 @@ export interface Args {
 	extensions?: string[];
 	noExtensions?: boolean;
 	print?: boolean;
+	oneShot?: boolean;
 	export?: string;
 	noSkills?: boolean;
 	skills?: string[];
@@ -120,6 +121,8 @@ export function parseArgs(args: string[], extensionFlags?: Map<string, { type: "
 			}
 		} else if (arg === "--print" || arg === "-p") {
 			result.print = true;
+		} else if (arg === "--one-shot") {
+			result.oneShot = true;
 		} else if (arg === "--export" && i + 1 < args.length) {
 			result.export = args[++i];
 		} else if ((arg === "--extension" || arg === "-e") && i + 1 < args.length) {
@@ -195,6 +198,7 @@ ${chalk.bold("Options:")}
   --append-system-prompt <text>  Append text or file contents to the system prompt
   --mode <mode>                  Output mode: text (default), json, or rpc
   --print, -p                    Non-interactive mode: process prompt and exit
+  --one-shot                     TUI mode: process initial prompt and exit
   --continue, -c                 Continue previous session
   --resume, -r                   Select a session to resume
   --session <path>               Use specific session file
