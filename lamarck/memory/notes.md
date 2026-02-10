@@ -17,6 +17,16 @@ Frontmatter fields:
 - `skipIfRunning`: If `true`, skip this schedule when the task is still running from a previous trigger
 - `allowParallel`: If `true`, allow multiple instances to run simultaneously (with numbered suffixes); if `false` (default), kill the previous run before starting a new one
 
+When the task involves browser operations, must first explore target pages to find working `evaluate_script` extraction code before writing the task document. This way the task document can directly include proven JS snippets for data extraction, and the executing agent doesn't need to take screenshots to understand the page — it just runs the scripts.
+
+Exploration method:
+1. Open target page with `mcporter`
+2. Use `take_snapshot` + `evaluate_script` to probe DOM structure
+3. Write and test JS extraction code until it reliably returns the needed data
+4. Put the proven JS code directly into the task document as concrete steps
+
+Exploration can be done in main session or delegated to a sub-agent.
+
 ### 2. Script tasks (`.ts` files)
 For tasks that can be implemented purely with code, use TypeScript scripts instead of agent prompts. Deployment is manual via tmux:
 - tmux session name = task name = script filename (without extension)

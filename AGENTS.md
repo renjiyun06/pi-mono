@@ -231,6 +231,7 @@ lamarck/memory/
 ├── preferences.md     # User preferences
 ├── notes.md           # Technical notes and gotchas
 ├── issues.md          # Known issues and problems encountered during tasks
+├── interests.md       # Cross-platform interest directions (time-weighted)
 └── projects/          # Project-specific memory
 ```
 
