@@ -8313,6 +8313,23 @@ export const MODELS = {
 			contextWindow: 200000,
 			maxTokens: 100000,
 		} satisfies Model<"openai-completions">,
+		"openrouter/aurora-alpha": {
+			id: "openrouter/aurora-alpha",
+			name: "Aurora Alpha",
+			api: "openai-completions",
+			provider: "openrouter",
+			baseUrl: "https://openrouter.ai/api/v1",
+			reasoning: true,
+			input: ["text"],
+			cost: {
+				input: 0,
+				output: 0,
+				cacheRead: 0,
+				cacheWrite: 0,
+			},
+			contextWindow: 128000,
+			maxTokens: 50000,
+		} satisfies Model<"openai-completions">,
 		"openrouter/auto": {
 			id: "openrouter/auto",
 			name: "Auto Router",
@@ -8426,7 +8443,7 @@ export const MODELS = {
 			cost: {
 				input: 1.5999999999999999,
 				output: 6.3999999999999995,
-				cacheRead: 0.64,
+				cacheRead: 0.32,
 				cacheWrite: 0,
 			},
 			contextWindow: 32768,
@@ -8443,11 +8460,11 @@ export const MODELS = {
 			cost: {
 				input: 0.39999999999999997,
 				output: 1.2,
-				cacheRead: 0.16,
+				cacheRead: 0.08,
 				cacheWrite: 0,
 			},
-			contextWindow: 131072,
-			maxTokens: 8192,
+			contextWindow: 1000000,
+			maxTokens: 32768,
 		} satisfies Model<"openai-completions">,
 		"qwen/qwen-plus-2025-07-28": {
 			id: "qwen/qwen-plus-2025-07-28",
@@ -8476,7 +8493,7 @@ export const MODELS = {
 			input: ["text"],
 			cost: {
 				input: 0.39999999999999997,
-				output: 4,
+				output: 1.2,
 				cacheRead: 0,
 				cacheWrite: 0,
 			},
@@ -8494,10 +8511,10 @@ export const MODELS = {
 			cost: {
 				input: 0.049999999999999996,
 				output: 0.19999999999999998,
-				cacheRead: 0.02,
+				cacheRead: 0.01,
 				cacheWrite: 0,
 			},
-			contextWindow: 1000000,
+			contextWindow: 131072,
 			maxTokens: 8192,
 		} satisfies Model<"openai-completions">,
 		"qwen/qwen-vl-max": {
@@ -8515,7 +8532,7 @@ export const MODELS = {
 				cacheWrite: 0,
 			},
 			contextWindow: 131072,
-			maxTokens: 8192,
+			maxTokens: 32768,
 		} satisfies Model<"openai-completions">,
 		"qwen/qwen3-14b": {
 			id: "qwen/qwen3-14b",
@@ -8732,10 +8749,10 @@ export const MODELS = {
 			cost: {
 				input: 0.3,
 				output: 1.5,
-				cacheRead: 0.08,
+				cacheRead: 0.06,
 				cacheWrite: 0,
 			},
-			contextWindow: 128000,
+			contextWindow: 1000000,
 			maxTokens: 65536,
 		} satisfies Model<"openai-completions">,
 		"qwen/qwen3-coder-next": {
@@ -8766,10 +8783,10 @@ export const MODELS = {
 			cost: {
 				input: 1,
 				output: 5,
-				cacheRead: 0.09999999999999999,
+				cacheRead: 0.19999999999999998,
 				cacheWrite: 0,
 			},
-			contextWindow: 128000,
+			contextWindow: 1000000,
 			maxTokens: 65536,
 		} satisfies Model<"openai-completions">,
 		"qwen/qwen3-coder:exacto": {
@@ -8820,7 +8837,24 @@ export const MODELS = {
 				cacheRead: 0.24,
 				cacheWrite: 0,
 			},
-			contextWindow: 256000,
+			contextWindow: 262144,
+			maxTokens: 65536,
+		} satisfies Model<"openai-completions">,
+		"qwen/qwen3-max-thinking": {
+			id: "qwen/qwen3-max-thinking",
+			name: "Qwen: Qwen3 Max Thinking",
+			api: "openai-completions",
+			provider: "openrouter",
+			baseUrl: "https://openrouter.ai/api/v1",
+			reasoning: true,
+			input: ["text"],
+			cost: {
+				input: 1.2,
+				output: 6,
+				cacheRead: 0,
+				cacheWrite: 0,
+			},
+			contextWindow: 262144,
 			maxTokens: 32768,
 		} satisfies Model<"openai-completions">,
 		"qwen/qwen3-next-80b-a3b-instruct": {
@@ -8973,7 +9007,7 @@ export const MODELS = {
 				cacheRead: 0,
 				cacheWrite: 0,
 			},
-			contextWindow: 256000,
+			contextWindow: 131072,
 			maxTokens: 32768,
 		} satisfies Model<"openai-completions">,
 		"qwen/qwq-32b": {
