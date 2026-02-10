@@ -66,14 +66,18 @@ mcporter call chrome-devtools.take_snapshot
 
 对每条提取到的动态，用 bash 执行 sqlite3 命令插入：
 
+- `owner_id` 固定为 `renjiyun`
+
+计算 activity_hash（注意包含 owner_id）：
+
 ```bash
-echo -n "upvote_answer|https://...|2026-02-09T00:08:00" | sha256sum | awk '{print $1}'
+echo -n "renjiyun|upvote_answer|https://...|2026-02-09T00:08:00" | sha256sum | awk '{print $1}'
 ```
 
 得到 activity_hash，然后：
 
 ```bash
-sqlite3 /home/lamarck/pi-mono/lamarck/data/lamarck.db "INSERT OR IGNORE INTO zhihu_activities (...) VALUES (...);"
+sqlite3 /home/lamarck/pi-mono/lamarck/data/lamarck.db "INSERT OR IGNORE INTO zhihu_activities (owner_id, activity_hash, ...) VALUES ('renjiyun', '...', ...);"
 ```
 
 逐条插入，INSERT OR IGNORE 自动去重。
