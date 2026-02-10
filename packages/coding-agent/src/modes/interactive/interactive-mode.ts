@@ -557,8 +557,28 @@ export class InteractiveMode {
 			}
 		}
 
-		// One-shot mode: exit after processing initial messages
+		// One-shot mode: only exit when the agent completes normally (stopReason === "stop").
+		// Any other outcome (error, aborted, length) means the task isn't done yet,
+		// so we send a continue prompt to let the agent resume.
 		if (this.options.oneShot) {
+			while (true) {
+				const msgs = this.session.messages;
+				let lastMsg: AgentMessage | undefined;
+				for (let i = msgs.length - 1; i >= 0; i--) {
+					if (msgs[i].role === "assistant") {
+						lastMsg = msgs[i];
+						break;
+					}
+				}
+				if (!lastMsg || (lastMsg as AssistantMessage).stopReason === "stop") {
+					break;
+				}
+				try {
+					await this.session.prompt("Continue");
+				} catch {
+					// Ignore errors, loop will re-check stopReason
+				}
+			}
 			await this.shutdown();
 			return;
 		}

@@ -10,7 +10,7 @@ skipIfRunning: true
 
 ## 目标
 
-每次运行采集知乎热榜全部条目（约 50 条），作为一次快照写入数据库。
+每次运行采集知乎热榜全部 30 条，作为一次快照写入数据库。
 
 ## 数据库
 
@@ -46,7 +46,7 @@ mcporter call chrome-devtools.take_snapshot
 
 用你自己的理解力阅读 snapshot 输出，识别每条热榜条目，提取：
 
-- `rank`：排名（1~50）
+- `rank`：排名（1~30）
 - `question_id`：从 URL 中提取问题 ID
 - `title`：问题标题
 - `excerpt`：摘要（可能为空）
@@ -65,17 +65,17 @@ sqlite3 /home/lamarck/pi-mono/lamarck/data/lamarck.db "INSERT INTO zhihu_hot (sn
 
 ### 5. 滚动加载
 
-热榜通常有 50 条，一屏可能显示不完。如果 snapshot 中不足 50 条，滚动加载更多：
+热榜共 30 条，一屏可能显示不完。如果 snapshot 中不足 30 条，滚动加载更多：
 
 ```bash
 mcporter call chrome-devtools.evaluate_script function="() => window.scrollBy(0, 1000)"
 ```
 
-然后重新 take_snapshot，继续提取未处理的条目，直到全部 50 条采集完毕。
+然后重新 take_snapshot，继续提取未处理的条目，直到全部 30 条采集完毕。
 
 ## 注意
 
 - **不要写脚本**，所有操作通过 mcporter 和 sqlite3 命令完成
 - 时间格式统一为 ISO 8601：`YYYY-MM-DDTHH:MM:SS`
 - title 和 excerpt 中的单引号需要转义为两个单引号（SQL 转义）
-- 每次运行采集完整的一次快照（约 50 条），不做增量
+- 每次运行采集完整的一次快照（30 条），不做增量
