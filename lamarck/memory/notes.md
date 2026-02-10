@@ -37,6 +37,34 @@ ln -s ../../lamarck/extensions/<name> .pi/extensions/<name>
 
 Control Chrome via the `mcporter` skill using the `chrome-devtools` MCP server (navigate, click, fill, screenshot, etc.).
 
+### Multi-tab pattern: keep the origin page intact
+
+When the current page serves as a "base" that you need to return to and continue operating on (feeds, lists, search results, following pages, etc.), never navigate away in the same tab — the page state may refresh, lose scroll position, or reload entirely on return.
+
+Instead, use multi-tab:
+1. `new_page url=<target_url>` — open the target in a new tab
+2. Operate in the new tab (read, evaluate, like, etc.)
+3. `close_page pageId=<new_tab_id>` — close the new tab
+4. `select_page pageId=<origin_tab_id>` — switch back to the origin page and continue
+
+Use `new_page` (not `evaluate_script` with `window.open`) — it's a dedicated MCP tool that returns the new page ID directly.
+
+### Avoid redundant screenshots
+
+When switching back to a page that has NOT changed (no scroll, no navigation, no user interaction), do NOT take another snapshot. The page content is identical to what was already seen — a repeat screenshot wastes tokens for zero new information.
+
+Only take a new snapshot after a state-changing action on that page:
+- Scrolled down/up
+- Clicked something that mutates the page
+- Page auto-refreshed or loaded new content
+
+Pattern for feed browsing:
+1. Snapshot the feed → identify candidates
+2. Open candidate in new tab → evaluate → close tab
+3. Switch back to feed tab → **do NOT snapshot again** (nothing changed)
+4. Continue evaluating next candidate from the same snapshot
+5. Only snapshot again after scrolling to load new content
+
 ## Playwright
 
 ### CDP connection must be closed

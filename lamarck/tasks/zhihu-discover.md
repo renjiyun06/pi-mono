@@ -50,26 +50,27 @@ mcporter call chrome-devtools.take_snapshot
 
 ### 3. 查看详情
 
-如果摘要看起来有潜力，点击标题或"阅读全文"进入详情页：
+如果摘要看起来有潜力，用新标签页打开详情（不要在推荐流页面点击跳转）：
 
 ```bash
-mcporter call chrome-devtools.click_element uid=<element_uid>
+mcporter call chrome-devtools.new_page url=<内容URL>
 ```
 
-然后 take_snapshot 阅读完整内容，判断是否真正符合高质量标准。
+在新标签页中 take_snapshot 阅读完整内容，判断是否符合高质量标准。
 
 ### 4. 点赞
 
-如果内容确实高质量，点击"赞同"按钮：
+如果内容确实高质量，在详情页点击"赞同"按钮：
 
 ```bash
-mcporter call chrome-devtools.click_element uid=<赞同按钮的uid>
+mcporter call chrome-devtools.click uid=<赞同按钮的uid>
 ```
 
-点赞后返回首页继续浏览：
+无论是否点赞，关闭详情页并切回推荐流：
 
 ```bash
-mcporter call chrome-devtools.navigate_page type=url url=https://www.zhihu.com
+mcporter call chrome-devtools.close_page pageId=<详情页的pageId>
+mcporter call chrome-devtools.select_page pageId=<推荐流的pageId>
 ```
 
 ### 5. 滚动加载
