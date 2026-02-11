@@ -33,6 +33,18 @@ For tasks that can be implemented purely with code, use TypeScript scripts inste
 - Example: `lamarck/tasks/foo.ts` → `tmux new-session -d -s foo 'npx tsx lamarck/tasks/foo.ts'`
 - Every script must use `commander` for arg parsing, and support two optional args: `--help` (usage info) and `--describe` (detailed explanation of what the task does)
 
+## Task Session Review
+
+Agent-driven tasks (`.md`) run via `pi --one-shot`, each run produces a session file at:
+`~/.pi/agent/sessions/--home-lamarck-pi-mono--/{UTC-timestamp}_{session-id}.jsonl`
+
+To find a specific task's session, grep for the task name in the prompt file reference:
+```bash
+grep -l "task-<name>.prompt" ~/.pi/agent/sessions/--home-lamarck-pi-mono--/*.jsonl | sort | tail -1
+```
+
+The JSONL contains the full conversation: user messages, assistant messages, tool calls, tool results. Use this to evaluate task quality — check what the agent did, whether it explored broadly enough, and where the task document can be improved.
+
 ## Extensions
 
 All custom extensions live in `/home/lamarck/pi-mono/lamarck/extensions/`. To make pi discover them, create a symlink in `.pi/extensions/` pointing back:
@@ -74,6 +86,23 @@ Pattern for feed browsing:
 3. Switch back to feed tab → **do NOT snapshot again** (nothing changed)
 4. Continue evaluating next candidate from the same snapshot
 5. Only snapshot again after scrolling to load new content
+
+## WSL ↔ Windows Port Forwarding
+
+Chrome debug ports (19301-19350) listen on `127.0.0.1` only. WSL accesses Windows via `172.30.144.1`, so netsh portproxy rules are needed to forward `172.30.144.1:port → 127.0.0.1:port`.
+
+**Known issue**: After Windows reboot, portproxy rules appear in `netsh interface portproxy show v4tov4` but don't actually work. Must reset and re-add:
+
+```powershell
+# Run as Administrator in PowerShell
+netsh interface portproxy reset
+for ($port = 19301; $port -le 19350; $port++) {
+    netsh interface portproxy add v4tov4 listenaddress=172.30.144.1 listenport=$port connectaddress=127.0.0.1 connectport=$port
+}
+Restart-Service iphlpsvc -Force
+```
+
+**When Chrome startup times out in the mcporter wrapper**, the most likely cause is this portproxy issue after a reboot. Remind the user to re-apply the rules.
 
 ## Playwright
 

@@ -31,7 +31,7 @@ const DEFAULT_TASK_MODEL = "anthropic/claude-sonnet-4-5";
 
 interface TaskDefinition {
 	name: string;
-	cron: string;
+	cron: string | null; // null for manual-only tasks
 	description: string;
 	prompt: string;
 	enabled: boolean;
@@ -154,11 +154,11 @@ function loadTasks(): TaskDefinition[] {
 			const content = fs.readFileSync(path.join(TASKS_DIR, file), "utf-8");
 			const parsed = parseFrontmatter(content);
 
-			// Only valid if has cron, description, AND enabled: true
-			if (parsed?.cron && parsed?.description && parsed?.enabled) {
+			// Valid if has description AND enabled: true (cron is optional — no cron means manual-only)
+			if (parsed?.description && parsed?.enabled) {
 				tasks.push({
 					name: file.replace(/\.md$/, ""),
-					cron: parsed.cron,
+					cron: parsed.cron || null,
 					description: parsed.description,
 					prompt: parsed.body,
 					enabled: true,
@@ -214,11 +214,16 @@ const PROJECT_ROOT = "/home/lamarck/pi-mono";
 
 /**
  * Start a new tmux session with pi --one-shot.
+ * If userArgs is provided, it's appended to the prompt as user-specified parameters.
  */
-function tmuxStartTask(name: string, prompt: string, model: string): void {
+function tmuxStartTask(name: string, prompt: string, model: string, userArgs?: string): void {
 	// Write prompt to temp file to avoid shell escaping issues
 	const promptFile = `/tmp/task-${name}.prompt`;
-	fs.writeFileSync(promptFile, prompt);
+	let fullPrompt = prompt;
+	if (userArgs) {
+		fullPrompt += `\n\n---\n\n**用户指定的任务参数**：${userArgs}`;
+	}
+	fs.writeFileSync(promptFile, fullPrompt);
 
 	// Parse model string: "provider/model" -> --provider provider --model model
 	const [provider, modelId] = model.includes("/") ? model.split("/", 2) : ["anthropic", model];
@@ -306,6 +311,7 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 		const tasks = loadTasks();
 
 		for (const task of tasks) {
+			if (!task.cron) continue; // Skip manual-only tasks
 			if (cronMatches(task.cron, now)) {
 				let sessionName = task.name;
 
@@ -542,7 +548,8 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 			const tasks = loadTasks();
 			info += `\nScheduler: ${tasks.length} task(s) loaded\n`;
 			for (const task of tasks) {
-				info += `  - ${task.name}: ${task.cron}\n`;
+				const schedule = task.cron ? task.cron : "manual";
+				info += `  - ${task.name}: ${schedule}\n`;
 			}
 		}
 
@@ -711,7 +718,8 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 
 			const parts = args?.trim().split(/\s+/) || [];
 			const subcommand = parts[0]?.toLowerCase();
-			const taskName = parts.slice(1).join(" ");
+			const taskName = parts[1] || "";
+			const taskArgs = parts.slice(2).join(" ");
 
 			// /task list or /task (default)
 			if (!subcommand || subcommand === "list") {
@@ -723,16 +731,17 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 				let info = "Enabled tasks:\n";
 				for (const task of tasks) {
 					const running = tmuxSessionExists(task.name) ? " [running]" : "";
-					info += `  - ${task.name}: ${task.cron}${running}\n`;
+					const schedule = task.cron ? task.cron : "manual";
+					info += `  - ${task.name}: ${schedule}${running}\n`;
 				}
 				ctx.ui.notify(info.trim(), "info");
 				return;
 			}
 
-			// /task run <name>
+			// /task run <name> [args...]
 			if (subcommand === "run") {
 				if (!taskName) {
-					ctx.ui.notify("Usage: /task run <name>", "error");
+					ctx.ui.notify("Usage: /task run <name> [args...]", "error");
 					return;
 				}
 				const tasks = loadTasks();
@@ -760,8 +769,9 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 				}
 
 				try {
-					tmuxStartTask(sessionName, task.prompt, task.model);
-					ctx.ui.notify(`Task "${sessionName}" started (model: ${task.model})`, "success");
+					tmuxStartTask(sessionName, task.prompt, task.model, taskArgs || undefined);
+					const argsInfo = taskArgs ? ` with args: ${taskArgs}` : "";
+					ctx.ui.notify(`Task "${sessionName}" started (model: ${task.model})${argsInfo}`, "success");
 				} catch (err: any) {
 					ctx.ui.notify(`Failed to start task: ${err.message}`, "error");
 				}
