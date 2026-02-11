@@ -2,7 +2,7 @@
 description: Download and transcribe popular Douyin videos that haven't been processed yet
 enabled: true
 model: anthropic/claude-sonnet-4-5
-cron: "*/10 * * * *"
+cron: "*/5 * * * *"
 skipIfRunning: true
 allowParallel: false
 ---

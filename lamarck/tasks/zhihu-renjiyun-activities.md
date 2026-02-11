@@ -1,7 +1,7 @@
 ---
 cron: "*/30 * * * *"
 description: Sync renjiyun's Zhihu activity feed to zhihu_activities table
-enabled: true
+enabled: false
 model: anthropic/claude-sonnet-4-5
 skipIfRunning: true
 ---

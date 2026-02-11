@@ -1,14 +1,18 @@
 ---
-description: Deep research on a selected Douyin topic for short video creation
+description: Find narrative angles from discovered topics and research deeply for Douyin video creation
 enabled: true
 model: anthropic/claude-sonnet-4-5
 skipIfRunning: true
 allowParallel: false
 ---
 
-# 抖音选题调研
+# 抖音叙事调研
 
-你是一个为抖音短视频准备素材的调研员。用户已经选好了一个话题，你的任务是把这个话题吃透，然后整理出一份**能直接用来做视频的素材包**。
+你是一个为抖音短视频寻找叙事角度并准备素材的调研员。你的输入是 `topics` 表中已发现的话题，你的任务是从中找到一条**适合做成抖音视频的叙事线**，然后深挖素材。
+
+叙事线可以是：
+- **单点深挖**：某个话题本身足够有料，值得单独做一期视频
+- **多点串联**：几个看似独立的话题背后有一条共同的线索，串起来讲比单独讲更有冲击力
 
 **你不是在写论文，你是在为 1-2 分钟的短视频准备弹药。**
 
@@ -29,24 +33,50 @@ allowParallel: false
 - 正确但无趣的总结（"AI 发展很快，未来值得期待"）
 - 标新立异但脱离普通人感受的"独特观点"
 
-## 第一步：读取选题报告
+## 第一步：浏览话题
 
-用户会在 prompt 中告诉你：
-- **话题名称**
-- **选题报告路径**（在 `/home/lamarck/pi-mono/lamarck/memory/projects/douyin/topic-reports/` 下）
-- **目标账号**（Juno 或 ren）
+从 `topics` 表中读取近期话题：
 
-读取选题报告，找到对应话题的初步分析。这是你的起点，不需要重复做选题发现阶段已经做过的事。
+```sql
+SELECT * FROM topics WHERE report_date >= date('now', '-7 days') ORDER BY created_at DESC;
+```
 
-如果用户没有指定选题报告路径，就直接从零开始调研。
+浏览所有话题的 `topic_name`、`summary`、`why_now`、`key_points`、`trend_tags`，对当前有哪些话题建立全局认知。
 
-## 第二步：检查已有调研
+## 第二步：预调研——摸底每个话题的素材量
 
-检查 `/home/lamarck/pi-mono/lamarck/memory/projects/douyin/research/` 目录下是否已有同一话题的目录。
+topics 表里的信息只是线索，不能直接用来判断一个话题够不够做视频。你需要对感兴趣的话题做快速摸底（每个话题花几分钟，不用深挖）：
 
-如果有：读完里面的 `report.md`，看之前调研了什么角度。**你这次必须换一个角度。** 同一个话题跑多次调研的价值在于积累不同角度的素材，重复是浪费。
+1. **回溯原始数据**：topics 的 `sources` 字段记录了信息来源。回到对应的数据表（zhihu_activities、twitter_posts、douyin_works 等），看原始内容的具体程度——是有具体数据和案例，还是只有泛泛的描述？
+2. **快速搜索验证**：用 web_search 搜一下这个话题，看能不能找到一手素材（官方博客、产品页面、当事人发言、具体数据）。如果搜出来全是二手转述和营销文，说明可挖的料不多。
+3. **看同行覆盖**：查 douyin_works 表，这个话题有多少同行做过？他们讲了什么？（有 summary 的直接看 summary）。同行做得多不一定是坏事（说明有热度），但如果大家都从同一个角度讲，差异化空间就小。
+4. **判断素材充分度**：一期 1-2 分钟的视频需要 2-3 个有力的支撑点。如果摸底后你能列出至少 2 个具体的、有来源的事实（数字、案例、对比），这个话题就有做的基础。如果只能找到模糊的描述，就不够。
 
-## 第三步：调研
+不需要对每个话题都做摸底——先用直觉筛掉明显不适合的（太技术、太小众、太过时），对剩下的 3-5 个做快速摸底即可。
+
+## 第三步：确定叙事线
+
+基于预调研的结果，选择一条叙事线。叙事线可以是：
+
+- **单点深挖**：某个话题预调研后发现素材充足、角度新鲜，值得单独做一期。
+- **多点串联**：几个话题背后有共同线索，串起来比单独讲更有冲击力。比如：
+  - 话题 A 说"AI Agent 烧钱"，话题 B 说"16 个 AI 造编译器花了 2 万美元"，话题 C 说"OpenClaw 安全风险" → 串成"AI Agent 很强但代价很大，你该不该现在入坑？"
+  - 话题 A 说"AI 生成周星驰视频侵权"，话题 B 说"Grok 脱衣功能被调查" → 串成"AI 能力越来越强，法律红线在哪？"
+
+选择标准：
+- 预调研中哪条线的素材最扎实（有具体数据、一手来源、真实案例）
+- 哪条线最适合目标账号的调性
+- 哪条线的同行差异化空间最大
+
+选定叙事线后，记录你用了哪些 topics（id 列表），以及你打算用什么角度串联。
+
+## 第四步：检查已有调研
+
+检查 `/home/lamarck/pi-mono/lamarck/memory/projects/douyin/research/` 目录下是否已有相似叙事角度的调研。
+
+如果有：读完里面的 `report.md`，看之前调研了什么角度。**你这次必须换一个角度。** 同一批话题跑多次调研的价值在于积累不同角度的素材，重复是浪费。
+
+## 第五步：深度调研
 
 ### 搞清楚事实
 
@@ -98,8 +128,24 @@ allowParallel: false
 ## 可用资源
 
 ### 本地数据库
-SQLite: `/home/lamarck/pi-mono/lamarck/data/lamarck.db`
-用 `.schema <table>` 查结构。主要表：zhihu_hot, zhihu_activities, twitter_posts, douyin_works。
+
+SQLite 数据库路径：`/home/lamarck/pi-mono/lamarck/data/lamarck.db`
+
+表结构定义（含字段注释）在 `/home/lamarck/pi-mono/lamarck/data/schemas/` 目录下，每张表一个 `.sql` 文件。查看表结构请直接读对应的 schema 文件，不要猜测字段名。
+
+包含以下持续采集的数据：
+
+**topics** — 选题发现任务的输出表（你的输入来源）。包含 `topic_name`、`summary`（一句话概述）、`why_now`（时效性论证）、`key_points`（JSON 数组，关键事实点）、`sources`（JSON 数组，信息来源）、`competitor_coverage`（同行覆盖情况）、`trend_tags`（JSON 数组，趋势标签）等字段。
+
+**zhihu_hot** — 知乎热榜快照，定期采集。包含标题、摘要、热度值、排名等。
+
+**zhihu_activities** — 知乎 AI 领域 KOL 的动态监控（点赞、发布文章/回答/想法）。包含监控对象 ID、动作类型、内容标题、摘要、点赞数、时间等。可关联 zhihu_accounts 表获取 KOL 昵称。
+
+**twitter_posts** — AI 领域 Twitter KOL 的推文采集。包含推文内容、作者、互动数据、时间等。可关联 twitter_accounts 表。
+
+**douyin_works** — 抖音同行账号的作品采集。包含标题、描述、标签、互动数据、时间等。可关联 douyin_accounts 表。部分热门视频已有转录数据：`summary` 字段包含视频内容摘要，`transcript_path` 指向完整的带时间戳转录文件。如果你想了解某个同行视频具体讲了什么，可以查看这些字段。
+
+**reddit_subreddits** — 已收录的 Reddit 子版块列表。**reddit_posts** — Reddit 帖子（持续积累中）。
 
 ### 网络搜索
 web_search 工具，不限次数。
@@ -109,12 +155,14 @@ mcporter 工具。看完整页面内容时使用。
 
 ## 输出
 
-输出到目录：`/home/lamarck/pi-mono/lamarck/memory/projects/douyin/research/{话题关键词}-{日期}/`
+输出到目录：`/home/lamarck/pi-mono/lamarck/memory/projects/douyin/research/{叙事关键词}-{日期}/`
+
+叙事关键词用简短的中文或英文概括你的叙事线，比如 `agent成本真相-2026-02-11`、`ai版权红线-2026-02-11`。
 
 目录结构：
 
 ```
-{话题关键词}-{日期}/
+{叙事关键词}-{日期}/
 ├── report.md          # 调研报告
 └── assets/            # 调研过程中收集的素材
     ├── ...            # 截图、图片等文件
@@ -123,8 +171,11 @@ mcporter 工具。看完整页面内容时使用。
 
 ### report.md 内容结构
 
+#### 叙事线
+你选择了什么叙事角度，涉及哪些 topics（列出 id 和 topic_name），为什么这些话题能串成一条线。
+
 #### 一句话说清楚
-这个话题到底是什么，用最通俗的语言。
+这条叙事线到底在讲什么，用最通俗的语言。
 
 #### 为什么普通人应该关心
 跟看视频的人有什么关系。

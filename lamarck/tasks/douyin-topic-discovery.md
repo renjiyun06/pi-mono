@@ -58,7 +58,7 @@ allowParallel: false
 
 SQLite 数据库路径：`/home/lamarck/pi-mono/lamarck/data/lamarck.db`
 
-查看表结构请用 `.schema <table_name>`，不要猜测字段名。
+表结构定义（含字段注释）在 `/home/lamarck/pi-mono/lamarck/data/schemas/` 目录下，每张表一个 `.sql` 文件。查看表结构请直接读对应的 schema 文件，不要猜测字段名。
 
 包含以下持续采集的数据：
 
@@ -68,9 +68,11 @@ SQLite 数据库路径：`/home/lamarck/pi-mono/lamarck/data/lamarck.db`
 
 **twitter_posts** — AI 领域 Twitter KOL 的推文采集。包含推文内容、作者、互动数据、时间等。可关联 twitter_accounts 表。
 
-**douyin_works** — 抖音同行账号的作品采集。包含标题、描述、标签、互动数据、时间等。可关联 douyin_accounts 表。
+**douyin_works** — 抖音同行账号的作品采集。包含标题、描述、标签、互动数据、时间等。可关联 douyin_accounts 表。部分热门视频已有转录数据：`summary` 字段包含视频内容摘要，`transcript_path` 指向完整的带时间戳转录文件。如果你想了解某个同行视频具体讲了什么，可以查看这些字段。
 
 **reddit_subreddits** — 已收录的 Reddit 子版块列表。**reddit_posts** — Reddit 帖子（持续积累中）。
+
+**topics** — 已发现的选题（本任务的输出表）。查询时用于去重，避免重复收录已有话题。
 
 你可以自由查询这些表，探索数据中的模式和信号。
 
@@ -146,9 +148,13 @@ SQLite 数据库路径：`/home/lamarck/pi-mono/lamarck/data/lamarck.db`
 
 ## 去重：跳过已收录话题
 
-在开始调研之前，先读取 `/home/lamarck/pi-mono/lamarck/memory/projects/douyin/topic-reports/` 目录下已有的选题报告。
+在开始调研之前，查询 `topics` 表中最近 14 天的已有选题：
 
-如果某个热点在之前的报告中已经作为选题推荐过，**除非出现了重大新进展**（不是小幅更新，而是改变了话题本质的新信息），否则不要重复收录。
+```sql
+SELECT topic_name, summary, report_date FROM topics WHERE report_date >= date('now', '-14 days') ORDER BY report_date DESC;
+```
+
+如果某个热点已经收录过，**除非出现了重大新进展**（不是小幅更新，而是改变了话题本质的新信息），否则不要重复收录。
 
 判断标准：
 - **同一个事件的后续报道**不算新进展。比如"Seedance 2.0 暂停真人素材"是"Seedance 2.0 版权争议"的后续，不需要单独再推荐。
@@ -159,15 +165,35 @@ SQLite 数据库路径：`/home/lamarck/pi-mono/lamarck/data/lamarck.db`
 
 ## 输出
 
-将所有选题写入同一个文件：`/home/lamarck/pi-mono/lamarck/memory/projects/douyin/topic-reports/{关键词}-{日期}.md`（如 `ai-热点汇总-2026-02-11.md`）。
+将每个选题作为一行写入数据库 `topics` 表（数据库路径：`/home/lamarck/pi-mono/lamarck/data/lamarck.db`）。
 
-每个选题包含：
-- **话题名称**
-- **一句话概述**：这个话题是什么
-- **为什么现在值得做**：热度来源、趋势判断、时效性
-- **信息来源**：从哪里发现的（哪个平台、哪些数据），标注信息可信度
-- **建议切入角度**：如果做成视频，从什么角度讲（简要说明即可）
-- **适合账号**：Juno / ren / 两者皆可
-- **风险/注意**：同行覆盖情况、信息不确定性、可能的坑
+每个选题对应一行 INSERT，字段说明：
 
-最后附一段总结，概括当前 AI 领域的整体热度走向。
+| 字段 | 必填 | 说明 |
+|---|---|---|
+| `report_date` | 是 | 今天的日期，格式 `YYYY-MM-DD` |
+| `topic_name` | 是 | 话题标题，一看就知道在说什么 |
+| `summary` | 是 | 一句话概述，这个话题是什么 |
+| `why_now` | 是 | 为什么现在值得关注：热度来源、趋势判断、时效性信号 |
+| `key_points` | 是 | JSON 数组，3-6 个关键事实点。每个点要具体（有数字、有来源），不要空泛 |
+| `sources` | 是 | JSON 数组，信息来源列表（从哪个平台、哪篇文章、哪个 KOL 动态发现的） |
+| `competitor_coverage` | 否 | 抖音同行对这个话题的覆盖情况，有多少人做过、什么角度、还有没有差异化空间 |
+| `trend_tags` | 否 | JSON 数组，趋势标签。用于跨话题聚合，比如 `["AI编程", "创业", "门槛降低"]` |
+
+示例 INSERT：
+
+```sql
+INSERT INTO topics (report_date, topic_name, summary, why_now, key_points, sources, competitor_coverage, trend_tags)
+VALUES (
+  '2026-02-11',
+  '一人公司时代来了：AI让你成为全栈创业者',
+  '借助 AI 编程工具，单个开发者就能独立做出以前需要一个团队才能完成的产品，传统创业模式正在被颠覆。',
+  '杭州独立开发者5个月14万行代码做出建筑设计平台；传统SaaS股价暴跌15%；中关村两院零基础课程4天出Demo——多个信号同时出现，说明这不是个案而是趋势。',
+  '["杭州独立开发者5个月写14万行代码做出AtomicArch", "标普北美软件指数单月跌15%", "DocuSign年内跌近30%", "中关村两院零基础学生4天做出可运行Demo"]',
+  '["36氪深度报道", "中关村两院郑书新教授访谈", "中青在线报道", "知乎KOL renjiyun点赞Anthropic报告"]',
+  '同行多停留在工具介绍层面，很少从创业范式变化角度深度分析，有差异化空间',
+  '["AI编程", "创业", "一人公司", "门槛降低", "SaaS颠覆"]'
+);
+```
+
+
