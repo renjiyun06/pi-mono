@@ -351,27 +351,9 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 		}
 	}
 
-	/** Start the main session */
-	async function startMainSession(ctx: ExtensionContext): Promise<boolean> {
-		const sessionId = ctx.sessionManager.getSessionId();
-		const result = acquireLock(sessionId);
-
-		if (!result.success) {
-			const lock = result.existingLock!;
-			if (ctx.hasUI) {
-				ctx.ui.notify(
-					`Session ${lock.sessionId} is already main session. Run /main off there first.`,
-					"error"
-				);
-			}
-			return false;
-		}
-
-		// Save ctx for use in callbacks
-		savedCtx = ctx;
-
-		// Start channel manager
-		channelManager = new ChannelManager({
+	/** Create a new ChannelManager with standard callbacks */
+	function createChannelManager(): ChannelManager {
+		return new ChannelManager({
 			onMessage: async (channel, userId, text) => {
 				const trimmed = text.trim();
 
@@ -453,19 +435,72 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 					pi.sendUserMessage(text);
 				}
 			},
-			onConnected: () => {},
-			onDisconnected: () => {},
-			onError: (channel, error) => {
-				console.error(`[MainSession] Channel error (${channel}):`, error.message);
+			onConnected: () => {
+				if (savedCtx?.hasUI) {
+					savedCtx.ui.notify("QQ connected", "success");
+				}
 			},
+			onDisconnected: () => {},
+			onError: () => {},
 		});
+	}
 
+	/**
+	 * Start or repair the main session. Idempotent:
+	 * - If another session holds the lock → fail
+	 * - If this session is already main → reconnect disconnected channels, restart stopped scheduler
+	 * - If no one holds the lock → acquire lock, start everything
+	 */
+	async function startMainSession(ctx: ExtensionContext): Promise<{ success: boolean; message: string }> {
+		const sessionId = ctx.sessionManager.getSessionId();
+
+		if (isMainSession()) {
+			// Already main session — repair subsystems
+			savedCtx = ctx;
+			const status: string[] = [];
+
+			// Ensure channel manager exists and QQ is connected
+			if (!channelManager) {
+				channelManager = createChannelManager();
+				channelManager.start();
+				status.push("QQ: connecting");
+			} else if (!channelManager.isQQConnected()) {
+				channelManager.start();
+				status.push("QQ: reconnecting");
+			} else {
+				status.push("QQ: connected");
+			}
+
+			// Ensure scheduler is running
+			if (!schedulerInterval) {
+				startScheduler();
+				status.push("Scheduler: started");
+			} else {
+				status.push("Scheduler: running");
+			}
+
+			return { success: true, message: status.join(", ") };
+		}
+
+		// Not main session, try to acquire lock
+		const result = acquireLock(sessionId);
+		if (!result.success) {
+			const lock = result.existingLock!;
+			return {
+				success: false,
+				message: `Session ${lock.sessionId} is already main session. Run /main off there first.`,
+			};
+		}
+
+		// Fresh start
+		savedCtx = ctx;
+
+		channelManager = createChannelManager();
 		channelManager.start();
-
-		// Start task scheduler
 		startScheduler();
 
-		return true;
+		const qqStatus = channelManager.isQQConnected() ? "connected" : "connecting";
+		return { success: true, message: `QQ: ${qqStatus}, Scheduler: started` };
 	}
 
 	/** Stop the main session */
@@ -498,8 +533,8 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 			const statuses = channelManager.getStatus();
 			info += "\nChannels:\n";
 			for (const status of statuses) {
-				const connIcon = status.connected ? "✓" : "✗";
-				info += `  ${connIcon} ${status.name}: recv ${status.stats.messagesReceived} / sent ${status.stats.messagesSent}\n`;
+				const connLabel = status.connected ? "connected" : "disconnected";
+				info += `  ${status.name}: ${connLabel} (recv ${status.stats.messagesReceived} / sent ${status.stats.messagesSent})\n`;
 			}
 		}
 
@@ -565,16 +600,11 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 			const subcommand = args?.trim().toLowerCase();
 
 			if (subcommand === "on") {
-				if (isMainSession()) {
-					ctx.ui.notify("Already main session", "info");
-					return;
-				}
-
-				const success = await startMainSession(ctx);
-				if (success) {
-					ctx.ui.notify("Now main session, receiving external messages", "success");
+				const result = await startMainSession(ctx);
+				if (result.success) {
+					ctx.ui.notify(`Main session active. ${result.message}`, "success");
 				} else {
-					ctx.ui.notify("Failed to acquire main session", "error");
+					ctx.ui.notify(result.message, "error");
 				}
 				return;
 			}

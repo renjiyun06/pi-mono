@@ -44,28 +44,36 @@ export class ChannelManager {
 		this.options = options;
 	}
 
-	/** Start all channels */
+	/** Start all channels. Idempotent: reconnects disconnected channels, skips connected ones. */
 	start(): void {
-		// Start QQ channel
-		this.qq = new QQChannel({
-			url: NAPCAT_WS_URL,
-			onMessage: (userId, text) => {
-				// Track for reply routing
-				this.pendingReplies.set(`qq:${userId}`, userId);
-				this.options.onMessage("qq", String(userId), text);
-			},
-			onConnected: () => {
-				this.options.onConnected?.("qq");
-			},
-			onDisconnected: () => {
-				this.options.onDisconnected?.("qq");
-			},
-			onError: (error) => {
-				this.options.onError?.("qq", error);
-			},
-		});
+		if (!this.qq) {
+			this.qq = new QQChannel({
+				url: NAPCAT_WS_URL,
+				onMessage: (userId, text) => {
+					// Track for reply routing
+					this.pendingReplies.set(`qq:${userId}`, userId);
+					this.options.onMessage("qq", String(userId), text);
+				},
+				onConnected: () => {
+					this.options.onConnected?.("qq");
+				},
+				onDisconnected: () => {
+					this.options.onDisconnected?.("qq");
+				},
+				onError: (error) => {
+					this.options.onError?.("qq", error);
+				},
+			});
+		}
 
-		this.qq.connect();
+		if (!this.qq.isConnected()) {
+			this.qq.connect();
+		}
+	}
+
+	/** Check if QQ channel is connected */
+	isQQConnected(): boolean {
+		return this.qq?.isConnected() ?? false;
 	}
 
 	/** Send a reply to a specific channel/user */
