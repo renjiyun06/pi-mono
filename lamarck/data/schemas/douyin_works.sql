@@ -19,6 +19,9 @@ CREATE TABLE IF NOT EXISTS douyin_works (
     collect_count   INTEGER DEFAULT 0,                      -- 收藏数
     recommend_count INTEGER DEFAULT 0,                      -- 推荐数
     music_title     TEXT,                                   -- 音乐标题
+    video_path      TEXT,                                   -- 下载的视频文件绝对路径
+    transcript_path TEXT,                                   -- 转录文本文件绝对路径
+    summary         TEXT,                                   -- 视频内容摘要（核心主题、关键信息点、作者观点）
     first_seen_at   TEXT DEFAULT (datetime('now')),          -- 首次发现时间
     updated_at      TEXT DEFAULT (datetime('now'))           -- 最后更新时间
 );
