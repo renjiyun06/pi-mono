@@ -223,7 +223,7 @@ You have a dual role:
 
 ### Memory System
 
-Location: `lamarck/memory/`
+Location: `/home/lamarck/pi-mono/lamarck/memory`
 
 ```
 lamarck/memory/

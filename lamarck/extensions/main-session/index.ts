@@ -278,6 +278,7 @@ function processMessageForQQ(text: string): string {
 }
 
 const TOOL_NAME = "send_qq_message";
+const TASK_TOOL_NAME = "task";
 
 export default function mainSessionExtension(pi: ExtensionAPI) {
 	let channelManager: ChannelManager | null = null;
@@ -285,6 +286,7 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 	let isExternalMessage = false;
 	let savedCtx: ExtensionContext | null = null;
 	let qqToolEnabled = false;
+	let taskToolEnabled = false;
 
 	// Scheduler state
 	let schedulerInterval: NodeJS.Timeout | null = null;
@@ -485,6 +487,11 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 				status.push("Scheduler: running");
 			}
 
+			// Ensure task tool is enabled
+			if (!taskToolEnabled) {
+				setTaskToolEnabled(true);
+			}
+
 			return { success: true, message: status.join(", ") };
 		}
 
@@ -505,6 +512,9 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 		channelManager.start();
 		startScheduler();
 
+		// Enable task tool for main session
+		setTaskToolEnabled(true);
+
 		const qqStatus = channelManager.isQQConnected() ? "connected" : "connecting";
 		return { success: true, message: `QQ: ${qqStatus}, Scheduler: started` };
 	}
@@ -513,6 +523,9 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 	function stopMainSession(): void {
 		// Stop task scheduler
 		stopScheduler();
+
+		// Disable task tool
+		setTaskToolEnabled(false);
 
 		if (channelManager) {
 			channelManager.stop();
@@ -567,6 +580,113 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 			qqToolEnabled = false;
 		}
 	}
+
+	/** Execute a task action. Returns a result message. */
+	function executeTaskAction(action: string, name?: string, args?: string): { success: boolean; message: string } {
+		// Must be main session
+		if (!isMainSession()) {
+			return { success: false, message: "Not main session. Run /main on first." };
+		}
+
+		// list
+		if (action === "list") {
+			const tasks = loadTasks();
+			if (tasks.length === 0) {
+				return { success: true, message: "No enabled tasks found in lamarck/tasks/*.md" };
+			}
+			const lines = tasks.map((t) => {
+				const running = tmuxSessionExists(t.name) ? " [running]" : "";
+				const schedule = t.cron ? t.cron : "manual";
+				return `- ${t.name}: ${schedule}${running} — ${t.description}`;
+			});
+			return { success: true, message: lines.join("\n") };
+		}
+
+		// run / status / stop all require name
+		if (!name) {
+			return { success: false, message: `Task name is required for action "${action}"` };
+		}
+
+		// status
+		if (action === "status") {
+			const running = tmuxSessionExists(name);
+			return { success: true, message: `Task "${name}": ${running ? "running" : "not running"}` };
+		}
+
+		// stop
+		if (action === "stop") {
+			if (!tmuxSessionExists(name)) {
+				return { success: true, message: `Task "${name}" is not running` };
+			}
+			tmuxKillSession(name);
+			return { success: true, message: `Task "${name}" stopped` };
+		}
+
+		// run
+		if (action === "run") {
+			const tasks = loadTasks();
+			const task = tasks.find((t) => t.name === name);
+			if (!task) {
+				return { success: false, message: `Task "${name}" not found or not enabled` };
+			}
+
+			let sessionName = task.name;
+
+			if (tmuxSessionExists(task.name)) {
+				if (task.skipIfRunning) {
+					return { success: true, message: `Task "${name}" is already running (skipIfRunning=true), skipped` };
+				}
+				if (task.allowParallel) {
+					sessionName = findAvailableSessionName(task.name);
+				} else {
+					tmuxKillSession(task.name);
+				}
+			}
+
+			try {
+				tmuxStartTask(sessionName, task.prompt, task.model, args || undefined);
+				const argsInfo = args ? ` with args: ${args}` : "";
+				return { success: true, message: `Task "${sessionName}" started (model: ${task.model})${argsInfo}` };
+			} catch (err: any) {
+				return { success: false, message: `Failed to start task: ${err.message}` };
+			}
+		}
+
+		return { success: false, message: `Unknown action: ${action}` };
+	}
+
+	/** Enable or disable the task tool */
+	function setTaskToolEnabled(enabled: boolean): void {
+		const active = pi.getActiveTools();
+		if (enabled && !active.includes(TASK_TOOL_NAME)) {
+			pi.setActiveTools([...active, TASK_TOOL_NAME]);
+			taskToolEnabled = true;
+		} else if (!enabled && active.includes(TASK_TOOL_NAME)) {
+			pi.setActiveTools(active.filter((t) => t !== TASK_TOOL_NAME));
+			taskToolEnabled = false;
+		}
+	}
+
+	// Register run_task tool
+	pi.registerTool({
+		name: TASK_TOOL_NAME,
+		label: "Task",
+		description: "Manage tasks defined in lamarck/tasks/*.md.",
+		parameters: Type.Object({
+			action: Type.Union([Type.Literal("list"), Type.Literal("run"), Type.Literal("status"), Type.Literal("stop")], {
+				description: "Action: list (show available tasks), run (execute a task once immediately), status (check if running), stop (stop a task)",
+			}),
+			name: Type.Optional(Type.String({ description: "Task name (required for run/status/stop)" })),
+			args: Type.Optional(Type.String({ description: "Optional arguments to pass to the task (only for run)" })),
+		}),
+		async execute(toolCallId, params, signal, onUpdate, ctx) {
+			const result = executeTaskAction(params.action, params.name, params.args);
+			return {
+				content: [{ type: "text", text: result.success ? result.message : `Error: ${result.message}` }],
+				details: {},
+			};
+		},
+	});
 
 	// Register send_qq_message tool
 	pi.registerTool({
@@ -678,9 +798,10 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 		}
 	});
 
-	// Disable QQ tool by default on session start
+	// Disable tools by default on session start
 	pi.on("session_start", async () => {
 		setQqToolEnabled(false);
+		setTaskToolEnabled(false);
 	});
 
 	// Register /send_qq_message command to toggle the tool
@@ -708,103 +829,15 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 
 	// Register /task command to manage scheduled tasks
 	pi.registerCommand("task", {
-		description: "Manage scheduled tasks (list, run <name>, status <name>)",
+		description: "Manage tasks (list, run <name> [args...], status <name>, stop <name>)",
 		handler: async (args, ctx) => {
-			// Must be main session to use this command
-			if (!isMainSession()) {
-				ctx.ui.notify("Not main session. Run /main on first.", "error");
-				return;
-			}
-
 			const parts = args?.trim().split(/\s+/) || [];
-			const subcommand = parts[0]?.toLowerCase();
+			const action = parts[0]?.toLowerCase() || "list";
 			const taskName = parts[1] || "";
 			const taskArgs = parts.slice(2).join(" ");
 
-			// /task list or /task (default)
-			if (!subcommand || subcommand === "list") {
-				const tasks = loadTasks();
-				if (tasks.length === 0) {
-					ctx.ui.notify("No enabled tasks found in lamarck/tasks/*.md", "info");
-					return;
-				}
-				let info = "Enabled tasks:\n";
-				for (const task of tasks) {
-					const running = tmuxSessionExists(task.name) ? " [running]" : "";
-					const schedule = task.cron ? task.cron : "manual";
-					info += `  - ${task.name}: ${schedule}${running}\n`;
-				}
-				ctx.ui.notify(info.trim(), "info");
-				return;
-			}
-
-			// /task run <name> [args...]
-			if (subcommand === "run") {
-				if (!taskName) {
-					ctx.ui.notify("Usage: /task run <name> [args...]", "error");
-					return;
-				}
-				const tasks = loadTasks();
-				const task = tasks.find((t) => t.name === taskName);
-				if (!task) {
-					ctx.ui.notify(`Task "${taskName}" not found or not enabled`, "error");
-					return;
-				}
-
-				let sessionName = task.name;
-
-				// Handle existing session
-				if (tmuxSessionExists(task.name)) {
-					if (task.skipIfRunning) {
-						ctx.ui.notify(`Task "${taskName}" is already running, skipped`, "info");
-						return;
-					}
-					if (task.allowParallel) {
-						// Find an available session name
-						sessionName = findAvailableSessionName(task.name);
-					} else {
-						// Kill the running task to start a new one
-						tmuxKillSession(task.name);
-					}
-				}
-
-				try {
-					tmuxStartTask(sessionName, task.prompt, task.model, taskArgs || undefined);
-					const argsInfo = taskArgs ? ` with args: ${taskArgs}` : "";
-					ctx.ui.notify(`Task "${sessionName}" started (model: ${task.model})${argsInfo}`, "success");
-				} catch (err: any) {
-					ctx.ui.notify(`Failed to start task: ${err.message}`, "error");
-				}
-				return;
-			}
-
-			// /task status <name>
-			if (subcommand === "status") {
-				if (!taskName) {
-					ctx.ui.notify("Usage: /task status <name>", "error");
-					return;
-				}
-				const running = tmuxSessionExists(taskName);
-				ctx.ui.notify(`Task "${taskName}": ${running ? "running" : "not running"}`, "info");
-				return;
-			}
-
-			// /task stop <name>
-			if (subcommand === "stop") {
-				if (!taskName) {
-					ctx.ui.notify("Usage: /task stop <name>", "error");
-					return;
-				}
-				if (!tmuxSessionExists(taskName)) {
-					ctx.ui.notify(`Task "${taskName}" is not running`, "info");
-					return;
-				}
-				tmuxKillSession(taskName);
-				ctx.ui.notify(`Task "${taskName}" stopped`, "success");
-				return;
-			}
-
-			ctx.ui.notify("Usage: /task [list|run <name>|status <name>|stop <name>]", "info");
+			const result = executeTaskAction(action, taskName || undefined, taskArgs || undefined);
+			ctx.ui.notify(result.message, result.success ? "info" : "error");
 		},
 	});
 }
