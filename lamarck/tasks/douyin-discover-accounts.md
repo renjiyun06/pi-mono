@@ -2,7 +2,7 @@
 cron: "15 * * * *"
 description: Discover high-quality Douyin AI content creators via search
 enabled: true
-model: openrouter/moonshotai/kimi-k2.5
+model: openrouter/deepseek/deepseek-v3.2
 skipIfRunning: true
 ---
 

@@ -2,7 +2,7 @@
 cron: "5 * * * *"
 description: Download, transcribe and deeply analyze liked Douyin videos
 enabled: true
-model: openrouter/moonshotai/kimi-k2.5
+model: openrouter/deepseek/deepseek-v3.2
 skipIfRunning: true
 ---
 

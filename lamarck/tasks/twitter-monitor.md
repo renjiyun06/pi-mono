@@ -2,7 +2,7 @@
 cron: "*/15 * * * *"
 description: Monitor latest tweets from tracked Twitter accounts
 enabled: true
-model: openrouter/moonshotai/kimi-k2.5
+model: openrouter/deepseek/deepseek-v3.2
 skipIfRunning: true
 ---
 

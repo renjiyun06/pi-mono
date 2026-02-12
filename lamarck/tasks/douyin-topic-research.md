@@ -1,7 +1,7 @@
 ---
 description: Find narrative angles from discovered topics and research deeply for Douyin video creation
 enabled: true
-model: openrouter/moonshotai/kimi-k2.5
+model: openrouter/deepseek/deepseek-v3.2
 skipIfRunning: true
 allowParallel: false
 ---

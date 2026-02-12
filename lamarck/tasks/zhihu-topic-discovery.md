@@ -1,7 +1,7 @@
 ---
 description: Discover trending AI topics suitable for Zhihu long-form content
 enabled: false
-model: openrouter/moonshotai/kimi-k2.5
+model: openrouter/deepseek/deepseek-v3.2
 skipIfRunning: true
 allowParallel: false
 ---

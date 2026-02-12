@@ -2,7 +2,7 @@
 cron: "*/20 * * * *"
 description: Browse Zhihu recommended feed and upvote high-quality AI content
 enabled: true
-model: openrouter/moonshotai/kimi-k2.5
+model: openrouter/deepseek/deepseek-v3.2
 allowParallel: true
 ---
 

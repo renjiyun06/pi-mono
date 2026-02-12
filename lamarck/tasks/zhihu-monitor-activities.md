@@ -2,7 +2,7 @@
 cron: "*/30 * * * *"
 description: Monitor latest activities from tracked Zhihu accounts
 enabled: true
-model: openrouter/moonshotai/kimi-k2.5
+model: openrouter/deepseek/deepseek-v3.2
 skipIfRunning: true
 ---
 

@@ -2,7 +2,7 @@
 cron: "*/20 * * * *"
 description: Discover new AI-focused Twitter accounts worth following
 enabled: true
-model: openrouter/moonshotai/kimi-k2.5
+model: openrouter/deepseek/deepseek-v3.2
 skipIfRunning: true
 ---
 

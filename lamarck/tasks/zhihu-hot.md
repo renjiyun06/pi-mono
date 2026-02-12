@@ -2,7 +2,7 @@
 cron: "*/30 * * * *"
 description: Scrape Zhihu hot list snapshot into zhihu_hot table
 enabled: true
-model: openrouter/moonshotai/kimi-k2.5
+model: openrouter/deepseek/deepseek-v3.2
 skipIfRunning: true
 ---
 

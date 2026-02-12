@@ -1,7 +1,7 @@
 ---
 description: Download and transcribe popular Douyin videos that haven't been processed yet
 enabled: true
-model: openrouter/moonshotai/kimi-k2.5
+model: openrouter/deepseek/deepseek-v3.2
 cron: "*/5 * * * *"
 skipIfRunning: true
 allowParallel: false

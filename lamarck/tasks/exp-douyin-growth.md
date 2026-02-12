@@ -1,7 +1,7 @@
 ---
 description: 实验：自主运营抖音账号，从 0 到 1 万粉丝
-enabled: false
-model: openrouter/moonshotai/kimi-k2.5
+enabled: true
+model: openrouter/deepseek/deepseek-v3.2
 cron: "* * * * *"
 skipIfRunning: true
 mode: rh-loop

@@ -2,7 +2,7 @@
 cron: "0,30 * * * *"
 description: Monitor tracked Douyin accounts for new works
 enabled: true
-model: openrouter/moonshotai/kimi-k2.5
+model: openrouter/deepseek/deepseek-v3.2
 skipIfRunning: true
 ---
 

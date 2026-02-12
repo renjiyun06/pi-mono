@@ -2,7 +2,7 @@
 cron: "*/30 * * * *"
 description: Discover new Zhihu accounts worth following (AI priority, tech/startup also accepted)
 enabled: true
-model: openrouter/moonshotai/kimi-k2.5
+model: openrouter/deepseek/deepseek-v3.2
 skipIfRunning: true
 ---
 

@@ -2,7 +2,7 @@
 cron: "0 * * * *"
 description: Sync liked videos from personal Douyin account into douyin_works and douyin_accounts
 enabled: true
-model: openrouter/moonshotai/kimi-k2.5
+model: openrouter/deepseek/deepseek-v3.2
 skipIfRunning: true
 ---
 

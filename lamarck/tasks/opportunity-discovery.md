@@ -1,7 +1,7 @@
 ---
 description: Discover startup and product opportunities from monitored data sources
 enabled: true
-model: openrouter/moonshotai/kimi-k2.5
+model: openrouter/deepseek/deepseek-v3.2
 skipIfRunning: true
 allowParallel: false
 ---
