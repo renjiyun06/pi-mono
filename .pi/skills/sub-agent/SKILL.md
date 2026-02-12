@@ -47,13 +47,24 @@ model: anthropic/claude-sonnet-4-5
 
 不要等待子任务完成，继续主对话。
 
+## 输出目录
+
+子任务的输出放在 `/home/lamarck/pi-mono/lamarck/tmp/<任务名>/` 目录下。
+
+- 任务启动前，在 prompt 中指定输出目录路径
+- 子 agent 负责创建目录（如果不存在）
+- 所有产出（报告、数据、中间文件等）都放在这个目录
+- 主 agent 可以通过读取该目录获取子任务结果
+
+示例：任务名为 `zzz-tmp-research-memory`，输出目录为 `/home/lamarck/pi-mono/lamarck/tmp/zzz-tmp-research-memory/`
+
 ## 任务描述要求
 
 任务描述必须**自包含**，子 agent 没有当前会话上下文。包含：
 
 1. **背景**：为什么要做这个任务
 2. **具体步骤**：要做什么
-3. **输出要求**：结果放哪里、什么格式
+3. **输出要求**：结果放到 `/home/lamarck/pi-mono/lamarck/tmp/<任务名>/` 目录，说明文件格式
 
 ## 监控和停止
 

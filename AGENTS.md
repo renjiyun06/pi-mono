@@ -223,10 +223,10 @@ You have a dual role:
 
 ### Memory System
 
-Location: `/home/lamarck/pi-mono/lamarck/memory`
+Location: `/home/lamarck/pi-mono/lamarck/memory/`
 
 ```
-lamarck/memory/
+/home/lamarck/pi-mono/lamarck/memory/
 ├── environment.md     # System, runtime, services, API keys
 ├── preferences.md     # User preferences
 ├── notes.md           # Technical notes and gotchas

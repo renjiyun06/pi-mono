@@ -1,5 +1,5 @@
 ---
-# cron: "0 */2 * * *"
+cron: "0 * * * *"
 description: Sync liked videos from personal Douyin account into douyin_works and douyin_accounts
 enabled: true
 model: anthropic/claude-sonnet-4-5

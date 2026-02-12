@@ -1,5 +1,5 @@
 ---
-# cron: "*/30 * * * *"
+cron: "5 * * * *"
 description: Download, transcribe and deeply analyze liked Douyin videos
 enabled: true
 model: anthropic/claude-sonnet-4-5
@@ -17,7 +17,7 @@ skipIfRunning: true
 - 路径：`/home/lamarck/pi-mono/lamarck/data/lamarck.db`
 - Schema 目录：`/home/lamarck/pi-mono/lamarck/data/schemas/`（所有表的建表语句和字段注释都在这里）
 - 重点关注表：`douyin_works`、`douyin_accounts`
-- 跨平台数据源（用于交叉分析）：`reddit_posts`、`zhihu_activities`、`zhihu_hot`、`twitter_posts`、`topics`
+- 其他可用数据源：`reddit_posts`、`zhihu_activities`、`zhihu_hot`、`twitter_posts`、`topics`（仅在能深化你的延伸思考时使用，不要为了"交叉验证"而硬凑）
 
 ## 输出位置
 
@@ -136,7 +136,7 @@ rm -f /home/lamarck/pi-mono/lamarck/data/videos/<aweme_id>.mp3
 
 #### 3a. 读取素材
 
-读取转录全文，然后根据视频内容，自行到数据库中探索所有可能相关的数据源，查找与视频主题相关的信息。Schema 都在 `/home/lamarck/pi-mono/lamarck/data/schemas/` 目录下。
+读取转录全文。先形成你自己对视频内容的理解和初步想法，再决定是否需要查阅其他数据源。Schema 都在 `/home/lamarck/pi-mono/lamarck/data/schemas/` 目录下。
 
 #### 3b. 外部调研
 
@@ -149,7 +149,7 @@ rm -f /home/lamarck/pi-mono/lamarck/data/videos/<aweme_id>.mp3
 
 #### 3c. 分析维度
 
-以视频内容为立足点，结合内部素材和外部调研，从以下维度分析（按相关性取舍，不必每条都写满所有维度）：
+以视频内容为立足点，从以下维度分析（按相关性取舍，不必每条都写满所有维度）：
 
 **A. 内容形式分析**（对 Ren 做抖音账号的借鉴）
 - 叙事结构：开头 hook 手法、节奏编排、结尾引导
@@ -158,7 +158,6 @@ rm -f /home/lamarck/pi-mono/lamarck/data/videos/<aweme_id>.mp3
 
 **B. 需求信号提取**
 - 视频中提到了哪些用户痛点、未被满足的需求？
-- 这些需求是否在其他平台（Reddit、知乎、Twitter）也有验证？
 - 需求的商业化空间：是否可以做成工具/服务/内容产品？
 
 **C. 方法论与工具链**
@@ -166,9 +165,23 @@ rm -f /home/lamarck/pi-mono/lamarck/data/videos/<aweme_id>.mp3
 - 有没有可以直接复用的操作步骤？
 - 和 Ren 当前关注的方向（AI Agent、AI 编程、多模态）有什么关联？
 
-**D. 跨平台交叉验证**
-- 这条作品的主题是否在数据库的其他数据源中也出现过？
-- 如果有交叉验证，说明这是一个跨平台的真实趋势，值得重点关注
+**D. 延伸思考**（最重要的维度）
+
+这是本任务的核心价值所在。不是机械地整合信息，而是你作为一个有思考能力的 agent，看完这个视频后产生的独立见解。
+
+**怎样才算"延伸思考"：**
+- 视频的观点有没有漏洞、盲区、或未考虑到的情况？
+- 视频的逻辑链条能否继续往下推？推到极致会是什么？
+- 有没有让你联想到的其他领域、其他问题、其他可能性？
+- 如果你是 Ren，看完这个视频你会想做什么实验或尝试？
+
+**怎样才不算"延伸思考"：**
+- ❌ "视频说 A，数据库里也有 A，验证了 A 是趋势" — 这是搜索结果拼接
+- ❌ "视频提到了 X 工具，X 工具的官网说..." — 这是信息搬运
+- ❌ 罗列一堆"相关"的信息点但没有自己的判断
+
+**数据源的正确用法：**
+先有你自己的思考，然后用数据源去深化这个思考（找到支撑、反例、或新的角度），而不是用数据源去"证明视频说的对"。如果数据源里没有能深化你思考的素材，就不要硬凑，直接写你自己的想法。
 
 #### 3d. 写入分析文档
 
@@ -205,16 +218,19 @@ mkdir -p /home/lamarck/pi-mono/lamarck/data/analyses
 
 <提到的具体工具、框架、可复用的操作>
 
-## 跨平台验证
+## 延伸思考
 
-<与 Reddit/知乎/topics 的交叉验证结果>
+<你看完视频后的独立见解：观点的漏洞/盲区、逻辑的进一步推演、联想到的其他领域、想做的实验或尝试>
 
 ## 关键启发
 
 <对 Ren 最直接的 2~3 条 actionable takeaways>
 ```
 
-不是每个章节都必须有内容，按视频实际内容取舍。但"关键启发"必须有——这是 Ren 看这份文档最关心的部分。
+**章节取舍原则：**
+- 内容形式分析、需求信号、方法论与工具 — 按视频实际内容取舍，不必每条都写满
+- **延伸思考** — 必须有，这是本任务的核心价值
+- **关键启发** — 必须有，这是 Ren 看这份文档最关心的部分
 
 ## 完成条件
 

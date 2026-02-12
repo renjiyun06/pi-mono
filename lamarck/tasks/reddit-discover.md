@@ -1,5 +1,5 @@
 ---
-# cron: "*/30 * * * *"
+cron: "*/20 * * * *"
 description: Discover demand signals and high-quality founder shares from Reddit
 enabled: true
 model: anthropic/claude-sonnet-4-5
