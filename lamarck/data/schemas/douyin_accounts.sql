@@ -14,5 +14,6 @@ CREATE TABLE IF NOT EXISTS douyin_accounts (
     like_count        INTEGER,                                                                    -- 获赞数
     video_count       INTEGER,                                                                    -- 作品数
     created_at        TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%S', 'now', 'localtime')), -- 入库时间
-    updated_at        TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%S', 'now', 'localtime'))  -- 更新时间
+    updated_at        TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%S', 'now', 'localtime')), -- 更新时间
+    source            TEXT    NOT NULL DEFAULT 'discover'                                           -- 来源：discover=发现任务, liked=点赞同步
 );

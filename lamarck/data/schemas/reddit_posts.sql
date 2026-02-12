@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS reddit_posts (
     author        TEXT    NOT NULL,                                                           -- author username without u/ prefix
     url           TEXT    NOT NULL,                                                           -- full post URL
     flair         TEXT,                                                                       -- post flair/tag, e.g. "B2C SaaS", "Discussion"
-    body_preview  TEXT,                                                                       -- text preview from the list page
+    body          TEXT,                                                                       -- full post body (fetched from detail page)
+    comments_summary TEXT,                                                                    -- LLM-generated summary of the comment section
     thumbnail_url TEXT,                                                                       -- thumbnail/preview image URL
     upvotes       INTEGER NOT NULL DEFAULT 0,                                                 -- upvote count at scrape time
     comment_count INTEGER NOT NULL DEFAULT 0,                                                 -- comment count at scrape time
