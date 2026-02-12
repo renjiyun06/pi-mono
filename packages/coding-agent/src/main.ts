@@ -535,6 +535,7 @@ export async function main(args: string[]) {
 		noSkills: firstPass.noSkills,
 		noPromptTemplates: firstPass.noPromptTemplates,
 		noThemes: firstPass.noThemes,
+		noProjectContext: firstPass.noProjectContext,
 		systemPrompt: firstPass.systemPrompt,
 		appendSystemPrompt: firstPass.appendSystemPrompt,
 	});

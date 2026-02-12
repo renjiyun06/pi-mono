@@ -38,13 +38,14 @@ interface TaskDefinition {
 	model: string;
 	skipIfRunning: boolean; // If true, skip this schedule if task is already running
 	allowParallel: boolean; // If true, allow multiple instances with numbered suffixes
+	mode: string | null; // null for normal mode, "rh-loop" for isolated loop mode
 }
 
 /**
  * Parse frontmatter from a markdown file.
  * Returns null if frontmatter is missing or invalid.
  */
-function parseFrontmatter(content: string): { cron?: string; description?: string; enabled?: boolean; model?: string; skipIfRunning?: boolean; allowParallel?: boolean; body: string } | null {
+function parseFrontmatter(content: string): { cron?: string; description?: string; enabled?: boolean; model?: string; skipIfRunning?: boolean; allowParallel?: boolean; mode?: string; body: string } | null {
 	const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
 	if (!match) return null;
 
@@ -70,6 +71,7 @@ function parseFrontmatter(content: string): { cron?: string; description?: strin
 		model: frontmatter.model,
 		skipIfRunning: frontmatter.skipIfRunning?.toLowerCase() === "true",
 		allowParallel: frontmatter.allowParallel?.toLowerCase() === "true",
+		mode: frontmatter.mode,
 		body: match[2].trim(),
 	};
 }
@@ -165,6 +167,7 @@ function loadTasks(): TaskDefinition[] {
 					model: parsed.model || DEFAULT_TASK_MODEL,
 					skipIfRunning: parsed.skipIfRunning || false,
 					allowParallel: parsed.allowParallel || false,
+					mode: parsed.mode || null,
 				});
 			}
 		} catch {
@@ -216,7 +219,7 @@ const PROJECT_ROOT = "/home/lamarck/pi-mono";
  * Start a new tmux session with pi --one-shot.
  * If userArgs is provided, it's appended to the prompt as user-specified parameters.
  */
-function tmuxStartTask(name: string, prompt: string, model: string, userArgs?: string): void {
+function tmuxStartTask(name: string, prompt: string, model: string, userArgs?: string, mode?: string | null): void {
 	// Write prompt to temp file to avoid shell escaping issues
 	const promptFile = `/tmp/task-${name}.prompt`;
 	let fullPrompt = prompt;
@@ -228,8 +231,11 @@ function tmuxStartTask(name: string, prompt: string, model: string, userArgs?: s
 	// Parse model string: "provider/model" -> --provider provider --model model
 	const [provider, modelId] = model.includes("/") ? model.split("/", 2) : ["anthropic", model];
 
+	// Build extra flags based on mode
+	const extraFlags = mode === "rh-loop" ? "--no-project-context" : "";
+
 	// Simple command that tells pi to read the file, with working directory set
-	const cmd = `tmux new-session -d -s "${name}" -c "${PROJECT_ROOT}" "${PI_COMMAND} --provider ${provider} --model ${modelId} --one-shot '读取 ${promptFile} 文件，按照里面的指令完成任务'"`;
+	const cmd = `tmux new-session -d -s "${name}" -c "${PROJECT_ROOT}" "${PI_COMMAND} --provider ${provider} --model ${modelId} ${extraFlags} --one-shot '读取 ${promptFile} 文件，按照里面的指令完成任务'"`;
 	execSync(cmd, { encoding: "utf-8" });
 }
 
@@ -334,7 +340,7 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 
 				// Start new session with the task
 				try {
-					tmuxStartTask(sessionName, task.prompt, task.model);
+					tmuxStartTask(sessionName, task.prompt, task.model, undefined, task.mode);
 				} catch {
 					// Ignore startup errors
 				}
@@ -644,7 +650,7 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 			}
 
 			try {
-				tmuxStartTask(sessionName, task.prompt, task.model, args || undefined);
+				tmuxStartTask(sessionName, task.prompt, task.model, args || undefined, task.mode);
 				const argsInfo = args ? ` with args: ${args}` : "";
 				return { success: true, message: `Task "${sessionName}" started (model: ${task.model})${argsInfo}` };
 			} catch (err: any) {
