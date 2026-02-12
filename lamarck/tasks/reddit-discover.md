@@ -2,7 +2,7 @@
 cron: "*/20 * * * *"
 description: Discover demand signals and high-quality founder shares from Reddit
 enabled: true
-model: anthropic/claude-sonnet-4-5
+model: openrouter/moonshotai/kimi-k2.5
 skipIfRunning: true
 ---
 

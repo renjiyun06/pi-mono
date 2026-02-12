@@ -1,7 +1,7 @@
 ---
 description: 实验：探索自己需要的记忆机制
 enabled: false
-model: anthropic/claude-sonnet-4-5
+model: openrouter/moonshotai/kimi-k2.5
 cron: "* * * * *"
 skipIfRunning: true
 ---

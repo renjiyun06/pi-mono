@@ -228,9 +228,11 @@ function tmuxStartTask(name: string, prompt: string, model: string, userArgs?: s
 	}
 	fs.writeFileSync(promptFile, fullPrompt);
 
-	// Parse model string: "provider/model" -> --provider provider --model model
-	const [provider, modelId] = model.includes("/") ? model.split("/", 2) : ["anthropic", model];
-
+	// Parse model string: "provider/model" or "provider/manufacturer/model" -> --provider provider --model model or --provider provider --model manufacturer/model
+	let [provider, manufacturer, modelId] = model.includes("/") ? model.split("/", 3) : ["anthropic", null, model];
+	if (manufacturer) {
+		modelId = `${manufacturer}/${modelId}`;
+	}
 	// Build extra flags based on mode
 	const extraFlags = mode === "rh-loop" ? "--no-project-context" : "";
 

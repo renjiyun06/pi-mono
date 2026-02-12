@@ -2,7 +2,7 @@
 cron: "*/20 * * * *"
 description: Browse Zhihu recommended feed and upvote high-quality AI content
 enabled: true
-model: anthropic/claude-sonnet-4-5
+model: openrouter/moonshotai/kimi-k2.5
 allowParallel: true
 ---
 

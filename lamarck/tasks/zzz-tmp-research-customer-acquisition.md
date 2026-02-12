@@ -1,7 +1,7 @@
 ---
 description: Research customer acquisition strategies and tools for indie developers
 enabled: true
-model: anthropic/claude-sonnet-4-5
+model: openrouter/moonshotai/kimi-k2.5
 ---
 
 # 独立开发者获客策略与工具调研

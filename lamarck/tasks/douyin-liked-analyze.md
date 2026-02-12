@@ -2,7 +2,7 @@
 cron: "5 * * * *"
 description: Download, transcribe and deeply analyze liked Douyin videos
 enabled: true
-model: anthropic/claude-sonnet-4-5
+model: openrouter/moonshotai/kimi-k2.5
 skipIfRunning: true
 ---
 

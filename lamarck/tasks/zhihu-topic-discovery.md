@@ -1,7 +1,7 @@
 ---
 description: Discover trending AI topics suitable for Zhihu long-form content
 enabled: false
-model: anthropic/claude-sonnet-4-5
+model: openrouter/moonshotai/kimi-k2.5
 skipIfRunning: true
 allowParallel: false
 ---

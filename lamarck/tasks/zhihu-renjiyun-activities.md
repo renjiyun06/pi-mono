@@ -2,7 +2,7 @@
 cron: "*/30 * * * *"
 description: Sync renjiyun's Zhihu activity feed to zhihu_activities table
 enabled: false
-model: anthropic/claude-sonnet-4-5
+model: openrouter/moonshotai/kimi-k2.5
 skipIfRunning: true
 ---
 

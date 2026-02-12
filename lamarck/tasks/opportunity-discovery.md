@@ -1,7 +1,7 @@
 ---
 description: Discover startup and product opportunities from monitored data sources
 enabled: true
-model: anthropic/claude-sonnet-4-5
+model: openrouter/moonshotai/kimi-k2.5
 skipIfRunning: true
 allowParallel: false
 ---

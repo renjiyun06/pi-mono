@@ -1,7 +1,7 @@
 ---
 description: 搜索 AI Agent 记忆/状态管理相关的开源项目
 enabled: true
-model: anthropic/claude-sonnet-4-5
+model: openrouter/moonshotai/kimi-k2.5
 ---
 
 # 任务：搜索 AI Agent 记忆/状态管理开源项目
