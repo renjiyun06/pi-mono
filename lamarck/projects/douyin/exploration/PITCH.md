@@ -1,8 +1,8 @@
 # 给 Ren 的快速 Pitch
 
-> 更新于 2026-02-14
+> 更新于 2026-02-14（第二次更新）
 
-10 篇深度探索，4 个原型视频，一个完整的知识体系。
+12 篇深度探索，7 个原型视频，一个完整的知识体系。竞品转录稿关键词验证：认知债系列在抖音完全空白。
 
 ---
 
@@ -17,6 +17,8 @@
 第 3 期：全员同质化（002）→ 集体认知债的后果
 第 4 期：Vibe Coding（008）→ 技术认知债的灾难
 第 5 期：半人马模式（010）→ 解药
+番外1：人才管道断裂（012）→ 长期后果
+番外2：教育悖论（011）→ 最脆弱群体
 ```
 
 ### 为什么推荐这个系列
@@ -53,7 +55,7 @@
 - Dario Amodei（Anthropic CEO）："AI 将在 1-5 年内取代一半入门级白领工作"
 - HBR: 公司裁员是因为 AI 的**潜力**而非**表现**
 
-**原型**：`content/demo-cognitive-debt/video.mp4`（121s）
+**原型**：`content/demo-cognitive-debt/video-v2.mp4`（130s，V2 更好——数据开场 + 双重困境）
 
 ### 第 2 期："我每天都在失忆"（003）
 
@@ -102,7 +104,8 @@
 | 005 | WebMCP | 偏技术前沿 |
 | 006 | $10K AI 实验 | 可做但偏商业 |
 | 007 | 竞品分析 | 内部参考，不对外 |
-| 009-教育 | AI 写作业 | 可做系列延伸期（面向家长） |
+| 011 | AI 教育悖论 | 72% 学生用 AI 不理解，中国禁令。面向家长/学生 |
+| 012 | 人才管道断裂 | 入门招聘 -73%。面向应届生/初级开发者。**有原型视频** |
 
 ---
 
@@ -136,6 +139,8 @@
 | 原型 | AI同质化 | 108s | `content/demo-homogenization/video.mp4` |
 | 原型 | Vibe Coding | 117s | `content/demo-vibe-coding/video.mp4` |
 | 原型 | 半人马模式 | 102s | `content/demo-centaur/video.mp4` |
+| **原型** | **认知债务 V2** | **130s** | **`content/demo-cognitive-debt/video-v2.mp4`** |
+| 原型 | 人才管道（Nord 主题） | 131s | `content/demo-pipeline/video.mp4` |
 
 Windows 路径前缀：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\`
 
