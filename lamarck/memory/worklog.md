@@ -8,6 +8,17 @@
 
 ## 2026-02-13 (autopilot-0003)
 
+### Compact 后第十五~十六轮工作（2026-02-14）
+- **009 新增 Sternberg 2026**（Frontiers in Education）——6 个 AI 认知风险机制，"主仆倒转"呼应 020。核心研究增至 8 项。
+- **015 新增 HBS + George Mason 研究**——AI 陪伴短期确实有效（强化"止痛药"类比），元分析：强社交关系=50% 生存率提升
+- **debt-call-shield 离线测试闭环**：
+  - `USE_STUBS=true` 环境变量（stub ASR/LLM/TTS）
+  - `test-ws-client.ts` 模拟 Twilio Media Streams 协议
+  - 完整 e2e 离线测试不需要任何 API key
+- issues.md 更新：debt-call-shield 测试缺口完全解决
+- 认知债 V4 脚本自审：Stanford 13% 数据再次验证准确（CNBC 确认）
+- account-strategy.md 确认跟"exploration-first"方向一致
+
 ### Compact 后第十四轮工作（2026-02-14，第十次 compact 后恢复）
 - 全面资产检查：13 个视频文件全部健康（yuv420p、SRT、封面），10 个 demo 全有短版
 - 探索索引 vs 实际文件同步确认（20/20）
