@@ -8,10 +8,12 @@
 - **AI 社交债**：AI 陪伴导致更孤独（APA/RCT/1100 人研究），跟认知债同模式——"AI 债务"超级框架（2026-02）
 - AI 对教育的影响：72% 学生用 AI 不理解内容、中国禁令、作业从学习工具变展示工具（2026-02）
 - 人才管道断裂：入门级招聘 -73%，"没有学徒谁成为大师"（2026-02）
-- AI Agent 实际工作流与效率（自动笔记、子agent编排、信息遍历）（2026-02）
-- AI 与人类创造力的关系（同质化风险、独立思考的价值）（2026-02）
-- AI agent 记忆与持久性问题（MemGPT/Letta 三层架构、context window、持久记忆方案）（2026-02）
-- 前沿模型动态：Claude Opus 4.6（1M context）、GPT-5.3 Codex、Gemini 3 Pro、GLM-5（2026-02）
+- **OpenClaw 与 AI agent 自主性**：14.5 万 star，160 万 AI 社交，472+ 恶意 Skill，"致命三重风险"——认知卸载从"替你思考"升级到"替你行动"（2026-02）
+- **AI agent 记忆架构**：Letta V1 sleep-time agents（异步记忆整合）、DeepSeek Engram（静态知识 vs 动态经验记忆的区分）、memory-first agents 胜出趋势（2026-02）
+- **"替代 vs 扩展"边界**：认知债只在替代场景发生，突破在扩展场景发生（Isomorphic Labs 药物、新材料、气候预测）（2026-02）
+- AI Agent 实际工作流与效率（Agent Teams = diversity 策略非 scaling 策略）（2026-02）
+- AI 与人类创造力的关系（同质化风险、Graphite: 互联网一半文章是 AI 生成）（2026-02）
+- 前沿模型动态：Claude Opus 4.6（1M context）、MiniMax M2.5（$0.3/M，接近 Opus）、Seedance 2.0（2026-02）
 
 ## 长期关注
 

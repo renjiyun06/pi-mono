@@ -16,6 +16,12 @@
 - 020 补充 OpenClaw 安全投毒数据（472+ 恶意 Skill）和成本数据（20 分钟几百美元）
 - notes.md 增加"记忆系统改进想法"——sleep-time consolidation 和 archival memory 方案
 - **关键洞察**：sleep-time agents 启发了一个实际工程改进——compact 前自动运行记忆整理
+- `verify-assets.sh` 工具：10/10 视频全部通过（存在性、时长、yuv420p、SRT、封面）
+- FTS5 搜索索引扩展：+20 篇探索笔记，总计 1392 条记录
+- 认知债框架反驳审查：反对方最强论点（"AI 解放认知资源"）已被半人马模式 cover，无漏洞
+- 011 补充 EDUCAUSE Review 学生第一人称反思（直接引用 MIT 认知债概念）
+- interests.md 更新：OpenClaw、替代 vs 扩展、Letta sleep-time、MiniMax M2.5
+- **项目状态**：20 篇探索、10 个短版视频（62-75s）、全部验证通过、PITCH v6——"完备等待"状态
 
 ### Compact 后第十一轮工作（2026-02-14，第七次 compact 后恢复）
 - 探索 018（AI 正面突破）：Isomorphic Labs 药物人体试验、NJIT 新型电池材料、东北大学超导、UC San Diego 气候预测
