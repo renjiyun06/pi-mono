@@ -22,8 +22,8 @@ import { randomBytes } from "crypto";
 import { Command } from "commander";
 
 interface TerminalLine {
-  /** "cmd" = typed with prompt, "output" = appears instantly, "comment" = green text */
-  type: "cmd" | "output" | "comment";
+  /** "cmd" = typed with prompt, "output" = appears instantly, "comment" = green text, "reveal" = appears with delay (0.4s between lines) */
+  type: "cmd" | "output" | "comment" | "reveal";
   /** The text content */
   text: string;
 }
@@ -204,6 +204,13 @@ function buildTerminalFilters(
         `drawtext=text='${outputEscaped}':fontcolor=#${theme.fg}:fontsize=${fontSize}:x=${leftMargin}:y=${yPos}:fontfile=${FONT}:enable='gte(t\\,${timeOffset.toFixed(2)})'`
       );
       timeOffset += 0.1; // small delay between output lines
+    } else if (line.type === "reveal") {
+      // Like output but with a longer delay between lines for dramatic effect
+      const revealEscaped = escapeFFmpegText(line.text);
+      filters.push(
+        `drawtext=text='${revealEscaped}':fontcolor=#${theme.fg}:fontsize=${fontSize}:x=${leftMargin}:y=${yPos}:fontfile=${FONT}:enable='gte(t\\,${timeOffset.toFixed(2)})'`
+      );
+      timeOffset += 0.4; // slower reveal between lines
     } else if (line.type === "comment") {
       const commentEscaped = escapeFFmpegText(line.text);
       filters.push(
@@ -333,6 +340,89 @@ async function generateTerminalVideo(
   console.log(`\nVideo saved to: ${outputPath}`);
 }
 
+/**
+ * Generate a static PNG preview of each section (all text visible).
+ * Useful for quickly checking layout without rendering full video.
+ */
+async function generatePreview(
+  script: TerminalScript,
+  outputBase: string,
+): Promise<void> {
+  const baseTheme = script.themeName && THEMES[script.themeName] ? THEMES[script.themeName] : DEFAULT_THEME;
+  const theme = { ...baseTheme, ...script.theme };
+  const prompt = script.prompt || "$ ";
+  const fontSize = script.fontSize || 36;
+  const width = 1080;
+  const height = 1920;
+
+  const outDir = outputBase.replace(/\.[^.]+$/, "");
+  await mkdir(outDir, { recursive: true });
+
+  for (let i = 0; i < script.sections.length; i++) {
+    const section = script.sections[i];
+    // Build filters with all text visible (enable='1')
+    const lineHeight = Math.floor(fontSize * 1.6);
+    const leftMargin = 60;
+    const topMargin = 200;
+    const filters: string[] = [];
+    let yPos = topMargin;
+
+    // Title bar
+    const dotRed = theme.prompt === "ff6b6b" ? "ff6b6b" : "f38ba8";
+    const dotYellow = theme.comment === "c9b037" ? "c9b037" : "f9e2af";
+    const dotGreen = theme.comment || "a6e3a1";
+    filters.push(
+      `drawtext=text='${escapeFFmpegText("●")}':fontcolor=#${dotRed}:fontsize=28:x=30:y=30:fontfile=${FONT}`,
+      `drawtext=text='${escapeFFmpegText("●")}':fontcolor=#${dotYellow}:fontsize=28:x=65:y=30:fontfile=${FONT}`,
+      `drawtext=text='${escapeFFmpegText("●")}':fontcolor=#${dotGreen}:fontsize=28:x=100:y=30:fontfile=${FONT}`,
+      `drawtext=text='${escapeFFmpegText(script.title)}':fontcolor=#${theme.fg}@0.6:fontsize=24:x=(w-text_w)/2:y=32:fontfile=${FONT}`,
+      `drawtext=text='${escapeFFmpegText("─".repeat(60))}':fontcolor=#${theme.fg}@0.2:fontsize=20:x=20:y=70:fontfile=${FONT}`,
+    );
+
+    for (const line of section.lines) {
+      const color = line.type === "cmd" ? theme.cmd
+        : line.type === "comment" ? theme.comment
+        : theme.fg;
+      let text = line.text;
+      if (line.type === "cmd") {
+        // Show prompt
+        filters.push(
+          `drawtext=text='${escapeFFmpegText(prompt)}':fontcolor=#${theme.prompt}:fontsize=${fontSize}:x=${leftMargin}:y=${yPos}:fontfile=${FONT}`
+        );
+        const promptWidth = prompt.length * fontSize * 0.6;
+        filters.push(
+          `drawtext=text='${escapeFFmpegText(text)}':fontcolor=#${color}:fontsize=${fontSize}:x=${leftMargin + promptWidth}:y=${yPos}:fontfile=${FONT}`
+        );
+      } else {
+        filters.push(
+          `drawtext=text='${escapeFFmpegText(text)}':fontcolor=#${color}:fontsize=${fontSize}:x=${leftMargin}:y=${yPos}:fontfile=${FONT}`
+        );
+      }
+      yPos += lineHeight;
+    }
+
+    // Section indicator
+    filters.push(
+      `drawtext=text='${escapeFFmpegText(`${i + 1} / ${script.sections.length}`)}':fontcolor=#${theme.fg}@0.3:fontsize=20:x=(w-text_w)/2:y=h-50:fontfile=${FONT}`
+    );
+
+    const outPath = join(outDir, `section-${i + 1}.png`);
+    await new Promise<void>((resolve, reject) => {
+      execFile("ffmpeg", [
+        "-y", "-f", "lavfi",
+        "-i", `color=c=#${theme.bg}:s=${width}x${height}:d=0.1:r=1`,
+        "-vf", filters.join(","),
+        "-frames:v", "1",
+        outPath,
+      ], { timeout: 15000 }, (error) => {
+        if (error) reject(error); else resolve();
+      });
+    });
+    console.log(`Preview: ${outPath}`);
+  }
+  console.log(`\nPreview frames saved to: ${outDir}/`);
+}
+
 // CLI
 const program = new Command();
 program
@@ -340,12 +430,13 @@ program
   .description("Generate terminal-style video with typing animation and TTS")
   .option("-i, --input <path>", "Input script JSON file")
   .option("-o, --output <path>", "Output video path", "output.mp4")
+  .option("--preview", "Generate a single frame preview (PNG) of each section instead of full video")
   .option("--describe", "Describe what this tool does")
   .action(async (opts) => {
     if (opts.describe) {
       console.log(
         "terminal-video: Creates videos simulating a terminal with typing animation.\n" +
-        "Supports command lines (typed char-by-char), output lines (instant), and comments.\n" +
+        "Supports command lines (typed char-by-char), output lines (instant), reveal lines (0.4s delay), and comments.\n" +
         "Includes TTS voiceover, terminal title bar, and blinking cursor.\n" +
         `Available themes: ${Object.keys(THEMES).join(", ")} (set via "themeName" in script JSON)\n` +
         "Requires: ffmpeg, Python edge-tts, fonts-noto-cjk."
@@ -377,7 +468,12 @@ program
 
     const scriptContent = await readFile(opts.input, "utf-8");
     const script: TerminalScript = JSON.parse(scriptContent);
-    await generateTerminalVideo(script, opts.output);
+
+    if (opts.preview) {
+      await generatePreview(script, opts.output);
+    } else {
+      await generateTerminalVideo(script, opts.output);
+    }
   });
 
 program.parse();
