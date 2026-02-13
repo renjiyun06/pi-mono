@@ -1,4 +1,9 @@
 import type { WebSocket } from "ws";
+import { CallSession } from "../pipeline/call-session.js";
+import { StubASR } from "../providers/stub-asr.js";
+import { StubTTS } from "../providers/stub-tts.js";
+import { OpenRouterLLM } from "../providers/openrouter-llm.js";
+import type { AudioFormat } from "../pipeline/types.js";
 
 /**
  * Twilio Media Stream event types.
@@ -14,9 +19,9 @@ interface TwilioMediaEvent {
     callSid: string;
     tracks: string[];
     mediaFormat: {
-      encoding: string; // "audio/x-mulaw"
-      sampleRate: number; // 8000
-      channels: number; // 1
+      encoding: string;
+      sampleRate: number;
+      channels: number;
     };
   };
   media?: {
@@ -28,14 +33,31 @@ interface TwilioMediaEvent {
 }
 
 /**
+ * Create AI pipeline providers.
+ * Switch from stubs to real providers here.
+ */
+function createProviders() {
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  if (!apiKey) {
+    console.warn(
+      "[media-stream] OPENROUTER_API_KEY not set, LLM responses will fail"
+    );
+  }
+
+  return {
+    asr: new StubASR(), // TODO: Replace with Deepgram or FunASR
+    llm: new OpenRouterLLM(apiKey || "", "deepseek/deepseek-chat"),
+    tts: new StubTTS(), // TODO: Replace with Deepgram Aura or Azure Neural TTS
+  };
+}
+
+/**
  * Handle WebSocket connection from Twilio Media Streams.
- *
- * Current behavior: logs events and echoes audio back (for testing).
- * TODO: Route audio through ASR → LLM → TTS pipeline.
+ * Routes audio through ASR → LLM → TTS pipeline.
  */
 export function handleMediaStream(socket: WebSocket) {
   let streamSid: string | null = null;
-  let callSid: string | null = null;
+  let callSession: CallSession | null = null;
 
   console.log("[media-stream] Client connected");
 
@@ -53,39 +75,63 @@ export function handleMediaStream(socket: WebSocket) {
         console.log("[media-stream] Connected event received");
         break;
 
-      case "start":
+      case "start": {
         streamSid = event.start?.streamSid || event.streamSid || null;
-        callSid = event.start?.callSid || null;
+        const callSid = event.start?.callSid || null;
         console.log(
           `[media-stream] Stream started: streamSid=${streamSid}, callSid=${callSid}`
         );
-        console.log(
-          `[media-stream] Media format:`,
-          JSON.stringify(event.start?.mediaFormat)
-        );
+
+        // Twilio default format
+        const twilioFormat: AudioFormat = {
+          encoding: "mulaw",
+          sampleRate: 8000,
+          channels: 1,
+        };
+
+        // Initialize pipeline
+        const providers = createProviders();
+        callSession = new CallSession({
+          ...providers,
+          inboundFormat: twilioFormat,
+          outboundFormat: twilioFormat,
+        });
+
+        // When pipeline produces audio, send it back through Twilio
+        callSession.onAudio((audio: Buffer) => {
+          if (streamSid && socket.readyState === socket.OPEN) {
+            socket.send(
+              JSON.stringify({
+                event: "media",
+                streamSid,
+                media: {
+                  payload: audio.toString("base64"),
+                },
+              })
+            );
+          }
+        });
+
+        callSession.start(twilioFormat, twilioFormat).catch((err) => {
+          console.error("[media-stream] Failed to start session:", err);
+        });
         break;
+      }
 
       case "media":
-        // For now, just count chunks. Later this feeds into ASR.
-        if (event.media?.payload && streamSid) {
-          // Echo audio back for testing
-          const echoMessage = JSON.stringify({
-            event: "media",
-            streamSid,
-            media: {
-              payload: event.media.payload,
-            },
-          });
-          socket.send(echoMessage);
+        if (event.media?.payload && callSession) {
+          const audioBuffer = Buffer.from(event.media.payload, "base64");
+          callSession.feedAudio(audioBuffer);
         }
         break;
 
       case "stop":
         console.log(`[media-stream] Stream stopped: streamSid=${streamSid}`);
+        callSession?.destroy();
+        callSession = null;
         break;
 
       case "mark":
-        // Mark events confirm that a media message was played
         break;
 
       default:
@@ -96,12 +142,14 @@ export function handleMediaStream(socket: WebSocket) {
   });
 
   socket.on("close", () => {
-    console.log(
-      `[media-stream] Client disconnected: streamSid=${streamSid}`
-    );
+    console.log(`[media-stream] Client disconnected: streamSid=${streamSid}`);
+    callSession?.destroy();
+    callSession = null;
   });
 
   socket.on("error", (err) => {
-    console.error(`[media-stream] WebSocket error:`, err);
+    console.error("[media-stream] WebSocket error:", err);
+    callSession?.destroy();
+    callSession = null;
   });
 }
