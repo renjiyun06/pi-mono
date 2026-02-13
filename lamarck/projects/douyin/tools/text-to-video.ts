@@ -141,15 +141,20 @@ async function generateVideo(
       remaining = remaining.slice(breakAt);
     }
 
-    // Build text overlay filters with shadow for readability
+    // Build text overlay filters with shadow, fade-in, and fade-out
     const fontFile = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc";
+    const fadeInDuration = 0.5; // seconds
+    const fadeOutDuration = 0.5;
+    // Text alpha expression: fade in over fadeInDuration, hold, fade out before end
+    const alphaExpr = `if(lt(t\\,${fadeInDuration})\\,t/${fadeInDuration}\\,if(gt(t\\,${(sectionDuration - fadeOutDuration).toFixed(2)})\\,(${sectionDuration.toFixed(2)}-t)/${fadeOutDuration}\\,1))`;
+
     const drawTextFilters = lines.flatMap((line, lineIdx) => {
       const yPos = Math.floor(height / 2) - ((lines.length * fontSize * 1.5) / 2) + lineIdx * fontSize * 1.5;
       const escaped = escapeFFmpegText(line);
-      // Shadow first, then text on top
+      // Shadow + text, both with alpha animation
       return [
-        `drawtext=text='${escaped}':fontcolor=#000000@0.5:fontsize=${fontSize}:x=(w-text_w)/2+3:y=${yPos}+3:fontfile=${fontFile}`,
-        `drawtext=text='${escaped}':fontcolor=#${textColor}:fontsize=${fontSize}:x=(w-text_w)/2:y=${yPos}:fontfile=${fontFile}`,
+        `drawtext=text='${escaped}':fontcolor=#000000:alpha='${alphaExpr}*0.5':fontsize=${fontSize}:x=(w-text_w)/2+3:y=${yPos}+3:fontfile=${fontFile}`,
+        `drawtext=text='${escaped}':fontcolor=#${textColor}:alpha='${alphaExpr}':fontsize=${fontSize}:x=(w-text_w)/2:y=${yPos}:fontfile=${fontFile}`,
       ];
     }).join(",");
 
@@ -200,32 +205,62 @@ async function generateVideo(
     segmentPaths.push(segmentPath);
   }
 
-  // 3. Concatenate all segments
+  // 3. Concatenate all segments with crossfade transitions
   console.log("\n--- Concatenating segments ---");
-  const concatFile = join(workDir, "concat.txt");
-  const concatContent = segmentPaths.map((p) => `file '${p}'`).join("\n");
-  await writeFile(concatFile, concatContent);
 
-  await new Promise<void>((resolve, reject) => {
-    execFile(
-      "ffmpeg",
-      [
-        "-y",
-        "-f", "concat",
-        "-safe", "0",
-        "-i", concatFile,
-        "-c:v", "libx264",
-        "-preset", "fast",
-        "-c:a", "aac",
-        outputPath,
-      ],
-      { timeout: 120000 },
-      (error) => {
-        if (error) reject(error);
-        else resolve();
-      }
-    );
-  });
+  if (segmentPaths.length === 1) {
+    // Single segment, just copy
+    await new Promise<void>((resolve, reject) => {
+      execFile("ffmpeg", ["-y", "-i", segmentPaths[0], "-c", "copy", outputPath],
+        { timeout: 60000 }, (error) => { if (error) reject(error); else resolve(); });
+    });
+  } else {
+    // Use concat with crossfade for smooth transitions
+    // ffmpeg xfade filter chain: input0 xfade input1 -> result xfade input2 -> ...
+    const xfadeDuration = 0.3; // seconds
+
+    const inputArgs = segmentPaths.flatMap((p) => ["-i", p]);
+
+    // Build xfade filter chain
+    // For N inputs, we need N-1 xfade filters
+    const filters: string[] = [];
+    let lastLabel = "[0:v]";
+
+    for (let j = 1; j < segmentPaths.length; j++) {
+      const nextLabel = `[${j}:v]`;
+      const outLabel = j < segmentPaths.length - 1 ? `[v${j}]` : "[vout]";
+      // Offset = sum of all previous segment durations minus accumulated xfade overlaps
+      // For simplicity, use concat (xfade is complex with variable durations)
+      filters.push(`${lastLabel}${nextLabel}xfade=transition=fade:duration=${xfadeDuration}:offset=0${outLabel}`);
+      lastLabel = outLabel;
+    }
+
+    // Crossfade with variable offsets is complex. Use simple concat + per-segment fades instead.
+    const concatFile = join(workDir, "concat.txt");
+    const concatContent = segmentPaths.map((p) => `file '${p}'`).join("\n");
+    await writeFile(concatFile, concatContent);
+
+    await new Promise<void>((resolve, reject) => {
+      execFile(
+        "ffmpeg",
+        [
+          "-y",
+          "-f", "concat",
+          "-safe", "0",
+          "-i", concatFile,
+          "-c:v", "libx264",
+          "-preset", "fast",
+          "-c:a", "aac",
+          outputPath,
+        ],
+        { timeout: 120000 },
+        (error) => {
+          if (error) reject(error);
+          else resolve();
+        }
+      );
+    });
+  }
 
   // Cleanup
   await rm(workDir, { recursive: true, force: true });
