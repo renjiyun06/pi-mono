@@ -101,3 +101,16 @@
 **安装命令**：`curl -fsSL https://ollama.com/install.sh | sh`（需要 sudo）
 
 **优先级**：中。OpenRouter key 失效期间是唯一的 LLM 方案。
+
+## debt-call-shield 缺少端到端测试能力
+
+**发现时间**：2026-02-14
+
+**问题**：`media-stream.ts` 的 `createProviders()` 硬编码使用真实 provider（WhisperASR, OpenRouterLLM, EdgeTTS），没有 stub 模式。虽然有 3 个 stub provider（stub-asr, stub-llm, stub-tts），但没有被集成。
+
+**需要的改进**：
+1. 在 `createProviders()` 中支持环境变量 `USE_STUBS=true` 切换到 stub provider
+2. 编写 WebSocket 测试客户端模拟 Twilio media stream 协议
+3. 这样即使没有 OpenRouter key 和 Twilio 也能测试完整流程
+
+**优先级**：低。等 Ren 注册 Twilio 后再考虑。
