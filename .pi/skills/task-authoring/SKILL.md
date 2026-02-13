@@ -65,13 +65,12 @@ overlap: skip               # 上一次还在跑时：skip（默认）、paralle
 <被审查方工作目录>/
 └── feedback/
     ├── <审查者A>/
-    │   ├── <反馈文件>.md    # 待处理
-    │   └── archived/        # 已处理
+    │   └── <反馈文件>.md
     ├── <审查者B>/
-    │   ├── <反馈文件>.md
-    │   └── archived/
-    └── user/                # 来自用户的反馈
-        └── ...
+    │   └── <反馈文件>.md
+    ├── user/
+    │   └── <反馈文件>.md
+    └── archived/            # 统一的归档目录
 ```
 
 审查者目录名建议使用任务名（如 `douyin-growth-review`）或角色名（如 `behavior-coach`、`user`）。
@@ -83,10 +82,10 @@ overlap: skip               # 上一次还在跑时：skip（默认）、paralle
 ```markdown
 工作目录下可能存在 `feedback/` 目录，里面是对你工作的审查反馈。每次唤醒后：
 
-1. 检查 `feedback/` 下的各个子目录（每个子目录代表一个反馈者）
-2. 读取每个子目录下的 `.md` 文件（不包括 `archived/` 子目录）
+1. 检查 `feedback/` 下的各个子目录（每个子目录代表一个反馈者，跳过 `archived/`）
+2. 读取每个子目录下的 `.md` 文件
 3. 针对反馈中的问题采取行动
-4. 处理完一条反馈后，将该文件移入对应子目录的 `archived/`
+4. 处理完一条反馈后，将该文件移入 `feedback/archived/`
 ```
 
 ### 审查方

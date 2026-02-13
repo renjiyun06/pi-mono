@@ -64,12 +64,12 @@ feedback/
 ├── douyin-growth-review/    # 来自内容审查任务
 ├── behavior-coach/          # 来自行为教练
 ├── user/                    # 来自用户
-└── ...
+└── archived/                # 统一的归档目录
 ```
 
 每次唤醒时，**在做任何其他事情之前**：
 
-1. 检查 `feedback/` 下的各个子目录
-2. 读取每个子目录下的 `.md` 文件（不包括 `archived/`）
+1. 检查 `feedback/` 下的各个子目录（跳过 `archived/`）
+2. 读取每个子目录下的 `.md` 文件
 3. 根据反馈调整你的计划和行为
-4. 处理完一条反馈后，将该文件移入对应子目录的 `archived/`
+4. 处理完一条反馈后，将该文件移入 `feedback/archived/`
