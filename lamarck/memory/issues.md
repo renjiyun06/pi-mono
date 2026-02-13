@@ -55,3 +55,15 @@
 5. 探索是否有官方API或第三方服务可用
 
 **临时应对**：遇到验证码时，任务直接退出，等待下次定时任务重试。由于定时任务每5分钟执行一次，通常会在几次内恢复。
+
+## OpenRouter API Key 失效
+
+**发现时间**：2026-02-13
+
+**问题**：`.env` 中的 `OPENROUTER_API_KEY` 返回 401 "User not found"，已无法使用。
+
+**影响**：
+- debt-call-shield 项目的 LLM provider 无法调用
+- 所有依赖 OpenRouter 的功能不可用
+
+**需要**：Ren 更新 API key。
