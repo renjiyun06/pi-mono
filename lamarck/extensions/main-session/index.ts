@@ -254,10 +254,18 @@ function tmuxStartTask(name: string, prompt: string, model: string, userArgs?: s
 	}
 	fs.writeFileSync(promptFile, fullPrompt);
 
-	// Parse model string: "provider/model" or "provider/manufacturer/model" -> --provider provider --model model or --provider provider --model manufacturer/model
-	let [provider, manufacturer, modelId] = model.includes("/") ? model.split("/", 3) : ["anthropic", null, model];
-	if (manufacturer) {
-		modelId = `${manufacturer}/${modelId}`;
+	// Parse model string: split on first "/" only
+	// "provider/model-id" → provider="provider", modelId="model-id"
+	// "openrouter/anthropic/claude-4" → provider="openrouter", modelId="anthropic/claude-4"
+	let provider: string;
+	let modelId: string;
+	const slashIdx = model.indexOf("/");
+	if (slashIdx !== -1) {
+		provider = model.slice(0, slashIdx);
+		modelId = model.slice(slashIdx + 1);
+	} else {
+		provider = "anthropic";
+		modelId = model;
 	}
 
 	// Each task gets its own session directory
