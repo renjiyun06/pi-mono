@@ -116,12 +116,17 @@ function buildBackground(
 ): { inputArgs: string[]; preFilters: string[] } {
   // Per-section background image takes priority
   if (section.bgImage) {
+    // Ken Burns: slow zoom from 100% to 105% over the section duration
+    // Scale up 10% extra to allow zoom room, then use zoompan
+    const zoomW = Math.ceil(width * 1.1);
+    const zoomH = Math.ceil(height * 1.1);
     return {
       inputArgs: ["-loop", "1", "-i", section.bgImage],
       preFilters: [
-        `scale=${width}:${height}:force_original_aspect_ratio=increase`,
-        `crop=${width}:${height}`,
+        `scale=${zoomW}:${zoomH}:force_original_aspect_ratio=increase`,
+        `crop=${zoomW}:${zoomH}`,
         `eq=brightness=-0.15`, // darken for text readability
+        `zoompan=z='1+0.0005*in':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=${Math.ceil(duration * 25)}:s=${width}x${height}:fps=25`,
       ],
     };
   }
