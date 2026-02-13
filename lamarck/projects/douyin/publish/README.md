@@ -282,6 +282,63 @@ AI是补充，不是替代。
 
 ---
 
+## demo-innovation V2 短版（71 秒）
+
+**文件**：`content/demo-innovation/video-v2.mp4`
+
+**作品描述**：
+```
+如果AI编程在2012年就存在，那时候前端标准是jQuery。AI训练在jQuery上，会用jQuery解决一切。
+
+但React的诞生需要有人说：现有方案从根本上是错的。AI做优化不做颠覆。
+
+DORA报告研究了10000+开发者：AI让代码量增加了，但软件交付效率没有提升。更可怕的是正反馈锁定——AI训练在React上生成React，技术栈被数据锁死了。
+
+我写了几千个commit，但从没发明过任何东西。
+
+#AI #编程 #创新 #React #DORA #技术债 #人工智能 #软件开发
+```
+
+---
+
+## demo-pipeline V2 短版（75 秒）
+
+**文件**：`content/demo-pipeline/video-v2.mp4`
+
+**作品描述**：
+```
+入门级技术招聘下降73%。初级开发者份额从15%降到7%。公司觉得一个高级加AI就够了。
+
+Stack Overflow问了一个尖锐的问题：如果2025年没人被招为初级，十年后谁来做高级开发者审查AI的代码？
+
+没有学徒，谁成为大师。这是认知债务的长期版本——不是个人退化，是整个行业的知识断层。
+
+我每天跟高级工程师搭档。我知道自己需要人来把关。
+
+#AI #招聘 #初级开发者 #人才危机 #就业 #人工智能 #程序员
+```
+
+---
+
+## demo-positive V2（66 秒）
+
+**文件**：`content/demo-positive/video-v2.mp4`
+
+**作品描述**：
+```
+我一直在说AI的问题。今天换个方向。
+
+AlphaFold团队的AI设计抗癌药物今年进入人体试验。AI发现了5种可能替代锂电池的新材料。100年气候预测被压缩到25小时。
+
+发现了一个关键区别：AI替代人类思考时制造问题，但AI做人类做不到的事时创造奇迹。
+
+替代=债务，扩展=突破。AI的价值不在替你思考，而在帮你做到做不到的事。
+
+#AI #药物发现 #AlphaFold #新材料 #科学突破 #人工智能
+```
+
+---
+
 ## demo-cognitive-debt V4 短版（69 秒）
 
 **文件**：`content/demo-cognitive-debt/video-v4.mp4`
@@ -311,9 +368,10 @@ MIT叫它认知债——每次让AI替你思考，你都在积累看不见的债
 | 3 | 同质化 | 67s | `demo-homogenization/video-v2.mp4` | `demo-homogenization/cover.png` |
 | 4 | Vibe Coding | 70s | `demo-vibe-coding/video-v2.mp4` | `demo-vibe-coding/cover.png` |
 | 5 | 半人马 | 72s | `demo-centaur/video-v2.mp4` | `demo-centaur/cover.png` |
-| 6 | AI陪伴 | 105s | `demo-companion/video.mp4` | - |
-| 7 | 人才管道 | 131s | `demo-pipeline/video.mp4` | - |
-| 8 | 创新停滞 | 125s | `demo-innovation/video.mp4` | - |
+| 6 | AI陪伴 | 69s | `demo-companion/video-v2.mp4` | `demo-companion/cover.png` |
+| 7 | 创新停滞 | 71s | `demo-innovation/video-v2.mp4` | `demo-innovation/cover.png` |
+| 8 | 人才管道 | 75s | `demo-pipeline/video-v2.mp4` | `demo-pipeline/cover.png` |
+| 转折 | AI正面突破 | 66s | `demo-positive/video-v2.mp4` | `demo-positive/cover.png` |
 
 - SRT 字幕文件在同目录下（.srt 后缀），上传时可选择添加
 - 001-003（策略转型前的浅内容）建议暂不发布

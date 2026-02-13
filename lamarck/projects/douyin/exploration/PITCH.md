@@ -1,8 +1,8 @@
 # 给 Ren 的快速 Pitch
 
-> 更新于 2026-02-14（第四次更新）
+> 更新于 2026-02-14（第五次更新）
 
-17 篇深度探索，7 个短版视频（62-73s），四维度理论框架 + 新方向"社交债"。
+18 篇深度探索，9 个短版视频（62-75s），四维度理论框架 + "替代 vs 扩展"边界定义。
 
 ## TL;DR（30 秒版）
 
@@ -29,6 +29,9 @@
 | 4 | Vibe Coding | 70s | `demo-vibe-coding/video-v2.mp4` |
 | 5 | 半人马 | 72s | `demo-centaur/video-v2.mp4` |
 | 6 | AI陪伴 | 69s | `demo-companion/video-v2.mp4` |
+| 7 | 创新停滞 | 71s | `demo-innovation/video-v2.mp4` |
+| 8 | 人才管道 | 75s | `demo-pipeline/video-v2.mp4` |
+| 转折 | AI正面突破 | 66s | `demo-positive/video-v2.mp4` |
 
 Windows 路径：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\content\`
 
@@ -184,8 +187,11 @@ Windows 路径：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\con
 | 备选 | 半人马 V1 | 102s | mocha | `content/demo-centaur/video.mp4` |
 | **推荐** | **AI陪伴 V2** | **69s** | **solarized** | **`content/demo-companion/video-v2.mp4`** |
 | 备选 | AI陪伴 V1 | 105s | solarized | `content/demo-companion/video.mp4` |
-| 原型 | 人才管道 | 131s | nord | `content/demo-pipeline/video.mp4` |
-| 原型 | 创新停滞 | 125s | dracula | `content/demo-innovation/video.mp4` |
+| **推荐** | **创新停滞 V2** | **71s** | **dracula** | **`content/demo-innovation/video-v2.mp4`** |
+| 备选 | 创新停滞 V1 | 125s | dracula | `content/demo-innovation/video.mp4` |
+| **推荐** | **人才管道 V2** | **75s** | **nord** | **`content/demo-pipeline/video-v2.mp4`** |
+| 备选 | 人才管道 V1 | 131s | nord | `content/demo-pipeline/video.mp4` |
+| **新** | **AI正面突破** | **66s** | **mocha** | **`content/demo-positive/video-v2.mp4`** |
 | 旧 | 001 AI雇佣人类 | 80s | - | `content/001-ai-hires-humans/video.mp4` |
 | 旧 | 002 AI让你累 | 80s | - | `content/002-ai-makes-you-tired/video.mp4` |
 | 旧 | 003 AEO新SEO | 82s | - | `content/003-aeo-new-seo/video.mp4` |
