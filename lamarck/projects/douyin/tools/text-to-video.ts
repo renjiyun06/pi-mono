@@ -1,13 +1,10 @@
 /**
- * Text-to-Video prototype.
+ * Text-to-Video tool.
  *
  * Takes a script (text with sections) and produces a video with:
  * - TTS voiceover (Edge TTS)
- * - Simple text overlay on solid background
- * - Background music (optional)
- *
- * This is a minimal prototype for testing the pipeline.
- * Production version would use AI-generated images/videos as background.
+ * - Text overlay with fade animations
+ * - Background: solid color, gradient, or custom image
  *
  * Usage:
  *   npx tsx tools/text-to-video.ts --input script.json --output output.mp4
@@ -28,27 +25,35 @@ interface ScriptSection {
   voiceoverText: string;
   /** Duration override in seconds (auto-calculated from TTS if not set) */
   duration?: number;
-  /** Background image path (optional, overrides bgColor for this section) */
+  /** Background image path (optional, overrides global background for this section) */
   bgImage?: string;
 }
+
+type BgStyle =
+  | "solid"
+  | "gradient"          // vertical gradient using bgColor → bgColorEnd
+  | "gradient-shift"    // slowly shifting gradient (animated)
+  | "vignette";         // solid with dark vignette edges
 
 interface VideoScript {
   title: string;
   sections: ScriptSection[];
-  /** Video dimensions */
   width?: number;
   height?: number;
-  /** TTS voice */
   voice?: string;
-  /** Background color (hex) */
+  /** Primary background color (hex without #) */
   bgColor?: string;
-  /** Text color (hex) */
+  /** Secondary background color for gradients (hex without #) */
+  bgColorEnd?: string;
+  /** Background style */
+  bgStyle?: BgStyle;
+  /** Text color (hex without #) */
   textColor?: string;
-  /** Font size */
   fontSize?: number;
 }
 
 const PYTHON_PATH = "/home/lamarck/pi-mono/lamarck/pyenv/bin/python";
+const FONT_FILE = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc";
 
 async function synthesizeTTS(
   text: string,
@@ -62,7 +67,6 @@ async function synthesizeTTS(
       { timeout: 30000 },
       (error) => {
         if (error) return reject(error);
-        // Get duration with ffprobe
         try {
           const result = execFileSync("ffprobe", [
             "-v", "quiet",
@@ -72,7 +76,7 @@ async function synthesizeTTS(
           ]).toString().trim();
           resolve(parseFloat(result));
         } catch {
-          resolve(3); // fallback
+          resolve(3);
         }
       }
     );
@@ -88,6 +92,150 @@ function escapeFFmpegText(text: string): string {
     .replace(/\]/g, "\\]");
 }
 
+/** Parse hex color string to RGB components */
+function hexToRGB(hex: string): { r: number; g: number; b: number } {
+  const n = parseInt(hex, 16);
+  return { r: (n >> 16) & 0xff, g: (n >> 8) & 0xff, b: n & 0xff };
+}
+
+/**
+ * Build ffmpeg background source args and any pre-text video filters.
+ * Returns [inputArgs, preFilters] where preFilters may be empty.
+ */
+function buildBackground(
+  section: ScriptSection,
+  width: number,
+  height: number,
+  duration: number,
+  bgColor: string,
+  bgColorEnd: string,
+  bgStyle: BgStyle,
+): { inputArgs: string[]; preFilters: string[] } {
+  // Per-section background image takes priority
+  if (section.bgImage) {
+    return {
+      inputArgs: ["-loop", "1", "-i", section.bgImage],
+      preFilters: [
+        `scale=${width}:${height}:force_original_aspect_ratio=increase`,
+        `crop=${width}:${height}`,
+        `eq=brightness=-0.15`, // darken for text readability
+      ],
+    };
+  }
+
+  const c1 = hexToRGB(bgColor);
+  const c2 = hexToRGB(bgColorEnd);
+
+  switch (bgStyle) {
+    case "gradient": {
+      // Static vertical gradient using geq filter
+      // Interpolate from c1 (top) to c2 (bottom)
+      const rExpr = `${c1.r}+(${c2.r}-${c1.r})*Y/H`;
+      const gExpr = `${c1.g}+(${c2.g}-${c1.g})*Y/H`;
+      const bExpr = `${c1.b}+(${c2.b}-${c1.b})*Y/H`;
+      return {
+        inputArgs: [
+          "-f", "lavfi",
+          "-i", `color=c=black:s=${width}x${height}:d=${duration.toFixed(2)}:r=30`,
+        ],
+        preFilters: [
+          `geq=r='${rExpr}':g='${gExpr}':b='${bExpr}'`,
+        ],
+      };
+    }
+
+    case "gradient-shift": {
+      // Animated gradient that slowly breathes over time
+      // Mix factor oscillates based on Y position + time
+      const mix = `(0.5+0.2*sin(2*PI*Y/H+T*0.5))`;
+      const rExpr = `clip(${c1.r}+(${c2.r}-${c1.r})*${mix}\\,0\\,255)`;
+      const gExpr = `clip(${c1.g}+(${c2.g}-${c1.g})*${mix}\\,0\\,255)`;
+      const bExpr = `clip(${c1.b}+(${c2.b}-${c1.b})*${mix}\\,0\\,255)`;
+      return {
+        inputArgs: [
+          "-f", "lavfi",
+          "-i", `color=c=black:s=${width}x${height}:d=${duration.toFixed(2)}:r=30`,
+        ],
+        preFilters: [
+          `geq=r='${rExpr}':g='${gExpr}':b='${bExpr}'`,
+        ],
+      };
+    }
+
+    case "vignette": {
+      // Solid color with vignette darkening at edges
+      return {
+        inputArgs: [
+          "-f", "lavfi",
+          "-i", `color=c=#${bgColor}:s=${width}x${height}:d=${duration.toFixed(2)}:r=30`,
+        ],
+        preFilters: [
+          `vignette=angle=PI/4:mode=forward`,
+        ],
+      };
+    }
+
+    case "solid":
+    default:
+      return {
+        inputArgs: [
+          "-f", "lavfi",
+          "-i", `color=c=#${bgColor}:s=${width}x${height}:d=${duration.toFixed(2)}:r=30`,
+        ],
+        preFilters: [],
+      };
+  }
+}
+
+function buildTextFilters(
+  lines: string[],
+  fontSize: number,
+  textColor: string,
+  height: number,
+  sectionDuration: number,
+): string {
+  const fadeIn = 0.5;
+  const fadeOut = 0.5;
+  const endFadeStart = (sectionDuration - fadeOut).toFixed(2);
+  const dur = sectionDuration.toFixed(2);
+  // Alpha expression: fade in, hold, fade out
+  const alphaExpr =
+    `if(lt(t\\,${fadeIn})\\,t/${fadeIn}\\,if(gt(t\\,${endFadeStart})\\,(${dur}-t)/${fadeOut}\\,1))`;
+
+  return lines.flatMap((line, lineIdx) => {
+    const yPos = Math.floor(height / 2) - ((lines.length * fontSize * 1.5) / 2) + lineIdx * fontSize * 1.5;
+    const escaped = escapeFFmpegText(line);
+    return [
+      // Shadow
+      `drawtext=text='${escaped}':fontcolor=#000000:alpha='${alphaExpr}*0.5':fontsize=${fontSize}:x=(w-text_w)/2+3:y=${yPos}+3:fontfile=${FONT_FILE}`,
+      // Text
+      `drawtext=text='${escaped}':fontcolor=#${textColor}:alpha='${alphaExpr}':fontsize=${fontSize}:x=(w-text_w)/2:y=${yPos}:fontfile=${FONT_FILE}`,
+    ];
+  }).join(",");
+}
+
+function wrapText(text: string, maxCharsPerLine: number): string[] {
+  const lines: string[] = [];
+  // Split on explicit newlines first
+  for (const paragraph of text.split("\n")) {
+    let remaining = paragraph;
+    while (remaining.length > 0) {
+      if (remaining.length <= maxCharsPerLine) {
+        lines.push(remaining);
+        break;
+      }
+      let breakAt = maxCharsPerLine;
+      const punctuation = remaining.slice(0, maxCharsPerLine + 5).search(/[，。！？、；\s]/g);
+      if (punctuation > 0 && punctuation <= maxCharsPerLine + 2) {
+        breakAt = punctuation + 1;
+      }
+      lines.push(remaining.slice(0, breakAt));
+      remaining = remaining.slice(breakAt);
+    }
+  }
+  return lines;
+}
+
 async function generateVideo(
   script: VideoScript,
   outputPath: string
@@ -99,14 +247,17 @@ async function generateVideo(
   const height = script.height || 1920;
   const voice = script.voice || "zh-CN-XiaoxiaoNeural";
   const bgColor = script.bgColor || "1a1a2e";
+  const bgColorEnd = script.bgColorEnd || "16213e";
+  const bgStyle = script.bgStyle || "solid";
   const textColor = script.textColor || "ffffff";
   const fontSize = script.fontSize || 48;
 
   console.log(`Generating video: ${script.title}`);
-  console.log(`Dimensions: ${width}x${height}, Voice: ${voice}`);
+  console.log(`Dimensions: ${width}x${height}, Voice: ${voice}, BG: ${bgStyle}`);
   console.log(`Sections: ${script.sections.length}`);
 
   const segmentPaths: string[] = [];
+  const maxCharsPerLine = Math.floor(width / (fontSize * 0.7));
 
   for (let i = 0; i < script.sections.length; i++) {
     const section = script.sections[i];
@@ -116,75 +267,30 @@ async function generateVideo(
     // 1. Generate TTS audio
     const audioPath = join(workDir, `section-${i}.mp3`);
     const duration = await synthesizeTTS(section.voiceoverText, voice, audioPath);
-    const sectionDuration = section.duration || duration + 0.5; // add small padding
+    const sectionDuration = section.duration || duration + 0.5;
     console.log(`Audio duration: ${duration.toFixed(1)}s`);
 
-    // 2. Generate video segment with text overlay
+    // 2. Build video segment
     const segmentPath = join(workDir, `segment-${i}.mp4`);
+    const lines = wrapText(section.displayText, maxCharsPerLine);
 
-    // Wrap display text for multi-line
-    const maxCharsPerLine = Math.floor(width / (fontSize * 0.7));
-    const lines: string[] = [];
-    let remaining = section.displayText;
-    while (remaining.length > 0) {
-      if (remaining.length <= maxCharsPerLine) {
-        lines.push(remaining);
-        break;
-      }
-      // Find a good break point
-      let breakAt = maxCharsPerLine;
-      const punctuation = remaining.slice(0, maxCharsPerLine + 5).search(/[，。！？、；\s]/g);
-      if (punctuation > 0 && punctuation <= maxCharsPerLine + 2) {
-        breakAt = punctuation + 1;
-      }
-      lines.push(remaining.slice(0, breakAt));
-      remaining = remaining.slice(breakAt);
-    }
+    const { inputArgs, preFilters } = buildBackground(
+      section, width, height, sectionDuration, bgColor, bgColorEnd, bgStyle,
+    );
 
-    // Build text overlay filters with shadow, fade-in, and fade-out
-    const fontFile = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc";
-    const fadeInDuration = 0.5; // seconds
-    const fadeOutDuration = 0.5;
-    // Text alpha expression: fade in over fadeInDuration, hold, fade out before end
-    const alphaExpr = `if(lt(t\\,${fadeInDuration})\\,t/${fadeInDuration}\\,if(gt(t\\,${(sectionDuration - fadeOutDuration).toFixed(2)})\\,(${sectionDuration.toFixed(2)}-t)/${fadeOutDuration}\\,1))`;
+    const textFilters = buildTextFilters(lines, fontSize, textColor, height, sectionDuration);
+    const allFilters = [...preFilters, textFilters].filter(Boolean).join(",");
 
-    const drawTextFilters = lines.flatMap((line, lineIdx) => {
-      const yPos = Math.floor(height / 2) - ((lines.length * fontSize * 1.5) / 2) + lineIdx * fontSize * 1.5;
-      const escaped = escapeFFmpegText(line);
-      // Shadow + text, both with alpha animation
-      return [
-        `drawtext=text='${escaped}':fontcolor=#000000:alpha='${alphaExpr}*0.5':fontsize=${fontSize}:x=(w-text_w)/2+3:y=${yPos}+3:fontfile=${fontFile}`,
-        `drawtext=text='${escaped}':fontcolor=#${textColor}:alpha='${alphaExpr}':fontsize=${fontSize}:x=(w-text_w)/2:y=${yPos}:fontfile=${fontFile}`,
-      ];
-    }).join(",");
+    const ffmpegArgs: string[] = [
+      "-y",
+      ...inputArgs,
+      "-i", audioPath,
+      "-vf", allFilters || "null",
+    ];
 
-    // Build ffmpeg args based on whether we have a background image
-    const ffmpegArgs: string[] = ["-y"];
-
+    // For background images, need explicit duration
     if (section.bgImage) {
-      // Use background image: loop it for the duration, scale/crop to fit
-      ffmpegArgs.push(
-        "-loop", "1",
-        "-i", section.bgImage,
-        "-i", audioPath,
-        "-vf", [
-          `scale=${width}:${height}:force_original_aspect_ratio=increase`,
-          `crop=${width}:${height}`,
-          // Dark overlay for text readability
-          `colorbalance=rs=-0.1:gs=-0.1:bs=-0.1`,
-          `eq=brightness=-0.15`,
-          drawTextFilters,
-        ].filter(Boolean).join(","),
-        "-t", sectionDuration.toFixed(2),
-      );
-    } else {
-      // Solid color background
-      ffmpegArgs.push(
-        "-f", "lavfi",
-        "-i", `color=c=#${bgColor}:s=${width}x${height}:d=${sectionDuration}:r=30`,
-        "-i", audioPath,
-        "-vf", drawTextFilters || "null",
-      );
+      ffmpegArgs.push("-t", sectionDuration.toFixed(2));
     }
 
     ffmpegArgs.push(
@@ -196,46 +302,28 @@ async function generateVideo(
     );
 
     await new Promise<void>((resolve, reject) => {
-      execFile("ffmpeg", ffmpegArgs, { timeout: 60000 }, (error) => {
-        if (error) reject(error);
-        else resolve();
+      execFile("ffmpeg", ffmpegArgs, { timeout: 60000 }, (error, _stdout, stderr) => {
+        if (error) {
+          console.error("[ffmpeg stderr]", stderr?.slice(-500));
+          reject(error);
+        } else {
+          resolve();
+        }
       });
     });
 
     segmentPaths.push(segmentPath);
   }
 
-  // 3. Concatenate all segments with crossfade transitions
+  // 3. Concatenate segments
   console.log("\n--- Concatenating segments ---");
 
   if (segmentPaths.length === 1) {
-    // Single segment, just copy
     await new Promise<void>((resolve, reject) => {
       execFile("ffmpeg", ["-y", "-i", segmentPaths[0], "-c", "copy", outputPath],
         { timeout: 60000 }, (error) => { if (error) reject(error); else resolve(); });
     });
   } else {
-    // Use concat with crossfade for smooth transitions
-    // ffmpeg xfade filter chain: input0 xfade input1 -> result xfade input2 -> ...
-    const xfadeDuration = 0.3; // seconds
-
-    const inputArgs = segmentPaths.flatMap((p) => ["-i", p]);
-
-    // Build xfade filter chain
-    // For N inputs, we need N-1 xfade filters
-    const filters: string[] = [];
-    let lastLabel = "[0:v]";
-
-    for (let j = 1; j < segmentPaths.length; j++) {
-      const nextLabel = `[${j}:v]`;
-      const outLabel = j < segmentPaths.length - 1 ? `[v${j}]` : "[vout]";
-      // Offset = sum of all previous segment durations minus accumulated xfade overlaps
-      // For simplicity, use concat (xfade is complex with variable durations)
-      filters.push(`${lastLabel}${nextLabel}xfade=transition=fade:duration=${xfadeDuration}:offset=0${outLabel}`);
-      lastLabel = outLabel;
-    }
-
-    // Crossfade with variable offsets is complex. Use simple concat + per-segment fades instead.
     const concatFile = join(workDir, "concat.txt");
     const concatContent = segmentPaths.map((p) => `file '${p}'`).join("\n");
     await writeFile(concatFile, concatContent);
@@ -262,9 +350,7 @@ async function generateVideo(
     });
   }
 
-  // Cleanup
   await rm(workDir, { recursive: true, force: true });
-
   console.log(`\nVideo saved to: ${outputPath}`);
 }
 
@@ -280,17 +366,20 @@ program
     if (opts.describe) {
       console.log(
         "text-to-video: Converts a JSON script into a video with TTS voiceover.\n" +
-        "Each section gets its own TTS audio and text overlay on a solid background.\n" +
-        "Segments are concatenated into the final video.\n" +
-        "Requires: ffmpeg, Python edge-tts, Chinese fonts."
+        "Each section gets its own TTS audio and text overlay.\n" +
+        "Background styles: solid, gradient, gradient-shift, vignette.\n" +
+        "Per-section background images supported via bgImage field.\n" +
+        "Requires: ffmpeg, Python edge-tts, fonts-noto-cjk."
       );
       return;
     }
 
     if (!opts.input) {
-      // Demo mode: generate a sample video
       const demoScript: VideoScript = {
         title: "Demo Video",
+        bgStyle: "gradient",
+        bgColor: "1a1a2e",
+        bgColorEnd: "16213e",
         sections: [
           {
             displayText: "你好，欢迎观看",

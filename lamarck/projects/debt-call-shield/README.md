@@ -29,10 +29,14 @@
 - [ ] 用 ngrok 暴露本地服务器
 - [ ] 端到端来电测试
 
+已完成的优化：
+- [x] Edge TTS 支持 CLI 和 HTTP 双模式（含常驻 Python HTTP 服务）
+- [x] MP3 → mulaw 8kHz 转码（ffmpeg pipe，20ms chunk splitting）
+- [x] CallSession 自动转码集成
+
 优化方向（低优先级）：
-- [ ] Edge TTS 改为常驻 Python HTTP 服务（减少进程启动开销）
 - [ ] Whisper 模型预加载（避免每次转录重新加载）
-- [ ] MP3 → mulaw 转码（当前 TTS 输出 MP3，Twilio 需要 mulaw）
+- [ ] 用 ffmpeg pipe 替代临时文件进行音频转码（减少 I/O）
 
 ## 架构
 

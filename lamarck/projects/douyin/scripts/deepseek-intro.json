@@ -1,7 +1,9 @@
 {
   "title": "DeepSeek 到底强在哪？30秒看懂",
   "voice": "zh-CN-YunxiNeural",
+  "bgStyle": "gradient",
   "bgColor": "0d1117",
+  "bgColorEnd": "1a1a3e",
   "textColor": "e6edf3",
   "fontSize": 52,
   "sections": [
