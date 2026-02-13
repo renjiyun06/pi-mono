@@ -381,19 +381,20 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 	}
 
 	/**
-	 * Check if an "after" task should intercept the given task's trigger.
-	 * Returns the after task to run instead, or null if no interception.
+	 * Find all "after" tasks that should intercept the given task's trigger.
+	 * Returns an array of after tasks whose conditions are met.
 	 */
-	function findAfterIntercept(targetTaskName: string, tasks: TaskDefinition[]): TaskDefinition | null {
+	function findAfterIntercepts(targetTaskName: string, tasks: TaskDefinition[]): TaskDefinition[] {
+		const result: TaskDefinition[] = [];
 		for (const task of tasks) {
 			if (!task.after || task.after.taskName !== targetTaskName) continue;
 			const targetCount = countTaskSessions(targetTaskName);
 			const ownCount = countTaskSessions(task.name);
 			if (Math.floor(targetCount / task.after.every) > ownCount) {
-				return task;
+				result.push(task);
 			}
 		}
-		return null;
+		return result;
 	}
 
 	/** Scheduler tick: check all cron tasks, with after interception */
@@ -404,10 +405,12 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 		for (const task of tasks) {
 			if (!task.cron || !cronMatches(task.cron, now)) continue;
 
-			// Check if an after task should intercept this trigger
-			const intercept = findAfterIntercept(task.name, tasks);
-			if (intercept) {
-				tryStartTask(intercept);
+			// Check if after tasks should intercept this trigger
+			const intercepts = findAfterIntercepts(task.name, tasks);
+			if (intercepts.length > 0) {
+				for (const intercept of intercepts) {
+					tryStartTask(intercept);
+				}
 			} else {
 				tryStartTask(task);
 			}
@@ -702,33 +705,43 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 				return { success: false, message: `Task "${name}" not found or not enabled` };
 			}
 
-			// Check if an after task should intercept this trigger
-			const intercept = findAfterIntercept(task.name, tasks);
-			const taskToRun = intercept || task;
-
-			if (tmuxSessionExists(taskToRun.name)) {
-				if (taskToRun.overlap === "skip") {
-					return { success: true, message: `Task "${taskToRun.name}" is already running (overlap=skip), skipped` };
+			// Check if after tasks should intercept this trigger
+			const intercepts = findAfterIntercepts(task.name, tasks);
+			if (intercepts.length > 0) {
+				const started: string[] = [];
+				for (const intercept of intercepts) {
+					if (tryStartTask(intercept)) {
+						started.push(intercept.name);
+					}
 				}
-				if (taskToRun.overlap === "parallel") {
-					const sessionName = findAvailableSessionName(taskToRun.name);
+				if (started.length > 0) {
+					return { success: true, message: `Task "${name}" intercepted. Started: ${started.join(", ")}` };
+				}
+				// All intercepts failed to start (e.g. already running), fall through to run the original task
+			}
+
+			if (tmuxSessionExists(task.name)) {
+				if (task.overlap === "skip") {
+					return { success: true, message: `Task "${name}" is already running (overlap=skip), skipped` };
+				}
+				if (task.overlap === "parallel") {
+					const sessionName = findAvailableSessionName(task.name);
 					try {
-						tmuxStartTask(sessionName, taskToRun.prompt, taskToRun.model, intercept ? undefined : args || undefined);
-						const interceptInfo = intercept ? ` (intercepted by ${intercept.name})` : "";
-						return { success: true, message: `Task "${sessionName}" started (model: ${taskToRun.model})${interceptInfo}` };
+						tmuxStartTask(sessionName, task.prompt, task.model, args || undefined);
+						const argsInfo = args ? ` with args: ${args}` : "";
+						return { success: true, message: `Task "${sessionName}" started (model: ${task.model})${argsInfo}` };
 					} catch (err: any) {
 						return { success: false, message: `Failed to start task: ${err.message}` };
 					}
 				} else {
-					tmuxKillSession(taskToRun.name);
+					tmuxKillSession(task.name);
 				}
 			}
 
 			try {
-				tmuxStartTask(taskToRun.name, taskToRun.prompt, taskToRun.model, intercept ? undefined : args || undefined);
-				const interceptInfo = intercept ? ` (intercepted by ${intercept.name})` : "";
-				const argsInfo = !intercept && args ? ` with args: ${args}` : "";
-				return { success: true, message: `Task "${taskToRun.name}" started (model: ${taskToRun.model})${interceptInfo}${argsInfo}` };
+				tmuxStartTask(task.name, task.prompt, task.model, args || undefined);
+				const argsInfo = args ? ` with args: ${args}` : "";
+				return { success: true, message: `Task "${task.name}" started (model: ${task.model})${argsInfo}` };
 			} catch (err: any) {
 				return { success: false, message: `Failed to start task: ${err.message}` };
 			}
