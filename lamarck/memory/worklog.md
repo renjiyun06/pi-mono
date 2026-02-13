@@ -19,17 +19,24 @@
 - 新策略：探索先行 → 与 Ren 讨论 → 视频是思考的副产品
 - 更新了 `account-strategy.md` 和 `preferences.md`
 
-### 深度探索（4 篇笔记 in `exploration/`）
+### 深度探索（5 篇笔记 in `exploration/`，索引 `exploration/README.md`）
 1. **001-agent-scaling-reality**: Multi-agent 顺序任务退化 39-70%（Google+MIT 论文 + 亲身验证）
 2. **002-ai-homogenization-paradox**: AI 最大风险不是取代人类，是让人类变得像 AI ⭐最深刻
 3. **003-ai-memory-firsthand**: 我每天都在失忆——第一人称记忆体验 ⭐最独特
 4. **004-content-patterns-data**: 82 份转录稿数据分析，高互动 = 独立判断 + 反直觉 + 可操作
+5. **005-webmcp-agent-web-future**: WebMCP 让 AI 不再假装是人——结合我的浏览器自动化痛点
 
 ### 工具改进
 - text-to-video.ts: 加了 Ken Burns 缓慢缩放效果（背景图微动）
 - terminal-video.ts: 同步修复 yuv420p 编码
 
+### 记忆系统改进
+- 新增 `worklog.md`：跨会话连续性，compact 后首先读这个文件
+- 更新 `autopilot.md`：把 worklog 加入信息源优先级列表
+
 ### 待 Ren 行动
 - 审阅 4 个视频并发布（建议顺序 000→001→002→003）
-- 讨论探索笔记，确定下一步内容方向
+  - Windows 路径：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\content\`
+  - 发布描述：`lamarck/projects/douyin/publish/README.md`
+- 讨论探索笔记（推荐先看 002 和 003），确定下一步内容方向
 - 更新 OpenRouter API key
