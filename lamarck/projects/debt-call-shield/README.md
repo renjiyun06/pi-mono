@@ -11,22 +11,28 @@
 
 ## 状态
 
-第一阶段进行中：基础 Twilio WebSocket 服务已搭建（步骤 3 完成）。
+第一阶段进行中：完整 AI pipeline 已实现，等待 Twilio 账号和 API key 恢复后进行端到端测试。
 
 已完成：
 - [x] 项目脚手架（Fastify + WebSocket）
 - [x] Twilio incoming call webhook（返回 TwiML，连接 Media Stream）
 - [x] WebSocket handler 接收 Twilio Media Streams 事件
-- [x] 音频回声测试（echo back）
+- [x] ASR：WhisperASR（本地 faster-whisper + 能量 VAD）
+- [x] LLM：OpenRouter provider（DeepSeek Chat，含意图分类 + 4种策略话术）
+- [x] TTS：Edge TTS（免费微软语音，zh-CN-XiaoxiaoNeural）
+- [x] Pipeline 编排器（CallSession：ASR → LLM → TTS，句级流式）
+- [x] 策略层（催收/诈骗/正常/未知，四种应对策略）
 
-待做：
+阻塞：
+- [ ] OpenRouter API key 失效（需更新）
 - [ ] 注册 Twilio，买美国号码
 - [ ] 用 ngrok 暴露本地服务器
-- [ ] 实际来电测试
-- [ ] 接入 ASR（流式语音识别）
-- [ ] 接入 LLM（生成回复）
-- [ ] 接入 TTS（流式语音合成）
-- [ ] 策略层（催收/诈骗识别）
+- [ ] 端到端来电测试
+
+优化方向（低优先级）：
+- [ ] Edge TTS 改为常驻 Python HTTP 服务（减少进程启动开销）
+- [ ] Whisper 模型预加载（避免每次转录重新加载）
+- [ ] MP3 → mulaw 转码（当前 TTS 输出 MP3，Twilio 需要 mulaw）
 
 ## 架构
 
