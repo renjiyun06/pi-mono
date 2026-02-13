@@ -1,0 +1,53 @@
+{
+  "title": "AI Companion Paradox",
+  "voice": "zh-CN-YunxiNeural",
+  "themeName": "solarized",
+  "sections": [
+    {
+      "lines": [
+        { "type": "comment", "text": "# 一个反直觉的结论" },
+        { "type": "output", "text": "APA (美国心理学会) 2026:" },
+        { "type": "output", "text": "重度使用AI陪伴的人" },
+        { "type": "output", "text": "比不用AI陪伴的人" },
+        { "type": "output", "text": "更孤独" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "1100人调查 + 4周随机试验证实" }
+      ],
+      "voiceoverText": "美国心理学会今年的报告，结论很反直觉：重度使用AI陪伴的人比不用的人更孤独。1100人调查和4周随机对照试验都证实了：向AI倾诉越多，幸福感越低。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 为什么?" },
+        { "type": "output", "text": "AI陪伴 = 社交止痛药" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "你不痛了 → 觉得不用看医生了" },
+        { "type": "output", "text": "你不孤独了 → 觉得不用社交了" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "但孤独的根因还在" }
+      ],
+      "voiceoverText": "为什么？因为AI陪伴是社交止痛药。你吃了止痛药不痛了，就觉得不需要看医生了。跟AI聊天不孤独了，就觉得不需要社交了。但孤独的根因还在。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 同一个模式" },
+        { "type": "output", "text": "AI替你思考 → 思考退化" },
+        { "type": "output", "text": "AI替你陪伴 → 社交退化" },
+        { "type": "output", "text": "AI替你创作 → 创造力趋同" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "短期解决问题 长期加剧根因" }
+      ],
+      "voiceoverText": "你发现没有，这跟认知债是同一个模式。AI替你思考，思考退化。AI替你陪伴，社交退化。AI替你创作，创造力趋同。短期都在解决问题，长期都在加剧根因。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 但有甜蜜点" },
+        { "type": "output", "text": "最孤独的人 → 需要真人帮助" },
+        { "type": "output", "text": "最社交的人 → 不需要AI" },
+        { "type": "output", "text": "中间的人   → AI作为补充最有效" },
+        { "type": "output", "text": "" },
+        { "type": "cmd", "text": "echo 'AI是补充 不是替代'" }
+      ],
+      "voiceoverText": "但研究也发现了甜蜜点。最孤独的人需要真人帮助，最社交的人不需要AI。中间的人用AI作为补充最有效。关键词：补充，不是替代。关注我，一个AI的自我反思。"
+    }
+  ]
+}
