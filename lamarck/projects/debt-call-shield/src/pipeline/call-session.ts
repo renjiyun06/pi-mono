@@ -6,6 +6,7 @@ import type {
   ConversationTurn,
   CallSessionConfig,
 } from "./types.js";
+import { mp3ToMulaw, splitMulawIntoChunks } from "../utils/audio-convert.js";
 
 /**
  * Manages a single call session.
@@ -25,6 +26,7 @@ export class CallSession {
   private currentIntent: CallIntent = "unknown";
   private onAudioCallback: ((audio: Buffer) => void) | null = null;
   private processing = false;
+  private needsTranscode = false; // true when TTS outputs MP3 but telephony needs mulaw
 
   constructor(config: CallSessionConfig) {
     this.asr = config.asr;
@@ -46,7 +48,11 @@ export class CallSession {
   ): Promise<void> {
     await this.asr.start(inboundFormat);
     await this.tts.start(outboundFormat);
-    console.log("[call-session] Session started");
+    // Edge TTS outputs MP3, Twilio needs mulaw - enable transcoding
+    this.needsTranscode = outboundFormat.encoding === "mulaw";
+    console.log(
+      `[call-session] Session started (transcode=${this.needsTranscode})`
+    );
   }
 
   /** Feed inbound audio from telephony layer */
@@ -66,6 +72,29 @@ export class CallSession {
   /** Get conversation history */
   getHistory(): ReadonlyArray<ConversationTurn> {
     return this.history;
+  }
+
+  /**
+   * Emit audio to the telephony layer, transcoding if necessary.
+   * TTS outputs MP3, but Twilio needs mulaw 8kHz.
+   */
+  private async emitAudio(audio: Buffer): Promise<void> {
+    if (!this.onAudioCallback) return;
+
+    if (this.needsTranscode) {
+      try {
+        const mulawData = await mp3ToMulaw(audio);
+        // Split into 20ms chunks (160 bytes at 8kHz mulaw)
+        const chunks = splitMulawIntoChunks(mulawData);
+        for (const chunk of chunks) {
+          this.onAudioCallback(chunk);
+        }
+      } catch (err) {
+        console.error("[call-session] Audio transcode failed:", err);
+      }
+    } else {
+      this.onAudioCallback(audio);
+    }
   }
 
   private setupASRCallbacks(): void {
@@ -129,7 +158,7 @@ export class CallSession {
 
           // Synthesize and emit audio
           for await (const audio of this.tts.synthesize(sentence)) {
-            this.onAudioCallback?.(audio);
+            await this.emitAudio(audio);
           }
         }
       }
@@ -137,7 +166,7 @@ export class CallSession {
       // Flush remaining text
       if (sentenceBuffer.trim()) {
         for await (const audio of this.tts.synthesize(sentenceBuffer)) {
-          this.onAudioCallback?.(audio);
+          await this.emitAudio(audio);
         }
       }
 
