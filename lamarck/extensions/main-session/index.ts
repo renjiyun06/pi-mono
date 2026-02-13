@@ -326,6 +326,10 @@ function processMessageForQQ(text: string): string {
 const TOOL_NAME = "send_qq_message";
 const TASK_TOOL_NAME = "task";
 
+// Autopilot threshold: compact when context usage exceeds this percentage
+// Use 50% to keep context fresh and prevent attention from becoming shallow
+const AUTOPILOT_COMPACT_THRESHOLD = 50;
+
 export default function mainSessionExtension(pi: ExtensionAPI) {
 	let channelManager: ChannelManager | null = null;
 	let currentExternalUser: { channel: string; userId: string } | null = null;
@@ -333,6 +337,24 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 	let savedCtx: ExtensionContext | null = null;
 	let qqToolEnabled = false;
 	let taskToolEnabled = false;
+
+	// Autopilot state: when enabled, agent automatically continues after each response
+	let autopilotEnabled = false;
+	let autopilotCompacting = false; // Prevent sending "继续" while compacting
+
+	/** Build the autopilot continuation message with context info */
+	function buildAutopilotMessage(usageInfo: string, justCompacted: boolean): string {
+		const lines = [
+			"[Autopilot 模式]",
+			"",
+			"你当前处于 autopilot 模式，应该自主探索和改进系统，而不是等待用户指令。",
+			"",
+			`Context 用量：${usageInfo}${justCompacted ? "（刚完成 compact）" : ""}`,
+			"",
+			"继续。",
+		];
+		return lines.join("\n");
+	}
 
 	// Scheduler state
 	let schedulerInterval: NodeJS.Timeout | null = null;
@@ -604,6 +626,10 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 
 	/** Stop the main session */
 	function stopMainSession(): void {
+		// Stop autopilot
+		autopilotEnabled = false;
+		autopilotCompacting = false;
+
 		// Stop task scheduler
 		stopScheduler();
 
@@ -889,9 +915,42 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 		}
 	});
 
-	// Clear external message flag when agent finishes
-	pi.on("agent_end", async () => {
+	// Clear external message flag when agent finishes, and handle autopilot
+	pi.on("agent_end", async (event, ctx) => {
 		isExternalMessage = false;
+
+		// Autopilot: automatically continue after each response (main session only)
+		if (autopilotEnabled && !autopilotCompacting && isMainSession()) {
+			const usage = ctx.getContextUsage();
+			const usageInfo = usage?.percent !== null ? `${usage.percent.toFixed(0)}%` : "unknown";
+
+			if (usage && usage.percent !== null && usage.percent >= AUTOPILOT_COMPACT_THRESHOLD) {
+				// Context usage too high, compact first
+				autopilotCompacting = true;
+				ctx.ui.notify(`Autopilot: compacting (${usage.percent.toFixed(1)}% context used)`, "info");
+				ctx.compact({
+					onComplete: () => {
+						autopilotCompacting = false;
+						if (autopilotEnabled) {
+							const newUsage = ctx.getContextUsage();
+							const newUsageInfo = newUsage?.percent !== null ? `${newUsage.percent.toFixed(0)}%` : "compacted";
+							pi.sendUserMessage(buildAutopilotMessage(newUsageInfo, true));
+						}
+					},
+					onError: (error) => {
+						autopilotCompacting = false;
+						ctx.ui.notify(`Autopilot: compact failed - ${error.message}`, "error");
+						// Still try to continue
+						if (autopilotEnabled) {
+							pi.sendUserMessage(buildAutopilotMessage(usageInfo, false));
+						}
+					},
+				});
+			} else {
+				// Context usage OK, just continue
+				pi.sendUserMessage(buildAutopilotMessage(usageInfo, false));
+			}
+		}
 	});
 
 	// Clean up on shutdown
@@ -941,6 +1000,37 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 
 			const result = executeTaskAction(action, taskName || undefined, taskArgs || undefined);
 			ctx.ui.notify(result.message, result.success ? "info" : "error");
+		},
+	});
+
+	// Register /autopilot command for background mode (main session only)
+	pi.registerCommand("autopilot", {
+		description: "Toggle autopilot mode (on/off) - agent automatically continues after each response",
+		handler: async (args, ctx) => {
+			// Only allow in main session
+			if (!isMainSession()) {
+				ctx.ui.notify("Autopilot is only available in main session. Run /main on first.", "error");
+				return;
+			}
+
+			const subcommand = args?.trim().toLowerCase();
+
+			if (subcommand === "on") {
+				autopilotEnabled = true;
+				savedCtx = ctx;
+				ctx.ui.notify("Autopilot enabled. Agent will automatically continue after each response.", "success");
+				return;
+			}
+
+			if (subcommand === "off") {
+				autopilotEnabled = false;
+				ctx.ui.notify("Autopilot disabled.", "info");
+				return;
+			}
+
+			// Default: show status
+			const status = autopilotEnabled ? "enabled" : "disabled";
+			ctx.ui.notify(`Autopilot: ${status}`, "info");
 		},
 	});
 }
