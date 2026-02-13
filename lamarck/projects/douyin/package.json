@@ -1,0 +1,14 @@
+{
+  "name": "douyin-tools",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "commander": "^13.1.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3",
+    "@types/node": "^22.12.0"
+  }
+}
