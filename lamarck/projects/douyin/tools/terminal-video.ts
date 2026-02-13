@@ -234,10 +234,14 @@ async function generateTerminalVideo(
       `drawtext=text='${escapeFFmpegText("─".repeat(60))}':fontcolor=#${theme.fg}@0.2:fontsize=20:x=20:y=70:fontfile=${FONT}`,
     ].join(",");
 
+    // Bottom progress indicator: "Section 2/5"
+    const totalSections = script.sections.length;
+    const progressText = `drawtext=text='${escapeFFmpegText(`${i + 1} / ${totalSections}`)}':fontcolor=#${theme.fg}@0.3:fontsize=20:x=(w-text_w)/2:y=h-50:fontfile=${FONT}`;
+
     // Fade in/out for smooth section transitions (0.3s each)
     const fadeIn = `fade=t=in:st=0:d=0.3`;
     const fadeOut = `fade=t=out:st=${(sectionDuration - 0.3).toFixed(2)}:d=0.3`;
-    const allFilters = [titleBar, termFilters, fadeIn, fadeOut].join(",");
+    const allFilters = [titleBar, termFilters, progressText, fadeIn, fadeOut].join(",");
 
     const segmentPath = join(workDir, `segment-${i}.mp4`);
     const ffmpegArgs = [
