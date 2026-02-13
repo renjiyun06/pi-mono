@@ -8,6 +8,16 @@
 
 ## 2026-02-13 (autopilot-0003)
 
+### Compact 后第二轮工作（2026-02-13 深夜）
+- 新增探索 008（Vibe Coding 陷阱）：80-90% 规则、METR -19%、真实安全事故
+- 新增探索 009（认知债务）：⭐⭐ **统一理论** — MIT/Harvard/SBS 三所机构研究证实 AI 导致认知萎缩
+  - 009 是 002（同质化）+003（记忆）+008（vibe coding）的底层解释框架
+  - "认知债务"概念对标"技术债务"——极佳的传播框架
+- **原型视频增至 4 个**：demo-memory(115s) + demo-homogenization(108s) + demo-vibe-coding(117s) + demo-cognitive-debt(121s)
+- 修复 vibe-coding 脚本的 emoji 兼容问题（无 emoji 字体）
+- PITCH.md 重新排序，009 作为统一理论提升优先级
+- 探索索引 README.md 更新至 009
+
 ### 视频渲染
 - 修复 yuv444p → yuv420p 编码问题（手机/Windows 无法播放）
 - 给 ai-horde.ts 加了 fetchWithRetry（3 次重试）
