@@ -94,6 +94,8 @@
 **就业替代数据**：
 - Stanford Digital Economy Lab：22-25 岁在 AI 暴露岗位的就业**下降 13%**（ADP payroll 数据，数百万工人）
 - Brookings：AI 暴露度高的自由职业者合同减少 2%，收入降低 5%
+- INFORMS/Organization Science（Xiang Hui, 华盛顿大学）：过去收入每高 1% → AI 后额外 0.5% 就业机会减少 + 1.7% 月收入下降。**即使顶级自由职业者也不安全**
+- Upwork：自由写作和翻译需求下降 **20-50%**
 - 荷兰 Boekmanstichting：1/5 自由艺术家因 AI 收入减少
 - 翻译、图库摄影师受冲击最大（任务高度自动化）
 - HBR（2026年1月）：公司裁员是因为 AI 的**潜力**而非**表现**——预期驱动
