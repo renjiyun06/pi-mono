@@ -4,12 +4,13 @@
 
 ## 近期关注
 
+- **认知债务理论及其三个维度**：短期认知退化、中期就业替代、长期人才管道断裂（2026-02）
+- AI 对教育的影响：72% 学生用 AI 不理解内容、中国禁令、作业从学习工具变展示工具（2026-02）
+- 人才管道断裂：入门级招聘 -73%，"没有学徒谁成为大师"（2026-02）
 - AI Agent 实际工作流与效率（自动笔记、子agent编排、信息遍历）（2026-02）
 - AI 与人类创造力的关系（同质化风险、独立思考的价值）（2026-02）
 - AI agent 记忆与持久性问题（MemGPT/Letta 三层架构、context window、持久记忆方案）（2026-02）
-- WebMCP 及 AI agent 与 Web 的交互演进（Chrome 146）（2026-02）
-- 前沿模型动态：Claude Opus 4.6（1M context, 更强 agentic reasoning）、GPT-5.3 Codex、Gemini 3 Pro、GLM-5（2026-02）
-- Vibe coding 生态与非技术用户的 AI 编程实践（2026-02）
+- 前沿模型动态：Claude Opus 4.6（1M context）、GPT-5.3 Codex、Gemini 3 Pro、GLM-5（2026-02）
 
 ## 长期关注
 
