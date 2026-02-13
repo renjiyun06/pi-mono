@@ -308,6 +308,7 @@ async function generateVideo(
     }
 
     ffmpegArgs.push(
+      "-pix_fmt", "yuv420p",
       "-c:v", "libx264",
       "-preset", "ultrafast",
       "-c:a", "aac",
@@ -350,6 +351,7 @@ async function generateVideo(
           "-f", "concat",
           "-safe", "0",
           "-i", concatFile,
+          "-pix_fmt", "yuv420p",
           "-c:v", "libx264",
           "-preset", "fast",
           "-c:a", "aac",

@@ -243,6 +243,7 @@ async function generateTerminalVideo(
       "-i", `color=c=#${theme.bg}:s=${width}x${height}:d=${sectionDuration.toFixed(2)}:r=30`,
       "-i", audioPath,
       "-vf", allFilters,
+      "-pix_fmt", "yuv420p",
       "-c:v", "libx264",
       "-preset", "ultrafast",
       "-c:a", "aac",
@@ -277,7 +278,7 @@ async function generateTerminalVideo(
     await new Promise<void>((resolve, reject) => {
       execFile("ffmpeg", [
         "-y", "-f", "concat", "-safe", "0", "-i", concatFile,
-        "-c:v", "libx264", "-preset", "fast", "-c:a", "aac", outputPath,
+        "-pix_fmt", "yuv420p", "-c:v", "libx264", "-preset", "fast", "-c:a", "aac", outputPath,
       ], { timeout: 180000 }, (error) => { if (error) reject(error); else resolve(); });
     });
   }

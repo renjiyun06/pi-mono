@@ -13,6 +13,22 @@ const HORDE_ANON_KEY = "0000000000";
 const MAX_FREE_SIZE = 576;
 const POLL_INTERVAL = 5000;
 const MAX_WAIT = 180000;
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 3000;
+
+async function fetchWithRetry(url: string, init?: RequestInit, retries = MAX_RETRIES): Promise<Response> {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const resp = await fetch(url, init);
+      return resp;
+    } catch (err) {
+      if (i === retries - 1) throw err;
+      console.log(`[ai-horde] Network error, retrying in ${RETRY_DELAY / 1000}s... (${i + 1}/${retries})`);
+      await new Promise((r) => setTimeout(r, RETRY_DELAY));
+    }
+  }
+  throw new Error("Unreachable");
+}
 
 interface HordeStatus {
   done: boolean;
@@ -40,7 +56,7 @@ export async function generateImage(
   if (log) console.log(`[ai-horde] Generating: "${prompt.slice(0, 80)}..."`);
 
   // Submit
-  const submitResp = await fetch(`${HORDE_BASE}/generate/async`, {
+  const submitResp = await fetchWithRetry(`${HORDE_BASE}/generate/async`, {
     method: "POST",
     headers: { "Content-Type": "application/json", apikey: HORDE_ANON_KEY },
     body: JSON.stringify({
@@ -61,7 +77,7 @@ export async function generateImage(
   const start = Date.now();
   while (Date.now() - start < MAX_WAIT) {
     await new Promise((r) => setTimeout(r, POLL_INTERVAL));
-    const resp = await fetch(`${HORDE_BASE}/generate/status/${id}`);
+    const resp = await fetchWithRetry(`${HORDE_BASE}/generate/status/${id}`);
     if (!resp.ok) continue;
 
     const data: HordeStatus = await resp.json();
@@ -73,7 +89,7 @@ export async function generateImage(
 
       // Download
       const tmpPath = join(tmpdir(), `horde-${randomBytes(8).toString("hex")}.webp`);
-      const imgResp = await fetch(gen.img);
+      const imgResp = await fetchWithRetry(gen.img);
       if (!imgResp.ok) throw new Error(`Download failed: ${imgResp.status}`);
       await writeFile(tmpPath, Buffer.from(await imgResp.arrayBuffer()));
 
