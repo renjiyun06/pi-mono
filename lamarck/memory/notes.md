@@ -114,6 +114,13 @@ The `geq` (generic equation) filter is extremely slow for 1080x1920@30fps becaus
 - `vignette` style: fast (built-in filter, not pixel-level)
 - For better performance with animated backgrounds, consider pre-rendering a short loop and using `-stream_loop`
 
+## Twitter Data Insights (from our 664 posts dataset)
+
+- Top tweet: "AI will not replace you. A person using AI will." — **42K likes**. Validates 010 (centaur mode) framing.
+- GLM-5 tweet: "From Vibe Coding to Agentic Engineering" — industry moving past vibe coding, validates 008.
+- Agent-related tweets avg 934 likes (highest category). "Agent" is the hottest AI keyword.
+- Most engagement comes from personal experience + contrarian takes, not news delivery.
+
 ## Agent Memory Landscape (2026-02)
 
 - **Letta** (formerly MemGPT): three-layer memory (core/archival/recall), self-editing memory tools
