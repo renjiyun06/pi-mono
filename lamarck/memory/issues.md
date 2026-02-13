@@ -108,6 +108,7 @@
 
 ~~**问题**：`createProviders()` 硬编码使用真实 provider。~~
 
-**已解决（部分）**：`USE_STUBS=true` 环境变量已实现（commit 73b0493f）。剩余：
-- [ ] WebSocket 测试客户端模拟 Twilio media stream 协议
-- 等 Ren 注册 Twilio 后做完整集成测试
+**已解决**：
+- [x] `USE_STUBS=true` 环境变量（commit 73b0493f）
+- [x] `test-ws-client.ts` WebSocket 测试客户端（commit d3d383c2）
+- 完整离线 e2e 测试现在可行，等 Ren 注册 Twilio 后做真实集成测试
