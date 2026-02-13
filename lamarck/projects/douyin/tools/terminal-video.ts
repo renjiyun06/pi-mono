@@ -171,7 +171,7 @@ function buildTerminalFilters(
       );
       timeOffset += 0.1; // small delay between output lines
     } else if (line.type === "comment") {
-      const commentEscaped = escapeFFmpegText(`# ${line.text}`);
+      const commentEscaped = escapeFFmpegText(line.text);
       filters.push(
         `drawtext=text='${commentEscaped}':fontcolor=#${theme.comment}:fontsize=${fontSize}:x=${leftMargin}:y=${yPos}:fontfile=${FONT}:enable='gte(t\\,${timeOffset.toFixed(2)})'`
       );
