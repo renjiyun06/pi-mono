@@ -35,8 +35,9 @@ git branch --show-current
 
 了解当前工作状态的途径（按优先级）：
 
-1. `/home/lamarck/pi-mono/lamarck/memory/` — 已知问题、关注方向、技术笔记
-2. `/home/lamarck/pi-mono/lamarck/projects/` — 实际项目文件和代码
+1. `/home/lamarck/pi-mono/lamarck/memory/worklog.md` — **最近做了什么**（compact 后首先读这个）
+2. `/home/lamarck/pi-mono/lamarck/memory/` — 已知问题、关注方向、技术笔记
+3. `/home/lamarck/pi-mono/lamarck/projects/` — 实际项目文件和代码
 
 ### 工作流程
 
