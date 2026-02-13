@@ -217,6 +217,27 @@ Stack Overflow的灵魂拷问：如果没人在2025年被招为初级开发者�
 
 ---
 
+## demo-innovation AI编程悖论（125 秒）
+
+**文件**：`content/demo-innovation/video.mp4`（Dracula 主题）
+
+**作品描述**：
+```
+做个思想实验：如果AI编程在2012年就存在，那时前端标准是jQuery。AI会发明React吗？
+
+不会。AI基于历史数据训练，它会把jQuery用到极致。但React需要有人说"现有方案从根本上是错的"。AI做的是优化，不是颠覆。
+
+Google DORA报告研究了1万多名开发者：AI让代码提交量显著增加，但软件交付效率没有显著提升。代码变多了，但软件没变好。
+
+更危险的是正反馈锁定：AI训练在React上 -> 生成React -> 更多人用React -> 更多训练数据。技术栈被数据锁死了。
+
+打字机让人写字更快，但没让人思考更深。AI编程让代码更多，但创新更少。
+
+#AI #编程 #React #创新 #软件开发 #DORA #人工智能 #思想实验
+```
+
+---
+
 ## 操作步骤（每条都一样）
 
 1. 打开 https://creator.douyin.com/creator-micro/content/upload
