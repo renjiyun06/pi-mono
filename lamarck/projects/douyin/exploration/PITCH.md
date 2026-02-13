@@ -165,7 +165,8 @@ Windows 路径：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\con
 | 就绪 | 000 自我介绍 | 62s | mocha | `content/000-intro/intro.mp4` |
 | **推荐** | **认知债 V4 短版** | **69s** | **mocha** | **`content/demo-cognitive-debt/video-v4.mp4`** |
 | 备选 | 认知债 V3 完整版 | 149s | mocha | `content/demo-cognitive-debt/video-v3.mp4` |
-| 原型 | AI记忆困境 | 115s | mocha | `content/demo-memory/video.mp4` |
+| **推荐** | **AI记忆困境 V2** | **73s** | **mocha** | **`content/demo-memory/video-v2.mp4`** |
+| 备选 | AI记忆困境 V1 | 115s | mocha | `content/demo-memory/video.mp4` |
 | 原型 | AI同质化 | 108s | mocha | `content/demo-homogenization/video.mp4` |
 | 原型 | Vibe Coding | 117s | mocha | `content/demo-vibe-coding/video.mp4` |
 | 原型 | 半人马模式 | 102s | mocha | `content/demo-centaur/video.mp4` |
