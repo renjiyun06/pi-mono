@@ -3,7 +3,10 @@ import { CallSession } from "../pipeline/call-session.js";
 import { WhisperASR } from "../providers/whisper-asr.js";
 import { EdgeTTSProvider } from "../providers/edge-tts.js";
 import { OpenRouterLLM } from "../providers/openrouter-llm.js";
-import type { AudioFormat } from "../pipeline/types.js";
+import { StubASR } from "../providers/stub-asr.js";
+import { StubLLM } from "../providers/stub-llm.js";
+import { StubTTS } from "../providers/stub-tts.js";
+import type { ASRProvider, LLMProvider, TTSProvider, AudioFormat } from "../pipeline/types.js";
 
 /**
  * Twilio Media Stream event types.
@@ -32,22 +35,33 @@ interface TwilioMediaEvent {
   };
 }
 
+const USE_STUBS = process.env.USE_STUBS === "true";
+
 /**
  * Create AI pipeline providers.
- * Switch from stubs to real providers here.
+ * Set USE_STUBS=true to use offline stub providers (no API keys needed).
  */
-function createProviders() {
+function createProviders(): { asr: ASRProvider; llm: LLMProvider; tts: TTSProvider } {
+  if (USE_STUBS) {
+    console.log("[media-stream] Using STUB providers (offline mode)");
+    return {
+      asr: new StubASR(),
+      llm: new StubLLM(),
+      tts: new StubTTS(),
+    };
+  }
+
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
     console.warn(
-      "[media-stream] OPENROUTER_API_KEY not set, LLM responses will fail"
+      "[media-stream] OPENROUTER_API_KEY not set, LLM responses will fail. Set USE_STUBS=true for offline testing."
     );
   }
 
   return {
-    asr: new WhisperASR(), // Local faster-whisper with energy-based VAD
+    asr: new WhisperASR(),
     llm: new OpenRouterLLM(apiKey || "", "deepseek/deepseek-chat"),
-    tts: new EdgeTTSProvider(), // Free Microsoft Edge TTS (Chinese voice)
+    tts: new EdgeTTSProvider(),
   };
 }
 

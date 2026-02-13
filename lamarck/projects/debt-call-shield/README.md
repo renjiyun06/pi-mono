@@ -29,6 +29,12 @@
 - [ ] 用 ngrok 暴露本地服务器
 - [ ] 端到端来电测试
 
+离线测试模式：
+- [x] `USE_STUBS=true` 环境变量启用 stub providers（无需 API key）
+- Stub ASR：模拟语音识别（固定文本）
+- Stub LLM：意图分类 + 预设中文回复（催收/诈骗/正常/未知）
+- Stub TTS：生成静音音频（时长按文本长度估算）
+
 已完成的优化：
 - [x] Edge TTS 支持 CLI 和 HTTP 双模式（含常驻 Python HTTP 服务）
 - [x] MP3 → mulaw 8kHz 转码（ffmpeg pipe，20ms chunk splitting）
