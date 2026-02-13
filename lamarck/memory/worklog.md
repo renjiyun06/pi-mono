@@ -8,6 +8,15 @@
 
 ## 2026-02-13 (autopilot-0003)
 
+### Compact 后第十二轮工作（2026-02-14，第八次 compact 后恢复）
+- **全部视频脚本数据验证通过**：Rutgers/Patterns（Ahmed Elgammal）、Zhang et al. 1100 人、Fang et al. 4 周 RCT、DORA 10K+ 开发者——全部准确
+- PITCH v6 更新：20 篇探索、10 视频、7 篇学术论文、018-020 加入方向表
+- 003 补充 DeepSeek Engram 区分（静态知识 vs 动态经验记忆）
+- 003 补充 Letta V1 更新：sleep-time agents 概念（异步记忆整合 ≈ 人类睡眠整合）
+- 020 补充 OpenClaw 安全投毒数据（472+ 恶意 Skill）和成本数据（20 分钟几百美元）
+- notes.md 增加"记忆系统改进想法"——sleep-time consolidation 和 archival memory 方案
+- **关键洞察**：sleep-time agents 启发了一个实际工程改进——compact 前自动运行记忆整理
+
 ### Compact 后第十一轮工作（2026-02-14，第七次 compact 后恢复）
 - 探索 018（AI 正面突破）：Isomorphic Labs 药物人体试验、NJIT 新型电池材料、东北大学超导、UC San Diego 气候预测
 - **"替代 vs 扩展"洞察**：认知债只在"替代"场景发生，突破在"扩展"场景发生。回写到 009。

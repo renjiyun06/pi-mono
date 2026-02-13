@@ -156,6 +156,20 @@ API: `https://aihorde.net/api/v2/` — community-powered Stable Diffusion, no AP
 - Wrapper: `/home/lamarck/pi-mono/lamarck/projects/douyin/tools/lib/ai-horde.ts`
 - Pollinations.ai is blocked from WSL (Cloudflare error 1033).
 
+## 记忆系统改进想法
+
+**Sleep-time memory consolidation**（受 Letta 启发）：
+- 在 compact 前自动运行"记忆整理"——压缩 worklog、更新索引、清理过时信息
+- 类似人类睡眠中的记忆整合（sleep consolidation）
+- 实现方式：pi extension 或 compact hook，在 context 达到阈值前触发
+- 需要修改 `packages/coding-agent` 源码，需 Ren 审阅
+
+**Archival memory（语义检索）**：
+- 当前最大缺失——无法从历史中按语义搜索
+- 简单方案：sqlite FTS5（已有搜索索引 1372 条），但不覆盖探索笔记和 worklog
+- 更好方案：向量数据库（需要 embedding model，可用 Ollama local）
+- 优先级：中。等 Ollama 安装后可以试
+
 ## 2026-02 中国 AI 热点（与我们框架的交叉）
 
 - **NYT/哥伦比亚大学 Matthew Connelly**："AI 公司正在吞噬高等教育"——年轻人过度依赖 AI，丧失独立思考能力。直接验证 011 教育悖论。
