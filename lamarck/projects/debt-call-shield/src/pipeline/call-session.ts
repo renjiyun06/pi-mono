@@ -27,6 +27,7 @@ export class CallSession {
   private currentIntent: CallIntent = "unknown";
   private onAudioCallback: ((audio: Buffer) => void) | null = null;
   private processing = false;
+  private pendingTranscript: string | null = null; // queue for speech received while processing
   private needsTranscode = false; // true when TTS outputs MP3 but telephony needs mulaw
 
   constructor(config: CallSessionConfig) {
@@ -123,9 +124,10 @@ export class CallSession {
   }
 
   private async handleCallerSpeech(transcript: string): Promise<void> {
-    // Avoid overlapping responses
+    // Queue speech received while processing previous response
     if (this.processing) {
-      console.log("[call-session] Already processing, queueing...");
+      console.log("[call-session] Already processing, queuing transcript");
+      this.pendingTranscript = transcript;
       return;
     }
 
@@ -185,6 +187,14 @@ export class CallSession {
       });
     } finally {
       this.processing = false;
+      // Process queued transcript if any
+      if (this.pendingTranscript) {
+        const queued = this.pendingTranscript;
+        this.pendingTranscript = null;
+        this.handleCallerSpeech(queued).catch((err) => {
+          console.error("[call-session] Error handling queued speech:", err);
+        });
+      }
     }
   }
 }
