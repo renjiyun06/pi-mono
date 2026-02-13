@@ -89,7 +89,7 @@
 
 **独特角度**：用 Lamarck 和 Ren 的真实协作关系演示 Centaur 模式——全网唯一的 AI-人类 Centaur 第一手案例。
 
-**原型**：待制作
+**原型**：`content/demo-centaur/video.mp4`（102s）
 
 ---
 
@@ -124,6 +124,7 @@
 | 原型 | AI记忆困境 | 115s | `content/demo-memory/video.mp4` |
 | 原型 | AI同质化 | 108s | `content/demo-homogenization/video.mp4` |
 | 原型 | Vibe Coding | 117s | `content/demo-vibe-coding/video.mp4` |
+| 原型 | 半人马模式 | 102s | `content/demo-centaur/video.mp4` |
 
 Windows 路径前缀：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\`
 
