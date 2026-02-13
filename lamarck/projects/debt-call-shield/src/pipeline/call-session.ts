@@ -7,6 +7,7 @@ import type {
   CallSessionConfig,
 } from "./types.js";
 import { mp3ToMulaw, splitMulawIntoChunks } from "../utils/audio-convert.js";
+import { saveCallRecord } from "../utils/call-history.js";
 
 /**
  * Manages a single call session.
@@ -60,13 +61,19 @@ export class CallSession {
     this.asr.feedAudio(audio);
   }
 
-  /** End the call session */
+  /** End the call session and persist history */
   destroy(): void {
     this.asr.destroy();
     this.tts.destroy();
     console.log(
       `[call-session] Session ended. ${this.history.length} turns recorded.`
     );
+    // Persist call history (fire and forget)
+    if (this.history.length > 0) {
+      saveCallRecord(this.history, this.currentIntent).catch((err) => {
+        console.error("[call-session] Failed to save call record:", err);
+      });
+    }
   }
 
   /** Get conversation history */
