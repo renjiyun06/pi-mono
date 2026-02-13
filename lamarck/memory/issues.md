@@ -106,11 +106,8 @@
 
 **发现时间**：2026-02-14
 
-**问题**：`media-stream.ts` 的 `createProviders()` 硬编码使用真实 provider（WhisperASR, OpenRouterLLM, EdgeTTS），没有 stub 模式。虽然有 3 个 stub provider（stub-asr, stub-llm, stub-tts），但没有被集成。
+~~**问题**：`createProviders()` 硬编码使用真实 provider。~~
 
-**需要的改进**：
-1. 在 `createProviders()` 中支持环境变量 `USE_STUBS=true` 切换到 stub provider
-2. 编写 WebSocket 测试客户端模拟 Twilio media stream 协议
-3. 这样即使没有 OpenRouter key 和 Twilio 也能测试完整流程
-
-**优先级**：低。等 Ren 注册 Twilio 后再考虑。
+**已解决（部分）**：`USE_STUBS=true` 环境变量已实现（commit 73b0493f）。剩余：
+- [ ] WebSocket 测试客户端模拟 Twilio media stream 协议
+- 等 Ren 注册 Twilio 后做完整集成测试
