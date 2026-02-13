@@ -25,6 +25,18 @@
 ### 4. Psychology Today — "AI Weakens Critical Thinking"
 - 提出了重建路径：刻意练习、限制 AI 使用场景、meta-cognition 训练
 
+## 跨领域验证：张文宏的医疗警告
+
+知乎高赞答案（6474 赞）：**张文宏不支持把 AI 引入病历系统，恐造成医生诊断能力缺失**。
+
+这是认知债务在医疗领域的完美案例：
+- 如果医生依赖 AI 做诊断 → 自身诊断能力退化
+- 初级医生不再通过独立诊断建立判断力 → 管道断裂
+- 所有医生用同一个 AI → 诊断趋同化（同质化）
+- AI 基于历史病例训练 → 罕见病诊断创新停滞
+
+四个维度在医疗领域完美复现。说明认知债不是程序员的专属问题——是所有知识工作者的共同风险。
+
 ## Twitter 上的第一手证言
 
 **@alex_prompter** (855 likes): "I stopped using AI for writing, and at first, it felt like I lost a part of my brain. For months, AI..." — 戒断 AI 后感觉"丢失了大脑的一部分"，这是认知债务的完美案例。

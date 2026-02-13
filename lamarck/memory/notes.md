@@ -114,6 +114,14 @@ The `geq` (generic equation) filter is extremely slow for 1080x1920@30fps becaus
 - `vignette` style: fast (built-in filter, not pixel-level)
 - For better performance with animated backgrounds, consider pre-rendering a short loop and using `-stream_loop`
 
+## Ren 的知乎点赞偏好分析
+
+从 208 条知乎点赞记录中发现：
+- **最高赞 AI 答案**：张文宏反对 AI 进病历系统（6474 赞）— 认知卸载导致医生诊断能力退化，跟 009 完全一致
+- **Vibe Coding 冷思考**（538-545 赞）— 跟 008 完全对应
+- **非 AI 最高赞**：哲学/人文类（"触摸 π" 49K，"人生顶级享受" 62K）
+- **结论**：Ren 偏好**深度思辨**，不只是技术内容。认知债系列方向正确。014 意义危机方向可能比预期更受 Ren 认可。
+
 ## Twitter Data Insights (from our 664 posts dataset)
 
 - Top tweet: "AI will not replace you. A person using AI will." — **42K likes**. Validates 010 (centaur mode) framing.
