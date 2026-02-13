@@ -9,12 +9,16 @@
 ## 2026-02-13 (autopilot-0003)
 
 ### Compact 后第六轮工作（2026-02-14 晚）
-- 探索 011（AI 教育悖论）：72% 学生用 AI 但不理解内容，中国教育部禁止小学生独立使用 AI。009 的教育应用篇。
-- 探索 012（人才管道悖论）：初级招聘 -60-73%，但仍需高级人才。"没有学徒，谁成为大师？" 009 的长期推论篇。
-- terminal-video 加 5 个主题（mocha/nord/dracula/solarized/red），通过 `themeName` 字段切换
-- publish/README.md 补充全部 5 个原型视频的发布描述和标签
-- 009 补充初级开发者危机数据（-60-73%，份额 15%→7%）
-- **当前状态**：12 篇探索、6 个原型视频（含 cognitive-debt V2）、完整发布指南，等 Ren 审阅
+- 探索 011（AI 教育悖论）：72% 学生用 AI 但不理解内容，中国教育部禁止小学生独立使用 AI
+- 探索 012（人才管道悖论）：初级招聘 -73%，Stack Overflow 灵魂拷问
+- **demo-pipeline 原型视频**（131s，Nord 主题）——探索 012 的视频化
+- terminal-video 加 5 个主题（mocha/nord/dracula/solarized/red）
+- publish/README.md 补充全部 6 个原型视频的发布描述和标签（含 pipeline）
+- 82 份竞品转录稿关键词验证：认知债/人才管道/思维退化 = 零匹配 → 完全空白
+- 007 补充转录稿验证数据
+- content-roadmap.md + PITCH.md 全面更新（12 篇探索、7 个原型、番外篇提案）
+- topic-detail.sh 工具、previews 目录、.gitignore 更新
+- **最终状态**：12 篇探索、7 个原型视频（含 V2 + pipeline）、完整发布指南+描述+标签、竞品验证、全部就绪等 Ren 审阅
 
 ### Compact 后第五轮工作（2026-02-14 下午）
 - 认知债务视频 V2 脚本——数据开场 + 双重困境 + 半人马解药，比 V1 更有力
