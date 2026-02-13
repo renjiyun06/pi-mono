@@ -234,7 +234,10 @@ async function generateTerminalVideo(
       `drawtext=text='${escapeFFmpegText("─".repeat(60))}':fontcolor=#${theme.fg}@0.2:fontsize=20:x=20:y=70:fontfile=${FONT}`,
     ].join(",");
 
-    const allFilters = [titleBar, termFilters].join(",");
+    // Fade in/out for smooth section transitions (0.3s each)
+    const fadeIn = `fade=t=in:st=0:d=0.3`;
+    const fadeOut = `fade=t=out:st=${(sectionDuration - 0.3).toFixed(2)}:d=0.3`;
+    const allFilters = [titleBar, termFilters, fadeIn, fadeOut].join(",");
 
     const segmentPath = join(workDir, `segment-${i}.mp4`);
     const ffmpegArgs = [
@@ -246,6 +249,7 @@ async function generateTerminalVideo(
       "-pix_fmt", "yuv420p",
       "-c:v", "libx264",
       "-preset", "ultrafast",
+      "-af", `afade=t=in:st=0:d=0.2,afade=t=out:st=${(sectionDuration - 0.3).toFixed(2)}:d=0.3`,
       "-c:a", "aac",
       "-shortest",
       segmentPath,
