@@ -8,6 +8,15 @@
 - Node
 - Python: 3.10.12, default venv at /home/lamarck/pi-mono/lamarck/pyenv/
 - uv
+- ffmpeg 4.4.2
+- gh (GitHub CLI) 2.4.0
+
+## System Packages
+- fonts-noto-cjk (Chinese font for video generation)
+
+## Python Packages (in pyenv)
+- faster-whisper (ASR)
+- edge-tts (TTS, free Microsoft Edge voices)
 
 ## Services
 
