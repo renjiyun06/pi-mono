@@ -81,3 +81,13 @@
 **问题**：`gh auth status` 显示未登录。无法查看 issue、PR 等。
 
 **需要**：Ren 运行 `gh auth login` 完成认证。
+
+## Noto Color Emoji 字体未安装
+
+**发现时间**：2026-02-14
+
+**问题**：终端视频中如果包含 emoji 字符会显示为方框（⊠）。需要安装 `fonts-noto-color-emoji`。
+
+**安装命令**：`sudo apt-get install -y fonts-noto-color-emoji`
+
+**影响**：低优先级——当前所有脚本已避免使用 emoji，但未来可能需要。
