@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- Added NVIDIA NIM provider support via OpenAI-compatible API (`integrate.api.nvidia.com`), with 55 tool-capable models including DeepSeek, Llama, Nemotron, Qwen, and more
+
 ## [0.52.10] - 2026-02-12
 
 ### Added

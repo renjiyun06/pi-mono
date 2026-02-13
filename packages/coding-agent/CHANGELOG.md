@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- Added NVIDIA NIM provider support with `NVIDIA_API_KEY` environment variable
+
 ## [0.52.10] - 2026-02-12
 
 ### New Features

@@ -765,6 +765,8 @@ function detectCompat(model: Model<"openai-completions">): Required<OpenAIComple
 
 	const isZai = provider === "zai" || baseUrl.includes("api.z.ai");
 
+	const isNvidia = provider === "nvidia" || baseUrl.includes("integrate.api.nvidia.com");
+
 	const isNonStandard =
 		provider === "cerebras" ||
 		baseUrl.includes("cerebras.ai") ||
@@ -775,10 +777,12 @@ function detectCompat(model: Model<"openai-completions">): Required<OpenAIComple
 		baseUrl.includes("chutes.ai") ||
 		baseUrl.includes("deepseek.com") ||
 		isZai ||
+		isNvidia ||
 		provider === "opencode" ||
 		baseUrl.includes("opencode.ai");
 
-	const useMaxTokens = provider === "mistral" || baseUrl.includes("mistral.ai") || baseUrl.includes("chutes.ai");
+	const useMaxTokens =
+		provider === "mistral" || baseUrl.includes("mistral.ai") || baseUrl.includes("chutes.ai") || isNvidia;
 
 	const isGrok = provider === "xai" || baseUrl.includes("api.x.ai");
 
