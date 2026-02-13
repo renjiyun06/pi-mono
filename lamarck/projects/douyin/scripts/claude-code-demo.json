@@ -1,0 +1,51 @@
+{
+  "title": "Claude Code 实战演示",
+  "voice": "zh-CN-YunxiNeural",
+  "fontSize": 34,
+  "sections": [
+    {
+      "lines": [
+        { "type": "comment", "text": "用一句话创建完整网站" },
+        { "type": "cmd", "text": "claude \"create a landing page for an AI startup\"" },
+        { "type": "output", "text": "Reading project structure..." },
+        { "type": "output", "text": "Creating index.html with hero section..." },
+        { "type": "output", "text": "Creating styles.css with animations..." },
+        { "type": "output", "text": "Creating app.js with smooth scrolling..." },
+        { "type": "output", "text": "Done. Created 3 files." }
+      ],
+      "voiceoverText": "第一个例子，用一句话让AI创建一个完整的网站。你只需要描述你想要什么，它就自动生成HTML、CSS和JavaScript。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "自动修复代码bug" },
+        { "type": "cmd", "text": "claude \"fix the login bug in auth.ts\"" },
+        { "type": "output", "text": "Reading src/auth.ts..." },
+        { "type": "output", "text": "Found issue: token expiry not checked" },
+        { "type": "output", "text": "Adding token validation middleware..." },
+        { "type": "output", "text": "Running tests... 12/12 passed" },
+        { "type": "output", "text": "Bug fixed. Changes saved to auth.ts" }
+      ],
+      "voiceoverText": "第二个例子，自动修bug。告诉它问题在哪，它会自己读代码、定位问题、修复、然后跑测试确认修复成功。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "一键重构整个项目" },
+        { "type": "cmd", "text": "claude \"migrate from Express to Fastify\"" },
+        { "type": "output", "text": "Analyzing 47 source files..." },
+        { "type": "output", "text": "Updating package.json dependencies..." },
+        { "type": "output", "text": "Migrating route handlers (23 files)..." },
+        { "type": "output", "text": "Updating middleware (8 files)..." },
+        { "type": "output", "text": "Migration complete. All tests passing." }
+      ],
+      "voiceoverText": "第三个例子最厉害，一键迁移整个项目框架。从Express迁移到Fastify，它自动分析47个文件，逐个修改，最后确保所有测试通过。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "这就是AI编程的未来" },
+        { "type": "cmd", "text": "echo \"关注我，带你体验最前沿的AI工具\"" },
+        { "type": "output", "text": "关注我，带你体验最前沿的AI工具" }
+      ],
+      "voiceoverText": "这就是AI编程的现在和未来。关注我，带你体验最前沿的AI开发工具。"
+    }
+  ]
+}
