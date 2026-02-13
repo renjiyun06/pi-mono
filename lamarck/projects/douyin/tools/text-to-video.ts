@@ -141,7 +141,7 @@ async function generateVideo(
 
     const drawTextFilters = lines.map((line, lineIdx) => {
       const yPos = Math.floor(height / 2) - ((lines.length * fontSize * 1.5) / 2) + lineIdx * fontSize * 1.5;
-      return `drawtext=text='${escapeFFmpegText(line)}':fontcolor=#${textColor}:fontsize=${fontSize}:x=(w-text_w)/2:y=${yPos}:fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf`;
+      return `drawtext=text='${escapeFFmpegText(line)}':fontcolor=#${textColor}:fontsize=${fontSize}:x=(w-text_w)/2:y=${yPos}:fontfile=/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc`;
     }).join(",");
 
     await new Promise<void>((resolve, reject) => {
