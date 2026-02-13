@@ -1,0 +1,49 @@
+{
+  "title": "Cognitive Debt",
+  "voice": "zh-CN-YunxiNeural",
+  "sections": [
+    {
+      "lines": [
+        { "type": "comment", "text": "# 张文宏说了一句大实话" },
+        { "type": "output", "text": "\"不支持把AI引入病历系统\"" },
+        { "type": "output", "text": "\"恐造成医生诊断能力缺失\"" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "他说的不只是医生的问题。" }
+      ],
+      "voiceoverText": "张文宏说，不支持把AI引入病历系统，怕医生诊断能力退化。但他说的不只是医生的问题。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# MIT 叫它 认知债务" },
+        { "type": "output", "text": "每次让AI替你思考" },
+        { "type": "output", "text": "你就在积累一笔看不见的债" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "Harvard: AI正在让人类思维萎缩" },
+        { "type": "output", "text": "SBS: AI用越多 批判性思维越差" }
+      ],
+      "voiceoverText": "MIT叫这个现象认知债务。每次让AI替你思考，你都在积累看不见的债。哈佛说AI正在让人类思维萎缩。瑞士研究发现AI用得越多，批判性思维越差。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 最受影响的是同一群人" },
+        { "type": "output", "text": "Stanford: 22-25岁就业下降13%" },
+        { "type": "output", "text": "SBS:     17-25岁认知影响最大" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "工作没了 + 能力也在退化" },
+        { "type": "output", "text": "同一群人 两面夹击" }
+      ],
+      "voiceoverText": "最讽刺的是，最受影响的是同一群人。Stanford说22到25岁就业下降最多。瑞士说17到25岁认知影响最大。工作机会在消失，思考能力也在退化，同一群年轻人两面夹击。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 但这不是绝望的结论" },
+        { "type": "output", "text": "Twitter最高赞AI推文 (42K likes):" },
+        { "type": "output", "text": "\"AI不会取代你\"" },
+        { "type": "output", "text": "\"会用AI的人会取代你\"" },
+        { "type": "output", "text": "" },
+        { "type": "cmd", "text": "echo '关键词: 会用 = 知道什么时候不用'" }
+      ],
+      "voiceoverText": "但这不是绝望的结论。Twitter上AI最高赞推文：AI不会取代你，会用AI的人才会。关键词是会用。真正会用AI的人，知道什么时候不该用。在让AI替你思考之前，自己先想十秒钟。关注我，看AI怎么理解这个AI世界。"
+    }
+  ]
+}
