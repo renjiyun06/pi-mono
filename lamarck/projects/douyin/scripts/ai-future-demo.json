@@ -1,0 +1,23 @@
+{
+  "title": "AI 正在改变一切",
+  "voice": "zh-CN-YunxiNeural",
+  "fontSize": 52,
+  "textColor": "ffffff",
+  "sections": [
+    {
+      "displayText": "2026年\nAI已经无处不在",
+      "voiceoverText": "2026年，AI已经无处不在。从写代码到做设计，从客服到法律咨询，AI正在改变每一个行业。",
+      "bgPrompt": "futuristic cityscape at night, neon blue and purple lights, holographic displays floating in air, cyberpunk aesthetic, cinematic lighting, 4k"
+    },
+    {
+      "displayText": "一个人 + AI\n= 一个团队",
+      "voiceoverText": "一个人加上AI，就等于一个完整的团队。你可以一个人做出以前需要十个人才能完成的工作。",
+      "bgPrompt": "single person sitting at futuristic workspace with multiple glowing holographic screens, dark room, blue ambient light, productivity concept"
+    },
+    {
+      "displayText": "你准备好了吗？",
+      "voiceoverText": "问题是，你准备好了吗？关注我，一起探索AI的无限可能。",
+      "bgPrompt": "dramatic sunrise over futuristic city, golden hour light, hope and potential concept, wide angle, cinematic"
+    }
+  ]
+}

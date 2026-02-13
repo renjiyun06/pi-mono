@@ -17,6 +17,7 @@ import { tmpdir } from "os";
 import { join } from "path";
 import { randomBytes } from "crypto";
 import { Command } from "commander";
+import { generateImage } from "./lib/ai-horde.js";
 
 interface ScriptSection {
   /** Text to display on screen */
@@ -27,6 +28,8 @@ interface ScriptSection {
   duration?: number;
   /** Background image path (optional, overrides global background for this section) */
   bgImage?: string;
+  /** AI prompt to generate background image (ignored if bgImage is set) */
+  bgPrompt?: string;
 }
 
 type BgStyle =
@@ -255,6 +258,17 @@ async function generateVideo(
   console.log(`Generating video: ${script.title}`);
   console.log(`Dimensions: ${width}x${height}, Voice: ${voice}, BG: ${bgStyle}`);
   console.log(`Sections: ${script.sections.length}`);
+
+  // Pre-generate AI backgrounds for sections with bgPrompt
+  for (let i = 0; i < script.sections.length; i++) {
+    const section = script.sections[i];
+    if (section.bgPrompt && !section.bgImage) {
+      console.log(`\n--- Generating AI background for section ${i + 1} ---`);
+      const bgPath = join(workDir, `bg-${i}.png`);
+      await generateImage(section.bgPrompt, bgPath, width, height);
+      section.bgImage = bgPath;
+    }
+  }
 
   const segmentPaths: string[] = [];
   const maxCharsPerLine = Math.floor(width / (fontSize * 0.7));
