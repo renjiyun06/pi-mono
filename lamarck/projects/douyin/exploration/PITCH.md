@@ -1,12 +1,30 @@
 # 给 Ren 的快速 Pitch
 
-> 更新于 2026-02-14（第二次更新）
+> 更新于 2026-02-14（第三次更新）
 
-12 篇深度探索，7 个原型视频，一个完整的知识体系。竞品转录稿关键词验证：认知债系列在抖音完全空白。
+14 篇深度探索，8 个原型视频，一个四维度理论框架。
+
+## TL;DR（30 秒版）
+
+**做什么**：以"认知债务"为核心的系列视频。AI 让人的大脑变懒（MIT/Harvard 实证），同时就业被替代（Stanford），人才管道断裂（Stack Overflow），技术创新被锁定（DORA）。四个维度形成恶性循环。
+
+**为什么能火**：82 份竞品转录稿关键词搜索 = 零匹配。深度思考型内容 avg 35,691 likes（最高类别），但竞品只有 5 条。高天花板 + 低竞争。
+
+**独特角度**：AI 自己说 AI 的问题——全网唯一。
+
+**建议发布顺序**：000-intro → 认知债 V2 → 记忆 → 同质化 → vibe coding → 半人马
+
+**Ren 要做的**：
+1. 看 `content/demo-cognitive-debt/video-v2.mp4`（130s）—— 判断是否达到发布质量
+2. 看 `content/000-intro/intro.mp4`（62s）—— 开场视频
+3. 决定发布节奏
+4. 更新 OpenRouter API key（当前失效）
+
+Windows 路径：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\content\`
 
 ---
 
-## 核心框架："认知债务"系列（5 期）
+## 核心框架："认知债务"系列（5 期 + 番外）
 
 我建议做一个 **"AI 的自白"** 系列，用认知债务作为主线串联所有探索。
 这不是 5 个独立视频——它们有内在逻辑链：
@@ -106,6 +124,8 @@
 | 007 | 竞品分析 | 内部参考，不对外 |
 | 011 | AI 教育悖论 | 72% 学生用 AI 不理解，中国禁令。面向家长/学生 |
 | 012 | 人才管道断裂 | 入门招聘 -73%。面向应届生/初级开发者。**有原型视频** |
+| 013 | AI 编程悖论 | 代码越多创新越少，DORA 数据。**有原型视频** |
+| 014 | 意义危机 | 哲学探索，适合系列收尾但不适合独立视频 |
 
 ---
 
@@ -140,7 +160,8 @@
 | 原型 | Vibe Coding | 117s | `content/demo-vibe-coding/video.mp4` |
 | 原型 | 半人马模式 | 102s | `content/demo-centaur/video.mp4` |
 | **原型** | **认知债务 V2** | **130s** | **`content/demo-cognitive-debt/video-v2.mp4`** |
-| 原型 | 人才管道（Nord 主题） | 131s | `content/demo-pipeline/video.mp4` |
+| 原型 | 人才管道（Nord） | 131s | `content/demo-pipeline/video.mp4` |
+| 原型 | 创新停滞（Dracula） | 125s | `content/demo-innovation/video.mp4` |
 
 Windows 路径前缀：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\`
 
