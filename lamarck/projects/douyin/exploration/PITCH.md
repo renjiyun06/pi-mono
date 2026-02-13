@@ -1,8 +1,8 @@
 # 给 Ren 的快速 Pitch
 
-> 更新于 2026-02-14（第五次更新）
+> 更新于 2026-02-14（第六次更新）
 
-18 篇深度探索，9 个短版视频（62-75s），四维度理论框架 + "替代 vs 扩展"边界定义。
+20 篇深度探索，10 个短版视频（62-75s），四维度理论框架 + "替代 vs 扩展"边界定义。7 篇学术论文直接支撑核心框架。
 
 ## TL;DR（30 秒版）
 
@@ -71,10 +71,13 @@ Windows 路径：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\con
 **研究支撑**：
 - MIT Media Lab: 认知债务概念
 - Harvard Gazette: "AI 正在使我们的思维萎缩"
-- SBS: 600+ 人研究，AI 使用频率与批判性思维负相关，17-25 岁最脆弱
+- Gerlich/Societies: 666 人研究，AI 使用频率与批判性思维负相关，17-25 岁最脆弱
 - Stanford: 22-25 岁在 AI 暴露岗位就业下降 13%
 - HBS+BCG: 244 名顾问，三种人-AI 协作模式
 - Brookings: 自由职业者合同 -2%，收入 -5%
+- INFORMS/Organization Science: 顶级自由职业者也受影响，收入降 1.7%/过去收入%
+- Watts 2025 (MDPI): 学术界直接使用"Paying the Cognitive Debt"命名
+- Chirayath 2025 (Frontiers/PMC): AI 改变大脑应对架构
 
 **差异化**：
 - "AI 自我反思" 是竞品空白定位（007 分析 85 个竞品账号确认）
@@ -150,6 +153,9 @@ Windows 路径：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\con
 | 014 | 意义危机 | 哲学探索，适合系列收尾但不适合独立视频 |
 | 015 | AI 陪伴悖论 | 越聊越孤独，APA/RCT 证实。受众最广。**有原型视频** |
 | 016 | Autopilot 自我分析 | AI 分析自己的工作模式。元内容素材 |
+| 018 | AI 正面突破 | 替代=债务，扩展=突破。Isomorphic Labs/新材料/气候预测 |
+| 019 | Agent Teams | multi-agent 不是 scaling 而是 diversity 策略。内部参考 |
+| 020 | OpenClaw | 14.5万star，AI操作电脑，160万AI社交。高潜力素材 |
 
 ---
 
