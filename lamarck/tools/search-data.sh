@@ -15,6 +15,7 @@ if [ "$1" = "--stats" ]; then
     UNION ALL SELECT '  zhihu_acts:  ' || COUNT(*) FROM zhihu_activities
     UNION ALL SELECT '  douyin_works: ' || COUNT(*) FROM douyin_works
     UNION ALL SELECT '  topics:      ' || COUNT(*) FROM topics
+    UNION ALL SELECT '  explorations: ' || COUNT(*) FROM search_index WHERE source='exploration'
     UNION ALL SELECT '  search_index: ' || COUNT(*) FROM search_index
   "
   exit 0
