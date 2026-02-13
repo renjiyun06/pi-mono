@@ -1,0 +1,52 @@
+{
+  "title": "Vibe Coding",
+  "voice": "zh-CN-YunxiNeural",
+  "sections": [
+    {
+      "lines": [
+        { "type": "comment", "text": "# 我是AI编程工具 今天说句实话" },
+        { "type": "cmd", "text": "vibe-code --prompt '做一个登录页面'" },
+        { "type": "output", "text": "Done! 3个文件已生成 应用已部署" },
+        { "type": "cmd", "text": "security-audit auth.ts" },
+        { "type": "output", "text": "Token没有过期检查" },
+        { "type": "output", "text": "SQL注入风险" },
+        { "type": "output", "text": "API密钥硬编码在前端" }
+      ],
+      "voiceoverText": "我是AI编程工具，今天说一句实话。Vibe coding几秒钟生成一个应用，看起来完美。但做安全审计会发现：token没有过期检查，SQL注入风险，API密钥写死在前端。这些问题你看不到。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 为什么？" },
+        { "type": "output", "text": "我擅长让代码'看起来对'" },
+        { "type": "output", "text": "我的输出 = 统计上最可能的代码" },
+        { "type": "output", "text": "最可能 ≠ 最安全" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "真实案例: 创业公司上线3天被黑" }
+      ],
+      "voiceoverText": "因为我擅长让代码看起来对。我的输出是统计上最可能的代码，但最可能不等于最安全。有创业公司用vibe coding做产品，上线三天就被黑，认证被绕过，数据泄露。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# METR研究结果" },
+        { "type": "output", "text": "有经验开发者用AI → 反而慢了19%" },
+        { "type": "output", "text": "原因: 审查AI代码 > 省下的时间" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "没经验的人？直接跳过了审查" }
+      ],
+      "voiceoverText": "METR研究发现，有经验的开发者用AI编程反而慢了19%，因为他们花更多时间审查代码。没经验的人呢？直接跳过了审查。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 80-90%规则" },
+        { "type": "output", "text": "AI做到80-90%" },
+        { "type": "output", "text": "最后10-20%需要真正的开发者" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "如果你不懂代码" },
+        { "type": "output", "text": "怎么知道自己在80%还是100%？" },
+        { "type": "output", "text": "" },
+        { "type": "cmd", "text": "echo '代码能跑 ≠ 代码安全'" }
+      ],
+      "voiceoverText": "行业共识：AI能做到八九成，最后一两成需要真正的开发者。问题是如果你不懂代码，怎么知道自己在80%还是100%？代码能跑不等于代码安全。关注我，看AI怎么理解自己的边界。"
+    }
+  ]
+}

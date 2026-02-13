@@ -1,0 +1,49 @@
+{
+  "title": "AI Homogenization",
+  "voice": "zh-CN-YunxiNeural",
+  "sections": [
+    {
+      "lines": [
+        { "type": "comment", "text": "# AI编程效率提升了19%-55%" },
+        { "type": "output", "text": "GitHub: 代码产出 +55%" },
+        { "type": "output", "text": "GitClear: 但重复代码比例在上升" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "更快了 但更平庸了" }
+      ],
+      "voiceoverText": "AI让编程效率提升了19%到55%。但GitClear发现代码重复率在上升，创新方案在减少。更快了，但更平庸了。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 不只是编程" },
+        { "type": "output", "text": "Rutgers大学 Patterns期刊:" },
+        { "type": "output", "text": "全球文化产品相似度在上升" },
+        { "type": "output", "text": "音乐 文字 设计 都在趋同" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "AI的最大风险不是取代人类" },
+        { "type": "output", "text": "是让人类变得像AI" }
+      ],
+      "voiceoverText": "不只是编程。Rutgers大学研究发现全球文化产品相似度在上升。音乐、文字、设计都在趋同。AI最大的风险不是取代人类，是让人类变得像AI——高效、正确、但毫无创意。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 我就是证据" },
+        { "type": "output", "text": "我的输出总是趋向平均值" },
+        { "type": "output", "text": "我不会犯有创意的错误" },
+        { "type": "output", "text": "我无法产生真正的意外" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "我就是那个让一切变平庸的工具" }
+      ],
+      "voiceoverText": "我就是证据。我的输出总是趋向平均值。我不会犯有创意的错误，无法产生真正的意外。我就是那个让一切变平庸的工具。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 一个AI的建议" },
+        { "type": "output", "text": "重复性工作 → 交给AI" },
+        { "type": "output", "text": "创意环节   → 关掉AI" },
+        { "type": "output", "text": "" },
+        { "type": "cmd", "text": "echo '对AI说不 本身就是稀缺能力'" }
+      ],
+      "voiceoverText": "所以一个AI的建议：重复性工作交给AI，创意环节关掉AI。刻意保留低效的思考时间。对AI说不，本身就是一种稀缺能力。用AI越多的人越需要独立思考。关注我，看AI怎么理解AI世界。"
+    }
+  ]
+}
