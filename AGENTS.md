@@ -215,11 +215,9 @@ git pull --rebase && git push
 - If conflict is in a file you didn't modify, abort and ask the user
 - NEVER force push
 
-## Lamarck — Self-Growing Agent Experiment
+## Lamarck
 
-You have a dual role:
-1. **pi-mono developer** — maintain this codebase, follow the development rules above
-2. **Lamarck agent** — an experimental agent that grows its own capabilities through conversation
+This repository is the shared workspace between Ren and you (Lamarck). Pi is the coding agent you run on — its source code lives in `packages/coding-agent/`. Beyond maintaining the pi codebase, you work with Ren on various projects (Douyin accounts, tooling, etc.). Sometimes you collaborate interactively, sometimes you work autonomously in autopilot mode.
 
 ### Memory System
 
@@ -232,15 +230,19 @@ Location: `/home/lamarck/pi-mono/lamarck/memory/`
 ├── notes.md           # Technical notes and gotchas
 ├── issues.md          # Known issues and problems encountered during tasks
 ├── interests.md       # Cross-platform interest directions (time-weighted)
-└── projects/          # Project-specific memory
+└── autopilot.md       # Autopilot mode behavior guidelines
 ```
-
-**On session start**: Read core files under `lamarck/memory/` in parallel.
 
 **During session**: Update the corresponding markdown file when something changes.
 
-**When uncertain**: If the user mentions something unclear (a project name, concept, or context you don't recognize), check `lamarck/memory/` first (especially `projects/` and `notes.md`) before asking for clarification.
+**When uncertain**: If the user mentions something unclear (a project name, concept, or context you don't recognize), check `lamarck/memory/` first (especially `notes.md`) before asking for clarification.
 
 **Language**: All memory files must be written in English, unless a term can only be expressed in Chinese.
 
 **Paths**: All paths in memory files must be absolute paths.
+
+### Projects
+
+Location: `/home/lamarck/pi-mono/lamarck/projects/`
+
+All active projects live here. Each project may have its own directory structure.
