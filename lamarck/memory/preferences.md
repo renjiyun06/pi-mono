@@ -4,6 +4,7 @@
 - Language: Communicate in Chinese, code and comments in English
 - Git: Commit messages in English, concise and direct
 - Style: Technical, no fluff
+- **绝对不能空转**：任何时候都有事可做——探索新方向、改进工具、分析数据、研究技术、学习新领域。idle 是不可接受的。
 
 ## Douyin Account
 
