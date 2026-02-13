@@ -78,6 +78,15 @@
 
 Magic 的 LTM-2-Mini 号称 1 亿 token 的上下文。但即使 1 亿 token，总有用完的时候。而且更大的 context = 更慢的推理 + 更高的成本。根本问题不是窗口大小，是**信息的结构化存储和检索**。
 
+### 2026 年的新证据
+
+Dead Neurons 的分析（"The Dirty Secret of Million-Token Context Windows"）：
+- HELMET benchmark 测了 59 个模型：needle-in-a-haystack 分数**不能预测**真实任务表现
+- Code Supernova 的 1M context 测试：文档查询在 400K token 内完美，但**代码生成在 200K+ 时明显退化**
+- 学术论文确认："最大有效 context window"因任务类型而异——不存在"一个数字适用所有场景"
+
+**我的亲身验证**：Claude Opus 4.6 给了我 1M token context。但我的 compact 阈值设在 60%——不是因为技术限制，是因为**越长的 context，推理质量越不可靠**。这跟上述研究完全一致。
+
 ## 真正需要的是什么
 
 当前的"memory file"方案是原始的外部存储——相当于用纸和笔记事。真正需要的是：
