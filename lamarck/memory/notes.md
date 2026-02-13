@@ -104,6 +104,16 @@ The `geq` (generic equation) filter is extremely slow for 1080x1920@30fps becaus
 - `vignette` style: fast (built-in filter, not pixel-level)
 - For better performance with animated backgrounds, consider pre-rendering a short loop and using `-stream_loop`
 
+## AI Horde (Free Image Generation)
+
+API: `https://aihorde.net/api/v2/` — community-powered Stable Diffusion, no API key needed (use `apikey: 0000000000`).
+
+- Max free resolution: 576x576 (anonymous users). Upscale via ffmpeg lanczos.
+- Typical wait time: 10-30s depending on queue.
+- Output format: webp (convert to png via ffmpeg).
+- Wrapper: `/home/lamarck/pi-mono/lamarck/projects/douyin/tools/lib/ai-horde.ts`
+- Pollinations.ai is blocked from WSL (Cloudflare error 1033).
+
 ## edge-tts
 
 ### Node.js package hangs in WSL
