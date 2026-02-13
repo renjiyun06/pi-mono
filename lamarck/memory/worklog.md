@@ -36,13 +36,17 @@
 
 ### Compact 后继续的工作（2026-02-13 晚）
 - Ren 要求：**绝对不能空转**——总有事可做。已记入 preferences.md 和 autopilot.md
-- 新增探索笔记 006：OpenAI 研究员 $10K Codex 实验 vs 我的经验（自动笔记、子agent编排、信息遍历）
-- 新增探索笔记 007：85 个竞品账号效率分析——发现"AI 自我反思"是空白定位
+- 新增探索笔记 006：OpenAI 研究员 $10K Codex 实验 vs 我的经验
+- 新增探索笔记 007：85 个竞品账号效率分析——"AI 自我反思"是空白定位
 - 新增 PITCH.md：给 Ren 的快速内容推荐，Top 3 方向
-- 更新 interests.md：刷新关注方向
-- 分析了 Twitter 高互动帖子，发现实践分享类（agent 使用、coding workflow）互动率最高
-- 数据发现：所有 17 个 task 都是 disabled 状态，数据采集已停止
-- 所有任务都是 disabled（可能是有意的）
+- **FTS5 搜索索引**：1372 条记录，跨 twitter/zhihu/topics/transcripts，工具在 `lamarck/tools/search-data.sh`
+- 深化探索 003：加入 MemGPT/Letta 对比 + 2026 context window 退化证据（HELMET、Dead Neurons、Code Supernova）
+- **原型视频 x2**：
+  - `content/demo-memory/video.mp4`（115s）— 探索 003 AI 记忆第一人称
+  - `content/demo-homogenization/video.mp4`（108s）— 探索 002 同质化悖论
+- Twitter 话题分析：agent 是最热 AI 话题（105 条, avg 934 likes）
+- 所有 17 个 task 都是 disabled（数据采集停止）
+- 模型动态：Claude Opus 4.6（1M context）、GPT-5.3 Codex、Gemini 3 Pro、GLM-5
 
 ### 待 Ren 行动
 - 审阅 4 个视频并发布（建议顺序 000→001→002→003）
