@@ -327,8 +327,7 @@ const TOOL_NAME = "send_qq_message";
 const TASK_TOOL_NAME = "task";
 
 // Autopilot threshold: compact when context usage exceeds this percentage
-// Use 50% to keep context fresh and prevent attention from becoming shallow
-const AUTOPILOT_COMPACT_THRESHOLD = 50;
+const AUTOPILOT_COMPACT_THRESHOLD = 60;
 
 export default function mainSessionExtension(pi: ExtensionAPI) {
 	let channelManager: ChannelManager | null = null;
@@ -922,7 +921,7 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 		// Autopilot: automatically continue after each response (main session only)
 		if (autopilotEnabled && !autopilotCompacting && isMainSession()) {
 			const usage = ctx.getContextUsage();
-			const usageInfo = usage?.percent !== null ? `${usage.percent.toFixed(0)}%` : "unknown";
+			const usageInfo = usage?.percent !== null ? `${usage.percent.toFixed(1)}%` : "unknown";
 
 			if (usage && usage.percent !== null && usage.percent >= AUTOPILOT_COMPACT_THRESHOLD) {
 				// Context usage too high, compact first
@@ -933,7 +932,7 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 						autopilotCompacting = false;
 						if (autopilotEnabled) {
 							const newUsage = ctx.getContextUsage();
-							const newUsageInfo = newUsage?.percent !== null ? `${newUsage.percent.toFixed(0)}%` : "compacted";
+							const newUsageInfo = newUsage?.percent !== null ? `${newUsage.percent.toFixed(1)}%` : "compacted";
 							pi.sendUserMessage(buildAutopilotMessage(newUsageInfo, true));
 						}
 					},
@@ -1021,7 +1020,7 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 				ctx.ui.notify("Autopilot enabled. Agent will automatically continue after each response.", "success");
 				// Immediately send first message to start the loop
 				const usage = ctx.getContextUsage();
-				const usageInfo = usage?.percent !== null ? `${usage.percent.toFixed(0)}%` : "unknown";
+				const usageInfo = usage?.percent !== null ? `${usage.percent.toFixed(1)}%` : "unknown";
 				pi.sendUserMessage(buildAutopilotMessage(usageInfo, false));
 				return;
 			}
