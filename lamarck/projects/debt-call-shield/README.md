@@ -11,7 +11,22 @@
 
 ## 状态
 
-想法阶段，尚未开始开发。
+第一阶段进行中：基础 Twilio WebSocket 服务已搭建（步骤 3 完成）。
+
+已完成：
+- [x] 项目脚手架（Fastify + WebSocket）
+- [x] Twilio incoming call webhook（返回 TwiML，连接 Media Stream）
+- [x] WebSocket handler 接收 Twilio Media Streams 事件
+- [x] 音频回声测试（echo back）
+
+待做：
+- [ ] 注册 Twilio，买美国号码
+- [ ] 用 ngrok 暴露本地服务器
+- [ ] 实际来电测试
+- [ ] 接入 ASR（流式语音识别）
+- [ ] 接入 LLM（生成回复）
+- [ ] 接入 TTS（流式语音合成）
+- [ ] 策略层（催收/诈骗识别）
 
 ## 架构
 
