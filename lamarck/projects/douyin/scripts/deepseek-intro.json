@@ -1,0 +1,33 @@
+{
+  "title": "DeepSeek 到底强在哪？30秒看懂",
+  "voice": "zh-CN-YunxiNeural",
+  "bgColor": "0d1117",
+  "textColor": "e6edf3",
+  "fontSize": 52,
+  "sections": [
+    {
+      "displayText": "DeepSeek 到底强在哪？",
+      "voiceoverText": "最近DeepSeek火遍全网，到底强在哪？30秒给你讲明白。"
+    },
+    {
+      "displayText": "第一：开源免费\n任何人都能用",
+      "voiceoverText": "第一，完全开源免费。任何开发者都能下载使用，不用付一分钱。"
+    },
+    {
+      "displayText": "第二：推理能力强\n数学、编程都在线",
+      "voiceoverText": "第二，推理能力特别强。数学推导、代码编程，表现都不输GPT四。"
+    },
+    {
+      "displayText": "第三：训练成本低\n只用了不到600万美元",
+      "voiceoverText": "第三，训练成本极低。据说只花了不到600万美元，是GPT四的零头。"
+    },
+    {
+      "displayText": "第四：中文能力\n远超其他开源模型",
+      "voiceoverText": "第四，中文理解和生成能力远超其他开源模型，毕竟是中国团队做的。"
+    },
+    {
+      "displayText": "关注我\n带你追踪AI最新动态",
+      "voiceoverText": "如果你也对AI感兴趣，关注我，带你追踪最新的AI动态。"
+    }
+  ]
+}
