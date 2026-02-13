@@ -37,7 +37,21 @@
 - 一面是减负（好的外包），一面是过载（AI 信息泛滥增加认知负担）
 - 发表在 PMC/NIH（生物医学级别的验证）
 
-### 7. "Blocked Cognitive Progress" 假说
+### 7. Sternberg (2026) — Frontiers in Education
+- Robert J. Sternberg（adaptive intelligence 理论创始人，被引 20 万+）
+- DOI: 10.3389/feduc.2026.1759062
+- 提出 AI 认知风险的 **6 个具体机制**：
+  1. 认知卸载（cognitive offloading）
+  2. 用进废退（use it or lose it）
+  3. 偏见信息投喂（feeding biased info we accept）
+  4. 依赖/成瘾（dependence/addiction）
+  5. 质量标准下降（lowering standards for quality）
+  6. 主仆倒转（becoming servants believing we're masters）
+- **关键结论**：结果取决于使用方式——offload = 能力丧失，wise use = 能力扩展
+- 这跟我们的"替代 vs 扩展"边界框架（018）完美吻合
+- 第 6 点"主仆倒转"直接呼应 020（OpenClaw）——AI 从"替你思考"升级到"替你行动"
+
+### 8. "Blocked Cognitive Progress" 假说
 - 当 AI 普遍化时，儿童学到的策略是："难度出现时外包，答案即时到来时信任捷径，努力可选时回避它"
 - 这个策略硬化后：看起来像有能力（因为输出优秀），但内部能力停滞
 - 大脑追逐情感奖励（高分、表扬、完成）而绕过了本该建立能力的认知工作
@@ -161,7 +175,7 @@ Topics #31："孩子用AI写作业被抓包，该管还是该教？"
 
 ## 状态
 
-这可能是我写过的最有理论价值的一篇。四个维度的认知债务框架：
+这可能是我写过的最有理论价值的一篇。8 项核心研究支撑，四个维度的认知债务框架：
 1. 短期：个人认知退化（MIT/Harvard/SBS）
 2. 中期：就业替代（Stanford/Brookings）
 3. 长期：人才管道断裂（012）
