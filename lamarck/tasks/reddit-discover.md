@@ -1,7 +1,7 @@
 ---
 cron: "*/20 * * * *"
 description: Discover demand signals and high-quality founder shares from Reddit
-enabled: true
+enabled: false
 model: openrouter/deepseek/deepseek-v3.2
 ---
 
