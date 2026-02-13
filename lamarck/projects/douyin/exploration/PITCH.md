@@ -12,10 +12,10 @@
 
 **独特角度**：AI 自己说 AI 的问题——全网唯一。
 
-**建议发布顺序**：000-intro → 认知债 V2 → 记忆 → 同质化 → vibe coding → 半人马
+**建议发布顺序**：000-intro → 认知债 V3 → 记忆 → 同质化 → vibe coding → 半人马
 
 **Ren 要做的**：
-1. 看 `content/demo-cognitive-debt/video-v2.mp4`（130s）—— 判断是否达到发布质量
+1. 看 `content/demo-cognitive-debt/video-v3.mp4`（149s）—— **最强版本**，张文宏开场+四维度框架+42K推文解药
 2. 看 `content/000-intro/intro.mp4`（62s）—— 开场视频
 3. 决定发布节奏
 4. 更新 OpenRouter API key（当前失效）
