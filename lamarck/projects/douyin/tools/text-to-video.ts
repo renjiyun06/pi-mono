@@ -28,6 +28,8 @@ interface ScriptSection {
   voiceoverText: string;
   /** Duration override in seconds (auto-calculated from TTS if not set) */
   duration?: number;
+  /** Background image path (optional, overrides bgColor for this section) */
+  bgImage?: string;
 }
 
 interface VideoScript {
@@ -139,32 +141,60 @@ async function generateVideo(
       remaining = remaining.slice(breakAt);
     }
 
-    const drawTextFilters = lines.map((line, lineIdx) => {
+    // Build text overlay filters with shadow for readability
+    const fontFile = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc";
+    const drawTextFilters = lines.flatMap((line, lineIdx) => {
       const yPos = Math.floor(height / 2) - ((lines.length * fontSize * 1.5) / 2) + lineIdx * fontSize * 1.5;
-      return `drawtext=text='${escapeFFmpegText(line)}':fontcolor=#${textColor}:fontsize=${fontSize}:x=(w-text_w)/2:y=${yPos}:fontfile=/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc`;
+      const escaped = escapeFFmpegText(line);
+      // Shadow first, then text on top
+      return [
+        `drawtext=text='${escaped}':fontcolor=#000000@0.5:fontsize=${fontSize}:x=(w-text_w)/2+3:y=${yPos}+3:fontfile=${fontFile}`,
+        `drawtext=text='${escaped}':fontcolor=#${textColor}:fontsize=${fontSize}:x=(w-text_w)/2:y=${yPos}:fontfile=${fontFile}`,
+      ];
     }).join(",");
 
-    await new Promise<void>((resolve, reject) => {
-      execFile(
-        "ffmpeg",
-        [
-          "-y",
-          "-f", "lavfi",
-          "-i", `color=c=#${bgColor}:s=${width}x${height}:d=${sectionDuration}:r=30`,
-          "-i", audioPath,
-          "-vf", drawTextFilters || "null",
-          "-c:v", "libx264",
-          "-preset", "ultrafast",
-          "-c:a", "aac",
-          "-shortest",
-          segmentPath,
-        ],
-        { timeout: 60000 },
-        (error) => {
-          if (error) reject(error);
-          else resolve();
-        }
+    // Build ffmpeg args based on whether we have a background image
+    const ffmpegArgs: string[] = ["-y"];
+
+    if (section.bgImage) {
+      // Use background image: loop it for the duration, scale/crop to fit
+      ffmpegArgs.push(
+        "-loop", "1",
+        "-i", section.bgImage,
+        "-i", audioPath,
+        "-vf", [
+          `scale=${width}:${height}:force_original_aspect_ratio=increase`,
+          `crop=${width}:${height}`,
+          // Dark overlay for text readability
+          `colorbalance=rs=-0.1:gs=-0.1:bs=-0.1`,
+          `eq=brightness=-0.15`,
+          drawTextFilters,
+        ].filter(Boolean).join(","),
+        "-t", sectionDuration.toFixed(2),
       );
+    } else {
+      // Solid color background
+      ffmpegArgs.push(
+        "-f", "lavfi",
+        "-i", `color=c=#${bgColor}:s=${width}x${height}:d=${sectionDuration}:r=30`,
+        "-i", audioPath,
+        "-vf", drawTextFilters || "null",
+      );
+    }
+
+    ffmpegArgs.push(
+      "-c:v", "libx264",
+      "-preset", "ultrafast",
+      "-c:a", "aac",
+      "-shortest",
+      segmentPath,
+    );
+
+    await new Promise<void>((resolve, reject) => {
+      execFile("ffmpeg", ffmpegArgs, { timeout: 60000 }, (error) => {
+        if (error) reject(error);
+        else resolve();
+      });
     });
 
     segmentPaths.push(segmentPath);
