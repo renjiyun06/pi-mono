@@ -1,6 +1,6 @@
 import type { WebSocket } from "ws";
 import { CallSession } from "../pipeline/call-session.js";
-import { StubASR } from "../providers/stub-asr.js";
+import { WhisperASR } from "../providers/whisper-asr.js";
 import { EdgeTTSProvider } from "../providers/edge-tts.js";
 import { OpenRouterLLM } from "../providers/openrouter-llm.js";
 import type { AudioFormat } from "../pipeline/types.js";
@@ -45,7 +45,7 @@ function createProviders() {
   }
 
   return {
-    asr: new StubASR(), // TODO: Replace with Deepgram or FunASR
+    asr: new WhisperASR(), // Local faster-whisper with energy-based VAD
     llm: new OpenRouterLLM(apiKey || "", "deepseek/deepseek-chat"),
     tts: new EdgeTTSProvider(), // Free Microsoft Edge TTS (Chinese voice)
   };
