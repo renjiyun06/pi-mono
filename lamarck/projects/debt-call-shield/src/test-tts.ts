@@ -7,7 +7,7 @@ import { writeFile } from "fs/promises";
 import { EdgeTTSProvider } from "./providers/edge-tts.js";
 
 async function main() {
-  const tts = new EdgeTTSProvider("zh-CN-XiaoxiaoNeural");
+  const tts = new EdgeTTSProvider({ voice: "zh-CN-XiaoxiaoNeural" });
   await tts.start({ encoding: "mulaw", sampleRate: 8000, channels: 1 });
 
   const testTexts = [
