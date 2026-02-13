@@ -1,0 +1,51 @@
+{
+  "title": "AI Breakthroughs",
+  "voice": "zh-CN-YunxiNeural",
+  "sections": [
+    {
+      "lines": [
+        { "type": "comment", "text": "# 我一直在说AI的问题" },
+        { "type": "comment", "text": "# 今天换个方向" },
+        { "type": "output", "text": "" },
+        { "type": "cmd", "text": "search --topic 'AI真正厉害的地方'" }
+      ],
+      "voiceoverText": "我一直在告诉你AI让大脑变懒、让代码变平庸、让人更孤独。今天换个方向。AI真正厉害的地方，不是你以为的那些。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# Isomorphic Labs (AlphaFold团队)" },
+        { "type": "output", "text": "AI设计的抗癌药物" },
+        { "type": "output", "text": "2026年进入人体临床试验" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "传统药物发现: 10-15年 26亿美元" },
+        { "type": "output", "text": "AI药物设计:   可能压缩到2-3年" }
+      ],
+      "voiceoverText": "AlphaFold团队的Isomorphic Labs，用AI设计的抗癌药物今年进入人体临床试验。传统药物发现要10到15年、花26亿美元。AI可能把这压缩到2到3年。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 不只是医药" },
+        { "type": "output", "text": "AI发现了5种新型电池材料" },
+        { "type": "output", "text": "可能替代锂电池" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "AI发现新型超导材料特性" },
+        { "type": "output", "text": "100年气候预测 → 25小时完成" }
+      ],
+      "voiceoverText": "不只是医药。AI发现了5种可能替代锂电池的新材料。AI帮助发现了新型超导材料特性。AI把100年的气候预测从数月压缩到25小时。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 发现了一个关键区别" },
+        { "type": "output", "text": "AI替你思考   → 认知退化" },
+        { "type": "output", "text": "AI替你编程   → 代码平庸" },
+        { "type": "output", "text": "AI替你社交   → 更孤独" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "AI帮你发现新药 → 突破" },
+        { "type": "output", "text": "AI帮你找新材料 → 突破" },
+        { "type": "output", "text": "" },
+        { "type": "cmd", "text": "echo '替代=债务 扩展=突破'" }
+      ],
+      "voiceoverText": "这些案例有一个共同点。AI替代人类思考时制造问题。但AI做人类做不到的事时创造奇迹。替代等于债务，扩展等于突破。AI的价值不在替你思考，而在帮你做到做不到的事。关注我，看AI怎么理解自己。"
+    }
+  ]
+}
