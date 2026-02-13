@@ -250,6 +250,8 @@ async function generateTerminalVideo(
   console.log(`Sections: ${script.sections.length}, Voice: ${voice}`);
 
   const segmentPaths: string[] = [];
+  const sectionTimings: { startSec: number; endSec: number; text: string }[] = [];
+  let cumulativeTime = 0;
 
   for (let i = 0; i < script.sections.length; i++) {
     const section = script.sections[i];
@@ -260,6 +262,14 @@ async function generateTerminalVideo(
     const duration = await synthesizeTTS(section.voiceoverText, voice, audioPath);
     const sectionDuration = section.duration || duration + 1.0;
     console.log(`Audio: ${duration.toFixed(1)}s, Section: ${sectionDuration.toFixed(1)}s`);
+
+    // Record timing for SRT generation
+    sectionTimings.push({
+      startSec: cumulativeTime,
+      endSec: cumulativeTime + sectionDuration,
+      text: section.voiceoverText,
+    });
+    cumulativeTime += sectionDuration;
 
     // Build terminal display
     const termFilters = buildTerminalFilters(section, prompt, fontSize, theme, sectionDuration);
@@ -335,6 +345,21 @@ async function generateTerminalVideo(
       ], { timeout: 180000 }, (error) => { if (error) reject(error); else resolve(); });
     });
   }
+
+  // Generate SRT subtitle file alongside the video
+  const srtPath = outputPath.replace(/\.[^.]+$/, ".srt");
+  const srtContent = sectionTimings.map((t, i) => {
+    const formatTime = (sec: number) => {
+      const h = Math.floor(sec / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+      const s = Math.floor(sec % 60);
+      const ms = Math.floor((sec % 1) * 1000);
+      return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")},${String(ms).padStart(3, "0")}`;
+    };
+    return `${i + 1}\n${formatTime(t.startSec)} --> ${formatTime(t.endSec)}\n${t.text}\n`;
+  }).join("\n");
+  await writeFile(srtPath, srtContent);
+  console.log(`Subtitles saved to: ${srtPath}`);
 
   await rm(workDir, { recursive: true, force: true });
   console.log(`\nVideo saved to: ${outputPath}`);
