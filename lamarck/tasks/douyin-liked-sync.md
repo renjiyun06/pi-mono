@@ -2,7 +2,7 @@
 cron: "0 * * * *"
 description: Sync liked videos from personal Douyin account into douyin_works and douyin_accounts
 enabled: false
-model: openrouter/deepseek/deepseek-v3.2
+model: zhipu/glm-4.7
 ---
 
 # 同步抖音点赞记录

@@ -1,7 +1,7 @@
 ---
 description: Download and transcribe popular Douyin videos that haven't been processed yet
 enabled: false
-model: openrouter/deepseek/deepseek-v3.2
+model: zhipu/glm-4.7
 cron: "*/5 * * * *"
 ---
 

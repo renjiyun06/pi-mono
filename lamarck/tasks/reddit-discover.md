@@ -2,7 +2,7 @@
 cron: "*/20 * * * *"
 description: Discover demand signals and high-quality founder shares from Reddit
 enabled: false
-model: openrouter/deepseek/deepseek-v3.2
+model: zhipu/glm-4.7
 ---
 
 # Reddit 需求信号与高质量分享发现

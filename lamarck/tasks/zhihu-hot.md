@@ -2,7 +2,7 @@
 cron: "*/30 * * * *"
 description: Scrape Zhihu hot list snapshot into zhihu_hot table
 enabled: false
-model: openrouter/deepseek/deepseek-v3.2
+model: zhipu/glm-4.7
 ---
 
 # 采集知乎热榜

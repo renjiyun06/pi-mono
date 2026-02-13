@@ -2,7 +2,7 @@
 cron: "*/20 * * * *"
 description: Browse Zhihu recommended feed and upvote high-quality AI content
 enabled: false
-model: openrouter/deepseek/deepseek-v3.2
+model: zhipu/glm-4.7
 overlap: parallel
 ---
 

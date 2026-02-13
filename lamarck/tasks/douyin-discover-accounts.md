@@ -2,7 +2,7 @@
 cron: "15 * * * *"
 description: Discover high-quality Douyin AI content creators via search
 enabled: false
-model: openrouter/deepseek/deepseek-v3.2
+model: zhipu/glm-4.7
 ---
 
 # 抖音发现 AI 方向优质博主

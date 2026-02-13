@@ -1,7 +1,7 @@
 ---
 description: Discover trending AI topics suitable for Zhihu long-form content
 enabled: false
-model: openrouter/deepseek/deepseek-v3.2
+model: zhipu/glm-4.7
 ---
 
 # AI 选题发现（知乎）

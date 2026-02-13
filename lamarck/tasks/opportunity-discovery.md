@@ -1,7 +1,7 @@
 ---
 description: Discover startup and product opportunities from monitored data sources
 enabled: false
-model: openrouter/deepseek/deepseek-v3.2
+model: zhipu/glm-4.7
 ---
 
 # 创业与产品机会发现
