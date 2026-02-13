@@ -31,9 +31,15 @@ const DEFAULT_TASK_MODEL = "anthropic/claude-sonnet-4-5";
 
 type TaskOverlap = "skip" | "parallel" | "kill";
 
+interface TaskAfter {
+	taskName: string; // Target task to watch
+	every: number; // Trigger after this many new sessions
+}
+
 interface TaskDefinition {
 	name: string;
 	cron: string | null; // null for manual-only tasks
+	after: TaskAfter | null; // null if not watching another task
 	description: string;
 	prompt: string;
 	enabled: boolean;
@@ -45,7 +51,7 @@ interface TaskDefinition {
  * Parse frontmatter from a markdown file.
  * Returns null if frontmatter is missing or invalid.
  */
-function parseFrontmatter(content: string): { cron?: string; description?: string; enabled?: boolean; model?: string; overlap?: string; body: string } | null {
+function parseFrontmatter(content: string): { cron?: string; after?: string; description?: string; enabled?: boolean; model?: string; overlap?: string; body: string } | null {
 	const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
 	if (!match) return null;
 
@@ -73,6 +79,7 @@ function parseFrontmatter(content: string): { cron?: string; description?: strin
 
 	return {
 		cron: frontmatter.cron,
+		after: frontmatter.after,
 		description: frontmatter.description,
 		enabled: frontmatter.enabled?.toLowerCase() === "true",
 		model: frontmatter.model,
@@ -164,9 +171,24 @@ function loadTasks(): TaskDefinition[] {
 			// Valid if has description AND enabled: true (cron is optional — no cron means manual-only)
 			if (parsed?.description && parsed?.enabled) {
 				const overlap = (parsed.overlap === "parallel" || parsed.overlap === "kill") ? parsed.overlap : "skip" as TaskOverlap;
+
+				// Parse "after" field: format is "task-name/N"
+				let after: TaskAfter | null = null;
+				if (parsed.after) {
+					const slashIdx = parsed.after.lastIndexOf("/");
+					if (slashIdx > 0) {
+						const taskName = parsed.after.slice(0, slashIdx);
+						const every = parseInt(parsed.after.slice(slashIdx + 1), 10);
+						if (taskName && every > 0) {
+							after = { taskName, every };
+						}
+					}
+				}
+
 				tasks.push({
 					name: file.replace(/\.md$/, ""),
 					cron: parsed.cron || null,
+					after,
 					description: parsed.description,
 					prompt: parsed.body,
 					enabled: true,
@@ -306,6 +328,8 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 
 	// Scheduler state
 	let schedulerInterval: NodeJS.Timeout | null = null;
+	/** Tracks session count per target task at the time of last "after" trigger */
+	const afterSessionCounts = new Map<string, number>();
 
 	/** Find an available session name for parallel tasks */
 	function findAvailableSessionName(baseName: string): string {
@@ -323,34 +347,68 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 		return `${baseName}-${Date.now()}`;
 	}
 
-	/** Scheduler tick: check all tasks and run if cron matches */
+	/** Count session files for a task */
+	function countTaskSessions(taskName: string): number {
+		const sessionDir = path.join(TASKS_DIR, ".sessions", taskName);
+		if (!fs.existsSync(sessionDir)) return 0;
+		try {
+			return fs.readdirSync(sessionDir).filter((f) => f.endsWith(".jsonl")).length;
+		} catch {
+			return 0;
+		}
+	}
+
+	/** Try to start a task, respecting overlap rules. Returns true if started. */
+	function tryStartTask(task: TaskDefinition): boolean {
+		let sessionName = task.name;
+
+		if (tmuxSessionExists(task.name)) {
+			if (task.overlap === "skip") {
+				return false;
+			}
+			if (task.overlap === "parallel") {
+				sessionName = findAvailableSessionName(task.name);
+			} else {
+				// overlap === "kill"
+				tmuxKillSession(task.name);
+			}
+		}
+
+		try {
+			tmuxStartTask(sessionName, task.prompt, task.model);
+			return true;
+		} catch {
+			return false;
+		}
+	}
+
+	/** Scheduler tick: check all tasks and run if cron or after condition matches */
 	function schedulerTick(): void {
 		const now = new Date();
 		const tasks = loadTasks();
 
 		for (const task of tasks) {
-			if (!task.cron) continue; // Skip manual-only tasks
-			if (cronMatches(task.cron, now)) {
-				let sessionName = task.name;
+			// Cron-triggered tasks
+			if (task.cron && cronMatches(task.cron, now)) {
+				tryStartTask(task);
+				continue;
+			}
 
-				// Check if task is already running
-				if (tmuxSessionExists(task.name)) {
-					if (task.overlap === "skip") {
-						continue;
-					}
-					if (task.overlap === "parallel") {
-						sessionName = findAvailableSessionName(task.name);
-					} else {
-						// overlap === "kill"
-						tmuxKillSession(task.name);
-					}
+			// After-triggered tasks: watch target task's session count
+			if (task.after) {
+				const currentCount = countTaskSessions(task.after.taskName);
+				const lastCount = afterSessionCounts.get(task.name) ?? currentCount;
+
+				// Initialize on first seen (don't trigger immediately)
+				if (!afterSessionCounts.has(task.name)) {
+					afterSessionCounts.set(task.name, currentCount);
+					continue;
 				}
 
-				// Start new session with the task
-				try {
-					tmuxStartTask(sessionName, task.prompt, task.model);
-				} catch {
-					// Ignore startup errors
+				if (currentCount - lastCount >= task.after.every) {
+					if (tryStartTask(task)) {
+						afterSessionCounts.set(task.name, currentCount);
+					}
 				}
 			}
 		}

@@ -9,7 +9,7 @@ Two types of tasks:
 ### 1. Agent-driven tasks (`.md` files)
 Markdown files with frontmatter config + prompt as body. The scheduler (in main-session extension) picks them up automatically when main session is active. Each task runs as `pi --one-shot` in a tmux session.
 
-Key frontmatter fields: `description` (required), `enabled`, `model`, `cron`, `overlap` (skip/parallel/kill, default: skip).
+Key frontmatter fields: `description` (required), `enabled`, `model`, `cron`, `after` (trigger after another task's sessions, e.g. `other-task/3`), `overlap` (skip/parallel/kill, default: skip).
 
 Each task's sessions are stored in `/home/lamarck/pi-mono/lamarck/tasks/.sessions/<task-name>/`, one `.jsonl` per run.
 

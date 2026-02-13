@@ -16,7 +16,8 @@ description: 编写和维护 lamarck/tasks/ 下的任务文档。当需要创建
 description: 任务的简短描述（必填，调度系统据此判断是否为有效任务）
 enabled: false              # 是否启用（必填）
 model: provider/model-id    # 使用的模型（可选，默认 anthropic/claude-sonnet-4-5）
-cron: "*/30 * * * *"        # cron 表达式（可选，不设则只能手动触发）
+cron: "*/30 * * * *"        # cron 表达式（可选，与 after 二选一）
+after: other-task/3          # 在指定任务每产生 N 个新 session 后触发（可选，与 cron 二选一）
 overlap: skip               # 上一次还在跑时：skip（默认）、parallel、kill
 ---
 ```
@@ -24,8 +25,11 @@ overlap: skip               # 上一次还在跑时：skip（默认）、paralle
 ### 字段说明
 
 - **description**：必填。没有 description 或 enabled 不为 true 的文档不会被加载。
-- **cron**：标准 5 段格式（分 时 日 月 周）。不设 cron 的任务只能通过 `task run <name>` 手动触发。
+- **cron**：标准 5 段格式（分 时 日 月 周）。按时间周期触发。
+- **after**：格式为 `<任务名>/<次数>`。监视目标任务的 session 目录，每产生指定数量的新 session 就触发一次。适用于审查任务。
 - **overlap**：上一次调度还在跑时的行为。`skip`（默认，跳过本次）、`parallel`（并行跑新实例）、`kill`（杀掉上一次，重新跑）。默认不需要显式写。
+
+不设 `cron` 也不设 `after` 的任务只能通过 `task run <name>` 手动触发。
 
 ## 工作目录
 

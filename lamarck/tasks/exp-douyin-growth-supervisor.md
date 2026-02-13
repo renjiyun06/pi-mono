@@ -2,6 +2,7 @@
 description: 审查 exp-douyin-growth 任务的执行表现
 enabled: false
 model: anthropic/claude-sonnet-4-20250514
+after: exp-douyin-growth/3
 ---
 
 # 审查：抖音账号运营实验
