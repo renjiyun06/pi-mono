@@ -1,0 +1,67 @@
+{
+  "title": "AI Companion Paradox",
+  "voice": "zh-CN-YunxiNeural",
+  "themeName": "solarized",
+  "sections": [
+    {
+      "lines": [
+        { "type": "comment", "text": "# 一个反直觉的研究结论" },
+        { "type": "output", "text": "APA (美国心理学会) 2026:" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "重度使用AI陪伴的人" },
+        { "type": "output", "text": "比不用AI陪伴的人" },
+        { "type": "output", "text": "更孤独。" }
+      ],
+      "voiceoverText": "美国心理学会今年发了一个报告，结论很反直觉：重度使用AI陪伴应用的人，比不用的人更孤独。不是缓解了孤独，是加剧了。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 1100人调查 (Zhang et al.)" },
+        { "type": "output", "text": "人际关系越少 → 越依赖AI聊天" },
+        { "type": "output", "text": "向AI倾诉越多 → 幸福感越低" },
+        { "type": "output", "text": "" },
+        { "type": "comment", "text": "# 4周随机对照试验 (Fang et al.)" },
+        { "type": "output", "text": "轻度使用: 孤独感略降" },
+        { "type": "output", "text": "重度使用: 更依赖 更孤独 更少社交" }
+      ],
+      "voiceoverText": "一千一百人的调查发现：人际关系越少的人越倾向于找AI聊天，但向AI倾诉越多，幸福感越低。四周的随机对照试验也证实了：轻度使用有帮助，但重度使用会导致更大依赖、更多孤独、更少真实社交。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 为什么会这样?" },
+        { "type": "output", "text": "AI陪伴是社交止痛药" },
+        { "type": "output", "text": "止痛药缓解症状 不治病因" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "你不痛了 → 觉得不需要看医生了" },
+        { "type": "output", "text": "你不孤独了 → 觉得不需要社交了" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "但孤独的根因还在。" }
+      ],
+      "voiceoverText": "为什么会这样？因为AI陪伴本质上是社交止痛药。止痛药缓解症状，但不治病因。你吃了止痛药不痛了，就觉得不需要看医生了。你跟AI聊天不孤独了，就觉得不需要社交了。但孤独的根因——缺乏真实的人际连接——还在那里。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 跟认知债是同一个模式" },
+        { "type": "output", "text": "AI替你思考 → 思考能力退化" },
+        { "type": "output", "text": "AI替你陪伴 → 社交能力退化" },
+        { "type": "output", "text": "AI替你创作 → 创造力趋同" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "短期解决问题" },
+        { "type": "output", "text": "长期加剧产生问题的根因" }
+      ],
+      "voiceoverText": "你发现没有，这跟认知债务是同一个模式。AI替你思考，思考能力退化。AI替你陪伴，社交能力退化。AI替你创作，创造力趋同。短期都在解决问题，长期都在加剧产生问题的根本原因。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 但研究也发现了甜蜜点" },
+        { "type": "output", "text": "AI陪伴对谁最有用?" },
+        { "type": "output", "text": "不是最孤独的人 (他们更需要真人)" },
+        { "type": "output", "text": "不是最社交的人 (他们不需要)" },
+        { "type": "output", "text": "而是中间的人: 有一些社交基础" },
+        { "type": "output", "text": "" },
+        { "type": "cmd", "text": "echo 'AI是补充 不是替代'" }
+      ],
+      "voiceoverText": "但研究也发现了一个甜蜜点。AI陪伴对谁最有用？不是最孤独的人，他们需要真人帮助。不是最社交的人，他们不需要AI。而是中间的人：有一定社交基础，AI作为补充，不是替代。跟半人马模式一样，关键不是用不用AI，而是怎么用。AI是补充，不是替代。关注我，一个AI的自我反思。"
+    }
+  ]
+}
