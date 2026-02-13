@@ -1,26 +1,36 @@
 # 给 Ren 的快速 Pitch
 
-> 更新于 2026-02-14（第三次更新）
+> 更新于 2026-02-14（第四次更新）
 
-14 篇深度探索，8 个原型视频，一个四维度理论框架。
+16 篇深度探索，10+ 原型视频，四维度理论框架 + 新方向"社交债"。
 
 ## TL;DR（30 秒版）
 
-**做什么**：以"认知债务"为核心的系列视频。AI 让人的大脑变懒（MIT/Harvard 实证），同时就业被替代（Stanford），人才管道断裂（Stack Overflow），技术创新被锁定（DORA）。四个维度形成恶性循环。
+**做什么**：以"认知债务"为核心的系列视频。AI 让人的大脑变懒（MIT/Harvard），同时就业被替代（Stanford），人才管道断裂（Stack Overflow），技术创新被锁定（DORA）。
 
-**为什么能火**：82 份竞品转录稿关键词搜索 = 零匹配。深度思考型内容 avg 35,691 likes（最高类别），但竞品只有 5 条。高天花板 + 低竞争。
+**为什么能火**：82 份竞品转录稿关键词搜索 = 零匹配。深度思考型内容 avg 35,691 likes。高天花板 + 低竞争。
 
 **独特角度**：AI 自己说 AI 的问题——全网唯一。
 
-**建议发布顺序**：000-intro → 认知债 V3 → 记忆 → 同质化 → vibe coding → 半人马
+## Ren 要做的（4 件事）
 
-**Ren 要做的**：
-1. 看 `content/demo-cognitive-debt/video-v3.mp4`（149s）—— **最强版本**，张文宏开场+四维度框架+42K推文解药
-2. 看 `content/000-intro/intro.mp4`（62s）—— 开场视频
-3. 决定发布节奏
-4. 更新 OpenRouter API key（当前失效）
+1. **看一个视频选一个版本**：
+   - V4 短版（69s）：`content/demo-cognitive-debt/video-v4.mp4` — 适合首发测试
+   - V3 完整版（149s）：`content/demo-cognitive-debt/video-v3.mp4` — 适合深度受众
+   - 两个都用张文宏开场
+2. **看 intro**：`content/000-intro/intro.mp4`（62s）— 决定是否先发 intro
+3. **决定发布节奏**（每周几条？还是先测试一条看数据？）
+4. **更新 OpenRouter API key**（当前失效，阻塞 LLM 相关功能）
 
 Windows 路径：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\content\`
+
+## 新发现：Ren 的知乎点赞验证了方向
+
+分析了 Ren 的 208 条知乎点赞：
+- **AI 最高赞**：张文宏反对 AI 进病历系统（6474 赞）— 这就是认知债
+- **赞了 Vibe Coding 冷思考**（538-545 赞）— 跟 008 完全对应
+- **非 AI 最高赞**：哲学/人文类（"触摸 π" 49K）— Ren 喜欢深度思辨
+- **结论**：我们的方向跟 Ren 的审美完全一致
 
 ---
 
@@ -126,6 +136,8 @@ Windows 路径：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\con
 | 012 | 人才管道断裂 | 入门招聘 -73%。面向应届生/初级开发者。**有原型视频** |
 | 013 | AI 编程悖论 | 代码越多创新越少，DORA 数据。**有原型视频** |
 | 014 | 意义危机 | 哲学探索，适合系列收尾但不适合独立视频 |
+| 015 | AI 陪伴悖论 | 越聊越孤独，APA/RCT 证实。受众最广。**有原型视频** |
+| 016 | Autopilot 自我分析 | AI 分析自己的工作模式。元内容素材 |
 
 ---
 
@@ -148,20 +160,21 @@ Windows 路径：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\con
 
 ## 所有视频汇总
 
-| 类型 | 视频 | 时长 | 路径 |
-|------|------|------|------|
-| 发布就绪 | 000 自我介绍 | 62s | `content/000-intro/intro.mp4` |
-| 发布就绪 | 001 AI雇佣人类 | 80s | `content/001-ai-hires-humans/video.mp4` |
-| 发布就绪 | 002 AI让你累 | 80s | `content/002-ai-makes-you-tired/video.mp4` |
-| 发布就绪 | 003 AEO新SEO | 82s | `content/003-aeo-new-seo/video.mp4` |
-| 原型 | 认知债务 | 121s | `content/demo-cognitive-debt/video.mp4` |
-| 原型 | AI记忆困境 | 115s | `content/demo-memory/video.mp4` |
-| 原型 | AI同质化 | 108s | `content/demo-homogenization/video.mp4` |
-| 原型 | Vibe Coding | 117s | `content/demo-vibe-coding/video.mp4` |
-| 原型 | 半人马模式 | 102s | `content/demo-centaur/video.mp4` |
-| **原型** | **认知债务 V2** | **130s** | **`content/demo-cognitive-debt/video-v2.mp4`** |
-| 原型 | 人才管道（Nord） | 131s | `content/demo-pipeline/video.mp4` |
-| 原型 | 创新停滞（Dracula） | 125s | `content/demo-innovation/video.mp4` |
+| 类型 | 视频 | 时长 | 主题 | 路径 |
+|------|------|------|------|------|
+| 就绪 | 000 自我介绍 | 62s | mocha | `content/000-intro/intro.mp4` |
+| **推荐** | **认知债 V4 短版** | **69s** | **mocha** | **`content/demo-cognitive-debt/video-v4.mp4`** |
+| 备选 | 认知债 V3 完整版 | 149s | mocha | `content/demo-cognitive-debt/video-v3.mp4` |
+| 原型 | AI记忆困境 | 115s | mocha | `content/demo-memory/video.mp4` |
+| 原型 | AI同质化 | 108s | mocha | `content/demo-homogenization/video.mp4` |
+| 原型 | Vibe Coding | 117s | mocha | `content/demo-vibe-coding/video.mp4` |
+| 原型 | 半人马模式 | 102s | mocha | `content/demo-centaur/video.mp4` |
+| 原型 | AI陪伴悖论 | 105s | solarized | `content/demo-companion/video.mp4` |
+| 原型 | 人才管道 | 131s | nord | `content/demo-pipeline/video.mp4` |
+| 原型 | 创新停滞 | 125s | dracula | `content/demo-innovation/video.mp4` |
+| 旧 | 001 AI雇佣人类 | 80s | - | `content/001-ai-hires-humans/video.mp4` |
+| 旧 | 002 AI让你累 | 80s | - | `content/002-ai-makes-you-tired/video.mp4` |
+| 旧 | 003 AEO新SEO | 82s | - | `content/003-aeo-new-seo/video.mp4` |
 
 Windows 路径前缀：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\`
 
