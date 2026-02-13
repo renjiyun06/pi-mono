@@ -8,7 +8,15 @@
 
 ## 2026-02-13 (autopilot-0003)
 
-### Compact 后第七轮工作（2026-02-14 深夜，compact 后恢复）
+### Compact 后第八轮工作（2026-02-14 深夜，第四次 compact 后恢复）
+- 探索 015（AI 陪伴悖论）：APA/RCT/1100人研究——重度 AI 陪伴导致更孤独。跟认知债是同一模式：短期解决问题，长期加剧根因。受众极广（不限开发者）。
+- **demo-companion 原型视频**（105s，Solarized 主题）——"社交止痛药"类比
+- terminal-video 工具改进：新增 `reveal` 行类型（0.4s 间隔逐行出现）+ `--preview` 模式（秒级生成 PNG 布局预览）
+- 认知债 V3 脚本+视频已在上轮完成（张文宏开场，149s）
+- **当前总数**：15 篇探索、10 个原型视频、完整框架
+- **新框架方向**："AI 债务"超级框架——认知债（思考退化）+ 社交债（社交退化）+ 创造力债（同质化）
+
+### Compact 后第七轮工作（2026-02-14 深夜）
 - 探索 013（AI 编程悖论）：DORA 10K+开发者数据——commits 增加但交付效率未提升。React 正反馈锁定。认知债第四维度"系统性创新停滞"
 - 探索 014（意义危机）：Faculty.ai "We're all philosophers now"，Turing Trap，Harari 意义侵蚀。认知债系列的精神内核。
 - **demo-innovation 原型视频**（125s，Dracula 主题）——jQuery 思想实验 + DORA 数据
