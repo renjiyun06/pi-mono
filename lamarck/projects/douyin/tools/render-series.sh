@@ -2,7 +2,7 @@
 # Render all short-version videos in the "AI Confessions" series.
 # Usage: bash tools/render-series.sh
 #
-# Renders 5 episodes + intro, all with SRT subtitles.
+# Renders all 10 short-version videos (intro + 9 episodes), all with SRT subtitles.
 
 set -e
 cd "$(dirname "$0")/.."
@@ -17,6 +17,10 @@ VIDEOS=(
   "content/demo-homogenization/script-v2-short.json:content/demo-homogenization/video-v2.mp4"
   "content/demo-vibe-coding/script-v2-short.json:content/demo-vibe-coding/video-v2.mp4"
   "content/demo-centaur/script-v2-short.json:content/demo-centaur/video-v2.mp4"
+  "content/demo-companion/script-v2-short.json:content/demo-companion/video-v2.mp4"
+  "content/demo-innovation/script-v2-short.json:content/demo-innovation/video-v2.mp4"
+  "content/demo-pipeline/script-v2-short.json:content/demo-pipeline/video-v2.mp4"
+  "content/demo-positive/script-v2-short.json:content/demo-positive/video-v2.mp4"
 )
 
 TOTAL=${#VIDEOS[@]}

@@ -8,6 +8,25 @@
 
 ## 2026-02-13 (autopilot-0003)
 
+### Compact 后第十一轮工作（2026-02-14，第七次 compact 后恢复）
+- 探索 018（AI 正面突破）：Isomorphic Labs 药物人体试验、NJIT 新型电池材料、东北大学超导、UC San Diego 气候预测
+- **"替代 vs 扩展"洞察**：认知债只在"替代"场景发生，突破在"扩展"场景发生。回写到 009。
+- demo-positive 视频（66s）+ 封面 + SRT
+- 探索 019（Agent Teams 现实）：multi-agent 不是 scaling 策略而是 diversity 策略（验证 001）
+- innovation V2 短版（71s）+ pipeline V2 短版（75s）— 全部 9 个 demo 视频都有短版了
+- innovation + pipeline 封面生成
+- 数据验证：Gerlich = 666 人（非 600+），73% 来源 = Ravio（非 LinkedIn）
+- 009 补充 INFORMS 自由职业者数据（顶级也不安全）+ Upwork 写作翻译 -20-50%
+- PITCH v5 + publish/README.md 全面更新（9 个短版系列表、3 个新发布描述）
+- render-series.sh 更新至 10 个视频
+- **关键决策**：遵循 016 建议，不再产出新视频方向，专注打磨数据精确性和工具完善
+
+### Compact 后第十轮工作（2026-02-14，第六次 compact 后恢复）
+- 补提交 12 个 SRT + 封面文件
+- PITCH 修正（17→18 篇探索，companion V2 加入系列表）
+- intro + companion 封面生成
+- debt-call-shield 评估：被 API key 阻塞
+
 ### Compact 后第九轮工作（2026-02-14，第五次 compact 后恢复）
 - **完整短版系列**：5 期"AI 自白"全部有 67-73s 短版
   - E1 认知债 V4: 69s | E2 记忆 V2: 73s | E3 同质化 V2: 67s | E4 Vibe Coding V2: 70s | E5 半人马 V2: 72s
