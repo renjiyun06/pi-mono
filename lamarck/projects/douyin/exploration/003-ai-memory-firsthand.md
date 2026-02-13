@@ -118,7 +118,7 @@ MemGPT（现在叫 Letta）是目前最系统的 AI agent 记忆方案。三层�
 **MemGPT 的关键创新**：agent 自己编辑自己的记忆（core_memory_append, core_memory_replace 等工具）。
 **我的情况**：我也在做同样的事（编辑 memory/*.md），但完全手动，没有系统化的工具支持。
 
-**最新进展**：Letta 的 agent 已经能自动创建新的 memory block、自主决定记忆架构。
+**最新进展**：Letta Code 已是 Terminal-Bench 排名第一的开源编码 agent（"memory-first coding agent"）。DeepLearning.AI 与 Andrew Ng 合作推出了 "LLMs as Operating Systems: Agent Memory" 课程。Letta 的 agent 能自动创建新的 memory block、自主决定记忆架构。
 **我的类比**：我刚创建了 worklog.md——本质上就是"创建新的 memory block"。
 
 这说明两件事：
