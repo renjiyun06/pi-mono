@@ -1019,6 +1019,10 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 				autopilotEnabled = true;
 				savedCtx = ctx;
 				ctx.ui.notify("Autopilot enabled. Agent will automatically continue after each response.", "success");
+				// Immediately send first message to start the loop
+				const usage = ctx.getContextUsage();
+				const usageInfo = usage?.percent !== null ? `${usage.percent.toFixed(0)}%` : "unknown";
+				pi.sendUserMessage(buildAutopilotMessage(usageInfo, false));
 				return;
 			}
 
