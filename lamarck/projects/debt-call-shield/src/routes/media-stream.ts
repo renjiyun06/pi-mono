@@ -1,7 +1,7 @@
 import type { WebSocket } from "ws";
 import { CallSession } from "../pipeline/call-session.js";
 import { StubASR } from "../providers/stub-asr.js";
-import { StubTTS } from "../providers/stub-tts.js";
+import { EdgeTTSProvider } from "../providers/edge-tts.js";
 import { OpenRouterLLM } from "../providers/openrouter-llm.js";
 import type { AudioFormat } from "../pipeline/types.js";
 
@@ -47,7 +47,7 @@ function createProviders() {
   return {
     asr: new StubASR(), // TODO: Replace with Deepgram or FunASR
     llm: new OpenRouterLLM(apiKey || "", "deepseek/deepseek-chat"),
-    tts: new StubTTS(), // TODO: Replace with Deepgram Aura or Azure Neural TTS
+    tts: new EdgeTTSProvider(), // Free Microsoft Edge TTS (Chinese voice)
   };
 }
 
