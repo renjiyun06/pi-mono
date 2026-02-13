@@ -344,12 +344,9 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 	/** Build the autopilot continuation message with context info */
 	function buildAutopilotMessage(usageInfo: string, justCompacted: boolean): string {
 		const lines = [
-			"[Autopilot 模式]",
-			"",
-			"你当前处于 autopilot 模式，应该自主探索和改进系统，而不是等待用户指令。",
-			"",
-			`Context 用量：${usageInfo}${justCompacted ? "（刚完成 compact）" : ""}`,
-			"",
+			"[Autopilot]",
+			"你当前处于 autopilot 模式。",
+			`Context：${usageInfo}${justCompacted ? "（刚完成 compact）" : ""}`,
 			"继续。",
 		];
 		return lines.join("\n");
