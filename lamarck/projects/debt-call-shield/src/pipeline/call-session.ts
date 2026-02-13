@@ -202,15 +202,37 @@ export class CallSession {
 /**
  * Find the end of the first complete sentence in text.
  * Supports Chinese and English punctuation.
+ * Skips periods inside numbers (e.g., "2.5", "3.14") to avoid
+ * false splits like "2." + "5 seconds".
  */
 function findSentenceEnd(text: string): number {
-  const sentenceEnders = ["。", "！", "？", ".", "!", "?", "；", ";"];
+  // Chinese sentence enders are unambiguous
+  const unambiguous = ["。", "！", "？", "!", "?", "；", ";"];
   let earliest = -1;
-  for (const ender of sentenceEnders) {
+  for (const ender of unambiguous) {
     const idx = text.indexOf(ender);
     if (idx >= 0 && (earliest < 0 || idx < earliest)) {
       earliest = idx;
     }
   }
+
+  // For "." we need to skip decimal numbers like "2.5"
+  let dotIdx = 0;
+  while (dotIdx < text.length) {
+    dotIdx = text.indexOf(".", dotIdx);
+    if (dotIdx < 0) break;
+    // Skip if surrounded by digits (decimal number)
+    const prevIsDigit = dotIdx > 0 && text[dotIdx - 1] >= "0" && text[dotIdx - 1] <= "9";
+    const nextIsDigit = dotIdx + 1 < text.length && text[dotIdx + 1] >= "0" && text[dotIdx + 1] <= "9";
+    if (prevIsDigit && nextIsDigit) {
+      dotIdx++;
+      continue;
+    }
+    if (earliest < 0 || dotIdx < earliest) {
+      earliest = dotIdx;
+    }
+    break;
+  }
+
   return earliest;
 }
