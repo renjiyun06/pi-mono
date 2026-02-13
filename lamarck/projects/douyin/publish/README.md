@@ -301,26 +301,30 @@ MIT叫它认知债——每次让AI替你思考，你都在积累看不见的债
 
 ---
 
-## 推荐发布顺序
+## 推荐发布顺序（全短版，67-73s）
 
-1. **000-intro**（62s）— 建立账号身份
-2. **认知债 V4 短版**（69s）或 **V3 完整版**（149s）— 系列首发
-3. **demo-memory**（115s）— AI 记忆困境
-4. **demo-homogenization**（108s）— 同质化悖论
-5. **demo-vibe-coding**（117s）— Vibe Coding 陷阱
-6. **demo-centaur**（102s）— 半人马模式（解药）
-7. **demo-companion**（105s）— AI 陪伴悖论（受众最广）
-8. **demo-pipeline**（131s）— 番外：人才管道
-9. **demo-innovation**（125s）— 番外：创新停滞
+| 序号 | 视频 | 时长 | 文件 | 封面 |
+|------|------|------|------|------|
+| 0 | 自我介绍 | 62s | `000-intro/intro.mp4` | - |
+| 1 | 认知债 | 69s | `demo-cognitive-debt/video-v4.mp4` | `demo-cognitive-debt/cover.png` |
+| 2 | AI记忆 | 73s | `demo-memory/video-v2.mp4` | `demo-memory/cover.png` |
+| 3 | 同质化 | 67s | `demo-homogenization/video-v2.mp4` | `demo-homogenization/cover.png` |
+| 4 | Vibe Coding | 70s | `demo-vibe-coding/video-v2.mp4` | `demo-vibe-coding/cover.png` |
+| 5 | 半人马 | 72s | `demo-centaur/video-v2.mp4` | `demo-centaur/cover.png` |
+| 6 | AI陪伴 | 105s | `demo-companion/video.mp4` | - |
+| 7 | 人才管道 | 131s | `demo-pipeline/video.mp4` | - |
+| 8 | 创新停滞 | 125s | `demo-innovation/video.mp4` | - |
 
-001-003（策略转型前的浅内容）建议暂不发布。
+- SRT 字幕文件在同目录下（.srt 后缀），上传时可选择添加
+- 001-003（策略转型前的浅内容）建议暂不发布
 
 ---
 
-## 操作步骤（每条都一样）
+## 操作步骤
 
 1. 打开 https://creator.douyin.com/creator-micro/content/upload
 2. 点「发布视频」标签
-3. 上传对应的 .mp4 文件
-4. 粘贴上面对应的作品描述
-5. 发布（或设置定时发布：工作日晚 7-9 点）
+3. 上传 .mp4 文件
+4. （可选）上传封面图 — 在封面设置中选择"自定义封面"，上传对应 cover.png
+5. 粘贴上面对应的作品描述
+6. 发布（或定时发布：工作日 18:00-21:00）
