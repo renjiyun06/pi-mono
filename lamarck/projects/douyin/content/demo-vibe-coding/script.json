@@ -19,7 +19,7 @@
         { "type": "output", "text": "✓ 生成 login.tsx" },
         { "type": "output", "text": "✓ 生成 auth.ts" },
         { "type": "output", "text": "✓ 生成 database.ts" },
-        { "type": "output", "text": "Done! 应用已部署 ✨" }
+        { "type": "output", "text": "Done! 应用已部署" }
       ],
       "voiceoverText": "Vibe coding，就是用自然语言让AI写代码。你说'做一个登录页面'，几秒钟后，代码生成了，应用跑起来了。魔法一样。"
     },
