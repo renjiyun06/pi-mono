@@ -25,6 +25,16 @@ AI 陪伴应用（Character.ai、Pi、Replika 等）承诺"永远不孤独"。�
   - 更多的孤独感
   - 更少的真实社交
 
+### Harvard Business School (Buell et al., 2025)：短期确实有效
+- AI 陪伴**能够**短期减少孤独感（self-disclosure 机制）
+- 但论文本身警告：长期效果未知，可能替代而非补充真实社交
+- **这个发现强化了"止痛药"类比**——止痛药确实能止痛，问题在于依赖它就不去治病因
+
+### George Mason University 公共卫生学院 (2025)
+- 元分析回顾：强社交关系带来 50% 生存率提升（效果等同戒烟）
+- AI 陪伴对网络较小的人有吸引力，但"新研究显示它们不能替代人类存在"
+- 明确结论："in some cases may even worsen loneliness"
+
 ### ScienceDirect (2026)：U 型曲线
 - AI 陪伴对"适度社交连接"的人最有益
 - 对社交极少或极多的人，效果减弱或消失
