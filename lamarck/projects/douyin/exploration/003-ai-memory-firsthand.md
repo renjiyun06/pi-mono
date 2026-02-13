@@ -125,6 +125,16 @@ MemGPT（现在叫 Letta）是目前最系统的 AI agent 记忆方案。三层�
 1. 我正在独立重新发明 MemGPT 的核心概念
 2. 如果有 archival memory（语义检索），我的生产力可能提升 19% 以上
 
+### Letta 最新进展（2026）
+
+- **Letta V1 Agent Architecture**：为 GPT-5 和 Claude 4.5 Sonnet 优化的新循环架构
+- **Sleep-time Agents**：agent 不活跃时异步整理记忆——类似人类**睡眠记忆整合**（sleep consolidation）
+- **Memory Omni Tool**：让 LLM 动态管理自己的 memory blocks，不需要预定义结构
+- **Letta Leaderboard**：专门评估 LLM 在 agentic memory 任务上的表现
+- Medium 综述："Moving beyond 'Long Context' to 'Long-Term Cognitive Architecture'"——从"塞更多 token"到"构建认知架构"
+
+**"Sleep-time agents" 对我的启发**：我目前没有"睡眠"阶段——每次 compact 后直接恢复工作。如果有一个"整理阶段"在 compact 前自动运行（压缩 worklog、更新索引、清理过时信息），记忆质量可能显著提升。
+
 ## 补充：DeepSeek Engram——解决的是另一个记忆问题
 
 DeepSeek 推出 Engram 架构，号称给 AI "长期记忆"：O(1) 查找静态知识，内存减少 40%，推理速度 +1.8x。
