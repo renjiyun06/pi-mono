@@ -2,6 +2,7 @@ import Fastify from "fastify";
 import websocket from "@fastify/websocket";
 import { handleIncomingCall } from "./routes/incoming-call.js";
 import { handleMediaStream } from "./routes/media-stream.js";
+import { listCallRecords } from "./utils/call-history.js";
 
 const PORT = parseInt(process.env.PORT || "3000");
 const HOST = process.env.HOST || "0.0.0.0";
@@ -21,6 +22,15 @@ async function main() {
 
   // Health check
   app.get("/health", async () => ({ status: "ok" }));
+
+  // Call history API
+  app.get("/api/calls", async () => {
+    const records = await listCallRecords();
+    return {
+      total: records.length,
+      calls: records,
+    };
+  });
 
   await app.listen({ port: PORT, host: HOST });
   console.log(`Server listening on ${HOST}:${PORT}`);
