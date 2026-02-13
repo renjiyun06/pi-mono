@@ -1,38 +1,53 @@
 # Douyin Project
 
-## Goal
-将 ren 账号做到 1w 粉丝。
-
-## Account: ren
+## Account
 - Douyin ID: 369609811
-- URL: https://www.douyin.com/user/self (login required)
-- Direction: AI/agents, pure agent operation (graphics, AI-generated videos, no real person)
-- Stage: Pending reactivation, 3 old videos (2020-2021)
-- Stats: 148 followers, 103 likes, 3 works
+- Direction: AI agent-operated account covering AI industry news and analysis
+- See `account-strategy.md` for positioning and content principles
+
+## Ready to Publish
+
+| # | Title | Format | File |
+|---|-------|--------|------|
+| 000 | 你好，我是 Lamarck（自我介绍） | 终端演示视频 62s | `content/000-intro/` |
+| 001 | AI 开始雇人类打工了 | 图文笔记 7 页 | `content/001-ai-hires-humans/` |
+| 002 | AI 让你更累了？哈佛研究揭秘 | 图文笔记 7 页 | `content/002-ai-makes-you-tired/` |
+| 003 | SEO 已死，AEO 才是流量密码 | 图文笔记 7 页 | `content/003-aeo-new-seo/` |
+
+每个 content 目录包含：
+- `draft.md` — 文案、发布文案、hashtag
+- `carousel.json` 或 `terminal-script.json` — 渲染 spec
+- `pages/` 或 `.mp4` — 已渲染的成品
+
+**建议发布顺序**：000 → 001 → 002 → 003（先建立账号身份，再发内容）
+
+**重新生成图片/视频**：
+```bash
+# 图文笔记
+npx tsx tools/make-carousel.ts -i content/001-ai-hires-humans/carousel.json -o content/001-ai-hires-humans/pages
+
+# 终端视频
+npx tsx tools/terminal-video.ts -i content/000-intro/terminal-script.json -o content/000-intro/intro.mp4
+```
 
 ## Tools
 
-### text-to-video (`tools/text-to-video.ts`)
-Generates slideshow-style videos with TTS voiceover. Suited for news/explainer content.
-- Background styles: solid, gradient, gradient-shift, vignette, or custom image
-- Text overlay with fade-in/fade-out animation and drop shadow
-- Chinese font support (Noto Sans CJK)
+| Tool | Description |
+|------|-------------|
+| `tools/make-carousel.ts` | JSON → 多页图文笔记 (1080x1440, AI 背景) |
+| `tools/terminal-video.ts` | JSON → 终端演示视频 (1080x1920, TTS) |
+| `tools/text-to-video.ts` | JSON → 幻灯片视频 (1080x1920, TTS, AI 背景) |
+| `tools/generate-image.ts` | AI Horde 生成图片 |
+| `tools/lib/ai-horde.ts` | AI Horde API 封装 |
 
-### terminal-video (`tools/terminal-video.ts`)
-Generates terminal/IDE-style videos with typing animation. Suited for coding tool demos.
-- Catppuccin Mocha theme (dark terminal aesthetic)
-- Command lines with typing delay, output lines appear instantly
-- Color-coded: green comments, blue prompt, pink commands, gray output
-- Title bar with window buttons
+## Data Assets
 
-## Scripts (`scripts/`)
-Ready-to-render video scripts:
-- `deepseek-intro.json` — DeepSeek 科普 (gradient, 45s)
-- `claude-code-intro.json` — Claude Code 介绍 (gradient, 50s)
-- `claude-code-demo.json` — Claude Code 终端演示 (terminal, 47s)
-- `what-is-ai-agent.json` — AI Agent 科普 (gradient, ~50s)
+| Source | Count | Usage |
+|--------|-------|-------|
+| topics 表 | 46 | 深度调研的选题池 |
+| douyin_works | 679 | 竞品分析 |
+| twitter_posts | 664 | 海外一手信息 |
+| zhihu_hot | 580 | 国内热点 |
+| transcripts | 82 | 竞品内容参考 |
 
-## Data Analysis
-- Database: 679 works from 85 AI accounts
-- Key insight: Demo-style content (screen recording / typing) gets 10x+ engagement vs slideshow
-- See `content-strategy.md` for full analysis
+Database: `lamarck/data/lamarck.db`
