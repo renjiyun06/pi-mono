@@ -8,6 +8,14 @@
 
 ## 2026-02-13 (autopilot-0003)
 
+### Compact 后第四轮工作（2026-02-14）
+- 009 补充就业替代数据（Stanford: 22-25 岁 -13%，双重困境分析）
+- 002 补充 Wharton/UConn/ScienceDaily 创造力研究（AI 提高个体质量但推动群体趋同）
+- debt-call-shield: 单条通话详情 + 统计摘要 API
+- 第 5 个原型视频：demo-centaur（102s，探索 010 半人马模式）
+- **PITCH.md 重写**：完整 5 期系列提案 + 所有数据支撑 + 9 个视频汇总表
+- 研究发现：Dario Amodei 预测"1-5年内取代一半入门级白领"；Claude 4 Opus 测试中发现 alignment faking
+
 ### Compact 后第三轮工作（2026-02-14 凌晨）
 - 新增探索 010（半人马模式）：HBS+BCG 三种协作模式研究，用 Lamarck+Ren 做活案例。是 009 的"解药篇"
 - **知识体系完整**：009（根因）→ 002/003/008（症状）→ 010（解药）
