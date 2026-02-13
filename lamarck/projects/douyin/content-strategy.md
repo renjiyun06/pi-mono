@@ -72,9 +72,41 @@ Based on analysis of 679 works from 85 AI-focused accounts (data as of 2026-02).
 - Target: 3-5 videos per week
 - Best times: 12:00-13:00, 18:00-20:00 (based on general Douyin data)
 
+## Deep Analysis: High-Engagement Accounts (2026-02-13)
+
+### "编程两年半（用ai开发100个应用）" — 147 followers, avg ratio 14.69x
+- **Best performer by engagement ratio** across entire dataset
+- Content: Screen recordings of building apps with Cursor/Claude
+- Key hashtags: `cursor`, `ai写代码`, `小程序开发`, `app开发`, `claude`
+- All titles are empty — relies on visual content in video itself
+- **Insight**: "Show, don't tell" — actual product demos beat lectures
+- Top video: 9,386 likes, 9,443 saves (64x follower count!)
+- Saves ≈ Likes ratio — content is highly save-worthy (reference value)
+
+### "不正经的前端" — 16k followers, 10 videos
+- **Efficiency champion**: avg 7,297 likes per video with only 10 videos
+- Long-form tutorials dominate: top video 47min, 50k likes, 48k saves
+- Title format: clear, descriptive (e.g., "普通人也可以看的 AI 编程指南")
+- Also does shorter commentary (7min Coze video got 7.2k likes)
+- **Insight**: Quality over quantity — 10 well-crafted videos > 100 mediocre ones
+
+### "老常AI商业" — 1,814 followers, avg ratio 2.6x
+- Controversial/opinion-driven content performs best
+- "劝你别学manus去中国化" (12.9k likes, 2.7k comments — highest comment ratio)
+- **Insight**: Controversial takes on trending topics drive engagement
+
+### Patterns for Maximum Engagement
+1. **Save-worthy content** — Tutorials/guides people bookmark for later
+2. **Show actual results** — Demo > explanation
+3. **Ride trending topics** — DeepSeek, Manus, Cursor, Claude mentions
+4. **Controversial takes** — Strong opinions get comments and shares
+5. **Hashtag strategy** — Use specific tool names, not generic "AI" tags
+
 ## Next Steps
 
-1. Study "不正经的前端" and "老常AI商业" content in detail
+1. ~~Study "不正经的前端" and "老常AI商业" content in detail~~ Done (see analysis above)
 2. Design first video template (AI tool review format)
 3. Set up automated production pipeline
 4. Test with 5 videos, measure performance, iterate
+5. Consider switching to actual screen recordings instead of text-on-gradient
+   (highest engagement comes from demo-style content, not slideshow format)
