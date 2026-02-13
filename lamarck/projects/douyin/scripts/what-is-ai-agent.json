@@ -1,0 +1,39 @@
+{
+  "title": "AI Agent到底是什么？为什么2026年全在说它",
+  "voice": "zh-CN-YunxiNeural",
+  "bgStyle": "gradient",
+  "bgColor": "0a1628",
+  "bgColorEnd": "1a2a4a",
+  "textColor": "c8e0ff",
+  "fontSize": 50,
+  "sections": [
+    {
+      "displayText": "AI Agent 到底是什么？",
+      "voiceoverText": "AI Agent到底是什么？为什么2026年科技圈都在说它？"
+    },
+    {
+      "displayText": "普通AI：你问一句\n它答一句",
+      "voiceoverText": "普通AI你问一句它答一句，像个问答机器。"
+    },
+    {
+      "displayText": "AI Agent：你给它一个目标\n它自己规划、执行、纠错",
+      "voiceoverText": "但AI Agent不一样。你给它一个目标，它自己规划步骤、执行操作、遇到问题还会自己纠错。"
+    },
+    {
+      "displayText": "举个例子：\n"帮我订明天北京到上海的机票"",
+      "voiceoverText": "举个例子，你说帮我订明天北京到上海的机票。"
+    },
+    {
+      "displayText": "它会：搜航班→比价→\n选座→完成支付",
+      "voiceoverText": "它会自动搜索航班、比较价格、选择座位、甚至完成支付。整个过程你不用动手。"
+    },
+    {
+      "displayText": "关键能力：\n使用工具 + 多步推理",
+      "voiceoverText": "AI Agent的关键能力就两个：会使用各种工具，加上多步推理。这让它从聊天机器人变成了真正的数字助理。"
+    },
+    {
+      "displayText": "关注我\n一起见证AI新时代",
+      "voiceoverText": "关注我，一起见证AI Agent带来的新时代。"
+    }
+  ]
+}

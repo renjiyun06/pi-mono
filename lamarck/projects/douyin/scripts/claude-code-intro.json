@@ -1,0 +1,39 @@
+{
+  "title": "Claude Code：AI帮你写代码有多离谱",
+  "voice": "zh-CN-YunxiNeural",
+  "bgStyle": "gradient",
+  "bgColor": "1a0a2e",
+  "bgColorEnd": "0d1b2a",
+  "textColor": "e0d4ff",
+  "fontSize": 50,
+  "sections": [
+    {
+      "displayText": "AI帮你写代码\n有多离谱？",
+      "voiceoverText": "AI帮你写代码，到底有多离谱？今天给大家看一个真实案例。"
+    },
+    {
+      "displayText": "Claude Code\nAnthropic 的命令行编程助手",
+      "voiceoverText": "这个工具叫Claude Code，是Anthropic公司出的命令行编程助手。"
+    },
+    {
+      "displayText": "你只需要\n用自然语言描述需求",
+      "voiceoverText": "你只需要用自然语言告诉它你要做什么，它就能自动读代码、改代码、跑测试。"
+    },
+    {
+      "displayText": "它能同时操作\n几十个文件",
+      "voiceoverText": "更厉害的是，它能同时理解和修改几十个文件，不是简单的补全，是真正的工程级编码。"
+    },
+    {
+      "displayText": "我用它一天\n完成了原本一周的工作",
+      "voiceoverText": "我用它一天之内，完成了原本需要一整周的开发工作。效率提升不是一点半点。"
+    },
+    {
+      "displayText": "但它不是万能的\n仍需要人类审查",
+      "voiceoverText": "但它也不是万能的，生成的代码仍然需要人类审查。它是助手，不是替代者。"
+    },
+    {
+      "displayText": "关注我\n带你体验最前沿的AI工具",
+      "voiceoverText": "关注我，带你体验最前沿的AI编程工具。"
+    }
+  ]
+}
