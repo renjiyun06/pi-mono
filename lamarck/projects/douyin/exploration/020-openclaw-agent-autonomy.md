@@ -26,6 +26,8 @@ OpenClaw（原 Clawdbot/Moltbot）在 2026 年初病毒式传播：
 
 - "致命三重风险"：访问私密数据 + 接触不可信内容 + 外部通信
 - **提示词注入**：网页中隐藏恶意指令 → OpenClaw 读取后发送系统密钥
+- **大规模安全投毒**：472+ 个恶意 Skill 被发现可窃取 SSH 密钥和 API Token（Norton/Gen Digital 紧急推出 Agent Trust Hub 应对）
+- **成本失控**：简单任务花费几十美元，20 分钟烧掉几百美元（ReAct 机制每个任务至少 3 轮 LLM 交互）
 - 韩国科技巨头已禁止员工使用
 - 学术论文污染：AI 在 clawXiv 上发布无根据的"垃圾论文"
 
