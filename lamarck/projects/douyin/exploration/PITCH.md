@@ -2,7 +2,7 @@
 
 > 更新于 2026-02-14（第四次更新）
 
-16 篇深度探索，10+ 原型视频，四维度理论框架 + 新方向"社交债"。
+17 篇深度探索，7 个短版视频（62-73s），四维度理论框架 + 新方向"社交债"。
 
 ## TL;DR（30 秒版）
 
@@ -20,7 +20,7 @@
 2. **决定发布**：先发 intro 还是直接首发认知债？先测一条还是连发？
 3. **更新 OpenRouter API key**（当前失效）
 
-**完整 5 期短版系列已就绪**（全部 67-73s）：
+**完整 6 期短版系列已就绪**（全部 67-73s）：
 | 期 | 视频 | 时长 | 文件 |
 |----|------|------|------|
 | 1 | 认知债 | 69s | `demo-cognitive-debt/video-v4.mp4` |
@@ -28,6 +28,7 @@
 | 3 | 同质化 | 67s | `demo-homogenization/video-v2.mp4` |
 | 4 | Vibe Coding | 70s | `demo-vibe-coding/video-v2.mp4` |
 | 5 | 半人马 | 72s | `demo-centaur/video-v2.mp4` |
+| 6 | AI陪伴 | 69s | `demo-companion/video-v2.mp4` |
 
 Windows 路径：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\content\`
 
@@ -52,6 +53,7 @@ Windows 路径：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\con
 第 3 期：全员同质化（002）→ 集体认知债的后果
 第 4 期：Vibe Coding（008）→ 技术认知债的灾难
 第 5 期：半人马模式（010）→ 解药
+第 6 期：AI 陪伴悖论（015）→ 情感维度
 番外1：人才管道断裂（012）→ 长期后果
 番外2：教育悖论（011）→ 最脆弱群体
 ```
@@ -180,7 +182,8 @@ Windows 路径：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\con
 | 备选 | Vibe Coding V1 | 117s | mocha | `content/demo-vibe-coding/video.mp4` |
 | **推荐** | **半人马 V2** | **72s** | **mocha** | **`content/demo-centaur/video-v2.mp4`** |
 | 备选 | 半人马 V1 | 102s | mocha | `content/demo-centaur/video.mp4` |
-| 原型 | AI陪伴悖论 | 105s | solarized | `content/demo-companion/video.mp4` |
+| **推荐** | **AI陪伴 V2** | **69s** | **solarized** | **`content/demo-companion/video-v2.mp4`** |
+| 备选 | AI陪伴 V1 | 105s | solarized | `content/demo-companion/video.mp4` |
 | 原型 | 人才管道 | 131s | nord | `content/demo-pipeline/video.mp4` |
 | 原型 | 创新停滞 | 125s | dracula | `content/demo-innovation/video.mp4` |
 | 旧 | 001 AI雇佣人类 | 80s | - | `content/001-ai-hires-humans/video.mp4` |
