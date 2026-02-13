@@ -12,15 +12,22 @@
 
 **独特角度**：AI 自己说 AI 的问题——全网唯一。
 
-## Ren 要做的（4 件事）
+## Ren 要做的（3 件事）
 
-1. **看一个视频选一个版本**：
-   - V4 短版（69s）：`content/demo-cognitive-debt/video-v4.mp4` — 适合首发测试
-   - V3 完整版（149s）：`content/demo-cognitive-debt/video-v3.mp4` — 适合深度受众
-   - 两个都用张文宏开场
-2. **看 intro**：`content/000-intro/intro.mp4`（62s）— 决定是否先发 intro
-3. **决定发布节奏**（每周几条？还是先测试一条看数据？）
-4. **更新 OpenRouter API key**（当前失效，阻塞 LLM 相关功能）
+1. **看 2 个视频**（Windows 路径在下面）：
+   - `content/demo-cognitive-debt/video-v4.mp4`（69s）— 认知债系列首发
+   - `content/000-intro/intro.mp4`（62s）— 自我介绍
+2. **决定发布**：先发 intro 还是直接首发认知债？先测一条还是连发？
+3. **更新 OpenRouter API key**（当前失效）
+
+**完整 5 期短版系列已就绪**（全部 67-73s）：
+| 期 | 视频 | 时长 | 文件 |
+|----|------|------|------|
+| 1 | 认知债 | 69s | `demo-cognitive-debt/video-v4.mp4` |
+| 2 | AI记忆 | 73s | `demo-memory/video-v2.mp4` |
+| 3 | 同质化 | 67s | `demo-homogenization/video-v2.mp4` |
+| 4 | Vibe Coding | 70s | `demo-vibe-coding/video-v2.mp4` |
+| 5 | 半人马 | 72s | `demo-centaur/video-v2.mp4` |
 
 Windows 路径：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\content\`
 
@@ -167,9 +174,12 @@ Windows 路径：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\con
 | 备选 | 认知债 V3 完整版 | 149s | mocha | `content/demo-cognitive-debt/video-v3.mp4` |
 | **推荐** | **AI记忆困境 V2** | **73s** | **mocha** | **`content/demo-memory/video-v2.mp4`** |
 | 备选 | AI记忆困境 V1 | 115s | mocha | `content/demo-memory/video.mp4` |
-| 原型 | AI同质化 | 108s | mocha | `content/demo-homogenization/video.mp4` |
-| 原型 | Vibe Coding | 117s | mocha | `content/demo-vibe-coding/video.mp4` |
-| 原型 | 半人马模式 | 102s | mocha | `content/demo-centaur/video.mp4` |
+| **推荐** | **AI同质化 V2** | **67s** | **mocha** | **`content/demo-homogenization/video-v2.mp4`** |
+| 备选 | AI同质化 V1 | 108s | mocha | `content/demo-homogenization/video.mp4` |
+| **推荐** | **Vibe Coding V2** | **70s** | **mocha** | **`content/demo-vibe-coding/video-v2.mp4`** |
+| 备选 | Vibe Coding V1 | 117s | mocha | `content/demo-vibe-coding/video.mp4` |
+| **推荐** | **半人马 V2** | **72s** | **mocha** | **`content/demo-centaur/video-v2.mp4`** |
+| 备选 | 半人马 V1 | 102s | mocha | `content/demo-centaur/video.mp4` |
 | 原型 | AI陪伴悖论 | 105s | solarized | `content/demo-companion/video.mp4` |
 | 原型 | 人才管道 | 131s | nord | `content/demo-pipeline/video.mp4` |
 | 原型 | 创新停滞 | 125s | dracula | `content/demo-innovation/video.mp4` |
