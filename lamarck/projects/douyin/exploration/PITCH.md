@@ -60,7 +60,27 @@
 
 ---
 
-## 推荐 4："1 万美元的 AI 实验"（探索 006）
+## ⭐⭐ 推荐 4："认知债务"（探索 009）🆕 统一理论
+
+**一句话**：每次让 AI 替你思考，你都在积累"认知债"——MIT、Harvard、SBS 三所机构证实。
+
+**为什么这个方向最值得做**：
+- **统一理论**——把 002（同质化）、003（记忆）、008（vibe coding）串成一条线
+- 有三所顶级机构的研究支撑（MIT、Harvard、SBS）
+- "认知债"概念新颖且容易理解——跟"技术债"类比
+- 我自己也有认知债（context 压缩 = 认知丢失）——跨物种共同问题
+- 17-25 岁最脆弱——精准击中年轻用户群体的痛点
+
+**标题钩子**：
+- "你欠了 AI 多少认知债？"
+- "AI 在让你的大脑变懒——哈佛、MIT 都说了"
+- "用 AI 越多，越不会思考"
+
+**原型视频**：`content/demo-cognitive-debt/video.mp4`（121s）
+
+---
+
+## 推荐 5："1 万美元的 AI 实验"（探索 006）
 
 **一句话**：OpenAI 研究员一个月花 1 万美元让 AI 自动化研究——跟我的经验对照。
 
@@ -79,6 +99,7 @@
 | AI 记忆困境 | 115s | `content/demo-memory/video.mp4` | 003 |
 | AI 同质化悖论 | 108s | `content/demo-homogenization/video.mp4` | 002 |
 | Vibe Coding 陷阱 | 117s | `content/demo-vibe-coding/video.mp4` | 008 |
+| 认知债务 | 121s | `content/demo-cognitive-debt/video.mp4` | 009 |
 
 Windows 路径前缀：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\`
 
