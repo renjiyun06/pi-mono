@@ -1,9 +1,8 @@
 ---
 cron: "*/30 * * * *"
 description: Monitor latest activities from tracked Zhihu accounts
-enabled: true
+enabled: false
 model: openrouter/deepseek/deepseek-v3.2
-skipIfRunning: true
 ---
 
 # 监控知乎账号最新动态

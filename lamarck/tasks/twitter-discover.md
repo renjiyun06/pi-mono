@@ -1,9 +1,8 @@
 ---
 cron: "*/20 * * * *"
 description: Discover new AI-focused Twitter accounts worth following
-enabled: true
+enabled: false
 model: openrouter/deepseek/deepseek-v3.2
-skipIfRunning: true
 ---
 
 # 发现值得关注的推特 AI 账号

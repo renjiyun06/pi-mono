@@ -1,10 +1,8 @@
 ---
 description: Download and transcribe popular Douyin videos that haven't been processed yet
-enabled: true
+enabled: false
 model: openrouter/deepseek/deepseek-v3.2
 cron: "*/5 * * * *"
-skipIfRunning: true
-allowParallel: false
 ---
 
 # 抖音视频转录

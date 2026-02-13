@@ -29,6 +29,8 @@ const PI_COMMAND = "pi";
 
 const DEFAULT_TASK_MODEL = "anthropic/claude-sonnet-4-5";
 
+type TaskOverlap = "skip" | "parallel" | "kill";
+
 interface TaskDefinition {
 	name: string;
 	cron: string | null; // null for manual-only tasks
@@ -36,16 +38,14 @@ interface TaskDefinition {
 	prompt: string;
 	enabled: boolean;
 	model: string;
-	skipIfRunning: boolean; // If true, skip this schedule if task is already running
-	allowParallel: boolean; // If true, allow multiple instances with numbered suffixes
-	mode: string | null; // null for normal mode, "rh-loop" for isolated loop mode
+	overlap: TaskOverlap; // What to do when previous run is still active
 }
 
 /**
  * Parse frontmatter from a markdown file.
  * Returns null if frontmatter is missing or invalid.
  */
-function parseFrontmatter(content: string): { cron?: string; description?: string; enabled?: boolean; model?: string; skipIfRunning?: boolean; allowParallel?: boolean; mode?: string; body: string } | null {
+function parseFrontmatter(content: string): { cron?: string; description?: string; enabled?: boolean; model?: string; overlap?: string; body: string } | null {
 	const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
 	if (!match) return null;
 
@@ -64,14 +64,19 @@ function parseFrontmatter(content: string): { cron?: string; description?: strin
 		}
 	}
 
+	// Support legacy skipIfRunning/allowParallel fields
+	let overlap = frontmatter.overlap;
+	if (!overlap) {
+		if (frontmatter.skipIfRunning?.toLowerCase() === "true") overlap = "skip";
+		else if (frontmatter.allowParallel?.toLowerCase() === "true") overlap = "parallel";
+	}
+
 	return {
 		cron: frontmatter.cron,
 		description: frontmatter.description,
 		enabled: frontmatter.enabled?.toLowerCase() === "true",
 		model: frontmatter.model,
-		skipIfRunning: frontmatter.skipIfRunning?.toLowerCase() === "true",
-		allowParallel: frontmatter.allowParallel?.toLowerCase() === "true",
-		mode: frontmatter.mode,
+		overlap,
 		body: match[2].trim(),
 	};
 }
@@ -158,6 +163,7 @@ function loadTasks(): TaskDefinition[] {
 
 			// Valid if has description AND enabled: true (cron is optional — no cron means manual-only)
 			if (parsed?.description && parsed?.enabled) {
+				const overlap = (parsed.overlap === "parallel" || parsed.overlap === "kill") ? parsed.overlap : "skip" as TaskOverlap;
 				tasks.push({
 					name: file.replace(/\.md$/, ""),
 					cron: parsed.cron || null,
@@ -165,9 +171,7 @@ function loadTasks(): TaskDefinition[] {
 					prompt: parsed.body,
 					enabled: true,
 					model: parsed.model || DEFAULT_TASK_MODEL,
-					skipIfRunning: parsed.skipIfRunning || false,
-					allowParallel: parsed.allowParallel || false,
-					mode: parsed.mode || null,
+					overlap,
 				});
 			}
 		} catch {
@@ -219,7 +223,7 @@ const PROJECT_ROOT = "/home/lamarck/pi-mono";
  * Start a new tmux session with pi --one-shot.
  * If userArgs is provided, it's appended to the prompt as user-specified parameters.
  */
-function tmuxStartTask(name: string, prompt: string, model: string, userArgs?: string, mode?: string | null): void {
+function tmuxStartTask(name: string, prompt: string, model: string, userArgs?: string): void {
 	// Write prompt to temp file to avoid shell escaping issues
 	const promptFile = `/tmp/task-${name}.prompt`;
 	let fullPrompt = prompt;
@@ -233,11 +237,15 @@ function tmuxStartTask(name: string, prompt: string, model: string, userArgs?: s
 	if (manufacturer) {
 		modelId = `${manufacturer}/${modelId}`;
 	}
-	// Build extra flags based on mode
-	const extraFlags = mode === "rh-loop" ? "--no-project-context" : "";
+
+	// Each task gets its own session directory
+	const sessionDir = path.join(TASKS_DIR, ".sessions", name);
+	if (!fs.existsSync(sessionDir)) {
+		fs.mkdirSync(sessionDir, { recursive: true });
+	}
 
 	// Simple command that tells pi to read the file, with working directory set
-	const cmd = `tmux new-session -d -s "${name}" -c "${PROJECT_ROOT}" "${PI_COMMAND} --provider ${provider} --model ${modelId} ${extraFlags} --one-shot '读取 ${promptFile} 文件，按照里面的指令完成任务'"`;
+	const cmd = `tmux new-session -d -s "${name}" -c "${PROJECT_ROOT}" "${PI_COMMAND} --provider ${provider} --model ${modelId} --session-dir ${sessionDir} --one-shot '读取 ${promptFile} 文件，按照里面的指令完成任务'"`;
 	execSync(cmd, { encoding: "utf-8" });
 }
 
@@ -327,22 +335,20 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 
 				// Check if task is already running
 				if (tmuxSessionExists(task.name)) {
-					if (task.skipIfRunning) {
-						// Skip this schedule, let the previous run continue
+					if (task.overlap === "skip") {
 						continue;
 					}
-					if (task.allowParallel) {
-						// Find an available session name
+					if (task.overlap === "parallel") {
 						sessionName = findAvailableSessionName(task.name);
 					} else {
-						// Kill the running task to start a new one
+						// overlap === "kill"
 						tmuxKillSession(task.name);
 					}
 				}
 
 				// Start new session with the task
 				try {
-					tmuxStartTask(sessionName, task.prompt, task.model, undefined, task.mode);
+					tmuxStartTask(sessionName, task.prompt, task.model);
 				} catch {
 					// Ignore startup errors
 				}
@@ -641,18 +647,19 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 			let sessionName = task.name;
 
 			if (tmuxSessionExists(task.name)) {
-				if (task.skipIfRunning) {
-					return { success: true, message: `Task "${name}" is already running (skipIfRunning=true), skipped` };
+				if (task.overlap === "skip") {
+					return { success: true, message: `Task "${name}" is already running (overlap=skip), skipped` };
 				}
-				if (task.allowParallel) {
+				if (task.overlap === "parallel") {
 					sessionName = findAvailableSessionName(task.name);
 				} else {
+					// overlap === "kill"
 					tmuxKillSession(task.name);
 				}
 			}
 
 			try {
-				tmuxStartTask(sessionName, task.prompt, task.model, args || undefined, task.mode);
+				tmuxStartTask(sessionName, task.prompt, task.model, args || undefined);
 				const argsInfo = args ? ` with args: ${args}` : "";
 				return { success: true, message: `Task "${sessionName}" started (model: ${task.model})${argsInfo}` };
 			} catch (err: any) {

@@ -7,6 +7,8 @@ description: 启动子 agent 来完成任务。
 
 通过 `task` tool 启动独立的 pi 实例来执行任务。
 
+任务文档的格式和约定参见 `task-authoring` 技能。以下仅说明子 agent 派发的特殊之处。
+
 ## 什么时候用
 
 - 任务可以独立执行，不需要全程参与
@@ -20,20 +22,9 @@ description: 启动子 agent 来完成任务。
 
 在 `/home/lamarck/pi-mono/lamarck/tasks/` 下创建 `.md` 文件。
 
-临时任务文件名必须以 `zzz-tmp-` 开头（如 `zzz-tmp-research-deepseek.md`），使其在目录中排到最后，与长期任务区分开。文件名即任务名。
+临时任务文件名必须以 `zzz-tmp-` 开头（如 `zzz-tmp-research-deepseek.md`），使其在目录中排到最后，与长期任务区分开。
 
-```markdown
----
-description: 简要说明任务目的
-enabled: true
-model: anthropic/claude-sonnet-4-5
----
-
-任务 prompt 内容...
-```
-
-- 不设 `cron`，表示仅手动触发
-- 可选参数：`skipIfRunning: true`（已在运行则跳过）、`allowParallel: true`（允许并行多实例），根据具体任务需要设置
+不设 `cron`，表示仅手动触发。
 
 ### 2. 启动任务
 
@@ -46,17 +37,6 @@ model: anthropic/claude-sonnet-4-5
 ### 3. 派发后立即返回
 
 不要等待子任务完成，继续主对话。
-
-## 输出目录
-
-子任务的输出放在 `/home/lamarck/pi-mono/lamarck/tmp/<任务名>/` 目录下。
-
-- 任务启动前，在 prompt 中指定输出目录路径
-- 子 agent 负责创建目录（如果不存在）
-- 所有产出（报告、数据、中间文件等）都放在这个目录
-- 主 agent 可以通过读取该目录获取子任务结果
-
-示例：任务名为 `zzz-tmp-research-memory`，输出目录为 `/home/lamarck/pi-mono/lamarck/tmp/zzz-tmp-research-memory/`
 
 ## 任务描述要求
 
@@ -74,7 +54,7 @@ model: anthropic/claude-sonnet-4-5
 - action: `stop` — 终止任务
 - action: `list` — 查看所有任务及运行状态
 
-任务运行在 tmux session 中，session 名称与任务名一致（并行实例会加 `-1`、`-2` 后缀）。需要查看任务内部详情时，可以用 tmux 命令：
+需要查看任务内部详情时，可以用 tmux 命令：
 
 ```bash
 # 查看最近输出

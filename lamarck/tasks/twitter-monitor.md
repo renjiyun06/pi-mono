@@ -1,9 +1,8 @@
 ---
 cron: "*/15 * * * *"
 description: Monitor latest tweets from tracked Twitter accounts
-enabled: true
+enabled: false
 model: openrouter/deepseek/deepseek-v3.2
-skipIfRunning: true
 ---
 
 # 监控推特账号最新推文

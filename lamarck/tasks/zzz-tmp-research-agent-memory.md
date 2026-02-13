@@ -1,6 +1,6 @@
 ---
 description: 搜索 AI Agent 记忆/状态管理相关的开源项目
-enabled: true
+enabled: false
 model: openrouter/deepseek/deepseek-v3.2
 ---
 

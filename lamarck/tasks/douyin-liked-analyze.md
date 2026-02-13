@@ -1,9 +1,8 @@
 ---
 cron: "5 * * * *"
 description: Download, transcribe and deeply analyze liked Douyin videos
-enabled: true
+enabled: false
 model: openrouter/deepseek/deepseek-v3.2
-skipIfRunning: true
 ---
 
 # 深度分析抖音点赞作品

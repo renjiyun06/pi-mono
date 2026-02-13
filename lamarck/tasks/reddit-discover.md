@@ -3,7 +3,6 @@ cron: "*/20 * * * *"
 description: Discover demand signals and high-quality founder shares from Reddit
 enabled: true
 model: openrouter/deepseek/deepseek-v3.2
-skipIfRunning: true
 ---
 
 # Reddit 需求信号与高质量分享发现

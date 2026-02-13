@@ -1,9 +1,9 @@
 ---
 cron: "*/20 * * * *"
 description: Browse Zhihu recommended feed and upvote high-quality AI content
-enabled: true
+enabled: false
 model: openrouter/deepseek/deepseek-v3.2
-allowParallel: true
+overlap: parallel
 ---
 
 # 知乎推荐流发现高质量 AI 内容

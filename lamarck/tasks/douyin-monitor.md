@@ -1,9 +1,8 @@
 ---
 cron: "0,30 * * * *"
 description: Monitor tracked Douyin accounts for new works
-enabled: true
+enabled: false
 model: openrouter/deepseek/deepseek-v3.2
-skipIfRunning: true
 ---
 
 # 监控抖音博主新作品

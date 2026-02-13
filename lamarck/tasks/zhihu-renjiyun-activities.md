@@ -3,7 +3,6 @@ cron: "*/30 * * * *"
 description: Sync renjiyun's Zhihu activity feed to zhihu_activities table
 enabled: false
 model: openrouter/deepseek/deepseek-v3.2
-skipIfRunning: true
 ---
 
 # 同步 renjiyun 的知乎动态

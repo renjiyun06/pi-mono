@@ -2,8 +2,6 @@
 description: Discover trending AI topics suitable for Zhihu long-form content
 enabled: false
 model: openrouter/deepseek/deepseek-v3.2
-skipIfRunning: true
-allowParallel: false
 ---
 
 # AI 选题发现（知乎）

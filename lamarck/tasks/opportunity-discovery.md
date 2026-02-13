@@ -1,9 +1,7 @@
 ---
 description: Discover startup and product opportunities from monitored data sources
-enabled: true
+enabled: false
 model: openrouter/deepseek/deepseek-v3.2
-skipIfRunning: true
-allowParallel: false
 ---
 
 # 创业与产品机会发现

@@ -1,6 +1,6 @@
 ---
 description: Test task - open Zhihu in browser
-enabled: true
+enabled: false
 model: openrouter/deepseek/deepseek-v3.2
 ---
 

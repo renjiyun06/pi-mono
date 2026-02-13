@@ -1,9 +1,8 @@
 ---
 cron: "15 * * * *"
 description: Discover high-quality Douyin AI content creators via search
-enabled: true
+enabled: false
 model: openrouter/deepseek/deepseek-v3.2
-skipIfRunning: true
 ---
 
 # 抖音发现 AI 方向优质博主

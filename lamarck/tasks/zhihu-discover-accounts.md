@@ -1,9 +1,8 @@
 ---
 cron: "*/30 * * * *"
 description: Discover new Zhihu accounts worth following (AI priority, tech/startup also accepted)
-enabled: true
+enabled: false
 model: openrouter/deepseek/deepseek-v3.2
-skipIfRunning: true
 ---
 
 # 发现值得关注的知乎账号

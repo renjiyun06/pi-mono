@@ -1,6 +1,6 @@
 ---
 description: Research customer acquisition strategies and tools for indie developers
-enabled: true
+enabled: false
 model: openrouter/deepseek/deepseek-v3.2
 ---
 

@@ -1,9 +1,7 @@
 ---
 description: Find narrative angles from discovered topics and research deeply for Douyin video creation
-enabled: true
+enabled: false
 model: openrouter/deepseek/deepseek-v3.2
-skipIfRunning: true
-allowParallel: false
 ---
 
 # 抖音叙事调研
