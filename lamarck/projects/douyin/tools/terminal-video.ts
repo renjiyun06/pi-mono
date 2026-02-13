@@ -46,7 +46,9 @@ interface TerminalScript {
   prompt?: string;
   /** Font size for terminal text */
   fontSize?: number;
-  /** Terminal theme colors */
+  /** Terminal theme name (mocha, nord, dracula, solarized, red) */
+  themeName?: string;
+  /** Terminal theme colors (overrides themeName) */
   theme?: {
     bg?: string;       // background hex
     fg?: string;       // foreground (output) hex
@@ -61,13 +63,45 @@ const CJK_FONT = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc";
 // Use CJK font for everything — it renders ASCII fine and supports Chinese
 const FONT = CJK_FONT;
 
-const DEFAULT_THEME = {
-  bg: "1e1e2e",      // Catppuccin Mocha base
-  fg: "cdd6f4",      // text
-  prompt: "89b4fa",   // blue
-  cmd: "f5e0dc",      // rosewater
-  comment: "a6e3a1",  // green
+const THEMES: Record<string, typeof DEFAULT_THEME> = {
+  mocha: {
+    bg: "1e1e2e",      // Catppuccin Mocha base
+    fg: "cdd6f4",      // text
+    prompt: "89b4fa",   // blue
+    cmd: "f5e0dc",      // rosewater
+    comment: "a6e3a1",  // green
+  },
+  nord: {
+    bg: "2e3440",      // Nord polar night
+    fg: "d8dee9",      // snow storm
+    prompt: "88c0d0",   // frost
+    cmd: "e5e9f0",      // light
+    comment: "a3be8c",  // aurora green
+  },
+  dracula: {
+    bg: "282a36",      // Dracula background
+    fg: "f8f8f2",      // foreground
+    prompt: "bd93f9",   // purple
+    cmd: "f1fa8c",      // yellow
+    comment: "50fa7b",  // green
+  },
+  solarized: {
+    bg: "002b36",      // Solarized dark
+    fg: "839496",      // base0
+    prompt: "268bd2",   // blue
+    cmd: "2aa198",      // cyan
+    comment: "859900",  // green
+  },
+  red: {
+    bg: "1a1015",      // dark wine
+    fg: "e0c4c4",      // warm text
+    prompt: "ff6b6b",   // red
+    cmd: "ffa07a",      // salmon
+    comment: "c9b037",  // gold
+  },
 };
+
+const DEFAULT_THEME = THEMES.mocha;
 
 async function synthesizeTTS(
   text: string,
@@ -200,7 +234,8 @@ async function generateTerminalVideo(
   const voice = script.voice || "zh-CN-YunxiNeural";
   const prompt = script.prompt || "$ ";
   const fontSize = script.fontSize || 36;
-  const theme = { ...DEFAULT_THEME, ...script.theme };
+  const baseTheme = script.themeName && THEMES[script.themeName] ? THEMES[script.themeName] : DEFAULT_THEME;
+  const theme = { ...baseTheme, ...script.theme };
   const width = 1080;
   const height = 1920;
 
@@ -222,12 +257,15 @@ async function generateTerminalVideo(
     // Build terminal display
     const termFilters = buildTerminalFilters(section, prompt, fontSize, theme, sectionDuration);
 
-    // Title bar decoration
+    // Title bar decoration — dot colors adapt to theme
+    const dotRed = theme.prompt === "ff6b6b" ? "ff6b6b" : "f38ba8"; // red theme uses its own red
+    const dotYellow = theme.comment === "c9b037" ? "c9b037" : "f9e2af";
+    const dotGreen = theme.comment || "a6e3a1";
     const titleBar = [
       // Window dots (red, yellow, green)
-      `drawtext=text='●':fontcolor=#f38ba8:fontsize=28:x=30:y=30:fontfile=${FONT}`,
-      `drawtext=text='●':fontcolor=#f9e2af:fontsize=28:x=65:y=30:fontfile=${FONT}`,
-      `drawtext=text='●':fontcolor=#a6e3a1:fontsize=28:x=100:y=30:fontfile=${FONT}`,
+      `drawtext=text='●':fontcolor=#${dotRed}:fontsize=28:x=30:y=30:fontfile=${FONT}`,
+      `drawtext=text='●':fontcolor=#${dotYellow}:fontsize=28:x=65:y=30:fontfile=${FONT}`,
+      `drawtext=text='●':fontcolor=#${dotGreen}:fontsize=28:x=100:y=30:fontfile=${FONT}`,
       // Title
       `drawtext=text='${escapeFFmpegText(script.title)}':fontcolor=#${theme.fg}@0.6:fontsize=24:x=(w-text_w)/2:y=32:fontfile=${FONT}`,
       // Separator line
@@ -309,6 +347,7 @@ program
         "terminal-video: Creates videos simulating a terminal with typing animation.\n" +
         "Supports command lines (typed char-by-char), output lines (instant), and comments.\n" +
         "Includes TTS voiceover, terminal title bar, and blinking cursor.\n" +
+        `Available themes: ${Object.keys(THEMES).join(", ")} (set via "themeName" in script JSON)\n` +
         "Requires: ffmpeg, Python edge-tts, fonts-noto-cjk."
       );
       return;
