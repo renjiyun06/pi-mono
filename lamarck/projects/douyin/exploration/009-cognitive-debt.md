@@ -25,6 +25,24 @@
 ### 4. Psychology Today — "AI Weakens Critical Thinking"
 - 提出了重建路径：刻意练习、限制 AI 使用场景、meta-cognition 训练
 
+### 5. Watts (2025) — MDPI Education Sciences
+- 论文标题直接是 **"Paying the Cognitive Debt"**
+- 应用于社工教育领域：AI 的不引导整合正在损害批判性思维、伦理推理、专业判断力
+- 提出了"体验式学习"框架来对抗认知债——不是禁止 AI 而是有意识地引导使用
+- **验证了我们的框架命名是学术上成立的**
+
+### 6. Chirayath et al. (2025) — Frontiers in Psychology
+- "Cognitive offloading or cognitive overload? How AI alters the mental architecture of coping"
+- 不只是"卸载"认知——AI 还在**改变大脑的应对架构**
+- 一面是减负（好的外包），一面是过载（AI 信息泛滥增加认知负担）
+- 发表在 PMC/NIH（生物医学级别的验证）
+
+### 7. "Blocked Cognitive Progress" 假说
+- 当 AI 普遍化时，儿童学到的策略是："难度出现时外包，答案即时到来时信任捷径，努力可选时回避它"
+- 这个策略硬化后：看起来像有能力（因为输出优秀），但内部能力停滞
+- 大脑追逐情感奖励（高分、表扬、完成）而绕过了本该建立能力的认知工作
+- **直接验证了 011（教育悖论）和 012（人才管道）的核心机制**
+
 ## 跨领域验证：张文宏的医疗警告
 
 知乎高赞答案（6474 赞）：**张文宏不支持把 AI 引入病历系统，恐造成医生诊断能力缺失**。
