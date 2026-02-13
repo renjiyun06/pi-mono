@@ -18,4 +18,6 @@ overlap: skip
 
 ## 反馈输出
 
-如果有问题需要指出，写入：`/home/lamarck/pi-mono/lamarck/tmp/douyin-growth/feedback/`
+如果有问题需要指出，写入你自己的反馈目录：
+
+`/home/lamarck/pi-mono/lamarck/tmp/douyin-growth/feedback/douyin-growth-review/`
