@@ -70,6 +70,57 @@ export async function saveCallRecord(
 }
 
 /**
+ * Get a single call record by ID (includes full turns).
+ */
+export async function getCallRecord(
+  id: string,
+): Promise<CallRecord | null> {
+  try {
+    const filePath = join(DATA_DIR, `${id}.json`);
+    const content = await readFile(filePath, "utf-8");
+    return JSON.parse(content) as CallRecord;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Get aggregate statistics across all calls.
+ */
+export async function getCallStats(): Promise<{
+  totalCalls: number;
+  totalDurationSec: number;
+  avgDurationSec: number;
+  intentBreakdown: Record<string, number>;
+  avgTurnsPerCall: number;
+}> {
+  const records = await listCallRecords();
+  const totalCalls = records.length;
+  const totalDurationSec = records.reduce((s, r) => s + r.durationSec, 0);
+  const avgDurationSec =
+    totalCalls > 0 ? Math.round(totalDurationSec / totalCalls) : 0;
+  const avgTurnsPerCall =
+    totalCalls > 0
+      ? Math.round(
+          records.reduce((s, r) => s + r.turnCount, 0) / totalCalls,
+        )
+      : 0;
+
+  const intentBreakdown: Record<string, number> = {};
+  for (const r of records) {
+    intentBreakdown[r.intent] = (intentBreakdown[r.intent] || 0) + 1;
+  }
+
+  return {
+    totalCalls,
+    totalDurationSec,
+    avgDurationSec,
+    intentBreakdown,
+    avgTurnsPerCall,
+  };
+}
+
+/**
  * List all saved call records (metadata only, no turns).
  */
 export async function listCallRecords(): Promise<

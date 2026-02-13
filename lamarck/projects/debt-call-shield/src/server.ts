@@ -2,7 +2,11 @@ import Fastify from "fastify";
 import websocket from "@fastify/websocket";
 import { handleIncomingCall } from "./routes/incoming-call.js";
 import { handleMediaStream } from "./routes/media-stream.js";
-import { listCallRecords } from "./utils/call-history.js";
+import {
+  listCallRecords,
+  getCallRecord,
+  getCallStats,
+} from "./utils/call-history.js";
 
 const PORT = parseInt(process.env.PORT || "3000");
 const HOST = process.env.HOST || "0.0.0.0";
@@ -26,10 +30,19 @@ async function main() {
   // Call history API
   app.get("/api/calls", async () => {
     const records = await listCallRecords();
-    return {
-      total: records.length,
-      calls: records,
-    };
+    return { total: records.length, calls: records };
+  });
+
+  app.get<{ Params: { id: string } }>("/api/calls/:id", async (req, reply) => {
+    const record = await getCallRecord(req.params.id);
+    if (!record) {
+      return reply.code(404).send({ error: "Call not found" });
+    }
+    return record;
+  });
+
+  app.get("/api/stats", async () => {
+    return getCallStats();
   });
 
   await app.listen({ port: PORT, host: HOST });
