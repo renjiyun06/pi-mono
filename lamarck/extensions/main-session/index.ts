@@ -328,8 +328,6 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 
 	// Scheduler state
 	let schedulerInterval: NodeJS.Timeout | null = null;
-	/** Tracks session count per target task at the time of last "after" trigger */
-	const afterSessionCounts = new Map<string, number>();
 
 	/** Find an available session name for parallel tasks */
 	function findAvailableSessionName(baseName: string): string {
@@ -394,21 +392,12 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 				continue;
 			}
 
-			// After-triggered tasks: watch target task's session count
+			// After-triggered tasks: trigger when target sessions / every > own sessions
 			if (task.after) {
-				const currentCount = countTaskSessions(task.after.taskName);
-				const lastCount = afterSessionCounts.get(task.name) ?? currentCount;
-
-				// Initialize on first seen (don't trigger immediately)
-				if (!afterSessionCounts.has(task.name)) {
-					afterSessionCounts.set(task.name, currentCount);
-					continue;
-				}
-
-				if (currentCount - lastCount >= task.after.every) {
-					if (tryStartTask(task)) {
-						afterSessionCounts.set(task.name, currentCount);
-					}
+				const targetCount = countTaskSessions(task.after.taskName);
+				const ownCount = countTaskSessions(task.name);
+				if (Math.floor(targetCount / task.after.every) > ownCount) {
+					tryStartTask(task);
 				}
 			}
 		}
