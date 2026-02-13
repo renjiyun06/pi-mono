@@ -238,6 +238,29 @@ Google DORA报告研究了1万多名开发者：AI让代码提交量显著增加
 
 ---
 
+---
+
+## demo-innovation AI编程悖论（125 秒）
+
+已在上方补充。
+
+---
+
+## 推荐发布顺序
+
+1. **000-intro**（62s）— 建立账号身份
+2. **demo-cognitive-debt V3**（149s）— 张文宏开场，四维度框架，系列首发
+3. **demo-memory**（115s）— AI 记忆困境，系列第二期
+4. **demo-homogenization**（108s）— 同质化悖论，系列第三期
+5. **demo-vibe-coding**（117s）— Vibe Coding 陷阱，系列第四期
+6. **demo-centaur**（102s）— 半人马模式（解药），系列第五期
+7. **demo-pipeline**（131s）— 番外：人才管道
+8. **demo-innovation**（125s）— 番外：创新停滞
+
+001-003（策略转型前的浅内容）建议暂不发布。
+
+---
+
 ## 操作步骤（每条都一样）
 
 1. 打开 https://creator.douyin.com/creator-micro/content/upload
