@@ -9,7 +9,7 @@
 ## 关键研究
 
 ### 1. Gerlich (2025) — SBS Swiss Business School
-- 600+ 参与者研究
+- 666 名参与者，混合方法（调查 + 深度访谈），发表于 Societies 期刊（MDPI）
 - **AI 使用频率与批判性思维能力呈显著负相关**
 - 机制：cognitive offloading（认知卸载）——把思考"外包"给 AI
 
