@@ -11,7 +11,7 @@ AI 正在制造教育史上最讽刺的悖论：学生的**作业质量在上升
 ### 学生行为
 - **72%** 高中生用 AI 完成作业但不真正理解内容（National Education Association, 2025）
 - 大学生主动将**批判性思维外包**给 AI（Hechinger Report, 多所大学调查）
-- EDUCAUSE 2025：学生自述"AI 让我失去了组织论据的能力"——跟 SBS 600 人研究结论吻合
+- EDUCAUSE Review（2025-12）：学生第一人称反思——"当我过度依赖 AI 时，我失去了构建结构性论证的能力"。直接引用了 MIT 的"认知债"概念作为解释框架。
 
 ### 认知影响
 - MIT "Your Brain on ChatGPT"：ChatGPT 用户逐渐停止自主思考
