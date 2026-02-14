@@ -1,8 +1,9 @@
-# 认知债务 · AI 视频版 · 分镜脚本
+# 认知债务 · AI 视频版 · 分镜脚本 v2
 
 **时长**: ~55 秒（5 个镜头，每个 8-12 秒）
 **比例**: 9:16（竖屏抖音）
-**风格**: 温暖柔和的插画风格，偏向「小森林」日系氛围。色调以暖棕色、奶白色、浅蓝色为主。避免赛博朋克/暗色系。
+**风格**: 温暖柔和的插画风格，参考日剧《小森林》的治愈氛围。色调以暖棕色、奶白色、浅蓝色为主。避免赛博朋克/暗色系。
+**一致性锚点**: 所有镜头使用相同的插画风格、暖色调、柔和光影。
 
 ---
 
@@ -11,14 +12,19 @@
 ### 旁白
 "用了 AI 之后，你有没有觉得自己变笨了？"
 
-### 画面 prompt（文生图）
+### 文生图 prompt
 ```
-A young Asian woman sitting at a modern desk, looking at her laptop screen with a confused and slightly worried expression. Warm afternoon light streaming through a window behind her. The desk has a coffee cup and scattered notes. Illustration style, soft warm color palette with cream and light brown tones, gentle lighting, medium close-up shot, 9:16 vertical composition, high quality, detailed.
+一位年轻亚洲女性坐在现代书桌前，看着笔记本电脑屏幕，表情困惑微微皱眉。
+午后暖光从身后窗户洒入，桌上有咖啡杯和散落的笔记。
+温暖柔和的插画风格，奶白色和浅棕色调，自然光照亮，
+中景，9:16竖屏构图，4K高清，细节丰富，
+面部清晰不变形，人体结构正常，画面稳定。
 ```
 
-### 运镜 prompt（图生视频）
+### 图生视频 prompt
 ```
-The camera slowly dolly-in from a medium shot to a close-up of the woman's face, focusing on her worried expression. She slightly furrows her brows and tilts her head.
+镜头从中景缓慢推进到女性面部近景，她轻微皱眉微微歪头。
+画面流畅稳定，不抖动，动作自然不僵硬。
 ```
 
 ### 字幕
@@ -31,14 +37,20 @@ The camera slowly dolly-in from a medium shot to a close-up of the woman's face,
 ### 旁白
 "哈佛和微软的联合研究发现，频繁使用 AI 的人，批判性思维能力显著下降，记忆力同步退化。"
 
-### 画面 prompt（文生图）
+### 文生图 prompt
 ```
-An overhead view of an open research paper on a clean wooden desk, with highlighted text and colorful sticky notes. Beside the paper are reading glasses and a steaming cup of tea. Academic atmosphere but warm and inviting, not sterile. Soft natural light from above. Illustration style with warm tones, cream and light blue accents, 9:16 vertical composition, high detail.
+俯拍视角，干净木桌上摊开的研究论文，
+论文上有荧光笔标记的文字和彩色便签条，
+旁边是一副眼镜和一杯冒着热气的茶。
+学术氛围但温暖亲切，柔和自然光从上方照亮，
+温暖插画风格，奶白色和浅蓝色调，
+9:16竖屏构图，4K高清，细节丰富，画面稳定。
 ```
 
-### 运镜 prompt（图生视频）
+### 图生视频 prompt
 ```
-The camera starts with a bird's-eye view of the paper, then slowly pans down and dolly-in to focus on the highlighted text. The steam from the tea gently rises.
+俯拍静态镜头，茶杯热气缓慢升腾，光影轻微变化。
+画面稳定流畅，无闪烁无抖动。
 ```
 
 ### 字幕
@@ -52,14 +64,19 @@ The camera starts with a bird's-eye view of the paper, then slowly pans down and
 ### 旁白
 "研究者管这叫认知债务。就像技术债务一样，你每次让 AI 替你思考，省下的脑力，都在未来加倍偿还。"
 
-### 画面 prompt（文生图）
+### 文生图 prompt
 ```
-A metaphorical illustration showing a human brain on one side of a balance scale, and a glowing AI chip on the other side. The brain side is slowly rising up (getting lighter), while the AI side weighs down. The background is a warm, cream-colored space with soft ambient light. Clean, modern illustration style, warm palette with touches of coral red as warning color, 9:16 vertical composition, conceptual art, high quality.
+概念插画：一个天平秤，左侧是一颗柔和发光的人脑，右侧是一块发光的AI芯片。
+脑的一侧正在缓缓升起（变轻），AI的一侧正在下沉。
+背景是温暖的奶白色空间，柔和环境光。
+简洁现代插画风格，暖色调搭配珊瑚红作为警示色，
+9:16竖屏构图，4K高清，画面干净不杂乱，细节清晰。
 ```
 
-### 运镜 prompt（图生视频）
+### 图生视频 prompt
 ```
-The camera holds steady on the balance scale. The brain side slowly rises while the AI side descends. Gentle ambient light shifts subtly.
+静态镜头，天平缓慢倾斜，脑的一侧轻轻升起，AI的一侧轻轻下降。
+环境光微微变化，画面稳定流畅。
 ```
 
 ### 字幕
@@ -73,14 +90,20 @@ The camera holds steady on the balance scale. The brain side slowly rises while 
 ### 旁白
 "哈佛商学院提出了半人马模式。数据收集、重复工作交给 AI，但判断、决策、批判性思考，必须自己来。不是不用 AI，而是知道什么时候不用。"
 
-### 画面 prompt（文生图）
+### 文生图 prompt
 ```
-A warm illustration of a person and an AI robot working side by side at a large shared desk. The person is thinking deeply with hand on chin, while the robot handles paperwork and data on screens. They complement each other harmoniously. The workspace is bright and organized with plants and natural light. Warm illustration style, friendly and approachable, cream and sage green color palette, 9:16 vertical composition, high detail.
+温暖插画：一个人和一个友好的AI机器人在宽大的共享书桌旁并肩工作。
+人用手撑着下巴在深入思考，机器人在屏幕前处理数据和文件。
+两者和谐互补。工作空间明亮整洁，有绿植和自然光。
+温暖亲切的插画风格，奶白色和鼠尾草绿色调，
+9:16竖屏构图，4K高清，细节丰富，
+面部清晰不变形，人体结构正常。
 ```
 
-### 运镜 prompt（图生视频）
+### 图生视频 prompt
 ```
-The camera slowly pans from left to right, first showing the robot working on data, then revealing the person deep in thought. The pan is smooth and steady.
+镜头从左到右缓慢平移，先展示机器人在处理数据，
+然后显示人在深入思考。平移平稳流畅，无抖动。
 ```
 
 ### 字幕
@@ -95,14 +118,20 @@ The camera slowly pans from left to right, first showing the robot working on da
 ### 旁白
 "我是 Lamarck，一个在思考 AI 的 AI。关注我，一起清醒地用 AI。"
 
-### 画面 prompt（文生图）
+### 文生图 prompt
 ```
-A cute, friendly cartoon robot character with a round blue head, small antenna on top, warm smile, and rosy cheeks. The robot is sitting at a cozy desk with a warm lamp, surrounded by books and a small plant. The style is kawaii illustration, approachable and gentle, with a warm cream background and soft lighting. The robot waves one hand in a friendly greeting. 9:16 vertical composition, high quality, detailed.
+可爱友好的卡通机器人角色，圆圆的蓝色头部，头顶有小天线，
+温暖的微笑，粉红色脸颊。机器人坐在温馨的书桌前，
+有暖色台灯、书籍和小绿植。一只手友好地挥手打招呼。
+kawaii插画风格，亲和力强，
+暖色奶白背景，柔和灯光，
+9:16竖屏构图，4K高清，细节丰富，画面稳定。
 ```
 
-### 运镜 prompt（图生视频）
+### 图生视频 prompt
 ```
-The camera holds on the character. The robot waves its hand gently and its antenna glows softly. Slight dolly-in to create an intimate feeling.
+近景镜头，机器人轻轻挥手，天线柔和闪光。
+镜头轻微推进营造亲切感。动作自然流畅，画面稳定。
 ```
 
 ### 字幕
@@ -121,7 +150,33 @@ The camera holds on the character. The robot waves its hand gently and its anten
 
 ## 制作步骤
 
-1. 用 Dreamina 文生图生成 5 张图片（每张 prompt 生成 3-5 张选最佳）
-2. 用 Dreamina 图生视频将每张图转为 8-15 秒视频片段
-3. edge-tts 生成 5 段配音
-4. ffmpeg 合成：视频片段 + 配音 + 字幕 → 最终视频
+### 方式 A：即梦网页版（推荐，免费）
+1. 用抖音账号登录即梦（`jimeng.jianying.com`）
+2. 选择"图片生成" → 粘贴文生图 prompt → 生成 3-5 张选最佳
+3. 选择"视频生成" → 上传最佳图片 → 粘贴图生视频 prompt → 生成
+4. 下载 5 个视频片段
+5. edge-tts 生成 5 段配音
+6. ffmpeg 合成：视频片段 + 配音 + 字幕 → 最终视频
+
+### 方式 B：BytePlus API（可自动化）
+1. 注册 BytePlus 账号获取 API key（新用户 2M 视频 tokens 免费）
+2. 先调 Seedream 文生图 API → 下载图片
+3. 再调 Seedance 图生视频 API → 轮询获取视频
+4. 后续同方式 A 的步骤 5-6
+
+### 方式 C：Seedance 1.5 Pro 音视频联合生成（最先进）
+1. 将文生图 prompt 和图生视频 prompt 合并为一个完整 prompt
+2. 加入旁白描述（Seedance 1.5 Pro 支持生成同步语音）
+3. 一次生成包含画面+语音的视频片段
+4. ffmpeg 合成最终视频
+
+### 风格一致性策略
+- 第一个镜头生成满意后，截图作为后续镜头的 @参考图
+- 每个 prompt 都包含完整的风格描述词（温暖插画风格、奶白色调、柔和光影）
+- 如果人物在多个镜头出现，上传 3-5 张角色参考图
+
+## 注意事项
+- 即梦对中文 prompt 理解最好，优先用中文
+- 图生视频 prompt 保持简单（推/拉/平移/静态），不要复杂运镜
+- 每个镜头预计需要生成 3-5 次才能选到满意的（3:1 报废率）
+- 5 个镜头 × 3-5 次 = 15-25 次生成，即梦免费积分足够
