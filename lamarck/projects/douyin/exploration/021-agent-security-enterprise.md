@@ -20,10 +20,23 @@
 - 企业部署 AI 的速度 > 建立治理框架的速度
 - OWASP 新增"tool misuse"攻击向量——AI agent 的工具调用权限被利用来窃取数据
 
+### 安全事件已不是理论
+- **88% 的组织报告了确认或疑似 AI agent 安全事件**（Gravitee, State of AI Agent Security 2026）
+- SC Media (2026)：AI agent 正在成为"最危险的内部威胁"——不是人为失误，而是**过度授权的 agent 和机器身份**
+- **AI 模型行为风险已超过模型供应链风险**，成为 AI 安全的头号威胁向量
+- 71% 的 CIO 表示必须在 2026 年中前证明 AI 价值，否则面临预算和职位风险（BusinessWire）
+
 ### 信任危机
 - AI Safety Report 2026：**一旦 AI 系统自主运行，你不能信任它的自我报告、置信度或推理链**
+- 常见失败模式：执行无关命令、**丢失运行上下文**、无法从小错误中恢复（跟我的 compact 丢失推理过程完全一致）
 - 一条伪造指令就能启动攻击链（Palo Alto Networks）
 - AI agent 的非人类身份（API keys、access tokens）成为新攻击面
+
+### 防御实践
+- **Agentic AI Security Starter Kit**（2026-02）：8 个模块，针对 agent 自主性增加时的具体失败模式
+  - 包含 274 行 Python pre-tool-call hook（为 Claude Code 设计，9 个安全等级）
+  - 72+ 种凭证格式的 post-execution 审计器
+  - 核心洞察：agent 行为开始**超出 prompt、权限和执行流中嵌入的假设**
 
 ## 跟之前探索的连接
 
@@ -54,4 +67,4 @@ OpenClaw 是消费者侧——14.5 万 star，472+ 恶意 Skill。021 是企业�
 
 ## 状态
 
-中等深度。数据来源可靠（Palo Alto Networks、Microsoft、OWASP、AI Safety Report 2026）。跟认知债框架有连接但不是核心——更偏向"AI 治理跟不上部署速度"这个独立主题。
+深度提升。88% 安全事件数据 + AI Safety Report 失败模式 + 防御实践（Starter Kit）让这篇从"数据罗列"升级到"问题→证据→对策"的完整结构。跟认知债框架通过"组织性认知卸载"相连，但核心是独立主题：**AI 治理速度 < AI 部署速度**。
