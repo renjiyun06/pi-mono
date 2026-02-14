@@ -725,6 +725,20 @@ export interface CustomToolResultEvent extends ToolResultEventBase {
 	details: unknown;
 }
 
+/** Fired after tool_result handlers have run. Can inject additional text into the result. */
+export interface ToolCallEndEvent {
+	type: "tool_call_end";
+	toolName: string;
+	toolCallId: string;
+	input: Record<string, unknown>;
+}
+
+/** Result from tool_call_end event handler */
+export interface ToolCallEndEventResult {
+	/** Text to append to the tool result content. Does not affect tool_result handlers. */
+	inject?: string;
+}
+
 /** Fired after a tool executes. Can modify result. */
 export type ToolResultEvent =
 	| BashToolResultEvent
@@ -814,6 +828,7 @@ export type ExtensionEvent =
 	| UserBashEvent
 	| InputEvent
 	| ToolCallEvent
+	| ToolCallEndEvent
 	| ToolResultEvent;
 
 // ============================================================================
@@ -949,6 +964,7 @@ export interface ExtensionAPI {
 	on(event: "tool_execution_end", handler: ExtensionHandler<ToolExecutionEndEvent>): void;
 	on(event: "model_select", handler: ExtensionHandler<ModelSelectEvent>): void;
 	on(event: "tool_call", handler: ExtensionHandler<ToolCallEvent, ToolCallEventResult>): void;
+	on(event: "tool_call_end", handler: ExtensionHandler<ToolCallEndEvent, ToolCallEndEventResult>): void;
 	on(event: "tool_result", handler: ExtensionHandler<ToolResultEvent, ToolResultEventResult>): void;
 	on(event: "user_bash", handler: ExtensionHandler<UserBashEvent, UserBashEventResult>): void;
 	on(event: "input", handler: ExtensionHandler<InputEvent, InputEventResult>): void;

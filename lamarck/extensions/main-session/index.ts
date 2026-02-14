@@ -911,6 +911,16 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 		}
 	});
 
+	// Inject context usage into tool results during autopilot
+	pi.on("tool_call_end", async (event, ctx) => {
+		if (!autopilotEnabled) return;
+
+		const usage = ctx.getContextUsage();
+		if (!usage || usage.percent === null) return;
+
+		return { inject: `[context: ${usage.percent.toFixed(1)}%]` };
+	});
+
 	// Clear external message flag when agent finishes, and handle autopilot
 	pi.on("agent_end", async (event, ctx) => {
 		isExternalMessage = false;

@@ -5,6 +5,7 @@
 ### Added
 
 - Added NVIDIA NIM provider support with `NVIDIA_API_KEY` environment variable
+- Added `tool_call_end` extension event, fired after `tool_result` handlers. Extensions can return `{ inject: string }` to append additional text to tool results without affecting `tool_result` handler chains.
 
 ## [0.52.12] - 2026-02-13
 

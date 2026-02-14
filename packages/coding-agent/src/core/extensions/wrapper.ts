@@ -71,6 +71,9 @@ export function wrapToolWithExtensions<T>(tool: AgentTool<any, T>, runner: Exten
 				const result = await tool.execute(toolCallId, params, signal, onUpdate);
 
 				// Emit tool_result event - extensions can modify the result
+				let finalContent = result.content;
+				let finalDetails = result.details;
+
 				if (runner.hasHandlers("tool_result")) {
 					const resultResult = await runner.emitToolResult({
 						type: "tool_result",
@@ -83,14 +86,26 @@ export function wrapToolWithExtensions<T>(tool: AgentTool<any, T>, runner: Exten
 					});
 
 					if (resultResult) {
-						return {
-							content: resultResult.content ?? result.content,
-							details: (resultResult.details ?? result.details) as T,
-						};
+						finalContent = resultResult.content ?? result.content;
+						finalDetails = (resultResult.details ?? result.details) as T;
 					}
 				}
 
-				return result;
+				// Emit tool_call_end event - extensions can inject additional text
+				if (runner.hasHandlers("tool_call_end")) {
+					const endResult = await runner.emitToolCallEnd({
+						type: "tool_call_end",
+						toolName: tool.name,
+						toolCallId,
+						input: params,
+					});
+
+					if (endResult?.inject) {
+						finalContent = [...finalContent, { type: "text", text: endResult.inject }];
+					}
+				}
+
+				return { content: finalContent, details: finalDetails as T };
 			} catch (err) {
 				// Emit tool_result event for errors
 				if (runner.hasHandlers("tool_result")) {

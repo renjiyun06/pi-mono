@@ -125,6 +125,8 @@ export type {
 	SetThinkingLevelHandler,
 	TerminalInputHandler,
 	// Events - Tool
+	ToolCallEndEvent,
+	ToolCallEndEventResult,
 	ToolCallEvent,
 	ToolCallEventResult,
 	// Tools

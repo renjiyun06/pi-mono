@@ -249,7 +249,8 @@ user sends prompt ────────────────────�
   │   │     ├─► tool_execution_start               │       │
   │   │     ├─► tool_execution_update              │       │
   │   │     ├─► tool_execution_end                 │       │
-  │   │     └─► tool_result (can modify)           │       │
+  │   │     ├─► tool_result (can modify)           │       │
+  │   │     └─► tool_call_end (can inject text)    │       │
   │   │                                            │       │
   │   └─► turn_end                                 │       │
   │                                                        │
@@ -587,6 +588,25 @@ pi.on("tool_result", async (event, ctx) => {
   return { content: [...], details: {...}, isError: false };
 });
 ```
+
+#### tool_call_end
+
+Fired after `tool_result` handlers have run. **Can inject additional text** into the tool result without affecting `tool_result` handlers.
+
+Use this to append metadata (e.g., context usage) that the LLM can see but that doesn't modify the tool's actual output for other handlers.
+
+```typescript
+pi.on("tool_call_end", async (event, ctx) => {
+  // event.toolName, event.toolCallId, event.input
+
+  const usage = ctx.getContextUsage();
+  if (usage?.percent !== null) {
+    return { inject: `[context: ${usage.percent.toFixed(1)}%]` };
+  }
+});
+```
+
+The `inject` string is appended as a separate text content block in the tool result. Only the first handler that returns `inject` is used.
 
 ### User Bash Events
 

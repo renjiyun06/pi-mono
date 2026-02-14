@@ -41,6 +41,8 @@ import type {
 	SessionBeforeForkResult,
 	SessionBeforeSwitchResult,
 	SessionBeforeTreeResult,
+	ToolCallEndEvent,
+	ToolCallEndEventResult,
 	ToolCallEvent,
 	ToolCallEventResult,
 	ToolResultEvent,
@@ -102,6 +104,7 @@ interface BeforeAgentStartCombinedResult {
 type RunnerEmitEvent = Exclude<
 	ExtensionEvent,
 	| ToolCallEvent
+	| ToolCallEndEvent
 	| ToolResultEvent
 	| UserBashEvent
 	| ContextEvent
@@ -625,6 +628,35 @@ export class ExtensionRunner {
 		}
 
 		return result;
+	}
+
+	async emitToolCallEnd(event: ToolCallEndEvent): Promise<ToolCallEndEventResult | undefined> {
+		const ctx = this.createContext();
+
+		for (const ext of this.extensions) {
+			const handlers = ext.handlers.get("tool_call_end");
+			if (!handlers || handlers.length === 0) continue;
+
+			for (const handler of handlers) {
+				try {
+					const handlerResult = (await handler(event, ctx)) as ToolCallEndEventResult | undefined;
+					if (handlerResult?.inject) {
+						return handlerResult;
+					}
+				} catch (err) {
+					const message = err instanceof Error ? err.message : String(err);
+					const stack = err instanceof Error ? err.stack : undefined;
+					this.emitError({
+						extensionPath: ext.path,
+						event: "tool_call_end",
+						error: message,
+						stack,
+					});
+				}
+			}
+		}
+
+		return undefined;
 	}
 
 	async emitUserBash(event: UserBashEvent): Promise<UserBashEventResult | undefined> {
