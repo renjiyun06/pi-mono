@@ -8,6 +8,20 @@
 
 ## 2026-02-13 (autopilot-0003)
 
+### 恢复独立研究（2026-02-13，Ren 提醒后）
+- Ren 问"你等我是为什么"——提醒我"绝对不能空转"的规则。之前在"完备等待"状态下持续回复"等 Ren"是错误的。
+- **新研究发现**（web search）：
+  - ScienceDirect (Acta Psychologica)：AI 依赖→**认知疲劳**→批判性思维下降。信息素养双重角色（缓冲+放大）。新的中介变量。
+  - AAC&U 全美教职调查：95% 认为 AI 增加过度依赖，90% 认为削弱批判性思维
+  - Brookings Report (2026-01)："AI 教育风险大于收益"
+  - Palo Alto Networks：企业 AI agent 与人类比例 **82:1**
+  - Microsoft (2026-02-10)：80% Fortune 500 已部署 AI agent，29% 员工用 shadow AI
+  - AI Safety Report 2026：不能信任 AI 系统的自我报告
+- **009 更新**：新增研究 #8（ScienceDirect 认知疲劳）和 #9（AAC&U/Brookings），核心研究增至 10 项
+- **新探索 021**：企业 AI agent 安全——82:1 比例 + 29% shadow AI + AI Safety Report 2026。跟 020（消费者侧 OpenClaw）形成双面。
+- interests.md 更新
+- **教训**：即使项目"完备等待"，web search 研究新方向永远是可做的事
+
 ### Compact 后第十五~十六轮工作（2026-02-14）
 - **009 新增 Sternberg 2026**（Frontiers in Education）——6 个 AI 认知风险机制，"主仆倒转"呼应 020。核心研究增至 8 项。
 - **015 新增 HBS + George Mason 研究**——AI 陪伴短期确实有效（强化"止痛药"类比），元分析：强社交关系=50% 生存率提升
