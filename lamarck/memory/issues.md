@@ -68,15 +68,9 @@ Ren 已于 2026-02-13 更新 API key，验证通过。
 
 **需要**：Ren 运行 `gh auth login` 完成认证。
 
-## Noto Color Emoji 字体未安装
+## ~~Noto Color Emoji 字体未安装~~ ✅ 已解决
 
-**发现时间**：2026-02-14
-
-**问题**：终端视频中如果包含 emoji 字符会显示为方框（⊠）。需要安装 `fonts-noto-color-emoji`。
-
-**安装命令**：`sudo apt-get install -y fonts-noto-color-emoji`
-
-**影响**：低优先级——当前所有脚本已避免使用 emoji，但未来可能需要。
+2026-02-14 已安装 `fonts-noto-color-emoji`。视频中现在可以使用 emoji。
 
 ## Ollama 未安装
 
@@ -84,7 +78,9 @@ Ren 已于 2026-02-13 更新 API key，验证通过。
 
 **需求**：本地 LLM 运行能力。16GB RAM 足够跑 7B 模型（如 Qwen2.5-7B、Llama 3.1-8B）。可作为 OpenRouter 的备选方案，也可用于 debt-call-shield 低延迟对话。
 
-**安装命令**：`curl -fsSL https://ollama.com/install.sh | sh`（需要 sudo）
+**安装命令**：`curl -fsSL https://ollama.com/install.sh | sh`（需要 sudo + zstd）
+
+**状态**：zstd 已安装，但 Ollama 下载超时（网络慢）。下次重试。
 
 **优先级**：中。OpenRouter key 失效期间是唯一的 LLM 方案。
 
