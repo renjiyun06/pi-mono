@@ -219,8 +219,20 @@ The `edge-tts-universal` npm package's `Communicate.stream()` hangs indefinitely
 - **九宫格分镜法**: 3x3 关键帧 + 一句 prompt → 一致性提升 50%（@氪学家方法）
 - **即梦登录**: 抖音/剪映账号通用，无需单独注册
 
+### Seedance API 对接（两条路径）
+- **火山方舟（国内）**: `https://ark.cn-beijing.volces.com/api/v3`，model ID 前缀 `doubao-`，需中国手机号注册
+- **BytePlus（国际）**: `https://ark.ap-southeast.bytepluses.com/api/v3`，model ID 无前缀，国际邮箱注册
+- **认证**: `Authorization: Bearer $ARK_API_KEY`
+- **异步模式**: POST 创建任务 → 返回 task ID → GET 轮询直到 succeeded → 下载 video_url（24h 过期）
+- **免费额度**: 每个模型 200 万 tokens（≈8 个 1080p 5s 视频）
+- **最新可用 API 模型**: Seedance 1.5 Pro（有声视频）。**Seedance 2.0 API 预计 2026-02-24 开放**
+- **我们的成本**: 5 镜头 55s 视频 ≈ ¥10-20（无声）/ ¥20-58（有声+报废率）
+- **Draft 模式**: 480p 预览，token 减少 30-40%，用于快速验证 prompt
+- **连续视频**: `return_last_frame: true` → 获取最后一帧作为下一段首帧
+
 ### 详细探索笔记
-`/home/lamarck/pi-mono/lamarck/projects/douyin/exploration/024-ai-video-generation-mastery.md`
+- `/home/lamarck/pi-mono/lamarck/projects/douyin/exploration/024-ai-video-generation-mastery.md`
+- `/home/lamarck/pi-mono/lamarck/projects/douyin/exploration/025-seedance-api-integration.md`
 
 ## 抖音 AI 内容标识合规
 
