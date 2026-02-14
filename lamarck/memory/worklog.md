@@ -68,6 +68,22 @@
 
 **当前就绪材料**：首帧图片 ×5 + 配音 ×12 + 形象图 ×6 + 配置文件 + 工具链 = 全部就绪，只差 API key。
 
+### Seedream Image API 发现 + 工具链完善（2026-02-14 续）
+
+**关键发现**：BytePlus 一个账号 = Seedream（文生图 4K）+ Seedance（视频）+ OmniHuman（数字人）。Seedream 5.0 lite API 预计 2/24 开放（同日 Seedance 2.0 也开放）。
+
+**新增 seedream-generate.ts CLI**：t2i/i2i/batch 三个命令，与 seedance-generate 配合。
+**新增 seedream-frames.json**：认知债务视频 5 张首帧的 Seedream 批量配置（1080x1920 竖屏）。
+
+**Seedance Retrieve API 文档补全**：完整响应字段（last_frame_url, generate_audio, draft, error 等）+ Cancel API。
+
+**Berkeley CLTC agentic AI 风险报告**（2/11）：系统性框架，强化 020/021 方向。
+
+**完整 pipeline 现在是三层**：
+1. `seedream-generate` → 首帧图片（4K 质量）
+2. `seedance-generate` → 视频片段（图生视频）
+3. `assemble-video` → 最终合成（clips + TTS + 字幕）
+
 ---
 
 ## 2026-02-14 (autopilot-0004 续续)
