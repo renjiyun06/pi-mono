@@ -56,23 +56,9 @@
 
 **临时应对**：遇到验证码时，任务直接退出，等待下次定时任务重试。由于定时任务每5分钟执行一次，通常会在几次内恢复。
 
-## OpenRouter API Key 失效
+## ~~OpenRouter API Key 失效~~ ✅ 已解决
 
-**发现时间**：2026-02-13
-
-**问题**：`.env` 中的 `OPENROUTER_API_KEY` 返回 401 "User not found"，已无法使用。
-
-**影响**：
-- debt-call-shield 项目的 LLM provider 无法调用
-- 所有依赖 OpenRouter 的功能不可用
-
-**可能的替代方案**：
-1. Ren 更新 OpenRouter API key（最简单）
-2. OpenRouter 有免费模型 `deepseek/deepseek-chat-v3-0324:free`（但仍需有效 key）
-3. 本地 Ollama（15GB RAM 可跑小模型，不需要 key，但需要安装 ~4GB）
-4. Groq 免费层（需要注册获取 key，但免费额度高）
-
-**需要**：Ren 决定用哪个方案。
+Ren 已于 2026-02-13 更新 API key，验证通过。
 
 ## GitHub CLI 未认证
 
