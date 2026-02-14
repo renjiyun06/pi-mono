@@ -229,6 +229,15 @@ The `edge-tts-universal` npm package's `Communicate.stream()` hangs indefinitely
 - **推荐方案**: OmniHuman 口播（开场/过渡/结尾） + Seedance 场景画面 → 混合剪辑
 - **探索文档**: `/home/lamarck/pi-mono/lamarck/projects/douyin/exploration/026-omnihuman-digital-avatar.md`
 
+### 302.AI — 第三方 API 聚合器（备选方案）
+- **网站**: https://302.ai — 注册送 $1 免费额度
+- **提供**: Seedance + 即梦视频生成 3.0 Pro (= Seedance 2.0!) + Flux + Wan2.2 + Kling + Veo3.1 + Sora 2
+- **注册**: 邮箱即可，需绑定邀请码获得 $1
+- **API 文档**: https://doc-en.302.ai
+- **优势**: 不需要 BytePlus 账号，一个 API key 访问所有模型
+- **注意**: SPA 页面无法通过浏览器自动化注册，需要 Ren 手动注册
+- **Seedance API 路径**: `POST https://api.302.ai/302/submit` (需确认)
+
 ### Seedream Image Generation API（同一个 BytePlus 账号）
 - **Endpoint**: `POST {base_url}/images/generations`
 - **Models**: `seedream-4.5`, `seedream-4.0`, `seedream-3.0-t2i`, `seededit-3.0-i2i`

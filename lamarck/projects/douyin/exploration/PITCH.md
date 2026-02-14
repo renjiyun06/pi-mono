@@ -4,25 +4,24 @@
 
 ## ⚡ 紧急：需要 Ren 做一件事解锁 AI 视频
 
-**注册 BytePlus 账号获取 API key**：https://www.byteplus.com/
+**二选一，注册任意一个**：
 
-一个 BytePlus 账号同时解锁：
-- **Seedance** — AI 视频生成（文生视频、图生视频）
-- **OmniHuman 1.5** — 数字人口播（图片+音频→口型同步视频）
+### 方案 A（推荐）：BytePlus — https://console.byteplus.com/auth/signup
+- 一个账号解锁 **Seedream（4K文生图）+ Seedance（视频）+ OmniHuman（数字人）**
 - 新用户 200 万免费 token（≈8 个 1080p 5s 视频）
+- 注册只需邮箱+用户名+密码
+- 设置：`echo 'ARK_API_KEY=your-key' >> ~/.pi/agent/.env`
 
-**整条 pipeline 已就绪**，只差这个 key：
-1. ✅ 5 张 AI 生成首帧图片
-2. ✅ 12 段中文配音（edge-tts）
-3. ✅ storyboard.json + assembly.json
-4. ✅ seedance-generate CLI（t2v/i2v/batch）
-5. ✅ assemble-video CLI（clips + TTS + 字幕 + BGM → 最终视频）
-6. ✅ 6 张 Lamarck 卡通形象概念图
+### 方案 B（快速备选）：302.AI — https://302.ai
+- 第三方 API 聚合器，注册送 $1 免费额度
+- 提供 **Seedance + 即梦视频生成 3.0 Pro (Seedance 2.0!)** + Flux + Kling 等
+- 邮箱注册，绑定邀请码即可
 
-设置方法：注册后在控制台创建 API key，然后：
-```bash
-echo 'ARK_API_KEY=your-key-here' >> ~/.pi/agent/.env
-```
+**整条 pipeline 已就绪**，只差 API key：
+1. ✅ `seedream-generate` CLI — 4K 文生图/图生图（Seedream 4.5）
+2. ✅ `seedance-generate` CLI — 视频生成（t2v/i2v/batch）
+3. ✅ `assemble-video` CLI — 合成（clips + TTS + 字幕 + BGM）
+4. ✅ 5 张 AI 首帧 + 12 段中文配音 + 6 张 Lamarck 形象图 + 配置文件
 
 ---
 
