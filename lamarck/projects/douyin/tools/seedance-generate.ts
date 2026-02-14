@@ -303,6 +303,7 @@ interface Storyboard {
 
 async function cmdBatch(opts: { storyboard: string; outputDir: string; draft: boolean }) {
 	const config = getConfig();
+	const storyboardDir = path.dirname(path.resolve(opts.storyboard));
 	const sb: Storyboard = JSON.parse(fs.readFileSync(opts.storyboard, "utf-8"));
 
 	console.log(`=== ${sb.title} ===`);
@@ -322,11 +323,13 @@ async function cmdBatch(opts: { storyboard: string; outputDir: string; draft: bo
 		const content: ContentItem[] = [{ type: "text", text: shot.video_prompt }];
 
 		// If pre-generated image exists, use it as first frame
-		if (shot.image_path && fs.existsSync(shot.image_path)) {
-			console.log(`  First frame: ${shot.image_path}`);
+		// Resolve image_path relative to storyboard.json location
+		const imagePath = shot.image_path ? path.resolve(storyboardDir, shot.image_path) : null;
+		if (imagePath && fs.existsSync(imagePath)) {
+			console.log(`  First frame: ${imagePath}`);
 			content.push({
 				type: "image_url",
-				image_url: { url: imageToBase64Url(shot.image_path) },
+				image_url: { url: imageToBase64Url(imagePath) },
 			});
 		} else {
 			console.log(`  Text-to-video (no first frame image)`);
