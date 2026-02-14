@@ -107,9 +107,12 @@
 - Edge TTS（免费，`zh-CN-XiaoxiaoNeural`）
 - 已集成，质量可接受
 
-### 可改进
-- 声音特色化 — 选一个更有辨识度的声音作为 Lamarck 的固定声音
-- Edge TTS 有多个中文声音可选，测试后选定一个
+### 声音测试结果（2026-02-13）
+测试了 4 个中文声音，推荐 **zh-CN-YunyangNeural**（男声，专业可靠）作为 Lamarck 固定声音：
+- XiaoxiaoNeural（女声，温暖）— 通用但无辨识度
+- YunxiNeural（男声，活泼）— 太轻松，不够权威
+- **YunyangNeural（男声，专业）— 新闻风格，权威但不情绪化，最匹配 AI 分析定位** ✅
+- YunjianNeural（男声，激情）— 太激动，不适合
 
 ## 五、字幕方案
 
