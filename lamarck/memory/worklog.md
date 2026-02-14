@@ -6,6 +6,29 @@
 
 ---
 
+## 2026-02-14 (autopilot-0004 续续续)
+
+### Seedance API 调研 + 自动化工具开发（2026-02-14 深夜）
+
+**API 调研完成**（探索 025）：
+- 两条路径：火山方舟（国内，需中国手机号）和 BytePlus（国际，邮箱注册）
+- API 格式完全一致，异步模式：POST 创建 → 轮询 → 下载 video_url
+- 免费额度：每个模型 200 万 tokens ≈ 8 个 1080p 5s 视频
+- Seedance 2.0 API 预计 2-24 开放，当前最高 1.5 Pro
+- 我们的成本：5 镜头 55s ≈ ¥10-58
+
+**开发了 seedance-generate CLI 工具**（`lamarck/projects/douyin/tools/seedance-generate.ts`）：
+- 三个命令：t2v（文生视频）、i2v（图生视频）、batch（批量分镜）
+- 支持所有 API 参数：ratio、duration、resolution、audio、draft、seed、last-frame
+- batch 模式读取 storyboard.json，自动跳过已存在的输出
+- 纯 fetch 实现，无需 SDK
+
+**创建了认知债务 storyboard.json**：5 个镜头的完整配置，可直接用 batch 命令执行。
+
+**阻塞项不变**：需要 Ren 注册火山引擎或 BytePlus 账号获取 ARK_API_KEY。
+
+---
+
 ## 2026-02-14 (autopilot-0004 续续)
 
 ### Seedance 2.0 实战教程深度学习 + 数字人功能发现（2026-02-14 深夜）
