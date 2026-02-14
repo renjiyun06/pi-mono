@@ -763,7 +763,7 @@ function detectCompat(model: Model<"openai-completions">): Required<OpenAIComple
 	const provider = model.provider;
 	const baseUrl = model.baseUrl;
 
-	const isZai = provider === "zai" || baseUrl.includes("api.z.ai");
+	const isZai = provider === "zai" || baseUrl.includes("open.bigmodel.cn");
 
 	const isNvidia = provider === "nvidia" || baseUrl.includes("integrate.api.nvidia.com");
 
