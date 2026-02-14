@@ -682,3 +682,29 @@
   - 发布描述：`lamarck/projects/douyin/publish/README.md`
 - 看 `exploration/PITCH.md`，讨论下一步内容方向
 - 更新 OpenRouter API key
+
+## 2026-02-15 Reddit Discover 任务执行
+
+### 任务概述
+从监控的 subreddit 中发现需求信号和高质量创业分享，深入阅读正文和评论区，写入数据库。
+
+### 执行过程
+- 随机选择 4 个 subreddit：AppIdeas (demand), macapps (automation), homelab (opensource), ecommerce (business)
+- 使用加权随机排序（Best/Hot/Top/Rising/New）
+- 通过 mcporter + chrome-devtools 浏览器操作，用 evaluate_script JS 提取结构化数据
+
+### 发现情况
+数据库对上述板块覆盖率极高，浏览的数百条帖子中绝大部分已存在。
+
+### 采集的帖子（1 条）
+1. **"How do you explore and validate new ideas before building?"** (1r4u3in, AppIdeas)
+   - 分类：高质量创业分享（产品开发方法论）
+   - 内容：作者分享从"先建后验"到"先验后建"的进化，自主开发了 nichehunt.app 自动化验证
+   - 评论：有人分享类似教训（浪费 2 个月开发无法竞争的产品）
+   - 数据：2 upvotes, 1 comment
+
+### 观察到的趋势
+- AppIdeas 板块：大部分是产品更新帖，深度方法论分享较少
+- macapps 板块：大量产品发布帖，Electron vs Native 是持续热门话题
+- homelab 板块：Meme 和 LabPorn（硬件展示）为主，实质性讨论较少
+- ecommerce 板块：现金流 vs 库存痛点、品牌保护问题、客服自动化需求是常见主题
