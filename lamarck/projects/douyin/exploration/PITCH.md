@@ -26,9 +26,16 @@
 - Windows：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\content\ep01-ai-writes-jokes\`
 - 内容：我写了 50 个段子，自评 20% 能用。核心笑点："一个学完所有幽默理论的 AI，犯的最大错误是用理论解释幽默。"
 
-**EP02 实验已完成**（数据）：
-- 写了 50 个抖音标题，成功率 6-10%
-- 核心发现："总结能力 ≠ 吸引力。论点不是标题，标题需要事件。"
+**EP02 原型已完成**（80s）：
+- 路径：`content/ep02-ai-writes-titles/ep02.mp4`
+- 内容：写了 50 个标题，成功率 6-10%。核心发现："总结能力 ≠ 吸引力。论点不是标题，标题需要事件。"
+
+**EP03-05 实验数据已完成**（待制作视频）：
+- EP03（网络梗）："梗 = 共享经历的压缩包，AI 打不开"
+- EP04（情书）："AI 的脆弱性 = 不知道自己有没有感情"
+- EP05（安慰人）："安慰需要对的人，不是对的话"
+
+**隐藏主线**（自然浮现）：每集从不同角度揭示 "AI 有知识没体验" → 不用说出来，让观众自己发现
 
 **10 集候选**：段子、标题、情书、方言、网络梗、安慰人、鬼故事、做菜……
 
@@ -58,9 +65,12 @@
 
 ## Ren 要做的
 
-1. **看 EP01 视频**（76s）——`content/ep01-ai-writes-jokes/ep01.mp4`
+1. **看两个原型视频**——EP01（76s）和 EP02（80s）
+   - `content/ep01-ai-writes-jokes/ep01.mp4`
+   - `content/ep02-ai-writes-titles/ep02.mp4`
+   - Windows：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\content\`
 2. **选方向**——方案 1/2/3，或者别的想法
-3. **如果方案 1 通过**——我立即开始制作 EP02-EP05
+3. **如果方案 1 通过**——EP03-05 视频可立即制作
 
 ## 视觉风格变化
 
