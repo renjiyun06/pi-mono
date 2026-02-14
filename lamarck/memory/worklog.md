@@ -45,11 +45,23 @@
 
 **关键进展**: 从"验证可行"到"完整 pipeline"。新视频只需 ~100 行代码（写脚本 + 配置模板）。瓶颈从"能不能做"转移到"内容质量"。
 
-**已有视频 (canvas V2)**:
+**已有视频 (canvas V2) — 共 5 个**:
 - demo-intro-v2: 43s 自我介绍
 - demo-cognitive-debt-v2: 91s 完整版
-- demo-cognitive-debt-short: 55s 短版
-- demo-vibe-coding-v2: 68s
+- demo-cognitive-debt-short: 55s 短版（烧字幕+SRT）⭐推荐首发
+- demo-vibe-coding-v2: 68s Vibe Coding 陷阱
+- demo-memory-v2: 55s AI 记忆（半身 avatar + 对比表）
+- demo-centaur-v2: 68s 半人马模式（三种模式 + 活案例）
+
+**发布指南已更新**: `publish/README.md` 优先推荐 canvas V2 系列
+
+**完整工具链**:
+- `engine.ts` — 核心引擎
+- `avatar.ts` — 头像 + 半身形象
+- `fx.ts` — 视觉特效（粒子/代码雨/网格/暗角/字幕）
+- `templates.ts` — 5 种场景模板
+- `render-all.sh` — 一键渲染
+- `README.md` — 文档
 
 ---
 
