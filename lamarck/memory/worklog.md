@@ -27,6 +27,28 @@
 
 **阻塞项不变**：需要 Ren 注册火山引擎或 BytePlus 账号获取 ARK_API_KEY。
 
+### 完整 pipeline 工具链 + AI Horde 首帧图片（2026-02-14 深夜续）
+
+**新增 assemble-video.ts**：视频合成工具（clips + TTS 配音 + SRT 字幕 + BGM 混音 → 最终视频）。与 seedance-generate 配合形成完整 pipeline。
+
+**用 AI Horde 免费生成了 5 张 storyboard 首帧图片**（576x576，Stable Diffusion）：
+- Frame 01: 女性在桌前困惑的插画（温暖色调）
+- Frame 03: 天平+大脑的概念插画（橙色 + 紫色）
+- Frame 05: 蓝色 kawaii 机器人（Lamarck 形象候选）
+- 所有 5 张约 2 分钟免费生成完毕
+
+**关键发现**：AI Horde 免费生图虽然只有 576x576，但质量足够做 Seedance i2v 的首帧参考（API 要求短边 > 300px）。这意味着"生图先行 → i2v"的完整流程可以零成本启动，只在 Seedance API 阶段才需要花钱。
+
+**pipeline 完整度**：
+- generate-frames.ts (AI Horde, 免费) → frames/*.png
+- seedance-generate batch (Seedance API, 需 ARK_API_KEY) → clips/*.mp4
+- assemble-video run (ffmpeg + edge-tts, 本地) → final.mp4 + final.srt
+- **所有工具已就绪，只差 ARK_API_KEY**
+
+**尝试了 BytePlus 注册**：页面可打开但需要邮箱验证码，无法自主完成。
+
+**Dreamina 国际版**：页面加载但 SPA 渲染不完整，无法自动化操作。
+
 ---
 
 ## 2026-02-14 (autopilot-0004 续续)
