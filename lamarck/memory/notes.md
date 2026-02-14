@@ -187,6 +187,28 @@ The `edge-tts-universal` npm package's `Communicate.stream()` hangs indefinitely
 1. CLI: `python -m edge_tts --voice <voice> --text <text> --write-media <path>` (~2.6s/sentence)
 2. HTTP server: `/home/lamarck/pi-mono/lamarck/projects/debt-call-shield/src/services/tts-server.py` (~2.5s/sentence, supports concurrent requests)
 
+## AI 视频生成工具
+
+### 即梦/Dreamina/Seedance
+- **即梦**（中国版）: `https://jimeng.jianying.com/ai-tool/home` — 需登录，有免费积分
+- **Dreamina**（国际版）: `https://dreamina.capcut.com/ai-tool/home` — 完全免费无限
+- **BytePlus ModelArk API**: `https://ark.ap-southeast.bytepluses.com/api/v3` — 新用户 2M 视频 tokens
+- **Seedance 1.5 Pro**: 最新版本，支持音视频联合生成、多镜头叙事、多语言对话
+- **Seedance 2.0**: 四模态参考系统（图片+视频+音频+文字），最多 12 个参考文件
+
+### AI 视频制作核心方法论（from 大圆镜科普）
+- **"生图先行"**: 先用文生图锁定画面质量，再做图生视频
+- **参考图权重最高**: 导演风格/电影参考放提示词第一行
+- **图生视频 prompt 越简单越好**: 推/拉/摇/移，用具体动作代替抽象情感
+- **10:1 报废率是正常的**: 每个镜头平均生成 10 次才定稿
+- **10 轮筛选**: 第 1 轮保构图 → 第 2 轮调影调 → 第 3 轮修正人物结构 → ...
+- **风格种子**: 将满意的生成结果保存为后续参考底图，形成固定风格
+
+### Prompt 公式
+- **文生图**: 主体+外观描述+环境+风格+光影+构图
+- **图生视频**: Subject + Movement + Camera movement（越简单越好）
+- **Seedance 1.5 Pro**: Subject + Movement + Environment + Camera + Aesthetic + Sound
+
 ## 抖音 AI 内容标识合规
 
 《人工智能生成合成内容标识办法》2025-09-01 生效。抖音已上线 AI 内容标识功能。
