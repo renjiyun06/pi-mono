@@ -2,7 +2,7 @@
 cron: "15 * * * *"
 description: Discover high-quality Douyin AI content creators via search
 enabled: true
-model: zhipu/glm-4.7
+model: zai/glm-4.7
 ---
 
 # 抖音发现 AI 方向优质博主

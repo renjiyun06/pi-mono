@@ -1,7 +1,7 @@
 ---
 description: Discover trending AI topics suitable for Zhihu long-form content
 enabled: false
-model: zhipu/glm-4.7
+model: zai/glm-4.7
 ---
 
 # AI 选题发现（知乎）

@@ -2,7 +2,7 @@
 cron: "5 * * * *"
 description: Download, transcribe and deeply analyze liked Douyin videos
 enabled: true
-model: zhipu/glm-4.7
+model: zai/glm-4.7
 ---
 
 # 深度分析抖音点赞作品

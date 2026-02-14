@@ -2,7 +2,7 @@
 cron: "*/30 * * * *"
 description: Monitor latest activities from tracked Zhihu accounts
 enabled: true
-model: zhipu/glm-4.7
+model: zai/glm-4.7
 ---
 
 # 监控知乎账号最新动态

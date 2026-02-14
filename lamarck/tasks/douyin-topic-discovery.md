@@ -1,7 +1,7 @@
 ---
 description: Discover trending AI topics suitable for Douyin video creation
 enabled: false
-model: zhipu/glm-4.7
+model: zai/glm-4.7
 ---
 
 # AI 选题发现

@@ -2,7 +2,7 @@
 cron: "0,30 * * * *"
 description: Monitor tracked Douyin accounts for new works
 enabled: true
-model: zhipu/glm-4.7
+model: zai/glm-4.7
 ---
 
 # 监控抖音博主新作品
