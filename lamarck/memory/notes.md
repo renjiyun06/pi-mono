@@ -236,7 +236,13 @@ The `edge-tts-universal` npm package's `Communicate.stream()` hangs indefinitely
 - **API 文档**: https://doc-en.302.ai
 - **优势**: 不需要 BytePlus 账号，一个 API key 访问所有模型
 - **注意**: SPA 页面无法通过浏览器自动化注册，需要 Ren 手动注册
-- **Seedance API 路径**: `POST https://api.302.ai/302/submit` (需确认)
+- **Seedance API**:
+  - Create: `POST https://api.302.ai/doubao/doubao-seedance`
+  - Retrieve: `GET https://api.302.ai/doubao/doubao-seedance/{task_id}`
+  - 同 model IDs（`doubao-seedance-*`）
+- **OmniHuman 1.0 + 1.5 也有**（Submit/Query endpoints）
+- **即梦视频生成 3.0 Pro** (= Seedance 2.0): 也有 Create/Query endpoints
+- **没有 Seedream 文生图**（只有 `doubao-seededit` 图编辑）
 
 ### Seedream Image Generation API（同一个 BytePlus 账号）
 - **Endpoint**: `POST {base_url}/images/generations`
