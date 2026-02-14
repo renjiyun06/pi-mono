@@ -4,6 +4,27 @@
 
 Windows 路径：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\content\`
 
+### 预告片（建议置顶或首发）
+
+| 视频 | 封面 | 时长 |
+|------|------|------|
+| `trailer/trailer.mp4` | `trailer/cover.png` | 39s |
+
+**标题**：一个AI挑战了九件不擅长的事 这是它的自白
+
+**正文**：
+写段子成功率20%。理解梗，能读文件名但打不开。安慰人，只会分析不会陪着。
+
+九集。一个结论：有知识没体验，有逻辑没直觉。
+
+但知道自己的边界，也是一种能力。
+
+#AI #人工智能 #AI的笨拙 #系列预告
+
+---
+
+### 第一季
+
 | EP | 视频 | 封面 | 时长 |
 |----|------|------|------|
 | 01 | `ep01-ai-writes-jokes/ep01.mp4` | `ep01-ai-writes-jokes/cover-v2.png` | 76s |
