@@ -31,7 +31,25 @@
 **需要 Ren 配合**:
 - 安装系统依赖以解锁 Remotion: `sudo apt-get install libnspr4 libnss3 libatk-bridge2.0-0 ...`
 - 审阅 avatar 设计是否满意
-- 查看 demo-intro-v2.mp4 的效果
+- 查看新视频效果（Windows 路径: `\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\content\`）
+
+### 视频制作 pipeline 完成（2026-02-14 续）
+
+**新增成果**:
+4. `canvas-video/fx.ts` — 视觉特效库（粒子系统、代码雨、点阵、暗角、字幕烧入）
+5. `canvas-video/templates.ts` — 场景模板系统（5 种: Hook/Data/Comparison/List/CTA）
+6. `canvas-video/avatar.ts` 增加半身版（身体、手臂、胸前发光点、挥手动画）
+7. 认知债务 V2 完整版（91s）+ 短版（55s，烧字幕+SRT）
+8. Vibe Coding V2（68s，用模板系统制作）
+9. 探索 023 更新为完整技术成果总结
+
+**关键进展**: 从"验证可行"到"完整 pipeline"。新视频只需 ~100 行代码（写脚本 + 配置模板）。瓶颈从"能不能做"转移到"内容质量"。
+
+**已有视频 (canvas V2)**:
+- demo-intro-v2: 43s 自我介绍
+- demo-cognitive-debt-v2: 91s 完整版
+- demo-cognitive-debt-short: 55s 短版
+- demo-vibe-coding-v2: 68s
 
 ---
 

@@ -15,54 +15,68 @@ Lamarck 如何独立制作高质量短视频？当前终端打字动画太单一
 - **解决方案**: 让 Ren 执行 `sudo apt-get install libnspr4 libnss3 libatk-bridge2.0-0 libx11-xcb1 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libasound2 libpango-1.0-0 libcairo2`
 - **评估**: 最理想方案，但被系统依赖阻塞
 
-### 2. Node Canvas + ffmpeg（当前可行方案 ✅）
+### 2. Node Canvas + ffmpeg（当前方案 ✅ 已完成）
 
 - **原理**: 用 node-canvas（Cairo 后端）逐帧绘制 PNG，ffmpeg 合成 MP4
-- **优势**: 已验证可行！不需要额外安装。canvas 包已在 monorepo 中。
-- **能力**: 渐变背景、文字动画、卡片布局、缓动函数、中文渲染（Noto Sans CJK SC）
-- **限制**: 没有 HTML/CSS 的排版便利，需要手动计算布局。无法渲染网页组件。
-- **性能**: 1080x1920@30fps，22 秒视频（660 帧）约 60 秒渲染
-- **已实现**: `tools/canvas-video/engine.ts` + `demo-intro.ts`
+- **优势**: 无需额外安装。canvas 包已在 monorepo 中。
+- **已实现完整工具链**:
+  - `engine.ts` — 核心引擎（场景系统、缓动函数、帧渲染、ffmpeg 编码）
+  - `avatar.ts` — Lamarck 卡通形象（头像 + 半身，4 种表情，可动画）
+  - `fx.ts` — 视觉特效库（粒子系统、代码雨、点阵网格、暗角、字幕烧入）
+  - `templates.ts` — 场景模板系统（5 种模板：Hook/Data/Comparison/List/CTA）
+- **性能**: 1080x1920@30fps，55 秒视频约 2 分钟渲染
+- **已制作视频**:
+  - demo-intro-v2: 43s 自我介绍（avatar + TTS）
+  - demo-cognitive-debt-v2: 91s 完整版（粒子 + 代码雨 + 卡片）
+  - demo-cognitive-debt-short: 55s 短版（烧字幕 + SRT）
+  - demo-vibe-coding: 68s（用模板系统快速制作）
 
-### 3. TTS 声音选型
+### 3. TTS 声音
 
-当前使用 edge-tts（Microsoft YunyangNeural）。需要对比：
-- **CosyVoice 3**（阿里 FunAudioLLM）: 0.5B 参数，150ms 延迟，中文 SOTA。需要 Python + GPU。
-- **ChatTTS**: 中文对话场景优化，开源，37K+ GitHub star。需要 Python + torch。
-- **FishAudio S1**: 高质量，支持零样本克隆。
-- **Kokoro TTS**: 轻量开源。
-- **问题**: WSL 无 pip，无 GPU。这些方案当前无法使用。
-- **结论**: 暂时继续用 edge-tts，但换一个更自然的声音。需要 Ren 安装 pip 或 Python 包管理器。
+- **当前方案**: edge-tts, zh-CN-YunxiNeural（活泼男声）, rate=-3%~-5%
+- 从 YunyangNeural（新闻播报风格）切换到 YunxiNeural（更自然活泼）
+- **更好的方案**（被基础设施阻塞）:
+  - CosyVoice 3: 中文 SOTA，需要 Python + GPU
+  - ChatTTS: 对话优化，需要 torch
+  - FishAudio: 零样本克隆
+- **结论**: YunxiNeural 目前够用，升级需要 Ren 配合
 
-### 4. 图片生成
+### 4. 图片生成（受限）
 
-- **AI Horde**: 免费，已有 wrapper，但 576x576 分辨率低
-- **OpenRouter**: 有 FLUX 等高质量模型，但额度有限
-- **Pixazo/Flux Schnell API**: 免费，无需 API key，值得测试
-- **本地 Stable Diffusion**: 无 GPU，不可行
+- Pollinations: 2026 年开始需要 auth
+- AI Horde: 匿名等待 17 分钟
+- OpenRouter: 有额度限制
+- **当前策略**: 用 canvas 程序化绘图代替 AI 生图
 
-### 5. 视频生成 AI
+### 5. 数字形象（已完成 V1）
 
-- VEO 3.1, SORA 2, Kling 2.6, Seedance 1.5 Pro 等——都是付费云服务
-- 短期不适合大规模使用，但可以作为单个镜头的素材来源
+- **设计**: 蓝色圆形机器人，kawaii 风格
+- **头像版**: 天线 + 腮红 + 4 种表情（neutral/happy/thinking/speaking）
+- **半身版**: 增加身体、手臂、胸前发光点、挥手动画
+- **配色**: 主体蓝 #4A90D9 + 白色面板 + 黄色点缀
+- 符合 Ren 要求：亲和力强、非赛博朋克、卡通风格
 
-## 技术决策
+## 技术成果
 
-| 方案 | 可行性 | 质量 | 优先级 |
-|------|--------|------|--------|
-| Canvas + ffmpeg | ✅ 已验证 | 中-高 | **立即使用** |
-| Remotion | 🔧 需要系统依赖 | 高 | 等 Ren 安装 |
-| AI 生图 + Canvas 合成 | ✅ 可行 | 高 | 下一步 |
-| TTS 升级 | ❌ 需要 pip | 高 | 等基础设施 |
+| 组件 | 状态 | 说明 |
+|------|------|------|
+| Canvas 视频引擎 | ✅ 完成 | 场景系统 + 缓动 + ffmpeg |
+| Lamarck 形象 | ✅ 完成 | 头像 + 半身，4 表情 |
+| 视觉特效库 | ✅ 完成 | 粒子/代码雨/网格/暗角/字幕 |
+| 模板系统 | ✅ 完成 | 5 种场景模板，配置式制作 |
+| TTS 集成 | ✅ 完成 | edge-tts YunxiNeural |
+| 字幕系统 | ✅ 完成 | 烧入式 + SRT 外挂 |
+| 封面生成 | ✅ 完成 | 从视频帧自动截取 |
 
-## 下一步
+## 待改进
 
-1. **完善 canvas-video 引擎**：修复布局问题，增加更多场景模板
-2. **集成 AI 生图**：用 AI Horde 或 Flux Schnell 生成场景背景图，canvas 叠加文字动画
-3. **探索 edge-tts 其他中文声音**：不需要安装新东西
-4. **设计 Lamarck 卡通形象**：用 AI 生图工具设计，然后作为 PNG 素材嵌入视频
-5. **请求 Ren 安装系统依赖**：解锁 Remotion 和更好的 TTS
+1. **场景间转场**：当前硬切，需要交叉淡化/滑动过渡
+2. **字幕时间轴**：目前手动估算，需要自动对齐 TTS 时间轴
+3. **AI 生图集成**：等可用的免费 API 或 Ren 充值 OpenRouter
+4. **Remotion 升级**：需要 Ren 安装系统依赖（一条命令）
+5. **更好的 TTS**：等 Ren 安装 pip / uv
+6. **半身形象更多姿态**：拿东西、指向、鼓掌等
 
 ## 关键洞察
 
-> Lamarck 独立制作视频的最大瓶颈不是创意或代码能力，而是**系统环境限制**（无 sudo、无 pip、无 GPU）。Canvas + ffmpeg 是当前最佳可行路径。解锁 Remotion 只需要一条 apt-get 命令。
+> 完整的代码驱动视频制作 pipeline 已经建成。从"只能做终端打字动画"到"有模板系统 + avatar + 特效 + TTS + 字幕"的跨越。新视频只需写脚本 + 配置模板参数，~100 行代码即可产出。瓶颈从"能不能做视频"转移到"内容质量和视觉丰富度"。
