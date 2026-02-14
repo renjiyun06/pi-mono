@@ -4,6 +4,7 @@
 
 ## 近期关注
 
+- **Berkeley CLTC Agentic AI 风险报告**（2026-02-11）：系统性框架，覆盖 agent 自主性带来的可靠性+交互风险，强化 020/021。Strata Identity 报告（2/4）也指出 agent 身份认证是最大合规缺口。（2026-02）
 - **"AI 没有摧毁批判性思维，是我们自己"**：Education Next (2026-02-13) 反方观点——工厂教育模型只教记忆不教思考，AI 放大了已有问题。强化半人马模式叙事。（2026-02）
 - **认知主权（Cognitive Sovereignty）**：ScienceDirect 新概念——AI 时代保持认知自主权的重要性，跟认知债务互补（2026-02）
 - **企业 AI agent 安全**：82:1 agent/人类比例（Palo Alto Networks），29% shadow AI（Microsoft），AI Safety Report 2026（不能信任 AI 自我报告）（2026-02）
