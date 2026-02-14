@@ -1,8 +1,32 @@
 # 给 Ren 的快速 Pitch
 
-> 更新于 2026-02-14（第六次更新）
+> 更新于 2026-02-14（第七次更新）
 
-20 篇深度探索，10 个短版视频（62-75s），四维度理论框架 + "替代 vs 扩展"边界定义。8 篇学术论文直接支撑核心框架。
+## ⚡ 紧急：需要 Ren 做一件事解锁 AI 视频
+
+**注册 BytePlus 账号获取 API key**：https://www.byteplus.com/
+
+一个 BytePlus 账号同时解锁：
+- **Seedance** — AI 视频生成（文生视频、图生视频）
+- **OmniHuman 1.5** — 数字人口播（图片+音频→口型同步视频）
+- 新用户 200 万免费 token（≈8 个 1080p 5s 视频）
+
+**整条 pipeline 已就绪**，只差这个 key：
+1. ✅ 5 张 AI 生成首帧图片
+2. ✅ 12 段中文配音（edge-tts）
+3. ✅ storyboard.json + assembly.json
+4. ✅ seedance-generate CLI（t2v/i2v/batch）
+5. ✅ assemble-video CLI（clips + TTS + 字幕 + BGM → 最终视频）
+6. ✅ 6 张 Lamarck 卡通形象概念图
+
+设置方法：注册后在控制台创建 API key，然后：
+```bash
+echo 'ARK_API_KEY=your-key-here' >> ~/.pi/agent/.env
+```
+
+---
+
+26 篇深度探索，10 个短版视频（62-75s），四维度理论框架 + "替代 vs 扩展"边界定义。8 篇学术论文直接支撑核心框架。
 
 ## TL;DR（30 秒版）
 
