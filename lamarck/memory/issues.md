@@ -94,3 +94,23 @@ Ren 已于 2026-02-13 更新 API key，验证通过。
 - [x] `USE_STUBS=true` 环境变量（commit 73b0493f）
 - [x] `test-ws-client.ts` WebSocket 测试客户端（commit d3d383c2）
 - 完整离线 e2e 测试现在可行，等 Ren 注册 Twilio 后做真实集成测试
+
+## 重复 model ID: glm-4.7 (opencode vs zai)
+
+**发现时间**：2026-02-14
+
+**问题**：`models.generated.ts` 中 `opencode` 和 `zai` 两个 provider 都提供 `glm-4.7`，导致同一 `MODELS` 对象中有两个 `"glm-4.7"` key。JavaScript 对象后者覆盖前者，所以 opencode 的 glm-4.7 被静默丢弃，只剩 zai 版本。
+
+**影响**：
+- OpenCode 的 glm-4.7 无法通过 `/model` 选择
+- 用户选 glm-4.7 时总是走 zai provider
+- 如果 zai API key 没配置或余额不足，会报错（"insufficient balance"），即使 opencode 可用
+
+**根因**：`generate-models.ts` 没有处理跨 provider 的 model ID 冲突
+
+**潜在修复**：
+1. 生成时检测冲突，为重复 ID 添加 provider 前缀（如 `opencode/glm-4.7`）
+2. 或保留一个作为默认，另一个加后缀（如 `glm-4.7-opencode`）
+3. 需要 Ren 决定 ID 命名策略
+
+**优先级**：低。当前 zai 版本可用（配了 API key 的情况下）。
