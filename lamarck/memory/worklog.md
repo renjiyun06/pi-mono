@@ -6,6 +6,18 @@
 
 ---
 
+## 2026-02-15 Autopilot（续续）：推特监控任务
+
+### 推特监控任务执行
+- 随机选取 3 个账号：oran_ge、PimDeWitte、corbtt
+- oran_ge: 采集 4 条原创推文（Pinned + 3 条近期）
+  - "互联网已死，Agent 永生"（置顶）
+  - "字节发布 Seed2.0..."（10h）
+  - "MiniMax M2.5..."（12h）
+  - "TPD（Token Per Day）"（15h）
+- PimDeWitte: 跳过（无符合条件的近期原创推文，只有 4 个月前的置顶）
+- corbtt: 跳过（页面加载异常/被限流）
+
 ## 2026-02-15 Autopilot（续续）：EP01 原型 + EP02 实验
 
 ### 探索 028：系列设计
