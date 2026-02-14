@@ -18,6 +18,7 @@ import { join } from "path";
 import { randomBytes } from "crypto";
 import { Command } from "commander";
 import { generateImage } from "./lib/ai-horde.js";
+import { generateImageOpenRouter } from "./lib/openrouter-image.js";
 
 interface ScriptSection {
   /** Text to display on screen */
@@ -38,6 +39,8 @@ type BgStyle =
   | "gradient-shift"    // slowly shifting gradient (animated)
   | "vignette";         // solid with dark vignette edges
 
+type ImageSource = "horde" | "openrouter";
+
 interface VideoScript {
   title: string;
   sections: ScriptSection[];
@@ -53,6 +56,8 @@ interface VideoScript {
   /** Text color (hex without #) */
   textColor?: string;
   fontSize?: number;
+  /** Image generation source: "horde" (free, default) or "openrouter" (paid, higher quality) */
+  imageSource?: ImageSource;
 }
 
 const PYTHON_PATH = "/home/lamarck/pi-mono/lamarck/pyenv/bin/python";
@@ -265,14 +270,27 @@ async function generateVideo(
   console.log(`Sections: ${script.sections.length}`);
 
   // Pre-generate AI backgrounds for sections with bgPrompt
+  const imageSource: ImageSource = script.imageSource || "horde";
+  let totalImageCost = 0;
   for (let i = 0; i < script.sections.length; i++) {
     const section = script.sections[i];
     if (section.bgPrompt && !section.bgImage) {
-      console.log(`\n--- Generating AI background for section ${i + 1} ---`);
+      console.log(`\n--- Generating AI background for section ${i + 1} (${imageSource}) ---`);
       const bgPath = join(workDir, `bg-${i}.png`);
-      await generateImage(section.bgPrompt, bgPath, width, height);
+      if (imageSource === "openrouter") {
+        const result = await generateImageOpenRouter({
+          prompt: section.bgPrompt,
+          outputPath: bgPath,
+        });
+        totalImageCost += result.cost;
+      } else {
+        await generateImage(section.bgPrompt, bgPath, width, height);
+      }
       section.bgImage = bgPath;
     }
+  }
+  if (totalImageCost > 0) {
+    console.log(`\nTotal image generation cost: $${totalImageCost.toFixed(4)}`);
   }
 
   const segmentPaths: string[] = [];
