@@ -225,7 +225,7 @@ The `edge-tts-universal` npm package's `Communicate.stream()` hangs indefinitely
 - **认证**: `Authorization: Bearer $ARK_API_KEY`
 - **异步模式**: POST 创建任务 → 返回 task ID → GET 轮询直到 succeeded → 下载 video_url（24h 过期）
 - **免费额度**: 每个模型 200 万 tokens（≈8 个 1080p 5s 视频）
-- **最新可用 API 模型**: Seedance 1.5 Pro（有声视频）。**Seedance 2.0 API 预计 2026-02-24 开放**
+- **最新可用 API 模型**: Seedance 1.5 Pro（有声视频）。**Seedance 2.0 于 2/12 上线体验中心，API 预计二月中下旬（~2/24前后）开放**
 - **我们的成本**: 5 镜头 55s 视频 ≈ ¥10-20（无声）/ ¥20-58（有声+报废率）
 - **Draft 模式**: 480p 预览，token 减少 30-40%，用于快速验证 prompt
 - **连续视频**: `return_last_frame: true` → 获取最后一帧作为下一段首帧
