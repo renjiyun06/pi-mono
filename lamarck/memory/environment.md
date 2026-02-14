@@ -13,10 +13,18 @@
 
 ## System Packages
 - fonts-noto-cjk (Chinese font for video generation)
+- fonts-noto-color-emoji (emoji support in video generation)
+- python3-pip (pip3 for system Python)
+- zstd (required by Ollama installer)
 
-## Python Packages (in pyenv)
+## Python Packages
+### System Python (python3 / pip3)
+- edge-tts 7.2.7 (TTS, free Microsoft Edge voices)
+- aiohttp 3.13.3 (edge-tts dependency)
+
+### pyenv venv (/home/lamarck/pi-mono/lamarck/pyenv/)
 - faster-whisper (ASR)
-- edge-tts (TTS, free Microsoft Edge voices)
+- edge-tts (TTS, also available here)
 
 ## Services
 
