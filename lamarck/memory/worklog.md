@@ -49,6 +49,25 @@
 
 **Dreamina 国际版**：页面加载但 SPA 渲染不完整，无法自动化操作。
 
+### OmniHuman 1.5 调研 + 配音预生成 + Avatar V2（2026-02-14 续）
+
+**OmniHuman 1.5 调研**（探索 026）：
+- 即梦数字人模型：单张图片 + 音频 → 口型同步视频
+- **在 BytePlus 国际版确认可用**，一个账号同时解锁 Seedance + OmniHuman
+- 音频最长 30 秒，口型质量业界最好（超过 Kling）
+- 推荐方案 B：OmniHuman 口播 + Seedance 场景 → 混合剪辑
+
+**全部配音预生成**：
+- edge-tts 安装（python3-pip + edge-tts 7.2.7）
+- 12 段 voiceover + 5 个 clip 合并音频（总 ~58s）
+- 配音可直接作为 OmniHuman 的输入音频
+
+**Lamarck V2 形象概念图**：3 张统一风格变体（neutral/presenting/closeup）
+
+**关键发现**：Seedance 2.0 在即梦的产品名是"视频生成 3.0 Pro"，已于 2/12 上线体验中心（需登录）。API 预计 2/24。
+
+**当前就绪材料**：首帧图片 ×5 + 配音 ×12 + 形象图 ×6 + 配置文件 + 工具链 = 全部就绪，只差 API key。
+
 ---
 
 ## 2026-02-14 (autopilot-0004 续续)
