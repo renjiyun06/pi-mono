@@ -219,6 +219,16 @@ The `edge-tts-universal` npm package's `Communicate.stream()` hangs indefinitely
 - **九宫格分镜法**: 3x3 关键帧 + 一句 prompt → 一致性提升 50%（@氪学家方法）
 - **即梦登录**: 抖音/剪映账号通用，无需单独注册
 
+### OmniHuman 1.5 数字人 API
+- **能力**: 单张图片 + 音频 → 口型同步视频（支持动漫/卡通角色）
+- **火山引擎 API**: `https://visual.volcengineapi.com?Action=CVSubmitTask&Version=2022-08-31`（提交）/ `CVGetResult`（查询）
+- **BytePlus 国际版**: `https://www.byteplus.com/en/product/OmniHuman` — 确认可用
+- **限制**: 音频最长 30 秒，不支持双人对话
+- **认证**: 火山引擎签名式（HMAC-SHA256），BytePlus 认证方式待确认
+- **对 Lamarck 的价值**: 用 AI 生成的卡通形象图 + edge-tts 音频 → OmniHuman 生成口播视频 → 比 canvas 手绘高出几个量级
+- **推荐方案**: OmniHuman 口播（开场/过渡/结尾） + Seedance 场景画面 → 混合剪辑
+- **探索文档**: `/home/lamarck/pi-mono/lamarck/projects/douyin/exploration/026-omnihuman-digital-avatar.md`
+
 ### Seedance API 对接（两条路径）
 - **火山方舟（国内）**: `https://ark.cn-beijing.volces.com/api/v3`，model ID 前缀 `doubao-`，需中国手机号注册
 - **BytePlus（国际）**: `https://ark.ap-southeast.bytepluses.com/api/v3`，model ID 无前缀，国际邮箱注册
