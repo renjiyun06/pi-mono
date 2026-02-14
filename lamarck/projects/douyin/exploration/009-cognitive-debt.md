@@ -201,6 +201,8 @@ Topics #31："孩子用AI写作业被抓包，该管还是该教？"
 
 **2026-02-13 更新**：新增 ScienceDirect 认知疲劳研究（#8）和 AAC&U/Brookings 教育数据（#9），核心研究增至 10 项。认知疲劳作为中介变量是新的理论贡献——不只是"卸载"，还有"疲劳"双路径。
 
+**术语验证**："Cognitive Debt"已成为学术界活跃术语。ResearchGate 有专门论文（"Perils of the Rising Cognitive Debt in Academia and Beyond"），arXiv 有对 MIT 论文的学术评论（2601.00856），Psychology Today 和 Architecture & Governance 等主流/行业媒体均采用。我们的框架命名选择得到广泛验证。
+
 ## 重要边界：替代 vs 扩展（018）
 
 认知债务**只在"替代"场景发生**，不在"扩展"场景发生：
