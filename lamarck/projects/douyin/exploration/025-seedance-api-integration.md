@@ -73,30 +73,57 @@ Authorization: Bearer $ARK_API_KEY
 ```json
 {
     "id": "cgt-2025****",
-    "model": "doubao-seedance-1-0-pro-250528",
-    "status": "succeeded",   # queued → running → succeeded/failed/expired
+    "model": "seedance-1-5-pro-251215",
+    "status": "succeeded",   // queued → running → succeeded/failed/expired/cancelled
     "content": {
-        "video_url": "https://ark-content-generation-cn-beijing.tos-cn-beijing.volces.com/****"
+        "video_url": "https://ark-content-generation-ap-southeast-1.tos-ap-southeast-1.volces.com/****",
+        "last_frame_url": "https://..."  // 仅当创建时 return_last_frame: true
     },
+    "error": null,  // 失败时返回 { "code": "...", "message": "..." }
     "usage": {
-        "completion_tokens": 246840,
-        "total_tokens": 246840
+        "completion_tokens": 108900,
+        "total_tokens": 108900  // input_tokens 永远为 0
     },
-    "seed": 58944,
-    "resolution": "1080p",
+    "created_at": 1743414619,
+    "updated_at": 1743414673,
+    "seed": 10,
+    "resolution": "720p",
     "ratio": "16:9",
     "duration": 5,
-    "framespersecond": 24
+    "framespersecond": 24,
+    "generate_audio": true,    // Seedance 1.5 Pro 专属
+    "draft": false,            // Seedance 1.5 Pro 专属
+    "draft_task_id": "",       // 基于 draft 生成正式视频时返回
+    "service_tier": "default",
+    "execution_expires_after": 172800
 }
 ```
 
-**注意**: `video_url` 24 小时后过期，需及时下载保存。
+**完整响应字段说明**:
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `status` | string | `queued` / `running` / `succeeded` / `failed` / `expired` / `cancelled` |
+| `content.video_url` | string | 输出视频 URL，**24 小时后过期**，必须及时下载 |
+| `content.last_frame_url` | string | 最后一帧 URL（仅当 `return_last_frame: true`），24h 过期 |
+| `error` | object/null | 成功返回 null，失败返回 `{ code, message }` |
+| `generate_audio` | boolean | 是否包含同步音频（仅 1.5 Pro） |
+| `draft` | boolean | 是否为 Draft 预览版（仅 1.5 Pro） |
+| `execution_expires_after` | integer | 任务超时阈值（秒） |
+| `service_tier` | string | 实际使用的服务层级（`default` / `flex`） |
 
 ### Step 3: 可选 — Webhook 回调
 
 创建任务时可传 `callback_url`，任务状态变化时自动 POST 回调。
 
-### Step 4: 可选 — 连续视频生成
+### Step 4: 可选 — 取消/删除任务
+
+```bash
+# 取消（仅 queued 状态的任务可取消）
+POST {base_url}/contents/generations/tasks/{task_id}/cancel
+Authorization: Bearer $ARK_API_KEY
+```
+
+### Step 5: 可选 — 连续视频生成
 
 设置 `return_last_frame: true`，任务完成后返回 `content.last_frame_url`（最后一帧图片 PNG）。
 用这张图作为下一个视频任务的首帧，实现多段连续视频。
