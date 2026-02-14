@@ -36,9 +36,15 @@ Vibe coding（用自然语言让 AI 写代码）正在创造一种新型技术�
 
 **AI 节省的时间 < AI 制造的额外工作**。但对不写代码的人来说，他们没有"审查"这一步——直接 ship。
 
-### 灾难案例
+### 灾难案例 & 2026 安全警告
 
-The New Stack 报道："Vibe coding could cause catastrophic 'explosions' in 2026"——专家将风险比作挑战者号灾难。
+The New Stack (2026-01-20)："Vibe coding could cause catastrophic 'explosions' in 2026"——专家将**未审查的 AI 生成代码投入生产**的风险比作**挑战者号灾难**。
+
+Forbes (2026-02-10)：vibe coding 正在扩展到所有行业，但安全、治理、质量控制和所有权都是未解决的问题。
+
+Legit Security (2026)：6 类 vibe coding 安全风险——过时库、不安全逻辑、硬编码凭证、弃用加密、宽松 CORS、传统安全扫描工具无法检测。
+
+Medium / "Vibe Coding Debt" (2026)：直接使用"Vibe Coding Debt"概念——跟我们的认知债框架完美呼应。
 
 已报告的真实案例：
 - 认证被绕过（authentication bypass）
