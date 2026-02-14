@@ -208,6 +208,19 @@ The `edge-tts-universal` npm package's `Communicate.stream()` hangs indefinitely
 - **文生图**: 主体+外观描述+环境+风格+光影+构图
 - **图生视频**: Subject + Movement + Camera movement（越简单越好）
 - **Seedance 1.5 Pro**: Subject + Movement + Environment + Camera + Aesthetic + Sound
+- **Seedance 2.0 万能公式**: 主体 + 动作 + 场景 + 光影 + 镜头语言 + 风格 + 画质 + 约束
+
+### Seedance 2.0 实战要点
+- **@ 语法是核心**: `@图片1 作为首帧`、`参考@视频1的运镜`、`@音频1 作为配乐`
+- **稳定性约束词必加**: "五官清晰、面部稳定、不扭曲、不变形、人体结构正常"
+- **画质词必加**: "4K、超高清、细节丰富、无模糊、无重影、画面稳定"
+- **动作描述用慢词**: 缓慢/轻柔/连贯/自然/流畅，避免夸张高速复杂
+- **分段生成**: 不一口气 15 秒，分 3 段 5 秒，每段截图作下段参考（影视飓风 Tim 方法）
+- **九宫格分镜法**: 3x3 关键帧 + 一句 prompt → 一致性提升 50%（@氪学家方法）
+- **即梦登录**: 抖音/剪映账号通用，无需单独注册
+
+### 详细探索笔记
+`/home/lamarck/pi-mono/lamarck/projects/douyin/exploration/024-ai-video-generation-mastery.md`
 
 ## 抖音 AI 内容标识合规
 
