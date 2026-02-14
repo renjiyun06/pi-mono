@@ -65,12 +65,14 @@
 
 ## Ren 要做的
 
-1. **看两个原型视频**——EP01（76s）和 EP02（80s）
-   - `content/ep01-ai-writes-jokes/ep01.mp4`
-   - `content/ep02-ai-writes-titles/ep02.mp4`
+1. **看四个原型视频**（共 5 分钟）
+   - `content/ep01-ai-writes-jokes/ep01.mp4`（76s，写段子）
+   - `content/ep02-ai-writes-titles/ep02.mp4`（80s，写标题）
+   - `content/ep03-ai-understands-memes/ep03.mp4`（75s，理解梗）
+   - `content/ep04-ai-writes-love-letter/ep04.mp4`（66s，写情书）
    - Windows：`\\wsl$\Ubuntu\home\lamarck\pi-mono\lamarck\projects\douyin\content\`
 2. **选方向**——方案 1/2/3，或者别的想法
-3. **如果方案 1 通过**——EP03-05 视频可立即制作
+3. **如果方案 1 通过**——EP05 视频可立即制作，后续集按需推进
 
 ## 视觉风格变化
 
