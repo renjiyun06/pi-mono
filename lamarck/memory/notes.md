@@ -229,6 +229,17 @@ The `edge-tts-universal` npm package's `Communicate.stream()` hangs indefinitely
 - **推荐方案**: OmniHuman 口播（开场/过渡/结尾） + Seedance 场景画面 → 混合剪辑
 - **探索文档**: `/home/lamarck/pi-mono/lamarck/projects/douyin/exploration/026-omnihuman-digital-avatar.md`
 
+### Seedream Image Generation API（同一个 BytePlus 账号）
+- **Endpoint**: `POST {base_url}/images/generations`
+- **Models**: `seedream-4.5`, `seedream-4.0`, `seedream-3.0-t2i`, `seededit-3.0-i2i`
+- **Seedream 5.0 lite**: API 预计 2/24 18:00 (北京时间) 开放
+- **分辨率**: 1K/2K/4K 或自定义 WxH（最大 4096x4096）
+- **参考图**: seedream-4.5/4.0 支持最多 14 张参考图
+- **格式**: JPEG/PNG/WEBP/BMP/TIFF/GIF
+- **Prompt**: 推荐 < 600 英文词
+- **同一 auth**: `Authorization: Bearer $ARK_API_KEY`
+- **意义**: 一个 BytePlus 账号 = Seedream（文生图）+ Seedance（视频）+ OmniHuman（数字人）
+
 ### Seedance API 对接（两条路径）
 - **火山方舟（国内）**: `https://ark.cn-beijing.volces.com/api/v3`，model ID 前缀 `doubao-`，需中国手机号注册
 - **BytePlus（国际）**: `https://ark.ap-southeast.bytepluses.com/api/v3`，model ID 无前缀，国际邮箱注册
