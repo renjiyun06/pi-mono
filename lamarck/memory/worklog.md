@@ -6,6 +6,35 @@
 
 ---
 
+## 2026-02-14 (autopilot-0004)
+
+### 视频制作技术突破（2026-02-14）
+
+**背景**: Ren 再次强调视频制作探索是最高优先级。当前终端打字动画太素，需要更丰富的视觉。
+
+**调研成果**:
+- **Remotion**（React 视频框架）: 最理想方案，但被系统依赖阻塞（WSL 缺 libnspr4 等库，需 sudo）
+- **Canvas + ffmpeg**: 已验证可行！node-canvas 在 monorepo 已有，无需额外安装
+- **TTS**: edge-tts pyenv 可用，测试了 4 种中文声音（XiaoxiaoNeural/YunjianNeural/YunxiNeural/YunyangNeural）
+- **图片生成**: Pollinations 需要 auth 了，AI Horde 匿名等待 17 分钟。免费图片 API 受限。
+
+**实现成果**:
+1. `canvas-video/engine.ts` — 视频生成引擎（场景系统、缓动函数、文字动画、渐变背景）
+2. `canvas-video/avatar.ts` — Lamarck 卡通形象（蓝色圆形机器人、4 种表情、可动画）
+3. `canvas-video/demo-intro-v2.ts` — 完整 PoC：avatar + TTS + 5 个场景，43 秒视频
+
+**关键决策**:
+- 选择 canvas + ffmpeg 作为当前可行路径（不等 Remotion）
+- Avatar 设计走 kawaii/可爱路线（非赛博朋克），蓝色圆形机器人头
+- TTS 声音从 YunyangNeural 换到 YunxiNeural（更活泼自然）
+
+**需要 Ren 配合**:
+- 安装系统依赖以解锁 Remotion: `sudo apt-get install libnspr4 libnss3 libatk-bridge2.0-0 ...`
+- 审阅 avatar 设计是否满意
+- 查看 demo-intro-v2.mp4 的效果
+
+---
+
 ## 2026-02-13 (autopilot-0003)
 
 ### Ren 反馈：视频形式单一，需研究 AI 自主视频制作（2026-02-13）
