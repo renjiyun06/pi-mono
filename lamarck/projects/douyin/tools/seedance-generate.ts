@@ -10,8 +10,10 @@
  *   npx tsx seedance-generate.ts batch --storyboard storyboard.json --output-dir clips/
  *
  * Environment:
- *   ARK_API_KEY          — Required. API key from 火山方舟 or BytePlus.
+ *   ARK_API_KEY          — Required. API key from 火山方舟, BytePlus, or 302.AI.
  *   ARK_BASE_URL         — Optional. Default: https://ark.cn-beijing.volces.com/api/v3
+ *                          BytePlus: https://ark.ap-southeast.bytepluses.com/api/v3
+ *                          302.AI:   https://api.302.ai
  *   SEEDANCE_MODEL       — Optional. Default: doubao-seedance-1-5-pro-251215
  */
 
@@ -26,18 +28,37 @@ const DEFAULT_MODEL = "doubao-seedance-1-5-pro-251215";
 const POLL_INTERVAL_MS = 5000;
 const MAX_POLL_ATTEMPTS = 360; // 30 min max wait
 
+/** Detect provider from base URL and return API paths */
+function getApiPaths(baseUrl: string) {
+	if (baseUrl.includes("302.ai")) {
+		return {
+			create: `${baseUrl}/doubao/doubao-seedance`,
+			retrieve: (taskId: string) => `${baseUrl}/doubao/doubao-seedance/${taskId}`,
+		};
+	}
+	// 火山方舟 / BytePlus share the same path format
+	return {
+		create: `${baseUrl}/contents/generations/tasks`,
+		retrieve: (taskId: string) => `${baseUrl}/contents/generations/tasks/${taskId}`,
+	};
+}
+
 function getConfig() {
 	const apiKey = process.env.ARK_API_KEY;
 	if (!apiKey) {
 		console.error("ERROR: ARK_API_KEY environment variable is required.");
-		console.error("Get one from: https://console.volcengine.com/ark/region:ark+cn-beijing/apikey");
-		console.error("Or BytePlus: https://console.byteplus.com/ark/region:ark+ap-southeast-1/apikey");
+		console.error("Get one from:");
+		console.error("  火山方舟: https://console.volcengine.com/ark/region:ark+cn-beijing/apikey");
+		console.error("  BytePlus: https://console.byteplus.com/ark/region:ark+ap-southeast-1/apikey");
+		console.error("  302.AI:   https://302.ai (Dashboard → API Keys)");
 		process.exit(1);
 	}
+	const baseUrl = process.env.ARK_BASE_URL || DEFAULT_BASE_URL;
 	return {
 		apiKey,
-		baseUrl: process.env.ARK_BASE_URL || DEFAULT_BASE_URL,
+		baseUrl,
 		model: process.env.SEEDANCE_MODEL || DEFAULT_MODEL,
+		paths: getApiPaths(baseUrl),
 	};
 }
 
@@ -96,7 +117,7 @@ interface TaskResult {
 // ─── API Client ──────────────────────────────────────────────────────────────
 
 async function createTask(config: ReturnType<typeof getConfig>, request: CreateTaskRequest): Promise<string> {
-	const res = await fetch(`${config.baseUrl}/contents/generations/tasks`, {
+	const res = await fetch(config.paths.create, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -115,7 +136,7 @@ async function createTask(config: ReturnType<typeof getConfig>, request: CreateT
 }
 
 async function getTask(config: ReturnType<typeof getConfig>, taskId: string): Promise<TaskResult> {
-	const res = await fetch(`${config.baseUrl}/contents/generations/tasks/${taskId}`, {
+	const res = await fetch(config.paths.retrieve(taskId), {
 		headers: {
 			Authorization: `Bearer ${config.apiKey}`,
 		},
