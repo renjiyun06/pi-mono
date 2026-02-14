@@ -1,7 +1,7 @@
 ---
 cron: "*/15 * * * *"
 description: Monitor latest tweets from tracked Twitter accounts
-enabled: false
+enabled: true
 model: zhipu/glm-4.7
 ---
 

@@ -1,7 +1,7 @@
 ---
 cron: "0,30 * * * *"
 description: Monitor tracked Douyin accounts for new works
-enabled: false
+enabled: true
 model: zhipu/glm-4.7
 ---
 

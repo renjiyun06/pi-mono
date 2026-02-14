@@ -1,6 +1,6 @@
 ---
 description: Download and transcribe popular Douyin videos that haven't been processed yet
-enabled: false
+enabled: true
 model: zhipu/glm-4.7
 cron: "*/5 * * * *"
 ---

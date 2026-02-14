@@ -1,7 +1,7 @@
 ---
 cron: "*/20 * * * *"
 description: Discover demand signals and high-quality founder shares from Reddit
-enabled: false
+enabled: true
 model: zhipu/glm-4.7
 ---
 

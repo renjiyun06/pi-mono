@@ -1,7 +1,7 @@
 ---
 cron: "*/20 * * * *"
 description: Browse Zhihu recommended feed and upvote high-quality AI content
-enabled: false
+enabled: true
 model: zhipu/glm-4.7
 overlap: parallel
 ---

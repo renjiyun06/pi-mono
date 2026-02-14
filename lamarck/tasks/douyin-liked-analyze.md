@@ -1,7 +1,7 @@
 ---
 cron: "5 * * * *"
 description: Download, transcribe and deeply analyze liked Douyin videos
-enabled: false
+enabled: true
 model: zhipu/glm-4.7
 ---
 

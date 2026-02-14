@@ -1,7 +1,7 @@
 ---
 cron: "*/30 * * * *"
 description: Discover new Zhihu accounts worth following (AI priority, tech/startup also accepted)
-enabled: false
+enabled: true
 model: zhipu/glm-4.7
 ---
 

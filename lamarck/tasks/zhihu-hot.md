@@ -1,7 +1,7 @@
 ---
 cron: "*/30 * * * *"
 description: Scrape Zhihu hot list snapshot into zhihu_hot table
-enabled: false
+enabled: true
 model: zhipu/glm-4.7
 ---
 

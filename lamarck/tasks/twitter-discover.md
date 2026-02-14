@@ -1,7 +1,7 @@
 ---
 cron: "*/20 * * * *"
 description: Discover new AI-focused Twitter accounts worth following
-enabled: false
+enabled: true
 model: zhipu/glm-4.7
 ---
 
