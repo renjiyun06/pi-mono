@@ -1,0 +1,26 @@
+{
+  "model": "seedream-4.5",
+  "size": "1080x1920",
+  "frames": [
+    {
+      "id": "01",
+      "prompt": "Warm illustration style, young woman sitting at modern desk looking at laptop with confused expression, slight frown, afternoon warm sunlight from window, coffee cup and scattered notes, cream and light brown tones, soft natural light, medium shot, high quality, detailed face, vertical composition 9:16"
+    },
+    {
+      "id": "02",
+      "prompt": "Warm illustration style, overhead view of wooden desk with open research papers, highlighted text, colorful sticky notes, pair of glasses, cup of tea with steam, academic but warm atmosphere, cream and light blue tones, soft natural light, high quality, vertical composition 9:16"
+    },
+    {
+      "id": "03",
+      "prompt": "Clean modern illustration, conceptual balance scale, left side has soft glowing human brain, right side has glowing AI chip, brain side is lighter rising up, AI side heavier sinking down, warm cream background, coral red accent colors, no text, centered vertical composition 9:16"
+    },
+    {
+      "id": "04",
+      "prompt": "Warm friendly illustration, human and robot working side by side at shared desk, human thinking deeply with chin on hand, robot processing data on screen, bright tidy workspace with plants and natural light, cream and sage green tones, high quality, vertical composition 9:16"
+    },
+    {
+      "id": "05",
+      "prompt": "Cute kawaii cartoon robot character, round light blue head with small antenna on top, warm smile, pink cheeks, sitting at cozy desk with warm lamp and small plant, one hand waving hello, cream background, soft warm lighting, high quality, detailed, vertical composition 9:16"
+    }
+  ]
+}
