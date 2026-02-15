@@ -14,20 +14,27 @@ description: 通过浏览器自动化在抖音创作者平台发布视频。包�
 
 ## Critical: File Path
 
-Chrome 运行在 Windows 上，**无法读取 WSL 路径**（如 `/home/lamarck/...`）。必须先把文件复制到 Windows 可访问的位置：
+Chrome 运行在 Windows 上，**无法读取 WSL 路径**（如 `/home/lamarck/...`）。必须先把文件复制到 WSL-Windows 中转目录：
+
+- **WSL 侧路径**：`/mnt/d/wsl-bridge/`
+- **Windows 侧路径**：`D:\wsl-bridge\`
 
 ```bash
-# 复制视频到 Windows 临时目录
-mkdir -p /mnt/c/tmp
-cp /path/to/video.mp4 /mnt/c/tmp/video.mp4
+# 复制视频到中转目录
+cp /path/to/video.mp4 /mnt/d/wsl-bridge/video.mp4
 
 # 如果有封面图也一起复制
-cp /path/to/cover.png /mnt/c/tmp/cover.png
+cp /path/to/cover.png /mnt/d/wsl-bridge/cover.png
 ```
 
-上传时使用 Windows 路径格式：`C:\tmp\video.mp4`
+上传时使用 Windows 路径格式：`D:\wsl-bridge\video.mp4`
 
-> **为什么？** `DOM.setFileInputFiles` 和 `upload_file` 传入的路径由 Chrome（Windows 进程）读取。WSL UNC 路径（`\\wsl$\Ubuntu\...`）虽然不报错，但文件 size=0，导致页面异常挂起。只有 Windows 本地路径（如 `C:\tmp\...`）才能正常工作。
+上传完成后清理中转文件：
+```bash
+rm /mnt/d/wsl-bridge/video.mp4 /mnt/d/wsl-bridge/cover.png
+```
+
+> **为什么？** `DOM.setFileInputFiles` 和 `upload_file` 传入的路径由 Chrome（Windows 进程）读取。WSL UNC 路径（`\\wsl$\Ubuntu\...`）虽然不报错，但文件 size=0，导致页面异常挂起。只有 Windows 本地路径才能正常工作。
 
 ## Step 1: Navigate to Upload Page
 
@@ -42,7 +49,7 @@ mcporter call chrome-devtools.navigate_page type=url url="https://creator.douyin
 在上传页找到 `button "选择文件"` 的 uid，使用 `upload_file` 上传：
 
 ```bash
-mcporter call chrome-devtools.upload_file uid=<file_input_uid> filePath="C:\\tmp\\video.mp4"
+mcporter call chrome-devtools.upload_file uid=<file_input_uid> filePath="D:\\wsl-bridge\\video.mp4"
 ```
 
 上传成功后页面会自动跳转到发布编辑页。等待 3-5 秒让视频处理完成，然后 take_snapshot 确认。
