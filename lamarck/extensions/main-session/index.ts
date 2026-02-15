@@ -343,7 +343,7 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 	let autopilotCompacting = false; // Prevent sending "继续" while compacting
 	let autopilotIdleCount = 0; // Consecutive short/empty responses
 	const AUTOPILOT_IDLE_THRESHOLD = 3; // Pause after this many consecutive idle responses
-	const AUTOPILOT_SHORT_RESPONSE_CHARS = 50; // Responses shorter than this count as "idle"
+	const AUTOPILOT_SHORT_RESPONSE_CHARS = 200; // Responses shorter than this count as "idle"
 
 	/** Build the autopilot continuation message with context info */
 	function buildAutopilotMessage(usageInfo: string, justCompacted: boolean): string {
