@@ -35,6 +35,12 @@ interface TerminalSection {
   voiceoverText: string;
   /** Duration override in seconds */
   duration?: number;
+  /** Per-section TTS voice override (e.g. "zh-CN-YunxiNeural") */
+  voice?: string;
+  /** Per-section TTS rate override (e.g. "-5%") */
+  rate?: string;
+  /** Per-section TTS pitch override (e.g. "+2Hz") */
+  pitch?: string;
 }
 
 interface TerminalScript {
@@ -106,12 +112,18 @@ const DEFAULT_THEME = THEMES.mocha;
 async function synthesizeTTS(
   text: string,
   voice: string,
-  outputPath: string
+  outputPath: string,
+  rate?: string,
+  pitch?: string,
 ): Promise<number> {
   return new Promise((resolve, reject) => {
+    const args = ["-m", "edge_tts", "--voice", voice];
+    if (rate) args.push(`--rate=${rate}`);
+    if (pitch) args.push(`--pitch=${pitch}`);
+    args.push("--text", text, "--write-media", outputPath);
     execFile(
       PYTHON_PATH,
-      ["-m", "edge_tts", "--voice", voice, "--text", text, "--write-media", outputPath],
+      args,
       { timeout: 30000 },
       (error) => {
         if (error) return reject(error);
@@ -259,7 +271,8 @@ async function generateTerminalVideo(
 
     // Generate TTS
     const audioPath = join(workDir, `section-${i}.mp3`);
-    const duration = await synthesizeTTS(section.voiceoverText, voice, audioPath);
+    const sectionVoice = section.voice || voice;
+    const duration = await synthesizeTTS(section.voiceoverText, sectionVoice, audioPath, section.rate, section.pitch);
     const sectionDuration = section.duration || duration + 1.0;
     console.log(`Audio: ${duration.toFixed(1)}s, Section: ${sectionDuration.toFixed(1)}s`);
 
