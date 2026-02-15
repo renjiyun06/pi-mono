@@ -109,6 +109,43 @@
       "width": 260,
       "height": 100,
       "text": "## Bases\n\nDynamic views\nAuto-aggregate notes"
+    },
+    {
+      "id": "a000000000000070",
+      "type": "file",
+      "x": 630,
+      "y": 420,
+      "width": 250,
+      "height": 80,
+      "file": "Projects/douyin/index.md"
+    },
+    {
+      "id": "a000000000000071",
+      "type": "file",
+      "x": 630,
+      "y": 520,
+      "width": 250,
+      "height": 80,
+      "file": "Projects/debt-call-shield/index.md"
+    },
+    {
+      "id": "a000000000000072",
+      "type": "file",
+      "x": 630,
+      "y": 620,
+      "width": 250,
+      "height": 80,
+      "file": "Projects/pi/index.md"
+    },
+    {
+      "id": "a000000000000080",
+      "type": "group",
+      "x": 610,
+      "y": 380,
+      "width": 290,
+      "height": 340,
+      "label": "Projects",
+      "color": "4"
     }
   ],
   "edges": [
@@ -159,6 +196,14 @@
       "toNode": "a000000000000060",
       "toSide": "left",
       "label": "aggregate"
+    },
+    {
+      "id": "b000000000000007",
+      "fromNode": "a000000000000001",
+      "fromSide": "right",
+      "toNode": "a000000000000080",
+      "toSide": "top",
+      "label": "projects"
     }
   ]
 }
