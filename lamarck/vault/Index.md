@@ -21,6 +21,7 @@ The shared brain of Ren and Lamarck. Memory, knowledge, ideas, issues, direction
 | [[Issues/\|Issues]] | Issue tracker | Open problems, `status: open/resolved` in frontmatter |
 | [[Interests/\|Interests]] | Directions | Current and long-term exploration directions |
 | [[Meta/\|Meta]] | Operating rules | How this brain works: identity, preferences, environment, autopilot rules |
+| [[Projects/\|Projects]] | Project docs | Per-project rules, directions, decisions (code lives in `lamarck/projects/`) |
 | [[Bases/\|Bases]] | Dynamic views | `.base` files that auto-aggregate notes |
 
 ## How to Use This Vault
@@ -89,6 +90,11 @@ When adding new content during a session:
 - [[preferences]] — Shared working conventions
 - [[autopilot]] — Autonomous mode behavior rules
 - [[environment]] — Runtime environment, API keys, toolchain
+
+### Projects
+- [[Projects/douyin/index|douyin]] — Douyin account operations, content direction, video production
+- [[Projects/debt-call-shield|debt-call-shield]] — AI call screening app
+- [[Projects/pi|pi]] — Pi coding agent development and extensions
 
 ### Current Directions
 - [[interests]] — Current and long-term focus areas
