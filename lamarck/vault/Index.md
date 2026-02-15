@@ -57,10 +57,9 @@ The shared brain of Ren and Lamarck. Memory, knowledge, ideas, issues, direction
 
 When you receive a memory-loader message (on session start or after compact), restore context with these steps:
 
-- Read the most recent `Daily/` note to restore working context
-- Run `grep -rl "priority: high" lamarck/vault/Notes/` to find essential notes, then read them in full
-- Run `grep -rl "status: open" lamarck/vault/Issues/` to check open problems
-- Other notes are discovered as needed during work (search by filename or keywords)
+1. Run `grep -rl "priority: high" /home/lamarck/pi-mono/lamarck/vault/Notes/` to find essential notes, then read them in full
+2. List `Daily/` and read the most recent note(s) — if the session spans multiple days, read the relevant ones (e.g., both the previous day and today)
+3. Other notes are discovered as needed during work (search by filename or keywords)
 
 ### Writing Guidelines
 
