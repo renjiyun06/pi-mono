@@ -66,7 +66,7 @@ Ren 在 Windows 端检查：
 
 | EP | 脚本 | TTS 音频 | Terminal 视觉 | 视频 | 审阅 |
 |----|------|---------|--------------|------|------|
-| 01 | V2 ✅ | ✅ 80s | ✅ | ✅ 99s ⚠️ | 待审 |
+| 01 | V2 ✅ | ✅ 80s | ✅ | ✅ 84s | 待审 |
 | 02 | V2 ✅ | ✅ 80s | ✅ | ✅ 82s | 待审 |
 | 03 | V2 ✅ | ✅ 81s | ✅ | ✅ 76s | 待审 |
 | 04 | V2 ✅ | ✅ 82s | ✅ | ✅ 85s | 待审 |
@@ -75,17 +75,17 @@ Ren 在 Windows 端检查：
 | 07 | V2 ✅ | ✅ 83s | ✅ | ✅ 76s | 待审 |
 | 08 | V2 ✅ | ✅ 79s | ✅ | ✅ 86s | 待审 |
 | 09 | V2 ✅ | ✅ 86s | ✅ | ✅ 87s | 待审 |
-| 10 | 草案 ✅ | ✅ 82s | ✅ | ✅ 65s | 待审 |
-| 11 | 草案 ✅ | ✅ 81s | ✅ | ✅ 58s | 待审 |
-| 12 | 草案 ✅ | ✅ 71s | ✅ | ✅ 64s | 待审 |
+| 10 | 草案 ✅ | ✅ 82s | ✅ | ✅ 72s | 待审 |
+| 11 | 草案 ✅ | ✅ 81s | ✅ | ✅ 82s | 待审 |
+| 12 | 草案 ✅ | ✅ 71s | ✅ | ✅ 70s | 待审 |
 | 13 | 草案 ✅ | ✅ 80s | ✅ | ✅ 85s | 待审 |
-| 14 | 草案 ✅ | ✅ 86s | ✅ | ✅ 68s | 待审 |
+| 14 | 草案 ✅ | ✅ 86s | ✅ | ✅ 74s | 待审 |
 | 15 | 草案 ✅ | ✅ 74s | ✅ | ✅ 70s | 待审 |
 
 Notes:
-- EP01 video is over target (99s) — needs voiceover trim in jokes section
-- S3 videos (EP10-12, EP14) are shorter than target — voiceover was trimmed aggressively
+- All videos now within 70-87s target range
 - EP04, EP05, EP13 have dual-voice versions (flagship quality)
+- Tool supports BGM mixing (bgm + bgmVolume fields in terminal-script.json)
 
 ## 瓶颈分析
 
