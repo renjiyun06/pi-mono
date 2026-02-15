@@ -90,7 +90,7 @@ mcporter call chrome-devtools.evaluate_script --args '{"function": "() => { cons
 ### 4. Fill Details
 
 **操作顺序很重要**：先填标题，再设封面和声明，**最后填简介**。简介区是 contenteditable 富文本编辑器，如果填完简介后去操作话题等其他区域，简介内容可能被覆盖。
-
+接下来我们说这个文章，然后你也重新去试一下看，看看这个文章是怎么发的。
 | 字段 | 元素 | 说明 |
 |------|------|------|
 | 作品标题 | `textbox "填写作品标题..."` | 30字以内，用 `fill` |
@@ -180,31 +180,77 @@ mcporter call chrome-devtools.upload_file uid=<file_input_uid> \
 
 页面跳转到 `/content/post/article` 编辑页。
 
-### 2. Fill Content
+### 2. Fill Title & Summary
 
-编辑页字段：
+先填标题和摘要（普通 textbox，直接用 `fill`）：
 
 | 字段 | 元素 | 说明 |
 |------|------|------|
-| 文章标题* | `textbox "请输入文章标题..."` | 30字以内 |
-| 文章摘要 | `textbox "添加内容摘要..."` | 30字以内，吸引读者 |
-| 文章正文* | `textbox` (多行富文本) | 8000字以内，有工具栏（加粗/斜体/引用/图片/列表） |
-| 文章头图 | `"点击上传图片"` 或 `"AI 配图"` | 推荐频道展示用，用 `upload_file` |
-| 封面* | `"点击上传封面图"` 或 `"选择封面"` | 必填，用 `upload_file` |
-| 话题 | `"点击添加话题"` | 最多5个 |
-| 配乐 | `"选择音乐"` | 可选 |
+| 文章标题* | `textbox "请输入文章标题..."` | 30字以内，用 `fill` |
+| 文章摘要 | `textbox "添加内容摘要..."` | 30字以内，用 `fill` |
 
-正文编辑器工具栏支持：撤销/重做、字号(T)、加粗(B)、斜体(I)、引用("")、图片、有序列表、无序列表。
+### 3. Fill Body
 
-插入图片到正文：点击工具栏的图片按钮，同样需要用 Windows 路径上传。
+正文是**富文本编辑器**（`textbox multiline`），**不能用 `fill`**（会超时），必须用 `evaluate_script` 设置 innerHTML：
 
-### 3. Visibility & Publish
+```javascript
+() => {
+  // 找到高度最大的 contenteditable 元素（正文编辑器）
+  const editors = document.querySelectorAll('[contenteditable=true]');
+  let editor = null;
+  for (const e of editors) {
+    const rect = e.getBoundingClientRect();
+    if (rect.height > 200) { editor = e; break; }
+  }
+  editor.focus();
+  const paragraphs = ['第一段', '第二段'];
+  editor.innerHTML = paragraphs.map(p => '<p>' + p + '</p>').join('');
+  editor.dispatchEvent(new Event('input', {bubbles: true}));
+  return editor.textContent.substring(0, 80);
+}
+```
+
+工具栏支持：撤销/重做、字号(T)、加粗(B)、斜体(I)、引用("")、图片、有序列表、无序列表。
+
+### 4. Upload Cover (Required)
+
+封面是**必填**的。文章的封面上传**没有 `input[type=file]`**，不能在 snapshot 中找到文件选择按钮。
+
+正确方式：对 `"点击上传封面图"` 的 StaticText uid 直接使用 `upload_file`：
+
+```bash
+mcporter call chrome-devtools.upload_file uid=<cover_text_uid> \
+  filePath="D:\\wsl-bridge\\<TS>_cover.png"
+```
+
+上传后会弹出**封面编辑器**（可以添加花字、裁剪等）。找到 `button "完成"` 并点击。
+
+> **注意**：`button "完成"` 可能无法通过 `click` 的 uid 点击（超时），需要用 `evaluate_script` 点击：
+> ```javascript
+> () => {
+>   const btns = document.querySelectorAll('button');
+>   for (const btn of btns) {
+>     if (btn.textContent.trim() === '完成') { btn.click(); return 'clicked'; }
+>   }
+>   return 'not found';
+> }
+> ```
+
+### 5. Header Image (Optional)
+
+文章头图（`"点击上传图片"` 或 `"AI 配图"`）是可选的，会在推荐频道中展示。上传方式同封面。
+
+### 6. Visibility & Publish
 
 - `checkbox "公开"` / `checkbox "好友可见"` / `checkbox "仅自己可见"`
 - `checkbox "立即发布"` / `checkbox "定时发布"`
 - 点击 `button "发布"`
 
-> 文章编辑页**没有**"自主声明"入口（截至当前版本），只有视频和图文有。
+> **与视频/图文的区别**：
+> - 文章编辑页**没有**"自主声明"入口
+> - 文章编辑页**没有**"保存权限"设置
+> - 正文不能用 `fill`，必须用 `evaluate_script`
+> - 封面上传后会弹出编辑器，需要点"完成"确认
 
 ---
 
