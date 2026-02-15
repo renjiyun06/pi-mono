@@ -1,153 +1,203 @@
 ---
 name: douyin-publish
-description: 通过浏览器自动化在抖音创作者平台发布视频。包括上传视频、设置封面、填写描述、添加AI生成声明、发布。Use when you need to publish a video to Douyin.
+description: 通过浏览器自动化在抖音创作者平台发布内容（视频、图文、文章）。Use when you need to publish content to Douyin.
 ---
 
 # Douyin Publish
 
-通过 mcporter + chrome-devtools 在抖音创作者平台（creator.douyin.com）发布视频。
+通过 mcporter + chrome-devtools 在抖音创作者平台（creator.douyin.com）发布内容。
+
+支持三种发布类型：
+- **视频** — mp4/webm，60分钟以内，16G以内
+- **图文** — jpg/jpeg/png/webp，最多35张，单张50MB以内
+- **文章** — 富文本，8000字以内，可配头图和封面
+
+（全景视频需要 360° 全景格式，暂不涉及）
 
 ## Prerequisites
 
 - Chrome 已通过 mcporter 启动并登录了抖音创作者中心
-- 视频文件在 WSL 文件系统中
+- 要上传的文件在 WSL 文件系统中
 
-## Critical: File Path
+## Critical: File Path (WSL → Windows Bridge)
 
-Chrome 运行在 Windows 上，**无法读取 WSL 路径**（如 `/home/lamarck/...`）。必须先把文件复制到 WSL-Windows 中转目录：
+Chrome 运行在 Windows 上，**无法读取 WSL 路径**。所有需要上传的文件必须先复制到中转目录：
 
-- **WSL 侧路径**：`/mnt/d/wsl-bridge/`
-- **Windows 侧路径**：`D:\wsl-bridge\`
+- **WSL 侧**：`/mnt/d/wsl-bridge/`
+- **Windows 侧**：`D:\wsl-bridge\`
 
 文件名加时间戳避免冲突：
 
 ```bash
 TS=$(date +%s)
 cp /path/to/video.mp4 "/mnt/d/wsl-bridge/${TS}_video.mp4"
-
-# 如果有封面图也一起复制
 cp /path/to/cover.png "/mnt/d/wsl-bridge/${TS}_cover.png"
 ```
 
-上传时使用 Windows 路径格式：`D:\wsl-bridge\<TS>_video.mp4`
+`upload_file` 时使用 Windows 路径：`D:\wsl-bridge\<TS>_video.mp4`
 
-上传完成后清理中转文件：
+上传完成后清理：
 ```bash
 rm /mnt/d/wsl-bridge/${TS}_*
 ```
 
-> **为什么？** `DOM.setFileInputFiles` 和 `upload_file` 传入的路径由 Chrome（Windows 进程）读取。WSL UNC 路径（`\\wsl$\Ubuntu\...`）虽然不报错，但文件 size=0，导致页面异常挂起。只有 Windows 本地路径才能正常工作。
+> **为什么？** Chrome（Windows 进程）读取 `upload_file` / `DOM.setFileInputFiles` 传入的路径。WSL UNC 路径（`\\wsl$\...`）虽然不报错，但文件 size=0，导致页面异常挂起。
 
-## Step 1: Navigate to Upload Page
+---
 
-```bash
-mcporter call chrome-devtools.navigate_page type=url url="https://creator.douyin.com/creator-micro/content/upload"
-```
+## Publishing: Video
 
-等待页面加载后 take_snapshot。如果出现"你还有上次未发布的视频，是否继续编辑？"的提示，根据情况点击"继续编辑"或"放弃"。
-
-## Step 2: Upload Video
-
-在上传页找到 `button "选择文件"` 的 uid，使用 `upload_file` 上传：
+### 1. Navigate
 
 ```bash
-mcporter call chrome-devtools.upload_file uid=<file_input_uid> filePath="D:\\wsl-bridge\\video.mp4"
+mcporter call chrome-devtools.navigate_page type=url \
+  url="https://creator.douyin.com/creator-micro/content/upload"
 ```
 
-上传成功后页面会自动跳转到发布编辑页。等待 3-5 秒让视频处理完成，然后 take_snapshot 确认。
+等待加载后 `take_snapshot`。如果出现"你还有上次未发布的视频"提示，点"放弃"或"继续编辑"。
 
-> **不要用 WSL 路径！** 详见上方 Critical 说明。
+确认当前在"发布视频"标签页（默认选中）。
 
-## Step 3: Fill in Details
+### 2. Upload
 
-页面跳转后，take_snapshot 获取所有元素的 uid。以下是需要填写的字段：
-
-### 3a. 作品标题
-
-找到 `textbox "填写作品标题，为作品获得更多流量"` 的 uid，用 fill 填写（30字以内）：
+找到 `button "选择文件"` 的 uid：
 
 ```bash
-mcporter call chrome-devtools.fill uid=<title_uid> value="视频标题"
+mcporter call chrome-devtools.upload_file uid=<file_input_uid> \
+  filePath="D:\\wsl-bridge\\<TS>_video.mp4"
 ```
 
-### 3b. 作品简介
+上传成功后页面自动跳转到 `/content/post/video` 编辑页。等 3-5 秒再 `take_snapshot`。
 
-找到包含"添加作品简介"的 contenteditable 区域。这是一个富文本编辑器，需要先点击激活，再用键盘输入：
+### 3. Fill Details
+
+编辑页字段：
+
+| 字段 | 元素 | 说明 |
+|------|------|------|
+| 作品标题 | `textbox "填写作品标题..."` | 30字以内，用 `fill` |
+| 作品简介 | `generic "添加作品简介"` | 富文本编辑器，先 `click` 激活再通过 `evaluate_script` 设置 |
+| 话题 | `"#添加话题"` 区域 | 在简介中输入 `#话题名` |
+| 封面 | `"选择封面"` (竖3:4 / 横4:3) | 可用 AI 推荐封面或上传自定义封面（同样用 Windows 路径） |
+| 合集 | `"请选择合集"` 下拉 | 可选 |
+
+### 4. AI Declaration
+
+1. 点击右侧"自主声明" → "添加声明"
+2. 弹窗中选择 `radio "内容由AI生成"`
+3. 点击"确定"
+
+### 5. Visibility & Publish
+
+- `checkbox "公开"` / `checkbox "好友可见"` / `checkbox "仅自己可见"`
+- `checkbox "立即发布"` / `checkbox "定时发布"`
+- 点击 `button "发布"`
+
+---
+
+## Publishing: Image-Text (图文)
+
+### 1. Navigate
+
+同视频，打开上传页后点击"发布图文"标签。
+
+### 2. Upload Images
+
+找到图文标签下的 `button "选择文件"` uid：
 
 ```bash
-mcporter call chrome-devtools.click uid=<intro_area_uid>
-# 然后通过 evaluate_script 设置内容
-mcporter call chrome-devtools.evaluate_script --args '{"function": "() => { ... }"}'
+mcporter call chrome-devtools.upload_file uid=<file_input_uid> \
+  filePath="D:\\wsl-bridge\\<TS>_image1.png"
 ```
 
-简介中包含话题标签和描述文字，格式参考发布指南中的作品描述。
+上传成功后页面跳转到 `/content/post/image` 编辑页。
 
-### 3c. 话题标签
+要添加更多图片，点击"继续添加"按钮，然后再次 `upload_file`。最多35张。
 
-在简介编辑区域输入 `#话题名` 会自动触发话题搜索。也可以在"#添加话题"区域操作。
+### 3. Fill Details
 
-## Step 4: Set Cover (Optional)
+编辑页字段：
 
-页面上会显示"AI智能推荐封面"，可以直接选一个。如果有自定义封面：
+| 字段 | 元素 | 说明 |
+|------|------|------|
+| 作品标题 | `textbox "添加作品标题"` | **20字以内**（比视频短） |
+| 作品描述 | `generic "添加作品描述..."` | 富文本编辑器 |
+| 话题 | `"#添加话题"` 区域 | 0/1000 字符 |
+| 封面 | `"选择一张图片作为封面"` | 从已上传图片中选，可编辑 |
+| 音乐 | `"选择音乐"` | 可选配乐 |
+| 合集 | `"不选择合集"` 下拉 | 可选 |
 
-1. 点击"选择封面"（竖封面 3:4 或横封面 4:3）
-2. 在弹出的封面编辑器中找到上传入口
-3. 用 `upload_file` 上传封面图（同样用 Windows 路径）
+### 4. AI Declaration
 
-## Step 5: Add AI Declaration
+同视频流程。右侧"自主声明" → "添加声明" → `radio "内容由AI生成"` → "确定"。
 
-我们的视频使用了 AI TTS 和 AI 生成内容，必须添加 AI 生成声明：
+### 5. Visibility & Publish
 
-1. 在右侧找到"自主声明" → "添加声明"，点击它
-2. 弹出"作者自主声明"对话框
-3. 选择 `radio "内容由AI生成"`
-4. 点击"确定"
+同视频。点击 `button "发布"`。
 
-```bash
-# 点击"添加声明"
-mcporter call chrome-devtools.click uid=<add_declaration_uid>
-# 等待弹窗出现，take_snapshot 获取新 uid
-mcporter call chrome-devtools.click uid=<ai_generated_radio_uid>
-mcporter call chrome-devtools.click uid=<confirm_button_uid>
-```
+---
 
-## Step 6: Set Visibility
+## Publishing: Article (文章)
 
-默认是"公开"。测试时建议先用"仅自己可见"：
+### 1. Navigate
 
-```bash
-mcporter call chrome-devtools.click uid=<private_checkbox_uid>
-```
+打开上传页后点击"发布文章"标签，然后点击 `button "我要发文"`。
 
-发布设置中的选项：
-- `checkbox "公开"` — 所有人可见
-- `checkbox "好友可见"` — 仅好友
-- `checkbox "仅自己可见"` — 私密，适合测试
-- `checkbox "立即发布"` / `checkbox "定时发布"` — 发布时间
+页面跳转到 `/content/post/article` 编辑页。
 
-## Step 7: Publish
+### 2. Fill Content
 
-确认所有信息无误后，点击"发布"按钮：
+编辑页字段：
 
-```bash
-mcporter call chrome-devtools.click uid=<publish_button_uid>
-```
+| 字段 | 元素 | 说明 |
+|------|------|------|
+| 文章标题* | `textbox "请输入文章标题..."` | 30字以内 |
+| 文章摘要 | `textbox "添加内容摘要..."` | 30字以内，吸引读者 |
+| 文章正文* | `textbox` (多行富文本) | 8000字以内，有工具栏（加粗/斜体/引用/图片/列表） |
+| 文章头图 | `"点击上传图片"` 或 `"AI 配图"` | 推荐频道展示用，用 `upload_file` |
+| 封面* | `"点击上传封面图"` 或 `"选择封面"` | 必填，用 `upload_file` |
+| 话题 | `"点击添加话题"` | 最多5个 |
+| 配乐 | `"选择音乐"` | 可选 |
 
-发布后等待页面提示上传完成。如果视频还在上传中，不要关闭页面。
+正文编辑器工具栏支持：撤销/重做、字号(T)、加粗(B)、斜体(I)、引用("")、图片、有序列表、无序列表。
 
-## Troubleshooting
+插入图片到正文：点击工具栏的图片按钮，同样需要用 Windows 路径上传。
 
-### 页面 hang / CDP 连接断开
+### 3. Visibility & Publish
 
-最可能的原因是文件路径问题。如果用了 WSL 路径上传，Chrome 无法读取文件，页面会卡死。
+- `checkbox "公开"` / `checkbox "好友可见"` / `checkbox "仅自己可见"`
+- `checkbox "立即发布"` / `checkbox "定时发布"`
+- 点击 `button "发布"`
+
+> 文章编辑页**没有**"自主声明"入口（截至当前版本），只有视频和图文有。
+
+---
+
+## Shared Patterns
+
+### Draft Recovery
+
+如果之前有未完成的上传，页面会提示"你还有上次未发布的视频/图文，是否继续编辑？"
+- 点"继续编辑"恢复草稿
+- 点"放弃"清除
+
+### Tab Switching on Upload Page
+
+上传页 `/content/upload` 有四个标签：
+- `"发布视频"` — 默认选中
+- `"发布图文"`
+- `"发布全景视频"`
+- `"发布文章"`
+
+点击对应 StaticText 的 uid 即可切换。
+
+### Troubleshooting: Page Hang
+
+最可能原因：文件路径使用了 WSL 路径。
 
 恢复方法：
-1. 通过 CDP WebSocket 直接发送 `Page.navigate` 到 `about:blank`
-2. `mcporter daemon restart`
-3. 重新开始流程
-
 ```javascript
-// 恢复脚本
+// 通过 CDP WebSocket 强制导航到 about:blank
 const listRes = await fetch('http://172.30.144.1:19301/json/list');
 const pages = await listRes.json();
 const page = pages.find(p => p.url.includes('creator.douyin.com'));
@@ -157,32 +207,13 @@ ws.onopen = () => {
 };
 ```
 
-### upload_file 返回成功但页面没变化
+然后 `mcporter daemon restart` 重新连接。
 
-检查文件是否真的可读：
+### Checking Upload Success
+
+上传文件后，验证文件是否真的可读：
 ```bash
 mcporter call chrome-devtools.evaluate_script --args '{"function": "() => { const f = document.querySelector(\"input[type=file]\").files[0]; return f ? { name: f.name, size: f.size } : \"no file\"; }"}'
 ```
 
-如果 `size: 0` 说明路径有问题，换用 Windows 本地路径。
-
-### "上次未发布的视频"提示
-
-之前的上传操作可能留下了草稿。点击"放弃"清除，或"继续编辑"恢复之前的进度。
-
-## Reference: Page Structure
-
-上传页（`/content/upload`）：
-- `button "上传视频"` — 触发上传（会打开文件选择器，不要用这个）
-- `button "选择文件"` — 隐藏的 `<input type="file">`，用 `upload_file` 操作这个
-
-发布编辑页（`/content/post/video`）：
-- `textbox` — 作品标题（30字）
-- `generic "添加作品简介"` — 作品描述（富文本）
-- `"#添加话题"` / `"@好友"` — 话题和@
-- `"选择封面"` — 竖封面/横封面
-- `"添加声明"` → `radio "内容由AI生成"` — AI声明
-- `checkbox "公开"/"好友可见"/"仅自己可见"` — 可见性
-- `checkbox "立即发布"/"定时发布"` — 发布时间
-- `button "发布"` — 发布
-- `button "暂存离开"` — 保存草稿
+如果 `size: 0` 或 `"no file"` 说明路径有问题。
