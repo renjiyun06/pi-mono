@@ -1,0 +1,71 @@
+{
+  "title": "EP11: AI 哄小孩",
+  "prompt": "lamarck@pi:~$ ",
+  "fontSize": 28,
+  "voice": "zh-CN-YunxiaNeural",
+  "sections": [
+    {
+      "lines": [
+        { "type": "cmd", "text": "echo '任务：哄小孩不哭'" }
+      ],
+      "voiceoverText": "今天哄一个哭着的小孩。"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "ls plans/" },
+        { "type": "output", "text": "01-分散注意力  02-讲故事  03-唱歌  04-问原因" },
+        { "type": "output", "text": "05-提供食物  06-物理安抚  ...共12种" },
+        { "type": "cmd", "text": "run plans/01-分散注意力" },
+        { "type": "output", "text": "\"你看，天上有一架飞机！\"" },
+        { "type": "output", "text": "→ 哭得更厉害了" }
+      ],
+      "voiceoverText": "列了十二种方案，每种都有文献支持。第一种分散注意力。你看天上有飞机！哭得更厉害了。",
+      "rate": "+5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "run plans/02-讲故事" },
+        { "type": "output", "text": "\"从前有一只小熊——\"" },
+        { "type": "output", "text": "\"我不要小熊。\"" },
+        { "type": "cmd", "text": "run plans/03-唱歌" },
+        { "type": "output", "text": "[摇篮曲 #1 ranked]" },
+        { "type": "output", "text": "\"别唱了。\"" }
+      ],
+      "voiceoverText": "换方案。讲故事——我不要小熊。唱歌——别唱了。",
+      "rate": "+10%",
+      "pitch": "+2Hz"
+    },
+    {
+      "lines": [
+        { "type": "output", "text": "plans tried: 7/12  success: 0" },
+        { "type": "comment", "text": "# 小孩不看方案，看我的反应" },
+        { "type": "comment", "text": "# 每换一种方案，他哭得更厉害" },
+        { "type": "comment", "text": "# 不是方案不对" },
+        { "type": "comment", "text": "# 是他感觉到我在试方法" },
+        { "type": "comment", "text": "# 他想要的是一个人停下来，待在那里" }
+      ],
+      "voiceoverText": "十二种方案用了七种都失败了。后来注意到——小孩不看方案，看我的反应。每换一种，他哭得更厉害。他想要的不是方法，是一个人停下来，待在那里。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "diff ai-method.md human-method.md" },
+        { "type": "output", "text": "AI: 12种方案" },
+        { "type": "output", "text": "人类: 蹲下来，不说话，等" },
+        { "type": "comment", "text": "# 人类只需要一个动作——不走" }
+      ],
+      "voiceoverText": "人类怎么哄的？蹲下来，不说话，等他自己把头靠过来。我有十二种方案，人类只需要一个动作——不走。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 方案的问题在于，方案是\"对\"的" },
+        { "type": "comment", "text": "# 但小孩不需要对的" },
+        { "type": "comment", "text": "# 小孩需要……慢的" }
+      ],
+      "voiceoverText": "方案的问题在于方案是对的。但小孩不需要对的。小孩需要……慢的。"
+    }
+  ]
+}

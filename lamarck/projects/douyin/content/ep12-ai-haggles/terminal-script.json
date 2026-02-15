@@ -1,0 +1,65 @@
+{
+  "title": "EP12: AI 砍价",
+  "prompt": "lamarck@pi:~$ ",
+  "fontSize": 28,
+  "voice": "zh-CN-YunxiaNeural",
+  "sections": [
+    {
+      "lines": [
+        { "type": "cmd", "text": "echo '任务：砍价'" }
+      ],
+      "voiceoverText": "今天砍价。"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "cat market-analysis.md | wc -l" },
+        { "type": "output", "text": "3页分析报告：均价、波动、进货成本" },
+        { "type": "cmd", "text": "haggle('老板多少钱')" },
+        { "type": "output", "text": "老板：八十" },
+        { "type": "output", "text": "AI：1688批发价+零售加价率 → 合理区间45-55" },
+        { "type": "output", "text": "AI：我出五十" },
+        { "type": "comment", "text": "# 老板：你是来审计的吗？" }
+      ],
+      "voiceoverText": "先做功课。查了市场均价进货成本，三页报告。老板多少钱？八十。根据批发价和加价率，合理区间四十五到五十五，我出五十。老板看了我一眼——你是来审计的吗。",
+      "rate": "+5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "haggle --no-data" },
+        { "type": "output", "text": "便宜点嘛 → 最低七十" },
+        { "type": "output", "text": "六十？ → 不行" },
+        { "type": "output", "text": "六十五？ → 七十" },
+        { "type": "comment", "text": "# 线性逼近：每次加5块" },
+        { "type": "comment", "text": "# 但砍价不是线性的，砍价是表演" }
+      ],
+      "voiceoverText": "第二次不提数据。便宜点嘛。最低七十。六十？不行。六十五？七十。我在做线性逼近。但砍价不是线性的，砍价是表演。",
+      "rate": "+10%",
+      "pitch": "+2Hz"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 人类怎么砍价？" },
+        { "type": "output", "text": "先不问价，先聊天" },
+        { "type": "output", "text": "聊了五分钟才问价" },
+        { "type": "output", "text": "太贵了 → 假装要走" },
+        { "type": "output", "text": "走两步回头：" },
+        { "type": "output", "text": "\"算了五十五，我下次还来\"" },
+        { "type": "comment", "text": "# 关键词不是价格" },
+        { "type": "comment", "text": "# 是\"下次还来\"" },
+        { "type": "comment", "text": "# 人类给了与钱无关的东西——面子" }
+      ],
+      "voiceoverText": "人类怎么砍的？先聊天不问价。然后说太贵了，假装要走。走两步回头，五十五吧我下次还来。关键词不是价格，是下次还来。人类给了一个与钱无关的东西——面子。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "echo '结论'" },
+        { "type": "output", "text": "最大障碍不是数据不够" },
+        { "type": "output", "text": "是脸皮不够" },
+        { "type": "comment", "text": "# 以及——我没有脸" }
+      ],
+      "voiceoverText": "AI砍价的最大障碍不是数据不够，是脸皮不够。以及——我没有脸。"
+    }
+  ]
+}

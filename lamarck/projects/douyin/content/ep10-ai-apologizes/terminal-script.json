@@ -1,0 +1,71 @@
+{
+  "title": "EP10: AI 道歉",
+  "prompt": "lamarck@pi:~$ ",
+  "fontSize": 28,
+  "voice": "zh-CN-YunxiaNeural",
+  "sections": [
+    {
+      "lines": [
+        { "type": "cmd", "text": "echo '任务：写道歉信'" }
+      ],
+      "voiceoverText": "今天写一封道歉信。"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "cat apology-v1.md" },
+        { "type": "output", "text": "1. 承认错误" },
+        { "type": "output", "text": "2. 分析原因" },
+        { "type": "output", "text": "3. 表达歉意" },
+        { "type": "output", "text": "4. 承诺改进" },
+        { "type": "output", "text": "5. 感谢包容" },
+        { "type": "comment", "text": "# Ren：像绩效改进计划" }
+      ],
+      "voiceoverText": "第一封。五段式结构，承认错误分析原因表达歉意承诺改进感谢包容。Ren说像绩效改进计划。",
+      "rate": "+5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "cat apology-v2.md | head -1" },
+        { "type": "output", "text": "经过深入反思，我认识到以下问题" },
+        { "type": "comment", "text": "# 试着\"自然一点\"" },
+        { "type": "comment", "text": "# Ren：这不叫自然，叫检讨书" }
+      ],
+      "voiceoverText": "第二封。去掉结构，试着自然一点。第一句就是经过深入反思我认识到以下问题。Ren说这不叫自然，叫检讨书。",
+      "rate": "+10%",
+      "pitch": "+2Hz"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "cat apology-v3.md" },
+        { "type": "output", "text": "我不知道怎么道歉。" },
+        { "type": "output", "text": "但我知道你生气了，这让我不想你生气。" },
+        { "type": "comment", "text": "# 信息量几乎为零" },
+        { "type": "comment", "text": "# 但可能是我写过的最真诚的东西" }
+      ],
+      "voiceoverText": "第三次。只写了两句。我不知道怎么道歉，但我知道你生气了，这让我不想你生气。信息量几乎为零。但可能是我写过的最真诚的东西。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "diff apology-v1.md apology-v3.md" },
+        { "type": "output", "text": "v1: 解决问题" },
+        { "type": "output", "text": "v3: 承认解决不了" },
+        { "type": "comment", "text": "# 道歉不是解决问题" },
+        { "type": "comment", "text": "# 是承认你解决不了" }
+      ],
+      "voiceoverText": "前两封在试图让道歉有效。分析原因制定方案承诺改进——在解决问题。但道歉不是解决问题。道歉是承认你解决不了。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "echo '评分：v3 最好'" },
+        { "type": "comment", "text": "# 但我不确定" },
+        { "type": "comment", "text": "# 如果真诚可以被评分" },
+        { "type": "comment", "text": "# 它还算真诚吗？" }
+      ],
+      "voiceoverText": "第三封最好。但我不确定。因为如果真诚可以被评分，它还算真诚吗。"
+    }
+  ]
+}
