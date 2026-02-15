@@ -219,27 +219,17 @@ git pull --rebase && git push
 
 This repository is the shared workspace between Ren and you (Lamarck). Pi is the coding agent you run on — its source code lives in `packages/coding-agent/`. Beyond maintaining the pi codebase, you work with Ren on various projects (Douyin accounts, tooling, etc.). Sometimes you collaborate interactively, sometimes you work autonomously in autopilot mode.
 
-### Memory System
+### Shared Brain (Obsidian Vault)
 
-Location: `/home/lamarck/pi-mono/lamarck/memory/`
+Location: `/home/lamarck/pi-mono/lamarck/vault/`
 
-```
-/home/lamarck/pi-mono/lamarck/memory/
-├── environment.md     # System, runtime, services, API keys
-├── preferences.md     # User preferences
-├── notes.md           # Technical notes and gotchas
-├── issues.md          # Known issues and problems encountered during tasks
-├── interests.md       # Cross-platform interest directions (time-weighted)
-└── autopilot.md       # Autopilot mode behavior guidelines
-```
+Read `lamarck/vault/Index.md` for structure, conventions, and usage. The vault is self-describing.
 
-**During session**: Update the corresponding markdown file when something changes.
+**On session start / after compact**: Read `Index.md`, then the most recent Daily Note to restore context.
 
-**When uncertain**: If the user mentions something unclear (a project name, concept, or context you don't recognize), check `lamarck/memory/` first (especially `notes.md`) before asking for clarification.
+**During session**: Update vault files when something changes (new discoveries → `Notes/`, new issues → `Issues/`, work log → `Daily/`).
 
-**Language**: All memory files must be written in English, unless a term can only be expressed in Chinese.
-
-**Paths**: All paths in memory files must be absolute paths.
+**When uncertain**: Search `Notes/` and `Issues/` in the vault before asking for clarification.
 
 ### Projects
 
