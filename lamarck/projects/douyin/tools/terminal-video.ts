@@ -15,7 +15,7 @@
  *   npx tsx tools/terminal-video.ts --describe
  */
 import { execFile, execFileSync } from "child_process";
-import { writeFile, readFile, mkdir, rm } from "fs/promises";
+import { writeFile, readFile, mkdir, rm, copyFile } from "fs/promises";
 import { tmpdir } from "os";
 import { join } from "path";
 import { randomBytes } from "crypto";
@@ -62,6 +62,10 @@ interface TerminalScript {
     cmd?: string;      // command text color hex
     comment?: string;  // comment color hex
   };
+  /** Background music file path (loops for video duration, mixed at low volume) */
+  bgm?: string;
+  /** BGM volume (0.0-1.0, default 0.15) */
+  bgmVolume?: number;
 }
 
 const PYTHON_PATH = "/home/lamarck/pi-mono/lamarck/pyenv/bin/python";
@@ -357,6 +361,38 @@ async function generateTerminalVideo(
         "-pix_fmt", "yuv420p", "-c:v", "libx264", "-preset", "fast", "-c:a", "aac", outputPath,
       ], { timeout: 180000 }, (error) => { if (error) reject(error); else resolve(); });
     });
+  }
+
+  // Mix BGM if specified
+  if (script.bgm) {
+    const bgmVol = script.bgmVolume ?? 0.15;
+    console.log(`\n--- Mixing BGM (volume: ${bgmVol}) ---`);
+    const withBgmPath = join(workDir, "with-bgm.mp4");
+    // Get video duration for BGM loop
+    const videoDur = cumulativeTime.toFixed(2);
+    await new Promise<void>((resolve, reject) => {
+      execFile("ffmpeg", [
+        "-y",
+        "-i", outputPath,
+        "-stream_loop", "-1", "-i", script.bgm!,
+        "-filter_complex",
+        `[1:a]aloop=loop=-1:size=2e+09,atrim=0:${videoDur},volume=${bgmVol}[bgm];[0:a][bgm]amix=inputs=2:duration=first:dropout_transition=2[out]`,
+        "-map", "0:v", "-map", "[out]",
+        "-c:v", "copy", "-c:a", "aac",
+        "-shortest",
+        withBgmPath,
+      ], { timeout: 180000 }, (error, _stdout, stderr) => {
+        if (error) {
+          console.error("[bgm mix ffmpeg stderr]", stderr?.slice(-500));
+          reject(error);
+        } else {
+          resolve();
+        }
+      });
+    });
+    // Replace output with BGM version
+    await copyFile(withBgmPath, outputPath);
+    console.log("BGM mixed successfully");
   }
 
   // Generate SRT subtitle file alongside the video
