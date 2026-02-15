@@ -326,8 +326,9 @@ function processMessageForQQ(text: string): string {
 const TOOL_NAME = "send_qq_message";
 const TASK_TOOL_NAME = "task";
 
-// Autopilot threshold: compact when context usage exceeds this percentage
-const AUTOPILOT_COMPACT_THRESHOLD = 60;
+// Autopilot thresholds (percentage of context window)
+const AUTOPILOT_COMPACT_THRESHOLD = 60; // Auto-compact triggers at this level
+const AUTOPILOT_WARNING_THRESHOLD = 60; // Start warning agent to wrap up
 
 export default function mainSessionExtension(pi: ExtensionAPI) {
 	let channelManager: ChannelManager | null = null;
@@ -917,6 +918,16 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 
 		const usage = ctx.getContextUsage();
 		if (!usage || usage.percent === null) return;
+
+		if (usage.percent >= AUTOPILOT_WARNING_THRESHOLD) {
+			return {
+				inject: [
+					`[context: ${usage.percent.toFixed(1)}% — URGENT]`,
+					`Context window almost exhausted (auto-compact at ${AUTOPILOT_COMPACT_THRESHOLD}%).`,
+					"Stop new work immediately. Wrap up current progress (commit, log), so you can resume seamlessly after compact.",
+				].join("\n"),
+			};
+		}
 
 		return { inject: `[context: ${usage.percent.toFixed(1)}%]` };
 	});
