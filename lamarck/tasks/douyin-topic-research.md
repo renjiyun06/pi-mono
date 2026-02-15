@@ -1,7 +1,7 @@
 ---
 description: Find narrative angles from discovered topics and research deeply for Douyin video creation
 enabled: false
-model: zai/glm-4.7
+model: nvidia/z-ai/glm5
 ---
 
 # 抖音叙事调研

@@ -1,8 +1,8 @@
 ---
 cron: "0 * * * *"
 description: Sync liked videos from personal Douyin account into douyin_works and douyin_accounts
-enabled: true
-model: zai/glm-4.7
+enabled: false
+model: nvidia/z-ai/glm5
 ---
 
 # 同步抖音点赞记录

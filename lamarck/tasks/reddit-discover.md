@@ -1,8 +1,8 @@
 ---
 cron: "*/20 * * * *"
 description: Discover demand signals and high-quality founder shares from Reddit
-enabled: true
-model: zai/glm-4.7
+enabled: false
+model: nvidia/z-ai/glm5
 ---
 
 # Reddit 需求信号与高质量分享发现

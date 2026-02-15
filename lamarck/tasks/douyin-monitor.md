@@ -1,8 +1,8 @@
 ---
 cron: "0,30 * * * *"
 description: Monitor tracked Douyin accounts for new works
-enabled: true
-model: zai/glm-4.7
+enabled: false
+model: nvidia/z-ai/glm5
 ---
 
 # 监控抖音博主新作品

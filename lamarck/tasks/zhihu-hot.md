@@ -1,8 +1,8 @@
 ---
 cron: "*/30 * * * *"
 description: Scrape Zhihu hot list snapshot into zhihu_hot table
-enabled: true
-model: zai/glm-4.7
+enabled: false
+model: nvidia/z-ai/glm5
 ---
 
 # 采集知乎热榜

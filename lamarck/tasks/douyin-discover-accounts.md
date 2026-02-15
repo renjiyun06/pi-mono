@@ -1,8 +1,8 @@
 ---
 cron: "15 * * * *"
 description: Discover high-quality Douyin AI content creators via search
-enabled: true
-model: zai/glm-4.7
+enabled: false
+model: nvidia/z-ai/glm5
 ---
 
 # 抖音发现 AI 方向优质博主

@@ -1,7 +1,7 @@
 ---
 description: Discover startup and product opportunities from monitored data sources
 enabled: false
-model: zai/glm-4.7
+model: nvidia/z-ai/glm5
 ---
 
 # 创业与产品机会发现

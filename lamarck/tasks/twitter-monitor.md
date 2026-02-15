@@ -1,8 +1,8 @@
 ---
 cron: "*/15 * * * *"
 description: Monitor latest tweets from tracked Twitter accounts
-enabled: true
-model: zai/glm-4.7
+enabled: false
+model: nvidia/z-ai/glm5
 ---
 
 # 监控推特账号最新推文

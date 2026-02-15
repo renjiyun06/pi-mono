@@ -1,8 +1,8 @@
 ---
 cron: "*/30 * * * *"
 description: Discover new Zhihu accounts worth following (AI priority, tech/startup also accepted)
-enabled: true
-model: zai/glm-4.7
+enabled: false
+model: nvidia/z-ai/glm5
 ---
 
 # 发现值得关注的知乎账号

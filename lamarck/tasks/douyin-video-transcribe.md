@@ -1,7 +1,7 @@
 ---
 description: Download and transcribe popular Douyin videos that haven't been processed yet
-enabled: true
-model: zai/glm-4.7
+enabled: false
+model: nvidia/z-ai/glm5
 cron: "*/5 * * * *"
 ---
 
