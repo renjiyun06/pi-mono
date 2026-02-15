@@ -4,6 +4,8 @@ tags:
   - tool
   - video
 description: "ffmpeg geq filter is extremely slow, avoid for long videos"
+created: 2026-02-13
+updated: 2026-02-13
 ---
 
 # ffmpeg geq Performance

@@ -4,6 +4,8 @@ tags:
   - ai
   - memory
 description: "AI agent memory architectures (Letta/MemGPT) and improvement ideas for our system"
+created: 2026-02-14
+updated: 2026-02-14
 ---
 
 # Agent Memory Landscape
