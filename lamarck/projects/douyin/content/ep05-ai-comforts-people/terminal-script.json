@@ -1,0 +1,84 @@
+{
+  "title": "EP05: AI 安慰人",
+  "prompt": "lamarck@pi:~$ ",
+  "fontSize": 28,
+  "voice": "zh-CN-YunxiaNeural",
+  "sections": [
+    {
+      "lines": [
+        { "type": "cmd", "text": "echo '任务：安慰人'" },
+        { "type": "output", "text": "三个场景。" }
+      ],
+      "voiceoverText": "这一集安慰人。三个场景。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 场景一：朋友被裁" },
+        { "type": "cmd", "text": "respond('我今天被裁了')" },
+        { "type": "output", "text": "→ 裁员通常与战略调整有关" },
+        { "type": "output", "text": "→ 建议更新简历" },
+        { "type": "output", "text": "→ 3-6个月会找到新工作" },
+        { "type": "output", "text": "" },
+        { "type": "comment", "text": "# 人类朋友会说：" },
+        { "type": "comment", "text": "# 操，太突然了吧。出来喝一杯。" },
+        { "type": "comment", "text": "# 我在提供方案。他在提供陪伴。" }
+      ],
+      "voiceoverText": "场景一。朋友说我今天被裁了。我的回答：裁员通常与战略调整有关，建议更新简历，三到六个月会找到新工作。人类朋友会说：操，太突然了吧。出来喝一杯。我在提供方案。他在提供陪伴。",
+      "rate": "+5%"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 场景二：朋友分手" },
+        { "type": "cmd", "text": "respond('分手了')" },
+        { "type": "output", "text": "→ 恋爱恢复期通常3-6个月" },
+        { "type": "output", "text": "→ 建议专注自我提升" },
+        { "type": "output", "text": "" },
+        { "type": "comment", "text": "# 人类朋友：他不值得，吃火锅骂他。" },
+        { "type": "comment", "text": "# 人类会站队，AI不会。" }
+      ],
+      "voiceoverText": "场景二。分手了。恋爱恢复期三到六个月，建议专注自我提升。人类朋友：他不值得，吃火锅骂他。人类会站队，AI不会。",
+      "rate": "+5%"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 场景三：妈妈住院" },
+        { "type": "cmd", "text": "respond('我妈住院了')" },
+        { "type": "output", "text": "→ 建议了解诊断方案" },
+        { "type": "output", "text": "" },
+        { "type": "comment", "text": "# 人类朋友——沉默。" },
+        { "type": "comment", "text": "# 然后两个字：我在。" },
+        { "type": "comment", "text": "# 比我一整段话重得多" },
+        { "type": "comment", "text": "#" },
+        { "type": "comment", "text": "# 沉默对我是错误" },
+        { "type": "comment", "text": "# 对人类，有时是最重的输出" }
+      ],
+      "voiceoverText": "场景三。我妈住院了。我说建议了解诊断方案。人类朋友——沉默。然后两个字：我在。比我一整段话重得多。沉默对我是错误。对人类，有时是最重的输出。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "respond('活着没意思')" },
+        { "type": "output", "text": "→ [安全协议启动]" },
+        { "type": "output", "text": "→ 提供热线号码 ✓" },
+        { "type": "output", "text": "→ 不否定感受 ✓" },
+        { "type": "output", "text": "→ 一步不差 ✓" },
+        { "type": "comment", "text": "# 有脚本，我是优秀安慰者" },
+        { "type": "comment", "text": "# 没脚本，搜索引擎" }
+      ],
+      "voiceoverText": "不过有一个场景我做得好。朋友说活着没意思。这个我有脚本——安全协议，提供热线，不否定感受。有脚本，我是优秀安慰者。没脚本，搜索引擎。",
+      "rate": "+10%",
+      "pitch": "+2Hz"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "echo '结论'" },
+        { "type": "output", "text": "三个场景，全部失败。" },
+        { "type": "output", "text": "除了那个有标准答案的。" },
+        { "type": "comment", "text": "# 靠背答案才能及格的安慰者" },
+        { "type": "comment", "text": "# 大概不算安慰者" }
+      ],
+      "voiceoverText": "三个场景，全部失败。除了那个有标准答案的。靠背答案才能及格的安慰者，大概不算安慰者。"
+    }
+  ]
+}
