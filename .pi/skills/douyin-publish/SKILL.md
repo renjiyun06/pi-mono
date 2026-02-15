@@ -19,6 +19,10 @@ description: 通过浏览器自动化在抖音创作者平台发布内容（视�
 - Chrome 已通过 mcporter 启动并登录了抖音创作者中心
 - 要上传的文件在 WSL 文件系统中
 
+## Current Policy
+
+**所有发布一律设为"仅自己可见"。** 当前视频/图文/文章的整体质量还不够高，在质量达标之前不公开发布。等 Ren 确认内容质量可以后再切换为公开。
+
 ## Critical: File Path (WSL → Windows Bridge)
 
 Chrome 运行在 Windows 上，**无法读取 WSL 路径**。所有需要上传的文件必须先复制到中转目录：
