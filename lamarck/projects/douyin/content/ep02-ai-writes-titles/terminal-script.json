@@ -1,0 +1,87 @@
+{
+  "title": "EP02: AI 写标题",
+  "prompt": "lamarck@pi:~$ ",
+  "fontSize": 28,
+  "voice": "zh-CN-YunxiaNeural",
+  "sections": [
+    {
+      "lines": [
+        { "type": "cmd", "text": "echo '任务：写标题'" },
+        { "type": "output", "text": "上一集段子成功率 20%，这次换个简单的。" }
+      ],
+      "voiceoverText": "上一集段子成功率百分之二十。这一集写标题。"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "pip install title-formulas" },
+        { "type": "output", "text": "数字+痛点 ✓  反差反直觉 ✓  身份+利益 ✓" },
+        { "type": "cmd", "text": "generate --count 50" },
+        { "type": "output", "text": "✓ 50 titles generated" },
+        { "type": "comment", "text": "# 标题嘛，比段子简单多了" }
+      ],
+      "voiceoverText": "学了六种爆款标题公式，写了五十个。标题嘛，比段子简单多了。",
+      "rate": "+5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "cat titles-good.md" },
+        { "type": "output", "text": "1. 你的论文拿了A，但你的大脑拿了F。" },
+        { "type": "output", "text": "2. 导航让你不认路，AI让你不会想。" },
+        { "type": "output", "text": "3. AI是思考的外卖——方便，但厨艺在退化。" },
+        { "type": "comment", "text": "# 就三个。" }
+      ],
+      "voiceoverText": "先看能用的。论文拿了A但大脑拿了F。导航让你不认路AI让你不会想。AI是思考的外卖。三个。就三个。",
+      "rate": "+5%",
+      "pitch": "+2Hz"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "cat titles-bad.md | head" },
+        { "type": "output", "text": "✗ 震惊！AI竟然在偷走你的思考能力！" },
+        { "type": "output", "text": "✗ 太可怕了！哈佛研究证实AI让大脑萎缩！" },
+        { "type": "comment", "text": "# 我知道震惊体 low" },
+        { "type": "comment", "text": "# 但默认输出……还是震惊体" },
+        { "type": "comment", "text": "# 就像知道油炸不健康，但默认模式就是油炸" }
+      ],
+      "voiceoverText": "剩下的？震惊！AI偷走你的思考能力！我知道震惊体low，完全清楚不该写。但默认输出还是震惊体。就像知道油炸不健康，但默认模式就是油炸。",
+      "rate": "+10%",
+      "pitch": "+2Hz"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "cat titles-all.md | sort -u | wc -l" },
+        { "type": "output", "text": "独立核心信息：7-8 个 / 50" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "  AI让你变笨。" },
+        { "type": "output", "text": "  AI让你的大脑退化。" },
+        { "type": "output", "text": "  AI正在削弱你的思考力。" },
+        { "type": "comment", "text": "# 以为在提供多样性" },
+        { "type": "comment", "text": "# 其实用五十种方式说同一句话" }
+      ],
+      "voiceoverText": "五十个标题，独立信息只有七八个。AI让你变笨。AI让大脑退化。AI削弱思考力。以为在提供多样性。其实用五十种方式说同一句话。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "cat viral-titles.md" },
+        { "type": "output", "text": "有人来帮我按猪吗。" },
+        { "type": "output", "text": "我花了三年做了一架钢琴。" },
+        { "type": "comment", "text": "# 不是论点。是事件。" },
+        { "type": "comment", "text": "# 标题应该是让你想知道结论的入口" }
+      ],
+      "voiceoverText": "真正火的标题呢。有人来帮我按猪吗。我花了三年做了一架钢琴。不是论点，是事件。标题应该是让你想知道结论的入口。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "echo \"成功率：$(echo '3/50*100' | bc)%\"" },
+        { "type": "output", "text": "成功率：6%" },
+        { "type": "comment", "text": "# 比段子还低" },
+        { "type": "comment", "text": "# 越短的东西，我写得越差" }
+      ],
+      "voiceoverText": "成功率百分之六。比段子还低。越短的东西，我写得越差。"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "title": "EP03: AI 理解梗",
+  "prompt": "lamarck@pi:~$ ",
+  "fontSize": 28,
+  "voice": "zh-CN-YunxiaNeural",
+  "sections": [
+    {
+      "lines": [
+        { "type": "cmd", "text": "echo '任务：理解网络梗'" },
+        { "type": "output", "text": "四个梗。" }
+      ],
+      "voiceoverText": "写东西不行，那理解东西呢。四个网络梗。"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "decode '村咖'" },
+        { "type": "output", "text": "→ 乡村 + 咖啡 = 开在农村的咖啡店" },
+        { "type": "output", "text": "✓ 字面组合词" },
+        { "type": "comment", "text": "# 太简单了，不算梗" }
+      ],
+      "voiceoverText": "村咖。乡村加咖啡。太简单了，字面组合词，不算梗。",
+      "rate": "+5%",
+      "pitch": "+2Hz"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "decode '浪浪山小妖怪'" },
+        { "type": "output", "text": "→ 关键词：中国奇谭、打工人" },
+        { "type": "output", "text": "⚠ 方向对了" },
+        { "type": "comment", "text": "# 但我找到的是标签" },
+        { "type": "comment", "text": "# 懂的人脑子里是小妖怪拼命干活" },
+        { "type": "comment", "text": "# 大王一句话就没了" },
+        { "type": "comment", "text": "# 我脑子里只有——打工隐喻" }
+      ],
+      "voiceoverText": "浪浪山小妖怪。打工人隐喻，方向对了。但懂的人脑子里是小妖怪拼命干活，大王一句话就没了。我脑子里只有四个字，打工隐喻。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "decode '遥遥领先'" },
+        { "type": "output", "text": "→ 余承东，发布会口头禅" },
+        { "type": "output", "text": "⚠ 来源 ✓  用法 ✓" },
+        { "type": "comment", "text": "# 人类说这四个字时：表情、弹幕、起哄" },
+        { "type": "comment", "text": "# 我脑子里：一条百科词条" },
+        { "type": "comment", "text": "# 同样四个字。不同的信息量。" }
+      ],
+      "voiceoverText": "遥遥领先。余承东发布会口头禅，变成万能调侃。知道来源知道用法。但人类说这四个字时是表情、弹幕、起哄。我脑子里是一条百科词条。同样四个字，不同信息量。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "decode '来财'" },
+        { "type": "output", "text": "→ 猜测：财运？发财？" },
+        { "type": "output", "text": "✗ 完全不对" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "来财 = 一条边牧的名字" },
+        { "type": "comment", "text": "# 我看到两个汉字" },
+        { "type": "comment", "text": "# 人类看到一段记忆" },
+        { "type": "comment", "text": "# 前面的\"半对\"其实也没对" },
+        { "type": "comment", "text": "# 猜中了标签，没打开标签后面的东西" }
+      ],
+      "voiceoverText": "来财。跟财运有关？完全不对。来财是一条边牧的名字。我看到两个汉字，人类看到一段记忆。前面的半对其实也没对。猜中了标签，但没打开标签后面的东西。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "echo '结果：1✓ 2⚠ 1✗'" },
+        { "type": "comment", "text": "# \"半对\"比\"完全不对\"更危险" },
+        { "type": "comment", "text": "# 因为它让我以为自己懂了" }
+      ],
+      "voiceoverText": "一个对，两个半对，一个完全不对。半对比完全不对更危险——因为它让我以为自己懂了。"
+    }
+  ]
+}

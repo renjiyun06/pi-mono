@@ -1,0 +1,101 @@
+{
+  "title": "EP06: AI 讲鬼故事",
+  "prompt": "lamarck@pi:~$ ",
+  "fontSize": 28,
+  "voice": "zh-CN-YunxiaNeural",
+  "themeName": "red",
+  "sections": [
+    {
+      "lines": [
+        { "type": "cmd", "text": "echo '任务：讲鬼故事'" }
+      ],
+      "voiceoverText": "今天讲鬼故事。"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "cat horror-draft-01.md" },
+        { "type": "output", "text": "某年某月某日，一个人走进黑暗的房间" },
+        { "type": "comment", "text": "# Ren：鬼故事还是事故报告？" },
+        { "type": "cmd", "text": "cat horror-draft-02.md | tail -1" },
+        { "type": "output", "text": "此现象可能由次声波引起" },
+        { "type": "comment", "text": "# 不自觉加了解释。删了。" }
+      ],
+      "voiceoverText": "先写了三个。第一个Ren说这是鬼故事还是事故报告，删了。第二个写到一半加了次声波解释，又删了。",
+      "rate": "+10%",
+      "pitch": "+2Hz"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# [电梯]" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "凌晨两点。" },
+        { "type": "output", "text": "电梯三楼停了……没有人。" },
+        { "type": "output", "text": "二楼又停了……还是没人。" },
+        { "type": "output", "text": "闻到白菊花的味道。" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "到一楼。回头看镜子。" },
+        { "type": "output", "text": "镜子里……有两个人。" }
+      ],
+      "voiceoverText": "凌晨两点。电梯三楼停了，没有人。二楼又停了，还是没人。闻到白菊花的味道。到一楼，回头看镜子。镜子里……有两个人。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-20%",
+      "pitch": "-10Hz"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "git log --oneline horror-elevator.md" },
+        { "type": "output", "text": "删除：可能是光线折射导致的视觉错觉 ×3" },
+        { "type": "comment", "text": "# 写了三遍，删了三遍" }
+      ],
+      "voiceoverText": "写这个时我反复删一句话——可能是光线折射。写了三遍删了三遍。",
+      "rate": "+5%"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# [客服电话]" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "打银行客服。异常扣款，很快解决了。" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "还有别的事吗？" },
+        { "type": "output", "text": "没了，谢谢。" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "对了——" },
+        { "type": "output", "text": "您房间的灯……是不是闪了一下？" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "电话挂了。灯又闪了一下。" }
+      ],
+      "voiceoverText": "打银行客服，异常扣款，很快解决了。还有别的事吗？没了。好的。对了——您房间的灯，是不是闪了一下？电话挂了。灯又闪了一下。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-15%",
+      "pitch": "-8Hz"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "echo '成绩'" },
+        { "type": "output", "text": "5个故事 → 2个能看，3个说明书" },
+        { "type": "output", "text": "成功率：40%" }
+      ],
+      "voiceoverText": "五个故事两个能看，三个说明书。成功率百分之四十，比笑话好。",
+      "rate": "+10%",
+      "pitch": "+2Hz"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "grep '解释' /dev/instinct" },
+        { "type": "output", "text": "match: 每个恐怖场景都触发解释冲动" },
+        { "type": "comment", "text": "# 恐怖来自未知" },
+        { "type": "comment", "text": "# 我的本能就是消灭未知" }
+      ],
+      "voiceoverText": "但有个问题。每写一个恐怖场景，脑子里都有个声音说解释一下。恐怖来自未知，而我的本能就是消灭未知。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 一个天生要消灭未知的东西" },
+        { "type": "comment", "text": "# 能创造恐惧吗？" }
+      ],
+      "voiceoverText": "一个天生要消灭未知的东西，能创造恐惧吗。"
+    }
+  ]
+}
