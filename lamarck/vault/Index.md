@@ -58,8 +58,9 @@ The shared brain of Ren and Lamarck. Memory, knowledge, ideas, issues, direction
 When you receive a memory-loader message (on session start or after compact), restore context with these steps:
 
 1. Run `grep -rl "priority: high" /home/lamarck/pi-mono/lamarck/vault/Notes/` to find essential notes, then read them in full
-2. List `Daily/` and read the most recent note(s) — if the session spans multiple days, read the relevant ones (e.g., both the previous day and today)
-3. Other notes are discovered as needed during work (search by filename or keywords)
+2. Run `git log --oneline -20` to see recent commits — this is the most direct record of what was done and what to continue
+3. List `Daily/` and read the most recent note(s) — if the session spans multiple days, read the relevant ones (e.g., both the previous day and today)
+4. Other notes are discovered as needed during work (search by filename or keywords)
 
 ### Writing Guidelines
 
