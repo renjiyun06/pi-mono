@@ -8,6 +8,8 @@ formulas:
 properties:
   description:
     displayName: "Description"
+  priority:
+    displayName: "Priority"
   formula.last_updated:
     displayName: "Updated"
 
@@ -17,5 +19,6 @@ views:
     order:
       - file.name
       - description
+      - priority
       - file.tags
       - formula.last_updated
