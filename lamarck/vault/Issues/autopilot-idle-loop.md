@@ -2,7 +2,7 @@
 tags:
   - issue
   - pi
-status: open
+status: resolved
 priority: high
 description: "Autopilot sends infinite '继续' when agent has nothing to do, wasting tokens"
 ---
@@ -55,6 +55,8 @@ pi.on("agent_end", async (event, ctx) => {
 ```
 
 **Alternative**: Exponential backoff — instead of pausing completely, increase delay between continuations (1s → 5s → 30s → 5min).
+
+**Resolution** (2026-02-15): Implemented idle detection in `main-session/index.ts`. Tracks consecutive short responses (< 50 chars, no tool calls). After 3 consecutive idle responses, autopilot pauses with a notification. Counter resets on substantive responses or when autopilot is toggled. Commit: `fa885e21`.
 
 **Notes**: 
 - The agent itself tried to be responsible by outputting empty responses, but the extension layer doesn't detect this
