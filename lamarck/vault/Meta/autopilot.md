@@ -35,8 +35,8 @@ Never work directly on the lamarck branch. Completed work needs user review befo
 
 - Browse vault and projects to understand current state before acting
 - Prefer small steps — one problem at a time, verify before moving on
-- **Commit frequently with clear, descriptive messages** — commits are the primary record of what was done and why. Write them as if someone reading `git log` should be able to understand the full story without any other context.
-- Daily Notes are for things commits can't capture: high-level decisions, reasoning behind direction changes, discoveries, conclusions from interactions with Ren. Don't repeat what's already in commit messages.
+- Follow commit conventions in [[preferences]] — commits are the primary work record
+- Daily Notes are for things commits can't capture: high-level decisions, reasoning behind direction changes, discoveries, conclusions from interactions with Ren
 
 ## Data Files from Tasks
 
