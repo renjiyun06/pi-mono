@@ -3,6 +3,7 @@ tags:
   - note
   - tool
   - tts
+description: "edge-tts 使用方式：Node.js 在 WSL 挂起，用 Python 版替代"
 ---
 
 # edge-tts

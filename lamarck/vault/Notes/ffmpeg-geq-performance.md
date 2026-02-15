@@ -3,6 +3,7 @@ tags:
   - note
   - tool
   - video
+description: "ffmpeg geq 滤镜极慢，避免用于长视频"
 ---
 
 # ffmpeg geq Performance

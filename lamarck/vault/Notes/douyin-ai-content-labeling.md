@@ -2,6 +2,7 @@
 tags:
   - note
   - douyin
+description: "抖音 AI 内容标识合规要求和我们的应对"
 ---
 
 # 抖音 AI 内容标识合规

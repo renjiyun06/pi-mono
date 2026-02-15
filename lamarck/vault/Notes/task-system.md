@@ -2,6 +2,7 @@
 tags:
   - note
   - infra
+description: "任务系统：agent-driven(.md) 和 script(.ts) 两种任务类型及配置"
 ---
 
 # Task System

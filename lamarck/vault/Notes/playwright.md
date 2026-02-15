@@ -2,6 +2,7 @@
 tags:
   - note
   - tool
+description: "Playwright CDP 连接必须手动关闭，否则进程不退出"
 ---
 
 # Playwright

@@ -2,6 +2,7 @@
 tags:
   - note
   - infra
+description: "pi 自定义扩展的存放和符号链接方式"
 ---
 
 # Extensions

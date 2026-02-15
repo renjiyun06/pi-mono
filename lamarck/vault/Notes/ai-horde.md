@@ -3,6 +3,7 @@ tags:
   - note
   - tool
   - image
+description: "AI Horde 免费图片生成 API 用法和限制"
 ---
 
 # AI Horde (Free Image Generation)

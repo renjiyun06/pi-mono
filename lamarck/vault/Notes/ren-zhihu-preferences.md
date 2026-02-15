@@ -3,6 +3,7 @@ tags:
   - note
   - research
   - douyin
+description: "Ren 的知乎点赞偏好分析：偏好深度思辨"
 ---
 
 # Ren 的知乎点赞偏好分析

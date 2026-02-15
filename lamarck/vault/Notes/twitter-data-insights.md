@@ -2,6 +2,7 @@
 tags:
   - note
   - research
+description: "664 条推特数据分析：agent 最热关键词，个人经验+反直觉观点最吸引人"
 ---
 
 # Twitter Data Insights

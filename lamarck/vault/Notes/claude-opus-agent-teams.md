@@ -2,6 +2,7 @@
 tags:
   - note
   - ai
+description: "Claude Opus 4.6 Agent Teams 多 agent 并行协作功能"
 ---
 
 # Claude Opus 4.6 Agent Teams

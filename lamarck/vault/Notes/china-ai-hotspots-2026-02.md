@@ -3,6 +3,7 @@ tags:
   - note
   - research
   - ai
+description: "2026-02 中国 AI 热点与我们框架的交叉"
 ---
 
 # 2026-02 中国 AI 热点

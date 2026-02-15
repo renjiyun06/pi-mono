@@ -2,6 +2,7 @@
 tags:
   - note
   - tool
+description: "FTS5 全文搜索索引（1372 条），中文用 LIKE 回退"
 ---
 
 # Full-Text Search Index

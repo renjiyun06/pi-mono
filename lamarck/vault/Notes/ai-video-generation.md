@@ -4,6 +4,7 @@ tags:
   - tool
   - video
   - ai
+description: "即梦/Seedance/Seedream/OmniHuman/302.AI 视频生成工具和 API 对接"
 ---
 
 # AI 视频生成工具
