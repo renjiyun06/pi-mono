@@ -93,8 +93,8 @@ When adding new content during a session:
 
 ### Projects
 - [[Projects/douyin/index|douyin]] — Douyin account operations, content direction, video production
-- [[Projects/debt-call-shield|debt-call-shield]] — AI call screening app
-- [[Projects/pi|pi]] — Pi coding agent development and extensions
+- [[Projects/debt-call-shield/index|debt-call-shield]] — AI call screening app
+- [[Projects/pi/index|pi]] — Pi coding agent development and extensions
 
 ### Current Directions
 - [[interests]] — Current and long-term focus areas
