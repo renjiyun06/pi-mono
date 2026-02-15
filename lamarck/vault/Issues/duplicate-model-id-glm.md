@@ -4,6 +4,7 @@ tags:
   - pi
 status: open
 priority: low
+description: "opencode 和 zai 两个 provider 的 glm-4.7 model ID 冲突"
 ---
 
 # 重复 model ID: glm-4.7 (opencode vs zai)

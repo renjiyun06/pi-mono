@@ -6,13 +6,16 @@ formulas:
   last_updated: 'file.mtime.relative()'
 
 properties:
+  description:
+    displayName: "描述"
   formula.last_updated:
-    displayName: "Updated"
+    displayName: "更新"
 
 views:
   - type: table
     name: "All Notes"
     order:
       - file.name
+      - description
       - file.tags
       - formula.last_updated

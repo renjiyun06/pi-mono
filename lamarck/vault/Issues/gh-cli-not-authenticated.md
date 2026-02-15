@@ -2,6 +2,7 @@
 tags:
   - issue
 status: open
+description: "gh CLI 未登录，无法操作 GitHub issue/PR"
 ---
 
 # GitHub CLI 未认证

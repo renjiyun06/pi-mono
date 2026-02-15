@@ -2,6 +2,7 @@
 tags:
   - issue
 status: open
+description: "多智能体反馈机制太重，需要更灵活的方案"
 ---
 
 # 多智能体反馈机制不够优雅
