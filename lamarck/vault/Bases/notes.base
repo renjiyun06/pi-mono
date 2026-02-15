@@ -1,0 +1,18 @@
+filters:
+  and:
+    - file.hasTag("note")
+
+formulas:
+  last_updated: 'file.mtime.relative()'
+
+properties:
+  formula.last_updated:
+    displayName: "Updated"
+
+views:
+  - type: table
+    name: "All Notes"
+    order:
+      - file.name
+      - file.tags
+      - formula.last_updated

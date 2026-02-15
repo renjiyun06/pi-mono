@@ -1,0 +1,33 @@
+filters:
+  and:
+    - file.hasTag("issue")
+
+formulas:
+  last_updated: 'file.mtime.relative()'
+
+properties:
+  status:
+    displayName: Status
+  formula.last_updated:
+    displayName: "Updated"
+
+views:
+  - type: table
+    name: "Open Issues"
+    filters:
+      and:
+        - 'status == "open"'
+    order:
+      - file.name
+      - status
+      - formula.last_updated
+
+  - type: table
+    name: "All Issues"
+    order:
+      - file.name
+      - status
+      - formula.last_updated
+    groupBy:
+      property: status
+      direction: ASC
