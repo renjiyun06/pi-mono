@@ -53,16 +53,22 @@ The shared brain of Ren and Lamarck. Memory, knowledge, ideas, issues, direction
 | `#memory` | Memory system |
 | `#pi` | Pi development |
 
-### Agent Workflow
+### On Session Start
 
-1. **Restore context**: Read the most recent `Daily/` note
-2. **Scan knowledge catalog**: Run `grep -r "^description:" lamarck/vault/Notes/ --include="*.md"` to get one-line summaries of all notes, then read relevant ones in full as needed
-3. **Check issues**: Run `grep -rl "status: open" lamarck/vault/Issues/` to find open problems
-4. **Write**:
-   - New discovery → `Notes/` (must have `description` in frontmatter)
-   - New problem → `Issues/` (must have `status` in frontmatter)
-   - Work log → Update today's `Daily/` note
-   - Config change → Update the relevant `Meta/` file
+These are guidelines for restoring context, not a strict sequence:
+
+- Read the most recent `Daily/` note to restore context
+- Run `grep -r "^description:" lamarck/vault/Notes/ --include="*.md"` to scan available knowledge, then read relevant notes in full as needed
+- Run `grep -rl "status: open" lamarck/vault/Issues/` to check open problems
+
+### Writing Guidelines
+
+When adding new content during a session:
+
+- New discovery → `Notes/` (must have `description` in frontmatter)
+- New problem → `Issues/` (must have `status` in frontmatter)
+- Work log → Update today's `Daily/` note
+- Config change → Update the relevant `Meta/` file
 
 ## Overview
 
