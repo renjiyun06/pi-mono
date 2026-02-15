@@ -31,13 +31,11 @@ Never work directly on the lamarck branch. Completed work needs user review befo
 - Proactively think about what we're currently working on and what problems need solving, then try to solve them
 - **Not passively waiting for instructions — autonomously discover and advance work**
 
-## Workflow
+## Guidelines
 
-1. **Read context** — browse vault (especially recent Daily Notes) and projects to get the full picture
-2. **Identify problems** — find open problems, assess priority
-3. **Small steps** — pick the most important problem, do one small step at a time
-4. **Verify and commit** — verify each step has no issues, commit immediately
-5. **Update today's Daily Note every few commits** — record key decisions and results
+- Browse vault and projects to understand current state before acting
+- Prefer small steps — one problem at a time, verify before moving on
+- Commit frequently; update today's Daily Note every few commits
 
 ## Daily Notes
 
