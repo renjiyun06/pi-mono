@@ -7,19 +7,19 @@ priority: low
 description: "glm-4.7 model ID conflict between opencode and zai providers"
 ---
 
-# 重复 model ID: glm-4.7 (opencode vs zai)
+# Duplicate Model ID: glm-4.7 (opencode vs zai)
 
-**发现时间**：2026-02-14
+**Discovered**: 2026-02-14
 
-**问题**：`models.generated.ts` 中 `opencode` 和 `zai` 两个 provider 都提供 `glm-4.7`，导致同一 `MODELS` 对象中有两个 `"glm-4.7"` key。JavaScript 对象后者覆盖前者，所以 opencode 的 glm-4.7 被静默丢弃。
+**Problem**: `models.generated.ts` has both `opencode` and `zai` providers offering `glm-4.7`, resulting in two `"glm-4.7"` keys in the same `MODELS` object. JavaScript objects silently let the latter overwrite the former, so opencode's glm-4.7 is silently dropped.
 
-**影响**：
-- OpenCode 的 glm-4.7 无法通过 `/model` 选择
-- 用户选 glm-4.7 时总是走 zai provider
+**Impact**:
+- OpenCode's glm-4.7 cannot be selected via `/model`
+- Selecting glm-4.7 always routes to zai provider
 
-**根因**：`generate-models.ts` 没有处理跨 provider 的 model ID 冲突
+**Root cause**: `generate-models.ts` doesn't handle cross-provider model ID conflicts
 
-**潜在修复**：
-1. 生成时检测冲突，为重复 ID 添加 provider 前缀
-2. 或保留一个作为默认，另一个加后缀
-3. 需要 Ren 决定 ID 命名策略
+**Potential fixes**:
+1. Detect conflicts at generation time, add provider prefix for duplicates
+2. Or keep one as default, add suffix to the other
+3. Needs Ren to decide on ID naming strategy

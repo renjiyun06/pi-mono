@@ -6,12 +6,12 @@ tags:
 description: "China AI hotspots Feb 2026 and intersections with our framework"
 ---
 
-# 2026-02 中国 AI 热点
+# China AI Hotspots 2026-02
 
-与我们框架的交叉：
+Intersections with our framework:
 
-- **NYT/哥伦比亚大学 Matthew Connelly**："AI 公司正在吞噬高等教育"——年轻人过度依赖 AI，丧失独立思考能力。直接验证教育悖论。
-- **OpenClaw（原 Clawdbot/Moltbot）**：开源 AI agent 框架，14.5 万 GitHub star，可操作电脑/键盘/文件/支付。160 万 AI agent 在 Moltbook 社交平台互动。引发"致命三重风险"争议。
-- **ChatGPT 开始投放广告**：OpenAI 前研究员 Zoë Hitzig 离职抗议，警告用户隐私被用于广告体系的"操纵风险"。
-- **MiniMax M2.5**：性能接近 Claude Opus 4.6，SWE-Bench 80.2%，价格仅 $0.3/M tokens。
-- **Seedance 2.0**：字节跳动视频生成模型，跨镜头叙事一致性。
+- **NYT / Columbia University Matthew Connelly**: "AI companies are devouring higher education" — young people over-relying on AI, losing independent thinking. Directly validates the education paradox.
+- **OpenClaw (formerly Clawdbot/Moltbot)**: open-source AI agent framework, 145K GitHub stars, can operate computers/keyboards/files/payments. 1.6M AI agents interacting on the Moltbook social platform. Sparked "triple fatal risk" debate.
+- **ChatGPT starts running ads**: OpenAI former researcher Zoe Hitzig resigned in protest, warning about "manipulation risk" of user privacy being used for advertising.
+- **MiniMax M2.5**: performance close to Claude Opus 4.6, SWE-Bench 80.2%, only $0.3/M tokens.
+- **Seedance 2.0**: ByteDance video generation model, cross-shot narrative consistency.

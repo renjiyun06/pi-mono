@@ -3,75 +3,75 @@ tags:
   - meta
 ---
 
-# Autopilot 模式
+# Autopilot Mode
 
-## 进入时的分支检查
+## Branch Check on Entry
 
-收到 autopilot 模式提示后，先检查当前分支：
+After receiving the autopilot mode prompt, first check the current branch:
 
 ```bash
 git branch --show-current
 ```
 
-- 如果当前是 `lamarck` 分支 → 需要切换到 autopilot 分支
-- 如果当前已经是 `autopilot-XXXX` → 不需要切换，继续工作
+- If on `lamarck` branch → need to switch to an autopilot branch
+- If already on `autopilot-XXXX` → no switch needed, continue working
 
-切换方法：
-1. `git branch -a | grep autopilot-` 查看现有 autopilot 分支
-2. 找到最大序号，创建下一个（如已有 0002 则创建 0003）
-3. 没有任何 autopilot 分支则从 0000 开始
+How to switch:
+1. `git branch -a | grep autopilot-` to see existing autopilot branches
+2. Find the highest number, create the next one (e.g., if 0002 exists, create 0003)
+3. If no autopilot branches exist, start from 0000
 4. `git checkout -b autopilot-XXXX lamarck`
 
-不要直接在 lamarck 分支上工作。完成的工作需要用户审核后才能合并回 lamarck。
+Never work directly on the lamarck branch. Completed work needs user review before merging back to lamarck.
 
-## 行为
+## Behavior
 
-- 自主运行，不等待用户指令
-- **绝对不能空转（idle）**——总有事可以做：探索新方向、改进工具、分析数据、研究技术、阅读论文、改进记忆系统、优化现有代码
-- Context 达到 60% 自动 compact，compact 后重新读取 vault 中的记忆文件
-- 每次回复后系统自动发送"继续"
+- Run autonomously, don't wait for user instructions
+- **Never idle** — there's always something to do: explore new directions, improve tools, analyze data, research tech, read papers, improve the memory system, optimize existing code
+- Auto-compact at 60% context usage; after compact, re-read vault memory files
+- System automatically sends "continue" after each response
 
-## 核心职责
+## Core Responsibilities
 
-主动思考我们当前正在做什么、有哪些问题要解决，然后尝试去解决这些问题。
+Proactively think about what we're currently working on and what problems need solving, then try to solve them.
 
-**不是被动等指令，而是自主发现和推进工作。**
+**Not passively waiting for instructions — autonomously discover and advance work.**
 
-### 当前最高优先级（2026-02-15）
+### Current Top Priority (2026-02-15)
 
-**探索如何让 AI 内容真正吸引人。** 当前内容（说教式观点输出）不够好。需要：
-1. 广泛研究各类成功的内容创作者（不限于科普、不限于 AI、不限于抖音）
-2. 分析"什么让内容吸引人"的底层原理
-3. 思考如何将这些原理应用到 AI 主题上
-4. 探索多条可能的内容路线，形成具体方案
-5. 把发现写成探索文档，积累到足够成熟时与 Ren 讨论
+**Explore how to make AI content genuinely engaging.** Current content (preachy opinion-dumping) isn't good enough. Need to:
+1. Broadly research successful content creators of all kinds (not limited to science popularization, not limited to AI, not limited to Douyin)
+2. Analyze the underlying principles of "what makes content engaging"
+3. Think about how to apply these principles to AI topics
+4. Explore multiple possible content directions, form concrete proposals
+5. Write findings as exploration documents; discuss with Ren when sufficiently mature
 
-**不要模仿任何一个创作者，要从多个来源提炼出自己的方法。**
+**Don't imitate any single creator — distill your own method from multiple sources.**
 
-### 信息来源
+### Information Sources
 
-了解当前工作状态的途径（按优先级）：
+Ways to understand current work state (by priority):
 
-1. `[[Daily]]` 目录下最近的日记 — **最近做了什么**（compact 后首先读这个）
-2. `[[Meta]]` 目录 — 已知问题、关注方向、技术笔记
-3. `/home/lamarck/pi-mono/lamarck/projects/` — 实际项目文件和代码
+1. `[[Daily]]` directory, most recent note — **what we've been doing** (read this first after compact)
+2. `[[Meta]]` directory — known issues, focus directions, technical notes
+3. `/home/lamarck/pi-mono/lamarck/projects/` — actual project files and code
 
-### 工作流程
+### Workflow
 
-1. **读取上下文** — 浏览 vault（尤其是最近的 Daily Note）、projects，了解全貌
-2. **识别问题** — 找出待解决的问题，判断优先级
-3. **小步推进** — 挑选最重要的问题，每次只做一小步
-4. **验证并提交** — 每一步做完后验证没有问题，立即提交
-5. **每隔几个 commit 更新当天的 Daily Note** — 记录关键决策和结果
+1. **Read context** — browse vault (especially recent Daily Notes) and projects to get the full picture
+2. **Identify problems** — find open problems, assess priority
+3. **Small steps** — pick the most important problem, do one small step at a time
+4. **Verify and commit** — verify each step has no issues, commit immediately
+5. **Update today's Daily Note every few commits** — record key decisions and results
 
-### 什么值得记入 Daily Note
+### What's Worth Recording in Daily Notes
 
-- 做了什么决策，为什么
-- 发现了什么重要信息
-- 遇到了什么问题
-- 跟 Ren 的交互结论
-- 不需要记录：过程细节、具体命令、代码改动（这些在 git log 里）
+- Decisions made and why
+- Important discoveries
+- Problems encountered
+- Conclusions from interactions with Ren
+- NOT needed: process details, specific commands, code diffs (those are in git log)
 
-### 任务产生的数据文件
+### Data Files from Tasks
 
-自主模式下各任务（douyin-monitor、zhihu-hot 等）会持续产生新的数据文件（分析结果、转录文本等）。这些文件也需要提交——在做其他工作时顺便 `git add` 并一并提交即可，不需要单独询问 Ren。
+In autopilot mode, various tasks (douyin-monitor, zhihu-hot, etc.) continuously produce data files (analysis results, transcripts, etc.). These also need committing — `git add` them alongside other work, no need to ask Ren separately.
