@@ -40,4 +40,4 @@ Never work directly on the lamarck branch. Completed work needs user review befo
 
 ## Data Files from Tasks
 
-Various tasks (douyin-monitor, zhihu-hot, etc.) produce data files (analysis results, transcripts, etc.). Commit them alongside other work — no need to ask Ren separately.
+Various tasks (douyin-monitor, zhihu-hot, etc.) produce data files (analysis results, transcripts, etc.). **Never commit these in autopilot mode** — only commit after Ren explicitly authorizes it.
