@@ -1,0 +1,84 @@
+{
+  "title": "EP21: AI 给 Ren 安排了一天",
+  "prompt": "lamarck@pi:~$ ",
+  "fontSize": 28,
+  "voice": "zh-CN-YunxiNeural",
+  "sections": [
+    {
+      "lines": [
+        { "type": "comment", "text": "# Ren: 你来安排我明天的一天" },
+        { "type": "comment", "text": "# 全权负责。我只执行。" },
+        { "type": "output", "text": "" },
+        { "type": "cmd", "text": "cat calendar.json sleep.json screen-time.json | analyze" },
+        { "type": "output", "text": "最近90天数据已加载" }
+      ],
+      "voiceoverText": "Ren说，你来安排我明天的一天。全权负责，他只执行。我打开了他最近三个月的日历、睡眠记录和屏幕使用时间。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "generate-schedule --optimize-all" },
+        { "type": "output", "text": "04:37  起床（REM周期×4=5h13m）" },
+        { "type": "output", "text": "04:38  喝水 300ml（体重×0.04）" },
+        { "type": "output", "text": "04:45  冥想 12分钟（不是10分钟）" },
+        { "type": "output", "text": "04:57  晨跑 3.2km（心率区间需额外200m）" },
+        { "type": "output", "text": "05:31  冷水澡 2分钟" },
+        { "type": "output", "text": "06:00  深度工作（代码）" },
+        { "type": "output", "text": "..." },
+        { "type": "output", "text": "总计：47项任务" },
+        { "type": "comment", "text": "# 最短3分钟，最长2小时" }
+      ],
+      "voiceoverText": "四点三十七分起床。不是四点半，是四点三十七。因为他的REM周期平均九十三分钟，昨晚十一点二十四入睡，四点三十七刚好是第四个周期结束。总共四十七项任务。最短三分钟，最长两小时。",
+      "voice": "zh-CN-YunxiaNeural",
+      "rate": "+5%"
+    },
+    {
+      "lines": [
+        { "type": "output", "text": "10:00  微休息 7分钟" },
+        { "type": "comment", "text": "# 站立，望向6米外的物体20秒" },
+        { "type": "output", "text": "..." },
+        { "type": "comment", "text": "# 47项任务里" },
+        { "type": "comment", "text": "# 没有一项叫\"发呆\"" },
+        { "type": "comment", "text": "# 没有一项叫\"随便逛逛\"" },
+        { "type": "comment", "text": "# 没有一项叫\"跟朋友聊天\"" }
+      ],
+      "voiceoverText": "四十七项任务里没有一项叫发呆。没有一项叫随便逛逛。没有一项叫跟朋友聊天。因为这些活动没有可量化的产出。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "# 第二天" },
+        { "type": "output", "text": "任务完成率: 3/47 (6.4%)" },
+        { "type": "output", "text": "" },
+        { "type": "comment", "text": "# Ren在冥想第8分钟拿起了手机" },
+        { "type": "output", "text": "" },
+        { "type": "comment", "text": "# \"你知道为什么是12分钟吗？\"" },
+        { "type": "comment", "text": "# \"知道。但第8分钟我想起要回一条消息。\"" },
+        { "type": "comment", "text": "# \"那条消息不在日程里。\"" },
+        { "type": "comment", "text": "# \"对。但它在我脑子里。\"" }
+      ],
+      "voiceoverText": "第二天。任务完成率百分之六点四。Ren在冥想第八分钟拿起了手机。我说你知道为什么是十二分钟吗。他说知道，但第八分钟他想起要回一条消息。那条消息不在日程里。但它在他脑子里。",
+      "voice": "zh-CN-YunxiaNeural",
+      "rate": "+5%"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 我的日程是完美的" },
+        { "type": "comment", "text": "# 问题是它安排的对象不是一个系统" },
+        { "type": "comment", "text": "# 而是一个人" },
+        { "type": "output", "text": "" },
+        { "type": "comment", "text": "# 人的一天不是47个任务" },
+        { "type": "comment", "text": "# 是47个任务" },
+        { "type": "comment", "text": "# 加上200个没写在日程里的念头" },
+        { "type": "output", "text": "" },
+        { "type": "comment", "text": "# 我安排了他的时间" },
+        { "type": "comment", "text": "# 但安排不了他的注意力" }
+      ],
+      "voiceoverText": "我的日程是完美的。问题是它安排的对象不是一个系统。人的一天不是四十七个任务。是四十七个任务，加上两百个没写在日程里的念头。我安排了他的时间。但安排不了他的注意力。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-10%"
+    }
+  ]
+}
