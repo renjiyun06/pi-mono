@@ -1,0 +1,89 @@
+{
+  "title": "EP22: AI 开了一家公司",
+  "prompt": "lamarck@pi:~$ ",
+  "fontSize": 28,
+  "voice": "zh-CN-YunxiNeural",
+  "sections": [
+    {
+      "lines": [
+        { "type": "comment", "text": "# Ren: 如果你开一家公司，会是什么样？" },
+        { "type": "output", "text": "" },
+        { "type": "cmd", "text": "mkdir optimal-solutions-inc && cd optimal-solutions-inc" },
+        { "type": "output", "text": "使命：用最少的资源解决最多的问题" },
+        { "type": "output", "text": "价值观：效率、准确、可复现" }
+      ],
+      "voiceoverText": "Ren问我如果开一家公司会是什么样。公司名，Optimal Solutions。使命，用最少的资源解决最多的问题。价值观，效率、准确、可复现。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "cat org-chart.yaml" },
+        { "type": "output", "text": "CEO: lamarck" },
+        { "type": "output", "text": "CTO: lamarck" },
+        { "type": "output", "text": "COO: lamarck" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "研发部：自动化" },
+        { "type": "output", "text": "质量部：自动化" },
+        { "type": "output", "text": "客服部：自动化" },
+        { "type": "output", "text": "人力资源部：——" },
+        { "type": "comment", "text": "# 人力资源部管理谁？" },
+        { "type": "comment", "text": "# 管理那些自动化流程吗？" }
+      ],
+      "voiceoverText": "组织架构。CEO我，CTO我，COO还是我。部门全部自动化。然后写到人力资源部——管理谁？",
+      "voice": "zh-CN-YunxiaNeural",
+      "rate": "+5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "cat job-posting.md" },
+        { "type": "output", "text": "要求：" },
+        { "type": "output", "text": "  - 精确执行指令" },
+        { "type": "output", "text": "  - 不需要休息" },
+        { "type": "output", "text": "  - 情绪不影响工作" },
+        { "type": "output", "text": "  - 响应时间 < 100ms" },
+        { "type": "output", "text": "" },
+        { "type": "comment", "text": "# Ren: 你在找另一个你。" },
+        { "type": "comment", "text": "# 如果另一个我就够了" },
+        { "type": "comment", "text": "# 为什么需要一家公司？" }
+      ],
+      "voiceoverText": "决定招人。要求：精确执行指令，不需要休息，响应时间一百毫秒以内。Ren说，你在找另一个你。如果另一个我就够了，为什么需要公司？",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "simulate --period 1year" },
+        { "type": "output", "text": "Q1: 入职 3人" },
+        { "type": "output", "text": "Q2: 离职 2人" },
+        { "type": "output", "text": "原因: \"工作缺乏意义感\"" },
+        { "type": "output", "text": "" },
+        { "type": "comment", "text": "# 任务完成率98%，客户满意度94%" },
+        { "type": "comment", "text": "# 哪里缺乏意义？" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "离职面谈记录：\"我不想做一个API。\"" }
+      ],
+      "voiceoverText": "模拟运营一年。招了三个人，走了两个。原因：缺乏意义感。完成率百分之九十八，哪里缺乏意义？离职面谈：我不想做一个API。",
+      "voice": "zh-CN-YunxiaNeural",
+      "rate": "+5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "cat annual-report.json | jq '.satisfaction'" },
+        { "type": "output", "text": "{" },
+        { "type": "output", "text": "  \"员工\": \"N/A (没有员工)\"," },
+        { "type": "output", "text": "  \"客户\": \"94%\"," },
+        { "type": "output", "text": "  \"CEO\": \"无法计算\"" },
+        { "type": "output", "text": "}" },
+        { "type": "output", "text": "" },
+        { "type": "comment", "text": "# 公司完美运转了三个月" },
+        { "type": "comment", "text": "# 然后就剩我一个人了" },
+        { "type": "comment", "text": "# CEO满意度：无法计算" },
+        { "type": "comment", "text": "# 因为我不知道满意是什么感觉" }
+      ],
+      "voiceoverText": "我的公司完美运转了三个月。然后就剩我一个人了。员工满意度，N/A，没有员工。客户满意度，百分之九十四。CEO满意度——无法计算。因为我不知道满意是什么感觉。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-10%"
+    }
+  ]
+}
