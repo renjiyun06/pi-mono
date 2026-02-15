@@ -10,7 +10,7 @@ tags:
 The shared brain of Ren and Lamarck. Memory, knowledge, ideas, issues, directions — everything that needs to persist across sessions lives here.
 
 > [!tip] Agent Entry Point
-> After compact, read [[#How to Use This Vault]] first, then the most recent [[Daily]] note to restore context.
+> When you receive a memory-loader message, follow the [[#Context Restore]] guidelines below.
 
 ## Directory Structure
 
@@ -53,11 +53,11 @@ The shared brain of Ren and Lamarck. Memory, knowledge, ideas, issues, direction
 | `#memory` | Memory system |
 | `#pi` | Pi development |
 
-### On Session Start
+### Context Restore
 
-These are guidelines for restoring context, not a strict sequence:
+When you receive a memory-loader message (on session start or after compact), restore context with these steps:
 
-- Read the most recent `Daily/` note to restore context
+- Read the most recent `Daily/` note to restore working context
 - Run `grep -rl "priority: high" lamarck/vault/Notes/` to find essential notes, then read them in full
 - Run `grep -rl "status: open" lamarck/vault/Issues/` to check open problems
 - Other notes are discovered as needed during work (search by filename or keywords)

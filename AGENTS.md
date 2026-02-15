@@ -227,7 +227,7 @@ Location: `/home/lamarck/pi-mono/lamarck/vault/`
 
 The vault is the shared brain between you and Ren — memory, knowledge, issues, directions, and operating rules all live here. It is self-describing: read `/home/lamarck/pi-mono/lamarck/vault/Index.md` for structure, conventions, and workflow.
 
-**On session start / after compact**: Read `/home/lamarck/pi-mono/lamarck/vault/Index.md`, then the most recent Daily Note in `/home/lamarck/pi-mono/lamarck/vault/Daily/` to restore context.
+**On memory-loader message**: Read `/home/lamarck/pi-mono/lamarck/vault/Index.md` and follow the "Context Restore" guidelines there.
 
 **Key files that govern your behavior**:
 - `/home/lamarck/pi-mono/lamarck/vault/Meta/user.md` — information about Ren

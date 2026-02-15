@@ -15,14 +15,14 @@ export default function (pi: ExtensionAPI) {
 	});
 
 	pi.on("before_agent_start", async () => {
-		const memoryDir = "/home/lamarck/pi-mono/lamarck/memory/";
+		const vaultIndex = "/home/lamarck/pi-mono/lamarck/vault/Index.md";
 
 		if (firstTurn) {
 			firstTurn = false;
 			return {
 				message: {
 					customType: "memory-loader",
-					content: `Read the memory files under ${memoryDir} before responding.`,
+					content: `Read ${vaultIndex} and follow the "Context Restore" guidelines to load context.`,
 					display: true,
 				},
 			};
@@ -33,7 +33,7 @@ export default function (pi: ExtensionAPI) {
 			return {
 				message: {
 					customType: "memory-loader",
-					content: `Context was compacted. Read the memory files under ${memoryDir} to restore context.`,
+					content: `Context was compacted. Read ${vaultIndex} and follow the "Context Restore" guidelines to restore context.`,
 					display: true,
 				},
 			};
