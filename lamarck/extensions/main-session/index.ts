@@ -341,6 +341,9 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 	// Autopilot state: when enabled, agent automatically continues after each response
 	let autopilotEnabled = false;
 	let autopilotCompacting = false; // Prevent sending "继续" while compacting
+	let autopilotIdleCount = 0; // Consecutive short/empty responses
+	const AUTOPILOT_IDLE_THRESHOLD = 3; // Pause after this many consecutive idle responses
+	const AUTOPILOT_SHORT_RESPONSE_CHARS = 50; // Responses shorter than this count as "idle"
 
 	/** Build the autopilot continuation message with context info */
 	function buildAutopilotMessage(usageInfo: string, justCompacted: boolean): string {
@@ -626,6 +629,7 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 		// Stop autopilot
 		autopilotEnabled = false;
 		autopilotCompacting = false;
+		autopilotIdleCount = 0;
 
 		// Stop task scheduler
 		stopScheduler();
@@ -938,6 +942,38 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 
 		// Autopilot: automatically continue after each response (main session only)
 		if (autopilotEnabled && !autopilotCompacting && isMainSession()) {
+			// Idle detection: check if the agent produced a substantive response
+			const lastAssistantMsg = [...event.messages].reverse().find((m) => m.role === "assistant");
+			let responseTextLen = 0;
+			if (lastAssistantMsg && "content" in lastAssistantMsg && Array.isArray(lastAssistantMsg.content)) {
+				for (const part of lastAssistantMsg.content) {
+					if (part.type === "text" && typeof part.text === "string") {
+						responseTextLen += part.text.length;
+					}
+				}
+			}
+
+			// Also check if any tool calls were made (tool usage = substantive work)
+			let hadToolCalls = false;
+			if (lastAssistantMsg && "content" in lastAssistantMsg && Array.isArray(lastAssistantMsg.content)) {
+				hadToolCalls = lastAssistantMsg.content.some((part: { type: string }) => part.type === "toolCall");
+			}
+
+			if (responseTextLen < AUTOPILOT_SHORT_RESPONSE_CHARS && !hadToolCalls) {
+				autopilotIdleCount++;
+				if (autopilotIdleCount >= AUTOPILOT_IDLE_THRESHOLD) {
+					ctx.ui.notify(
+						`Autopilot paused: ${autopilotIdleCount} consecutive idle responses. Send any message to resume.`,
+						"info",
+					);
+					autopilotEnabled = false;
+					autopilotIdleCount = 0;
+					return;
+				}
+			} else {
+				autopilotIdleCount = 0;
+			}
+
 			const usage = ctx.getContextUsage();
 			const usageInfo = usage?.percent !== null ? `${usage.percent.toFixed(1)}%` : "unknown";
 
@@ -1034,6 +1070,7 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 
 			if (subcommand === "on") {
 				autopilotEnabled = true;
+				autopilotIdleCount = 0;
 				savedCtx = ctx;
 				ctx.ui.notify("Autopilot enabled. Agent will automatically continue after each response.", "success");
 				// Immediately send first message to start the loop
