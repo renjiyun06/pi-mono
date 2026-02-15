@@ -29,7 +29,7 @@ The shared brain of Ren and Lamarck. Memory, knowledge, ideas, issues, direction
 
 - **Language**: English for all vault content. Chinese only when a term has no English equivalent.
 - **Paths**: Absolute paths use WSL base (`/home/lamarck/pi-mono/...`)
-- **Frontmatter**: Every note must have `tags` and `description` (one-line summary). Issues also need `status`.
+- **Frontmatter**: Every note must have `tags`, `description` (one-line summary), `created`, and `updated` dates. Issues also need `status`. Operational notes that the agent must read on session start get `priority: high`.
 - **Wikilinks**: Use `[[filename]]` for internal links, not relative paths.
 
 ### Tag Conventions
@@ -58,8 +58,9 @@ The shared brain of Ren and Lamarck. Memory, knowledge, ideas, issues, direction
 These are guidelines for restoring context, not a strict sequence:
 
 - Read the most recent `Daily/` note to restore context
-- Run `grep -r "^description:" lamarck/vault/Notes/ --include="*.md"` to scan available knowledge, then read relevant notes in full as needed
+- Run `grep -rl "priority: high" lamarck/vault/Notes/` to find essential notes, then read them in full
 - Run `grep -rl "status: open" lamarck/vault/Issues/` to check open problems
+- Other notes are discovered as needed during work (search by filename or keywords)
 
 ### Writing Guidelines
 

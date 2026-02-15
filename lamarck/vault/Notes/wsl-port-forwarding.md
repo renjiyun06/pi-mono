@@ -4,6 +4,9 @@ tags:
   - infra
   - wsl
 description: "WSL-Windows port forwarding: Chrome debug ports need netsh portproxy, must reconfigure after reboot"
+priority: high
+created: 2026-02-13
+updated: 2026-02-14
 ---
 
 # WSL ↔ Windows Port Forwarding

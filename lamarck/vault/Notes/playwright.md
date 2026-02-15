@@ -3,6 +3,9 @@ tags:
   - note
   - tool
 description: "Playwright CDP connection must be manually closed or Node.js won't exit"
+priority: high
+created: 2026-02-13
+updated: 2026-02-13
 ---
 
 # Playwright
