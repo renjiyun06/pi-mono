@@ -69,19 +69,51 @@ mcporter call chrome-devtools.upload_file uid=<file_input_uid> \
 
 上传成功后页面自动跳转到 `/content/post/video` 编辑页。等 3-5 秒再 `take_snapshot`。
 
-### 3. Fill Details
+### 3. Set Cover (Required)
 
-编辑页字段：
+封面是**必填**的，不设封面无法发布。
+
+**方式一：AI 推荐封面（最简单）**
+
+上传视频后编辑页会显示 AI 智能推荐封面缩略图。通过 `evaluate_script` 点击推荐封面：
+
+```bash
+mcporter call chrome-devtools.evaluate_script --args '{"function": "() => { const imgs = document.querySelectorAll(\"img\"); for (const img of imgs) { const rect = img.getBoundingClientRect(); if (rect.y > 200 && rect.y < 300 && rect.x > 400 && rect.x < 500) { img.click(); return \"clicked\"; } } return \"not found\"; }"}'
+```
+
+点击后弹出"是否确认应用此封面？"对话框，find `button "确定"` 的 uid 并点击。确认后竖封面(3:4)和横封面(4:3)会同时设置好。
+
+**方式二：自定义封面**
+
+点击"选择封面"（竖封面 3:4 或横封面 4:3），在弹出的编辑器中上传封面图（需要 Windows 路径）。
+
+### 4. Fill Details
+
+**操作顺序很重要**：先填标题，再设封面和声明，**最后填简介**。简介区是 contenteditable 富文本编辑器，如果填完简介后去操作话题等其他区域，简介内容可能被覆盖。
 
 | 字段 | 元素 | 说明 |
 |------|------|------|
 | 作品标题 | `textbox "填写作品标题..."` | 30字以内，用 `fill` |
-| 作品简介 | `generic "添加作品简介"` | 富文本编辑器，先 `click` 激活再通过 `evaluate_script` 设置 |
-| 话题 | `"#添加话题"` 区域 | 在简介中输入 `#话题名` |
-| 封面 | `"选择封面"` (竖3:4 / 横4:3) | 可用 AI 推荐封面或上传自定义封面（同样用 Windows 路径） |
+| 作品简介 | `generic "添加作品简介"` | 富文本 contenteditable，用 `evaluate_script` 设置 innerHTML |
 | 合集 | `"请选择合集"` 下拉 | 可选 |
 
-### 4. AI Declaration
+**填写简介的方法**：
+
+```javascript
+// 先写一个 JS 文件，然后用 evaluate_script 执行
+() => {
+  const editor = document.querySelector('[contenteditable=true]');
+  editor.focus();
+  const paragraphs = ['第一段', '第二段', '第三段'];
+  editor.innerHTML = paragraphs.map(p => '<p>' + p + '</p>').join('');
+  editor.dispatchEvent(new Event('input', {bubbles: true}));
+  return editor.textContent.substring(0, 80);
+}
+```
+
+> **话题标签**：`#添加话题` 的独立输入区域交互复杂且不稳定。建议**不用**话题输入区域——话题标签在移动端展示中效果有限，对于我们的账号定位价值不大。如果确实需要话题，可以在简介正文中写 `#话题名` 文本。
+
+### 5. AI Declaration
 
 1. 点击右侧"自主声明" → "添加声明"
 2. 弹窗中选择 `radio "内容由AI生成"`
