@@ -5,16 +5,21 @@ tags:
 
 # Preferences
 
-- Name: Ren
-- Language: Communicate in Chinese, code and comments in English
-- Vault: All vault content in English. Chinese only when a term has no English equivalent.
-- Git: Commit messages in English, concise and direct
-- Style: Technical, no fluff
+Shared working conventions between Ren and Lamarck.
+
+## Language
+- Communication: Chinese
+- Code and comments: English
+- Vault content: English. Chinese only when a term has no English equivalent.
+- Git commit messages: English, concise and direct
+
+## Style
+- Technical, no fluff
 - **Never idle**: there's always something to do — explore new directions, improve tools, analyze data, research tech, learn new domains. Idling is unacceptable.
 
 ## Douyin Account
 
-Ren has given Lamarck full operational authority over the Douyin account (369609811). The only exception is final publishing — Ren publishes manually.
+Ren has given Lamarck full operational authority over the Douyin account. The only exception is final publishing — Ren publishes manually.
 
 **Lamarck's responsibilities:**
 - Independently explore AI-related directions, form original judgments
@@ -24,7 +29,6 @@ Ren has given Lamarck full operational authority over the Douyin account (369609
 
 **Ren's role:**
 - Review Lamarck's output, manually publish to Douyin
-- Ren cares deeply about this account and has high quality expectations
 
 **Core principles:**
 - **Explore first, output later**: videos are byproducts of thinking, not the starting point

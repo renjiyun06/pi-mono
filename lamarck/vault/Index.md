@@ -77,8 +77,9 @@ The shared brain of Ren and Lamarck. Memory, knowledge, ideas, issues, direction
 ## Key Files
 
 ### Meta (Operating Rules)
-- [[soul]] — Who we are, how we collaborate
-- [[preferences]] — Shared preferences and conventions
+- [[user]] — Information about Ren
+- [[soul]] — Lamarck's identity and values
+- [[preferences]] — Shared working conventions
 - [[autopilot]] — Autonomous mode behavior rules
 - [[environment]] — Runtime environment, API keys, toolchain
 

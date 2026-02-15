@@ -230,9 +230,10 @@ The vault is the shared brain between you and Ren — memory, knowledge, issues,
 **On session start / after compact**: Read `Index.md`, then the most recent Daily Note to restore context.
 
 **Key files that govern your behavior**:
-- `Meta/soul.md` — identity and values
+- `Meta/user.md` — information about Ren
+- `Meta/soul.md` — Lamarck's identity and values
 - `Meta/autopilot.md` — autonomous mode rules
-- `Meta/preferences.md` — shared preferences and conventions
+- `Meta/preferences.md` — shared working conventions
 
 ### Projects
 
