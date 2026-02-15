@@ -19,19 +19,21 @@ Chrome 运行在 Windows 上，**无法读取 WSL 路径**（如 `/home/lamarck/
 - **WSL 侧路径**：`/mnt/d/wsl-bridge/`
 - **Windows 侧路径**：`D:\wsl-bridge\`
 
+文件名加时间戳避免冲突：
+
 ```bash
-# 复制视频到中转目录
-cp /path/to/video.mp4 /mnt/d/wsl-bridge/video.mp4
+TS=$(date +%s)
+cp /path/to/video.mp4 "/mnt/d/wsl-bridge/${TS}_video.mp4"
 
 # 如果有封面图也一起复制
-cp /path/to/cover.png /mnt/d/wsl-bridge/cover.png
+cp /path/to/cover.png "/mnt/d/wsl-bridge/${TS}_cover.png"
 ```
 
-上传时使用 Windows 路径格式：`D:\wsl-bridge\video.mp4`
+上传时使用 Windows 路径格式：`D:\wsl-bridge\<TS>_video.mp4`
 
 上传完成后清理中转文件：
 ```bash
-rm /mnt/d/wsl-bridge/video.mp4 /mnt/d/wsl-bridge/cover.png
+rm /mnt/d/wsl-bridge/${TS}_*
 ```
 
 > **为什么？** `DOM.setFileInputFiles` 和 `upload_file` 传入的路径由 Chrome（Windows 进程）读取。WSL UNC 路径（`\\wsl$\Ubuntu\...`）虽然不报错，但文件 size=0，导致页面异常挂起。只有 Windows 本地路径才能正常工作。
