@@ -11,10 +11,19 @@
       "color": "5"
     },
     {
-      "id": "a000000000000002",
+      "id": "a000000000000006",
       "type": "file",
       "x": 0,
       "y": 120,
+      "width": 250,
+      "height": 80,
+      "file": "Meta/user.md"
+    },
+    {
+      "id": "a000000000000002",
+      "type": "file",
+      "x": 0,
+      "y": 220,
       "width": 250,
       "height": 80,
       "file": "Meta/soul.md"
@@ -23,7 +32,7 @@
       "id": "a000000000000003",
       "type": "file",
       "x": 0,
-      "y": 220,
+      "y": 320,
       "width": 250,
       "height": 80,
       "file": "Meta/preferences.md"
@@ -32,7 +41,7 @@
       "id": "a000000000000004",
       "type": "file",
       "x": 0,
-      "y": 320,
+      "y": 420,
       "width": 250,
       "height": 80,
       "file": "Meta/autopilot.md"
@@ -41,7 +50,7 @@
       "id": "a000000000000005",
       "type": "file",
       "x": 0,
-      "y": 420,
+      "y": 520,
       "width": 250,
       "height": 80,
       "file": "Meta/environment.md"
@@ -52,7 +61,7 @@
       "x": -20,
       "y": 80,
       "width": 290,
-      "height": 440,
+      "height": 540,
       "label": "Meta - Operating Rules",
       "color": "6"
     },
