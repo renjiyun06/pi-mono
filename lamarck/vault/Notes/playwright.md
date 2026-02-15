@@ -2,7 +2,7 @@
 tags:
   - note
   - tool
-description: "Playwright CDP 连接必须手动关闭，否则进程不退出"
+description: "Playwright CDP connection must be manually closed or Node.js won't exit"
 ---
 
 # Playwright

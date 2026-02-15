@@ -3,7 +3,7 @@ tags:
   - note
   - research
   - ai
-description: "2026-02 中国 AI 热点与我们框架的交叉"
+description: "China AI hotspots Feb 2026 and intersections with our framework"
 ---
 
 # 2026-02 中国 AI 热点

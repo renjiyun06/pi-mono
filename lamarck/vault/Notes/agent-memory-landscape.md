@@ -3,7 +3,7 @@ tags:
   - note
   - ai
   - memory
-description: "AI agent 记忆架构调研（Letta/MemGPT）及我们的改进想法"
+description: "AI agent memory architectures (Letta/MemGPT) and improvement ideas for our system"
 ---
 
 # Agent Memory Landscape

@@ -7,9 +7,9 @@ formulas:
 
 properties:
   description:
-    displayName: "描述"
+    displayName: "Description"
   formula.last_updated:
-    displayName: "更新"
+    displayName: "Updated"
 
 views:
   - type: table

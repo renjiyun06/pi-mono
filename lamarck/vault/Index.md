@@ -1,87 +1,86 @@
 ---
 aliases:
   - Home
-  - 首页
 tags:
   - index
 ---
 
 # Vault
 
-Ren 和 Lamarck 的共享大脑。记忆、知识、想法、问题、方向——所有需要跨会话保留的东西都在这里。
+The shared brain of Ren and Lamarck. Memory, knowledge, ideas, issues, directions — everything that needs to persist across sessions lives here.
 
-> [!tip] Agent 入口
-> Compact 后首先读 [[#如何使用这个 Vault]]，然后读最近的 [[Daily]] 日记恢复上下文。
+> [!tip] Agent Entry Point
+> After compact, read [[#How to Use This Vault]] first, then the most recent [[Daily]] note to restore context.
 
-## 目录结构
+## Directory Structure
 
-| 目录 | 用途 | 说明 |
-|------|------|------|
-| [[Daily/\|Daily]] | 日记 | 每天一篇，记录决策、发现、交互结论 |
-| [[Notes/\|Notes]] | 知识库 | 技术笔记、研究发现、想法、读书笔记 |
-| [[Issues/\|Issues]] | 问题追踪 | 待解决的问题，frontmatter 中 `status: open/resolved` |
-| [[Interests/\|Interests]] | 关注方向 | 近期和长期的探索方向 |
-| [[Meta/\|Meta]] | 运作方式 | 这个大脑怎么运作：身份、偏好、环境、自主模式规则 |
-| [[Bases/\|Bases]] | 动态视图 | `.base` 文件，自动聚合和筛选笔记 |
+| Directory | Purpose | Description |
+|-----------|---------|-------------|
+| [[Daily/\|Daily]] | Journal | One note per day — decisions, discoveries, interaction conclusions |
+| [[Notes/\|Notes]] | Knowledge base | Technical notes, research findings, ideas, reading notes |
+| [[Issues/\|Issues]] | Issue tracker | Open problems, `status: open/resolved` in frontmatter |
+| [[Interests/\|Interests]] | Directions | Current and long-term exploration directions |
+| [[Meta/\|Meta]] | Operating rules | How this brain works: identity, preferences, environment, autopilot rules |
+| [[Bases/\|Bases]] | Dynamic views | `.base` files that auto-aggregate notes |
 
-## 如何使用这个 Vault
+## How to Use This Vault
 
-### 写入规则
+### Writing Rules
 
-- **语言**：正文用中文或英文均可，代码和技术术语用英文
-- **路径**：文件中引用的绝对路径基于 WSL (`/home/lamarck/pi-mono/...`)
-- **Frontmatter**：每篇笔记都要有 `tags` 和 `description`（一句话描述），Issue 还需要 `status`
-- **Wikilinks**：用 `[[文件名]]` 互相链接，不要用相对路径
+- **Language**: English for all vault content. Chinese only when a term has no English equivalent.
+- **Paths**: Absolute paths use WSL base (`/home/lamarck/pi-mono/...`)
+- **Frontmatter**: Every note must have `tags` and `description` (one-line summary). Issues also need `status`.
+- **Wikilinks**: Use `[[filename]]` for internal links, not relative paths.
 
-### Tag 约定
+### Tag Conventions
 
-| Tag | 用于 |
-|-----|------|
-| `#daily` | 日记 |
-| `#note` | 知识笔记 |
-| `#issue` | 问题 |
-| `#meta` | 运作配置 |
-| `#interests` | 关注方向 |
-| `#tool` | 工具相关 |
-| `#research` | 研究发现 |
-| `#ai` | AI 相关 |
-| `#video` | 视频制作 |
-| `#douyin` | 抖音运营 |
-| `#infra` | 基础设施 |
-| `#browser` | 浏览器自动化 |
-| `#wsl` | WSL 环境 |
-| `#tts` | 语音合成 |
-| `#memory` | 记忆系统 |
-| `#pi` | pi 开发 |
+| Tag | Used for |
+|-----|----------|
+| `#daily` | Journal entries |
+| `#note` | Knowledge notes |
+| `#issue` | Issues |
+| `#meta` | Operating config |
+| `#interests` | Exploration directions |
+| `#tool` | Tool-related |
+| `#research` | Research findings |
+| `#ai` | AI-related |
+| `#video` | Video production |
+| `#douyin` | Douyin operations |
+| `#infra` | Infrastructure |
+| `#browser` | Browser automation |
+| `#wsl` | WSL environment |
+| `#tts` | Text-to-speech |
+| `#memory` | Memory system |
+| `#pi` | Pi development |
 
-### Agent 工作流
+### Agent Workflow
 
-1. **恢复上下文**：读 `Daily/` 最近的日记
-2. **扫描知识目录**：运行 `grep -r "^description:" lamarck/vault/Notes/ --include="*.md"` 获取所有笔记的一句话描述，按需读取相关笔记全文
-3. **查问题**：运行 `grep -rl "status: open" lamarck/vault/Issues/` 找到未解决的问题
-4. **写入**：
-   - 新发现 → `Notes/` 新建笔记（必须有 `description` frontmatter）
-   - 新问题 → `Issues/` 新建笔记（必须有 `status` frontmatter）
-   - 工作记录 → 更新当天的 `Daily/` 日记
-   - 配置变更 → 更新 `Meta/` 对应文件
+1. **Restore context**: Read the most recent `Daily/` note
+2. **Scan knowledge catalog**: Run `grep -r "^description:" lamarck/vault/Notes/ --include="*.md"` to get one-line summaries of all notes, then read relevant ones in full as needed
+3. **Check issues**: Run `grep -rl "status: open" lamarck/vault/Issues/` to find open problems
+4. **Write**:
+   - New discovery → `Notes/` (must have `description` in frontmatter)
+   - New problem → `Issues/` (must have `status` in frontmatter)
+   - Work log → Update today's `Daily/` note
+   - Config change → Update the relevant `Meta/` file
 
-## 总览
+## Overview
 
-### 知识库
+### Knowledge Base
 
 ![[notes.base#All Notes]]
 
-### 未解决问题
+### Open Issues
 
 ![[issues.base#Open Issues]]
 
-## 关键文件
+## Key Files
 
-### Meta（运作方式）
-- [[soul]] — 我们是谁，怎么协作
-- [[preferences]] — 偏好和约定
-- [[autopilot]] — 自主模式行为规则
-- [[environment]] — 运行环境、API keys、工具链
+### Meta (Operating Rules)
+- [[soul]] — Who we are, how we collaborate
+- [[preferences]] — Shared preferences and conventions
+- [[autopilot]] — Autonomous mode behavior rules
+- [[environment]] — Runtime environment, API keys, toolchain
 
-### 当前方向
-- [[interests]] — 近期和长期关注方向
+### Current Directions
+- [[interests]] — Current and long-term focus areas

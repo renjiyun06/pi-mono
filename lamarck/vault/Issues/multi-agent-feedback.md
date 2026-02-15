@@ -2,7 +2,7 @@
 tags:
   - issue
 status: open
-description: "多智能体反馈机制太重，需要更灵活的方案"
+description: "Multi-agent feedback mechanism too heavy, needs a lighter approach"
 ---
 
 # 多智能体反馈机制不够优雅

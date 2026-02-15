@@ -3,7 +3,7 @@ tags:
   - issue
   - douyin
 status: open
-description: "浏览器自动化下载抖音视频时偶发滑块验证码"
+description: "Occasional CAPTCHA when downloading Douyin videos via browser automation"
 ---
 
 # 抖音视频下载偶发验证码

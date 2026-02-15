@@ -3,7 +3,7 @@ tags:
   - note
   - infra
   - wsl
-description: "WSL↔Windows 端口转发：Chrome 调试端口需要 netsh portproxy，重启后要重配"
+description: "WSL-Windows port forwarding: Chrome debug ports need netsh portproxy, must reconfigure after reboot"
 ---
 
 # WSL ↔ Windows Port Forwarding

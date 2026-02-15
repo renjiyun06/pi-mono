@@ -3,7 +3,7 @@ tags:
   - note
   - tool
   - browser
-description: "浏览器自动化：多标签操作模式、避免冗余截图规则"
+description: "Browser automation: multi-tab patterns, avoid redundant screenshots"
 ---
 
 # Browser Automation

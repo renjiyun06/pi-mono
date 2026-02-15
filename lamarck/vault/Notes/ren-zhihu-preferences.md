@@ -3,7 +3,7 @@ tags:
   - note
   - research
   - douyin
-description: "Ren 的知乎点赞偏好分析：偏好深度思辨"
+description: "Ren's Zhihu upvote preferences analysis: favors deep critical thinking"
 ---
 
 # Ren 的知乎点赞偏好分析

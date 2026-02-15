@@ -2,7 +2,7 @@
 tags:
   - issue
 status: open
-description: "Ollama 未安装，本地 LLM 能力缺失"
+description: "Ollama not installed, no local LLM capability"
 ---
 
 # Ollama 未安装
