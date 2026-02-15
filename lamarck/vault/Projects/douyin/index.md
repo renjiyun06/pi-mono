@@ -68,7 +68,3 @@ Ren has given Lamarck full operational authority over the Douyin account, includ
 - TTS voice needs re-evaluation
 - **Digital avatar requirements**: no cyberpunk — should be friendly, cartoon-style, designed from the audience's perspective
 - **Exploration should happen in autopilot mode** — use web search and browser to research broadly
-
-## Secondary Direction: Reddit Demand Discovery
-
-When Douyin work reaches a natural pause, shift to scanning Reddit for demand signals and business opportunities. No formal project yet — just keep eyes open for unmet needs, pain points, and patterns that could become products or services. This is a long-term background task.

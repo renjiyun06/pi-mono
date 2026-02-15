@@ -26,6 +26,10 @@ Cross-platform shared focus directions for guiding exploration and content disco
 - AI and human creativity (homogenization risk, Graphite: half of internet articles are AI-generated) (2026-02)
 - Frontier model updates: Claude Opus 4.6 (1M context), MiniMax M2.5 ($0.3/M, close to Opus), Seedance 2.0 (2026-02)
 
+## Background Tasks
+
+- **Reddit demand discovery**: Scan Reddit for unmet needs, pain points, and patterns that could become products or services. No formal project yet — just collect signals when Douyin work has a natural pause. (2026-02)
+
 ## Long-term Focus
 
 - LLM reasoning capabilities (CoT, reasoning models)
