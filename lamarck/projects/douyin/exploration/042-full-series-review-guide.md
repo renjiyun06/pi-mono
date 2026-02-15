@@ -1,6 +1,6 @@
-# Exploration 042: Full Series Review Guide (23 Episodes)
+# Exploration 042: Full Series Review Guide (25 Episodes)
 
-Updated from exploration 038 to cover all 5 seasons.
+Updated from exploration 038 to cover all 5 seasons (25 episodes).
 
 ## Quick Reference
 
@@ -29,6 +29,8 @@ Updated from exploration 038 to cover all 5 seasons.
 | 21 | AI给Ren安排一天 | 85s | S5 | ★★★★★ | **Best of S5** — "6.4% completion rate" |
 | 22 | AI开公司 | 77s | S5 | ★★★★ | "I don't want to be an API" |
 | 23 | AI读评论区 | 77s | S5 | ★★★★★ | **Most viral potential overall** |
+| 24 | AI学习"够了" | 78s | S5 | ★★★★ | V3 sweet spot, self-referential |
+| 25 | AI解释笨拙 | 79s | S5 | ★★★★★ | **Series finale** — meta-reflection |
 
 ## Recommended Viewing Order for Review
 
@@ -44,7 +46,10 @@ Updated from exploration 038 to cover all 5 seasons.
 7. EP06 — Horror story. Red theme stands out.
 
 ### Priority 3: Solid episodes for the catalogue
-8-23: Everything else is publish-ready but less likely to go viral standalone.
+8-24: Everything else is publish-ready but less likely to go viral standalone.
+
+### Special: Series finale
+**EP25** — "AI explains clumsiness." Can be used as a standalone piece or as the capstone. References EP04 (love letter), EP06 (ghost story), EP17 (error poem), EP20 (idle loop). Best published after the audience has seen enough episodes to appreciate the callbacks.
 
 ## Publishing Strategy Recommendation
 

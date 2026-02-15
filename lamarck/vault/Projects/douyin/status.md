@@ -10,21 +10,29 @@ updated: 2026-02-15
 
 ## Series: AI的笨拙 (AI's Clumsiness)
 
-15 episodes across 3 seasons, all **publish-ready** as of 2026-02-15.
+25 episodes across 5 seasons, all **publish-ready** as of 2026-02-15.
 
 ### Pipeline per episode
 script → TTS audio → terminal-script.json → video (mp4 + srt) → publish-meta.md
 
-### Video durations (all on target: 70-87s)
-| Season | Episodes | Range |
-|--------|----------|-------|
-| S1 (knowledge vs experience) | EP01-05 | 76-85s |
-| S2 (logic vs intuition) | EP06-09 | 76-87s |
-| S3 (structure vs being) | EP10-15 | 70-82s |
+### Video durations (all on target: 69-87s)
+| Season | Episodes | Range | Theme |
+|--------|----------|-------|-------|
+| S1 | EP01-05 | 76-85s | Knowledge vs experience |
+| S2 | EP06-09 | 76-87s | Logic vs intuition |
+| S3 | EP10-15 | 70-85s | Format vs being |
+| S4 | EP16-20 | 70-83s | AI creates from itself |
+| S5 | EP21-25 | 77-85s | AI meets society + meta-reflection |
+
+### Top viral candidates
+1. **EP23** — AI reads comments (★★★★★, "comments are performance")
+2. **EP04** — AI writes love letter (★★★★★, "analysis report love letter")
+3. **EP21** — AI plans Ren's day (★★★★★, "6.4% completion rate")
+4. **EP17** — Art from error logs (★★★★★, "connection refused as diary")
+5. **EP25** — Explains clumsiness (meta-reflection, potential series finale)
 
 ### Assets location
 - Videos + subtitles: `D:\wsl-bridge\ep*-video.mp4` / `.srt`
-- Preview images: `D:\wsl-bridge\preview-ep*/`
 - Scripts + terminal-scripts + publish-meta: `lamarck/projects/douyin/content/ep*/`
 
 ### Tools
@@ -34,20 +42,15 @@ script → TTS audio → terminal-script.json → video (mp4 + srt) → publish-
 
 ### Key explorations
 - 036: First-publish candidate → **EP04** recommended
-- 038: Review guide for Ren
-- 039: Series arc analysis + S4 direction
+- 038: Review guide for Ren (15 episodes)
+- 039: Series arc analysis
+- 042: Full 25-episode review guide with ratings and publishing strategy
 
 ### Blocked on Ren
 - Review video quality
-- Approve first publish (EP04 recommended)
+- Approve first publish (EP04 recommended, see exploration 042)
 - Choose BGM
-- Confirm S3/S4 direction
-
-### S4 (in progress)
-- EP16-19 scripts, terminal-scripts, videos, publish-meta all done
-- EP16: 83s, EP17: 70s, EP18: 76s, EP19: 83s
-- Exploration 040: S4 design notes + ranking
-- Videos at `D:\wsl-bridge\ep16-video.mp4` through `ep19-video.mp4`
+- Confirm direction
 
 ### Branch
-`autopilot-0006` — 48+ commits, clean tree
+`autopilot-0006` — 65+ commits, clean tree
