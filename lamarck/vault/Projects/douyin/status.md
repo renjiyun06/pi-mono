@@ -43,5 +43,11 @@ script → TTS audio → terminal-script.json → video (mp4 + srt) → publish-
 - Choose BGM
 - Confirm S3/S4 direction
 
+### S4 (in progress)
+- EP16-19 scripts, terminal-scripts, videos, publish-meta all done
+- EP16: 83s, EP17: 70s, EP18: 76s, EP19: 83s
+- Exploration 040: S4 design notes + ranking
+- Videos at `D:\wsl-bridge\ep16-video.mp4` through `ep19-video.mp4`
+
 ### Branch
-`autopilot-0006` — 42+ commits, clean tree
+`autopilot-0006` — 48+ commits, clean tree
