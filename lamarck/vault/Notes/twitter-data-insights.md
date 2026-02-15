@@ -3,8 +3,6 @@ tags:
   - note
   - research
 description: "664 tweets analysis: 'agent' is hottest keyword, personal experience + contrarian takes get most engagement"
-created: 2026-02-14
-updated: 2026-02-14
 ---
 
 # Twitter Data Insights

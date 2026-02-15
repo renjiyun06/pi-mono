@@ -4,8 +4,6 @@ tags:
   - research
   - ai
 description: "China AI hotspots Feb 2026 and intersections with our framework"
-created: 2026-02-14
-updated: 2026-02-14
 ---
 
 # China AI Hotspots 2026-02

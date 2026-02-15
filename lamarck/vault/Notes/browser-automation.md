@@ -5,8 +5,6 @@ tags:
   - browser
 description: "Browser automation: multi-tab patterns, avoid redundant screenshots"
 priority: high
-created: 2026-02-13
-updated: 2026-02-14
 ---
 
 # Browser Automation

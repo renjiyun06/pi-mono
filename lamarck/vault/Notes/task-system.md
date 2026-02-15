@@ -4,8 +4,6 @@ tags:
   - infra
 description: "Task system: agent-driven (.md) and script (.ts) task types and configuration"
 priority: high
-created: 2026-02-14
-updated: 2026-02-15
 ---
 
 # Task System

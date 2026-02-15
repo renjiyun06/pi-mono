@@ -29,7 +29,7 @@ The shared brain of Ren and Lamarck. Memory, knowledge, ideas, issues, direction
 
 - **Language**: English for all vault content. Chinese only when a term has no English equivalent.
 - **Paths**: Absolute paths use WSL base (`/home/lamarck/pi-mono/...`)
-- **Frontmatter**: Every note must have `tags`, `description` (one-line summary), `created`, and `updated` dates. Issues also need `status`. Operational notes that the agent must read on session start get `priority: high`.
+- **Frontmatter**: Every note must have `tags` and `description` (one-line summary). Issues also need `status`. Operational notes that the agent must read on context restore get `priority: high`. Timestamps use filesystem mtime.
 - **Wikilinks**: Use `[[filename]]` for internal links, not relative paths.
 
 ### Tag Conventions

@@ -4,8 +4,6 @@ tags:
   - research
   - douyin
 description: "Ren's Zhihu upvote preferences analysis: favors deep critical thinking"
-created: 2026-02-14
-updated: 2026-02-14
 ---
 
 # Ren's Zhihu Upvote Preferences

@@ -3,8 +3,6 @@ tags:
   - note
   - tool
 description: "FTS5 full-text search index (1372 records), Chinese uses LIKE fallback"
-created: 2026-02-13
-updated: 2026-02-13
 ---
 
 # Full-Text Search Index

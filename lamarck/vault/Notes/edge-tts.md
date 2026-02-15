@@ -5,8 +5,6 @@ tags:
   - tts
 description: "edge-tts usage: Node.js hangs in WSL, use Python version instead"
 priority: high
-created: 2026-02-14
-updated: 2026-02-14
 ---
 
 # edge-tts

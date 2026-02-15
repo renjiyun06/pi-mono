@@ -3,8 +3,6 @@ tags:
   - note
   - douyin
 description: "Douyin AI content labeling compliance requirements"
-created: 2026-02-13
-updated: 2026-02-13
 ---
 
 # Douyin AI Content Labeling

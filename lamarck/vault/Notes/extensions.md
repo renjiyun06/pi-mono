@@ -4,8 +4,6 @@ tags:
   - infra
 description: "Pi custom extensions: directory layout and symlink setup"
 priority: high
-created: 2026-02-13
-updated: 2026-02-13
 ---
 
 # Extensions

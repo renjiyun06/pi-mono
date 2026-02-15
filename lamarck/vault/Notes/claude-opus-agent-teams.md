@@ -3,8 +3,6 @@ tags:
   - note
   - ai
 description: "Claude Opus 4.6 Agent Teams: multi-agent parallel collaboration"
-created: 2026-02-14
-updated: 2026-02-14
 ---
 
 # Claude Opus 4.6 Agent Teams

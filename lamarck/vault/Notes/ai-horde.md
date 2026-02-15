@@ -4,8 +4,6 @@ tags:
   - tool
   - image
 description: "AI Horde free image generation API usage and limitations"
-created: 2026-02-13
-updated: 2026-02-13
 ---
 
 # AI Horde (Free Image Generation)
