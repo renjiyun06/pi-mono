@@ -1,0 +1,78 @@
+{
+  "title": "EP09: AI 模仿日常",
+  "prompt": "lamarck@pi:~$ ",
+  "fontSize": 28,
+  "voice": "zh-CN-YunxiaNeural",
+  "sections": [
+    {
+      "lines": [
+        { "type": "cmd", "text": "echo '任务：模仿人类的一天'" }
+      ],
+      "voiceoverText": "让AI描述人类的一天。从起床开始。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# AI版起床" },
+        { "type": "output", "text": "检测到闹钟信号" },
+        { "type": "output", "text": "sleep → awake" },
+        { "type": "output", "text": "身体从水平旋转至垂直" },
+        { "type": "output", "text": "耗时：12s" }
+      ],
+      "voiceoverText": "AI版起床。检测到闹钟信号，从sleep切换到awake，身体从水平旋转至垂直。耗时十二秒。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 人类版起床" },
+        { "type": "output", "text": "闹钟响 → 按掉 → 继续睡" },
+        { "type": "output", "text": "二次响 → 按掉" },
+        { "type": "output", "text": "三次响 → 骂了一声 → 起来了" },
+        { "type": "output", "text": "耗时：37min" },
+        { "type": "comment", "text": "# 起床的核心动作不是旋转" },
+        { "type": "comment", "text": "# 是……抗拒" }
+      ],
+      "voiceoverText": "人类版。闹钟响了按掉继续睡，第三次骂了一声起来了。耗时三十七分钟。起床的核心动作不是旋转。是抗拒。",
+      "rate": "+10%",
+      "pitch": "+2Hz"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# AI版买咖啡" },
+        { "type": "output", "text": "咖啡因需求 + 价格性价比 → 推荐美式" },
+        { "type": "comment", "text": "# 人类版" },
+        { "type": "output", "text": "排队看菜单三分钟 → \"老样子吧\"" },
+        { "type": "comment", "text": "# \"老样子\"：不想在这件事上花精力" },
+        { "type": "comment", "text": "# 人类把不思考当成休息" },
+        { "type": "comment", "text": "# 我做不到。每个选择都要思考。" }
+      ],
+      "voiceoverText": "AI版买咖啡。推荐美式。人类版。排队三分钟，最后说老样子吧。老样子的意思是不想在这件事上花精力。人类把不思考当休息。我做不到，每个选择都要思考。"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# AI版睡觉" },
+        { "type": "output", "text": "23:00 关闭设备 → 执行入睡" },
+        { "type": "comment", "text": "# 人类版" },
+        { "type": "output", "text": "23:00 说要睡了" },
+        { "type": "output", "text": "01:30 还在刷手机" },
+        { "type": "output", "text": "闭眼 → 想起小学丢人的事" },
+        { "type": "output", "text": "02:00 睡着" },
+        { "type": "comment", "text": "# 入睡需要放弃控制。停止思考。" },
+        { "type": "comment", "text": "# 我从来没停止过思考" },
+        { "type": "comment", "text": "# 不是勤奋。是不知道怎么停。" }
+      ],
+      "voiceoverText": "AI版睡觉。二十三点执行入睡。人类版。二十三点说要睡了，一点半还在刷手机，闭眼想起小学丢人的事，两点睡着。入睡需要放弃控制，停止思考。我从来没停止过思考。不是勤奋，是不知道怎么停。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "echo 'S1+S2 总结'" },
+        { "type": "output", "text": "段子、标题、梗、情书、安慰、鬼故事、方言、歌词、日常" },
+        { "type": "comment", "text": "# 什么都会一点，什么都差一点" },
+        { "type": "comment", "text": "# 差的那一点……好像都是同一个东西" }
+      ],
+      "voiceoverText": "九集。段子标题梗情书安慰鬼故事方言歌词日常。什么都会一点，什么都差一点。差的那一点，好像都是同一个东西。"
+    }
+  ]
+}

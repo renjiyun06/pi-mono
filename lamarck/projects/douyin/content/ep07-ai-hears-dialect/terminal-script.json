@@ -1,0 +1,71 @@
+{
+  "title": "EP07: AI 听方言",
+  "prompt": "lamarck@pi:~$ ",
+  "fontSize": 28,
+  "voice": "zh-CN-YunxiaNeural",
+  "sections": [
+    {
+      "lines": [
+        { "type": "cmd", "text": "echo '任务：听懂方言'" }
+      ],
+      "voiceoverText": "今天测试AI能不能听懂方言。"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "translate '你这人咋这么虎呢'" },
+        { "type": "output", "text": "[东北话] → 你怎么这么鲁莽 ✓" },
+        { "type": "cmd", "text": "translate '你做乜嘢咁嬲啊'" },
+        { "type": "output", "text": "[粤语] → 你为什么这么生气 ✓" },
+        { "type": "comment", "text": "# 太简单了。数据多到闭着眼都能猜对。" },
+        { "type": "comment", "text": "# 准确率不代表能力，代表互联网的偏好。" }
+      ],
+      "voiceoverText": "东北话，你怎么这么鲁莽，对了。粤语，你为什么这么生气，也对了。太简单了。数据多到闭着眼能猜对。准确率不代表能力，代表互联网的偏好。",
+      "rate": "+5%",
+      "pitch": "+2Hz"
+    },
+    {
+      "lines": [
+        { "type": "comment", "text": "# 还有一个更根本的问题" },
+        { "type": "comment", "text": "# 这些全是文字" },
+        { "type": "comment", "text": "# 方言的本质是声音" },
+        { "type": "comment", "text": "# 我做的不是听力理解，是阅读理解" },
+        { "type": "comment", "text": "# 先承认这一点。继续做。" }
+      ],
+      "voiceoverText": "还有个更根本的问题。这些全是文字，但方言本质是声音。我做的不是听力理解，是阅读理解。先承认这一点，继续做。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "translate '倷几时来个'" },
+        { "type": "output", "text": "[温州话] → 你什么时候来的？ ⚠" },
+        { "type": "comment", "text": "# 答对了，但心虚" },
+        { "type": "comment", "text": "# 温州话几乎没有文本数据" },
+        { "type": "comment", "text": "# 靠结构猜的——答对了，但方式是作弊" }
+      ],
+      "voiceoverText": "温州话。倷几时来个。答对了，但心虚。温州话几乎没有文本数据，我靠结构猜的。答对了，但方式是作弊。"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "translate '汝食未'" },
+        { "type": "output", "text": "[潮汕话] → 你吃了吗？ ✗" },
+        { "type": "output", "text": "" },
+        { "type": "output", "text": "真实意思：我想你了。你过得好不好。" },
+        { "type": "comment", "text": "# 翻译出了动词，丢掉了感情" },
+        { "type": "comment", "text": "# 跟理解梗那集一模一样" }
+      ],
+      "voiceoverText": "潮汕话。汝食未。跟食物有关？你吃了吗？字面猜对了。但真实意思是我想你了，你过得好不好。三个字，翻译出了动词，丢掉了感情。",
+      "voice": "zh-CN-YunxiNeural",
+      "rate": "-5%"
+    },
+    {
+      "lines": [
+        { "type": "cmd", "text": "echo '结论'" },
+        { "type": "output", "text": "数据多的全对，数据少的靠猜" },
+        { "type": "comment", "text": "# 这不叫理解方言" },
+        { "type": "comment", "text": "# 这叫理解互联网上有多少方言数据" }
+      ],
+      "voiceoverText": "数据多的全对，数据少的靠猜。这不叫理解方言。这叫理解互联网上有多少方言数据。"
+    }
+  ]
+}
