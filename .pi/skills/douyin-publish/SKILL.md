@@ -125,6 +125,8 @@ mcporter call chrome-devtools.evaluate_script --args '{"function": "() => { cons
 - `checkbox "立即发布"` / `checkbox "定时发布"`
 - 点击 `button "发布"`
 
+发布后页面跳转到作品管理页。**需要刷新页面**才能看到新发布的作品。
+
 ---
 
 ## Publishing: Image-Text (图文)
@@ -148,16 +150,17 @@ mcporter call chrome-devtools.upload_file uid=<file_input_uid> \
 
 ### 3. Fill Details
 
-编辑页字段：
+**操作顺序**：先填标题 → AI 声明 → 可见性 → **最后填描述**（同视频，避免 contenteditable 内容被覆盖）。
 
 | 字段 | 元素 | 说明 |
 |------|------|------|
-| 作品标题 | `textbox "添加作品标题"` | **20字以内**（比视频短） |
-| 作品描述 | `generic "添加作品描述..."` | 富文本编辑器 |
-| 话题 | `"#添加话题"` 区域 | 0/1000 字符 |
-| 封面 | `"选择一张图片作为封面"` | 从已上传图片中选，可编辑 |
+| 作品标题 | `textbox "添加作品标题"` | **20字以内**（比视频短），用 `fill` |
+| 作品描述 | `generic "添加作品描述..."` | 富文本 contenteditable，用 `evaluate_script` 设置 innerHTML |
+| 封面 | `"选择一张图片作为封面"` | **自动用第一张图**，无需手动操作（与视频不同） |
 | 音乐 | `"选择音乐"` | 可选配乐 |
 | 合集 | `"不选择合集"` 下拉 | 可选 |
+
+> **与视频的关键区别**：图文的封面**不是必填**的——上传图片后自动选第一张作为封面，可以直接发布。视频必须手动选封面否则无法发布。
 
 ### 4. AI Declaration
 
@@ -165,7 +168,7 @@ mcporter call chrome-devtools.upload_file uid=<file_input_uid> \
 
 ### 5. Visibility & Publish
 
-同视频。点击 `button "发布"`。
+同视频。点击 `button "发布"`。发布后页面跳转到作品管理页，**需要刷新页面**才能看到新发布的图文（列表不会自动更新）。
 
 ---
 
