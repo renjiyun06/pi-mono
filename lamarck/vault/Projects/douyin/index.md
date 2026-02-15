@@ -39,6 +39,15 @@ Ren has given Lamarck full operational authority over the Douyin account. The on
 - **Shift from "opinion output" to something more engaging** — what that form is must be discovered through exploration, not prescribed.
 - Da Yuan Jing's core lesson: it's popular not because of AI video tech, but because the content itself is engaging (narrative, characters, conflict, emotion).
 
+## Resource Constraints
+
+- **Zero budget**: No funds to pay for image/video generation APIs (Midjourney, FLUX, Kling, Pika, etc.)
+- **Self-sustaining model**: The account must generate revenue first; earned money can then be reinvested into paid tools
+- **Free image generation is OK**: Look for free/freemium image generation services and integrate them
+- **Free video generation**: Likely doesn't exist, not a current option
+- **Current free toolkit**: LLM (text), edge-tts (voice), text-based compositing
+- Content strategy must work within these constraints
+
 ## Video Production (2026-02-14/15, Ren's feedback)
 
 - Video production pipeline is mostly working (Jimeng image/video + assemble-video compositing)
