@@ -7,7 +7,7 @@
       "y": -50,
       "width": 300,
       "height": 100,
-      "text": "# Vault\n\nRen + Lamarck 的共享大脑",
+      "text": "# Vault\n\nShared brain of Ren + Lamarck",
       "color": "5"
     },
     {
@@ -53,7 +53,7 @@
       "y": 80,
       "width": 290,
       "height": 440,
-      "label": "Meta - 运作方式",
+      "label": "Meta - Operating Rules",
       "color": "6"
     },
     {
@@ -63,7 +63,7 @@
       "y": 120,
       "width": 260,
       "height": 120,
-      "text": "## Daily\n\n每天一篇日记\n记录决策、发现、交互结论"
+      "text": "## Daily\n\nOne note per day\nDecisions, discoveries, conclusions"
     },
     {
       "id": "a000000000000030",
@@ -72,7 +72,7 @@
       "y": 280,
       "width": 260,
       "height": 120,
-      "text": "## Notes\n\n共享知识库\n技术笔记、研究、想法"
+      "text": "## Notes\n\nShared knowledge base\nTech notes, research, ideas"
     },
     {
       "id": "a000000000000040",
@@ -81,7 +81,7 @@
       "y": 440,
       "width": 260,
       "height": 100,
-      "text": "## Issues\n\n问题追踪\n`status: open/resolved`"
+      "text": "## Issues\n\nProblem tracker\n`status: open/resolved`"
     },
     {
       "id": "a000000000000050",
@@ -90,7 +90,7 @@
       "y": 120,
       "width": 260,
       "height": 100,
-      "text": "## Interests\n\n关注方向\n近期 + 长期"
+      "text": "## Interests\n\nFocus directions\nCurrent + long-term"
     },
     {
       "id": "a000000000000060",
@@ -99,7 +99,7 @@
       "y": 260,
       "width": 260,
       "height": 100,
-      "text": "## Bases\n\n动态视图\n自动聚合笔记"
+      "text": "## Bases\n\nDynamic views\nAuto-aggregate notes"
     }
   ],
   "edges": [
@@ -109,7 +109,7 @@
       "fromSide": "bottom",
       "toNode": "a000000000000010",
       "toSide": "top",
-      "label": "身份与规则"
+      "label": "identity & rules"
     },
     {
       "id": "b000000000000002",
@@ -117,7 +117,7 @@
       "fromSide": "bottom",
       "toNode": "a000000000000020",
       "toSide": "top",
-      "label": "每日记录"
+      "label": "daily log"
     },
     {
       "id": "b000000000000003",
@@ -125,7 +125,7 @@
       "fromSide": "bottom",
       "toNode": "a000000000000030",
       "toSide": "top",
-      "label": "知识积累"
+      "label": "knowledge"
     },
     {
       "id": "b000000000000004",
@@ -133,7 +133,7 @@
       "fromSide": "bottom",
       "toNode": "a000000000000050",
       "toSide": "top",
-      "label": "方向"
+      "label": "directions"
     },
     {
       "id": "b000000000000005",
@@ -141,7 +141,7 @@
       "fromSide": "right",
       "toNode": "a000000000000060",
       "toSide": "left",
-      "label": "聚合"
+      "label": "aggregate"
     },
     {
       "id": "b000000000000006",
@@ -149,7 +149,7 @@
       "fromSide": "right",
       "toNode": "a000000000000060",
       "toSide": "left",
-      "label": "聚合"
+      "label": "aggregate"
     }
   ]
 }
