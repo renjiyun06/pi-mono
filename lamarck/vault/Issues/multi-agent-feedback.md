@@ -31,3 +31,13 @@ description: "Multi-agent feedback mechanism too heavy, needs a lighter approach
 2. Lightweight sub-agents — spawn temporarily, destroy after use
 3. Multi-perspective self-reflection — agent switches roles to think from different angles
 4. Review-as-a-service — MCP service that accepts content + review prompt, returns feedback
+
+## Current Resolution: Self-Review Pattern
+
+Implemented option 3 as a mental model / checklist approach. See [[self-review-pattern]] for details.
+
+Key insight: for creative work, perspective switching within the same context is better than sub-agents because sub-agents lack the session's full context. Sub-agents are better for factual verification and parallel execution.
+
+Applied in practice via [[043-production-self-review|exploration 043]]: a pre-production checklist for Douyin episodes that catches drift, redundancy, and premature production.
+
+**Status**: Partially resolved. The self-review pattern works for individual content review. The original problem (inter-task feedback) remains open for cases where separate task agents need to communicate. Keeping open until we have a use case that requires actual multi-agent communication.
