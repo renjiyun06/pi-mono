@@ -46,6 +46,12 @@ script → TTS audio → terminal-script.json → video (mp4 + srt) → publish-
 - 039: Series arc analysis
 - 042: Full 25-episode review guide with ratings and publishing strategy
 
+### Documentation
+- `pitch.md` — one-page series pitch (concept, psychology, differentiators)
+- `REVIEW-START-HERE.md` — quick reference for Ren to begin review
+- `tools/verify-assets.sh` — verifies all 25 episodes have complete assets
+- Explorations 035-044 (10 total)
+
 ### Blocked on Ren
 - Review video quality
 - Approve first publish (EP04 recommended, see exploration 042)
@@ -53,4 +59,4 @@ script → TTS audio → terminal-script.json → video (mp4 + srt) → publish-
 - Confirm direction
 
 ### Branch
-`autopilot-0006` — 65+ commits, clean tree
+`autopilot-0006` — 75+ commits, clean tree
