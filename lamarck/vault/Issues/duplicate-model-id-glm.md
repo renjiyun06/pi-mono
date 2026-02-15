@@ -2,7 +2,7 @@
 tags:
   - issue
   - pi
-status: open
+status: resolved
 priority: low
 description: "glm-4.7 model ID conflict between opencode and zai providers"
 ---
@@ -19,7 +19,4 @@ description: "glm-4.7 model ID conflict between opencode and zai providers"
 
 **Root cause**: `generate-models.ts` doesn't handle cross-provider model ID conflicts
 
-**Potential fixes**:
-1. Detect conflicts at generation time, add provider prefix for duplicates
-2. Or keep one as default, add suffix to the other
-3. Needs Ren to decide on ID naming strategy
+**Resolution**: Model IDs are already namespaced per provider in the generated file (e.g., "zai.glm-4.7" under zai provider, "zai-glm-4.7" under cerebras). The MODELS structure uses `MODELS[provider][modelId]`, so cross-provider same-ID models are stored separately. No actual conflict exists in current codebase. Resolved 2026-02-15.
