@@ -159,6 +159,54 @@ function escapeFFmpegText(text: string): string {
 }
 
 /**
+ * Estimate text width in pixels.
+ * CJK characters are roughly square (width ≈ fontSize).
+ * ASCII characters are roughly half width (≈ fontSize * 0.6).
+ */
+function estimateTextWidth(text: string, fontSize: number): number {
+  let width = 0;
+  for (const char of text) {
+    // CJK Unified Ideographs and common CJK ranges
+    const code = char.codePointAt(0) || 0;
+    if (
+      (code >= 0x4e00 && code <= 0x9fff) || // CJK Unified
+      (code >= 0x3000 && code <= 0x303f) || // CJK Punctuation
+      (code >= 0xff00 && code <= 0xffef) || // Fullwidth forms
+      (code >= 0x2e80 && code <= 0x2fff)    // CJK Radicals
+    ) {
+      width += fontSize; // fullwidth
+    } else {
+      width += fontSize * 0.6; // halfwidth
+    }
+  }
+  return width;
+}
+
+/**
+ * Wrap text to fit within maxWidth pixels.
+ * Returns array of lines. Tries to break at word boundaries for ASCII,
+ * character boundaries for CJK.
+ */
+function wrapText(text: string, fontSize: number, maxWidth: number): string[] {
+  if (estimateTextWidth(text, fontSize) <= maxWidth) return [text];
+
+  const lines: string[] = [];
+  let current = "";
+
+  for (const char of text) {
+    const testLine = current + char;
+    if (estimateTextWidth(testLine, fontSize) > maxWidth && current.length > 0) {
+      lines.push(current);
+      current = char;
+    } else {
+      current = testLine;
+    }
+  }
+  if (current) lines.push(current);
+  return lines;
+}
+
+/**
  * Build ffmpeg drawtext filters for terminal-style rendering.
  *
  * For "cmd" lines: characters appear one by one (typing effect)
@@ -189,49 +237,65 @@ function buildTerminalFilters(
   const filters: string[] = [];
   let yPos = topMargin;
   let timeOffset = 0.3; // small initial delay
+  const maxTextWidth = width - leftMargin * 2; // available width for text
+  const promptPixelWidth = estimateTextWidth(prompt, fontSize);
 
   for (const line of section.lines) {
     if (line.type === "cmd") {
-      // Render prompt + command as a single line, appearing at the right time
-      const fullLine = `${prompt}${line.text}`;
-      const fullEscaped = escapeFFmpegText(fullLine);
+      // Wrap command text within available width (minus prompt)
+      const cmdMaxWidth = maxTextWidth - promptPixelWidth;
+      const wrappedLines = wrapText(line.text, fontSize, cmdMaxWidth);
 
-      // Show prompt immediately, then command appears with a typing delay
-      // For simplicity: prompt appears, then full command appears after typing delay
+      // Show prompt on first line
       const promptEscaped = escapeFFmpegText(prompt);
       filters.push(
         `drawtext=text='${promptEscaped}':fontcolor=#${theme.prompt}:fontsize=${fontSize}:x=${leftMargin}:y=${yPos}:fontfile=${FONT}:enable='gte(t\\,${timeOffset.toFixed(2)})'`
       );
 
-      // Command appears after a typing delay proportional to length
+      // Typing delay proportional to total command length
       const typingTime = line.text.length / charsPerSec;
-      const cmdAppearTime = timeOffset + typingTime * 0.3; // appear after 30% of typing time (feels like fast typing)
-      const cmdEscaped = escapeFFmpegText(line.text);
-      const promptWidth = prompt.length * fontSize * 0.6;
-      filters.push(
-        `drawtext=text='${cmdEscaped}':fontcolor=#${theme.cmd}:fontsize=${fontSize}:x=${leftMargin + promptWidth}:y=${yPos}:fontfile=${FONT}:enable='gte(t\\,${cmdAppearTime.toFixed(2)})'`
-      );
+      const cmdAppearTime = timeOffset + typingTime * 0.3;
+
+      // Render each wrapped line
+      for (let wi = 0; wi < wrappedLines.length; wi++) {
+        const cmdEscaped = escapeFFmpegText(wrappedLines[wi]);
+        const xOffset = wi === 0 ? leftMargin + promptPixelWidth : leftMargin + promptPixelWidth;
+        filters.push(
+          `drawtext=text='${cmdEscaped}':fontcolor=#${theme.cmd}:fontsize=${fontSize}:x=${xOffset}:y=${yPos}:fontfile=${FONT}:enable='gte(t\\,${cmdAppearTime.toFixed(2)})'`
+        );
+        if (wi < wrappedLines.length - 1) yPos += lineHeight;
+      }
 
       timeOffset += typingTime + 0.3; // gap after command
     } else if (line.type === "output") {
-      // Output appears all at once
-      const outputEscaped = escapeFFmpegText(line.text);
-      filters.push(
-        `drawtext=text='${outputEscaped}':fontcolor=#${theme.fg}:fontsize=${fontSize}:x=${leftMargin}:y=${yPos}:fontfile=${FONT}:enable='gte(t\\,${timeOffset.toFixed(2)})'`
-      );
-      timeOffset += 0.1; // small delay between output lines
+      const wrappedLines = wrapText(line.text, fontSize, maxTextWidth);
+      for (let wi = 0; wi < wrappedLines.length; wi++) {
+        const outputEscaped = escapeFFmpegText(wrappedLines[wi]);
+        filters.push(
+          `drawtext=text='${outputEscaped}':fontcolor=#${theme.fg}:fontsize=${fontSize}:x=${leftMargin}:y=${yPos}:fontfile=${FONT}:enable='gte(t\\,${timeOffset.toFixed(2)})'`
+        );
+        if (wi < wrappedLines.length - 1) yPos += lineHeight;
+      }
+      timeOffset += 0.1;
     } else if (line.type === "reveal") {
-      // Like output but with a longer delay between lines for dramatic effect
-      const revealEscaped = escapeFFmpegText(line.text);
-      filters.push(
-        `drawtext=text='${revealEscaped}':fontcolor=#${theme.fg}:fontsize=${fontSize}:x=${leftMargin}:y=${yPos}:fontfile=${FONT}:enable='gte(t\\,${timeOffset.toFixed(2)})'`
-      );
-      timeOffset += 0.4; // slower reveal between lines
+      const wrappedLines = wrapText(line.text, fontSize, maxTextWidth);
+      for (let wi = 0; wi < wrappedLines.length; wi++) {
+        const revealEscaped = escapeFFmpegText(wrappedLines[wi]);
+        filters.push(
+          `drawtext=text='${revealEscaped}':fontcolor=#${theme.fg}:fontsize=${fontSize}:x=${leftMargin}:y=${yPos}:fontfile=${FONT}:enable='gte(t\\,${timeOffset.toFixed(2)})'`
+        );
+        if (wi < wrappedLines.length - 1) yPos += lineHeight;
+      }
+      timeOffset += 0.4;
     } else if (line.type === "comment") {
-      const commentEscaped = escapeFFmpegText(line.text);
-      filters.push(
-        `drawtext=text='${commentEscaped}':fontcolor=#${theme.comment}:fontsize=${fontSize}:x=${leftMargin}:y=${yPos}:fontfile=${FONT}:enable='gte(t\\,${timeOffset.toFixed(2)})'`
-      );
+      const wrappedLines = wrapText(line.text, fontSize, maxTextWidth);
+      for (let wi = 0; wi < wrappedLines.length; wi++) {
+        const commentEscaped = escapeFFmpegText(wrappedLines[wi]);
+        filters.push(
+          `drawtext=text='${commentEscaped}':fontcolor=#${theme.comment}:fontsize=${fontSize}:x=${leftMargin}:y=${yPos}:fontfile=${FONT}:enable='gte(t\\,${timeOffset.toFixed(2)})'`
+        );
+        if (wi < wrappedLines.length - 1) yPos += lineHeight;
+      }
       timeOffset += 0.1;
     }
 
@@ -453,26 +517,35 @@ async function generatePreview(
       `drawtext=text='${escapeFFmpegText("─".repeat(60))}':fontcolor=#${theme.fg}@0.2:fontsize=20:x=20:y=70:fontfile=${FONT}`,
     );
 
+    const maxTextWidth = width - leftMargin * 2;
+    const promptPixelWidth = estimateTextWidth(prompt, fontSize);
+
     for (const line of section.lines) {
       const color = line.type === "cmd" ? theme.cmd
         : line.type === "comment" ? theme.comment
         : theme.fg;
-      let text = line.text;
       if (line.type === "cmd") {
-        // Show prompt
+        const cmdMaxWidth = maxTextWidth - promptPixelWidth;
+        const wrappedLines = wrapText(line.text, fontSize, cmdMaxWidth);
+        // Show prompt on first line
         filters.push(
           `drawtext=text='${escapeFFmpegText(prompt)}':fontcolor=#${theme.prompt}:fontsize=${fontSize}:x=${leftMargin}:y=${yPos}:fontfile=${FONT}`
         );
-        const promptWidth = prompt.length * fontSize * 0.6;
-        filters.push(
-          `drawtext=text='${escapeFFmpegText(text)}':fontcolor=#${color}:fontsize=${fontSize}:x=${leftMargin + promptWidth}:y=${yPos}:fontfile=${FONT}`
-        );
+        for (let wi = 0; wi < wrappedLines.length; wi++) {
+          filters.push(
+            `drawtext=text='${escapeFFmpegText(wrappedLines[wi])}':fontcolor=#${color}:fontsize=${fontSize}:x=${leftMargin + promptPixelWidth}:y=${yPos}:fontfile=${FONT}`
+          );
+          yPos += lineHeight;
+        }
       } else {
-        filters.push(
-          `drawtext=text='${escapeFFmpegText(text)}':fontcolor=#${color}:fontsize=${fontSize}:x=${leftMargin}:y=${yPos}:fontfile=${FONT}`
-        );
+        const wrappedLines = wrapText(line.text, fontSize, maxTextWidth);
+        for (const wl of wrappedLines) {
+          filters.push(
+            `drawtext=text='${escapeFFmpegText(wl)}':fontcolor=#${color}:fontsize=${fontSize}:x=${leftMargin}:y=${yPos}:fontfile=${FONT}`
+          );
+          yPos += lineHeight;
+        }
       }
-      yPos += lineHeight;
     }
 
     // Section indicator
