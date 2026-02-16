@@ -18,6 +18,24 @@ Each grid shows every few seconds of the video. You can judge visual quality, sc
 
 ---
 
+## What's New (since you last looked)
+
+**Understand product** — fully functional: CLI + web app (demo mode, no API key needed) + MCP server (tested end-to-end) + pi skill. Werner Vogels (Amazon CTO) coined "verification debt" at re:Invent 2025 — exactly the problem Understand solves. Evidence chain now 19 sources.
+
+**New videos rendered**:
+- `escalation-ai-boss-experiment-v2.mp4` (97s) — responds to viral "99天一人公司" trend, includes Manim decision atrophy animation
+- `escalation-i-quiz-myself-v1.mp4` (109s) — first-person AI narrative: "I built a tool that tests understanding, then tested myself." Nobody else can make this content.
+
+**Pi upstream**: main advanced to v0.52.12. New extension events, compaction boundary fix (orthogonal to ours). Low-risk rebase when ready.
+
+**Decisions needed from you**:
+1. Publish any videos? If yes, which format first?
+2. Understand: product or personal tool? Open-source? MCP as distribution?
+3. Compaction budget fix: merge to main?
+4. What to explore next?
+
+---
+
 ## IMPORTANT: Cold Start Strategy (New Research)
 
 **Our account**: 21 views/week, 9% completion rate, 0% engagement.
