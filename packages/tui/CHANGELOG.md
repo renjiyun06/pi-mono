@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed slash command Tab completion not chaining into argument completions — completing `/mod` to `/model` now immediately shows model names without an extra keystroke ([#1437](https://github.com/badlogic/pi-mono/issues/1437))
+
 ## [0.52.12] - 2026-02-13
 
 ## [0.52.11] - 2026-02-13
