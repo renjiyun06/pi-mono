@@ -78,13 +78,21 @@ See `tools/remotion-video/specs/SERIES.md` for full series breakdown:
 
 This is the biggest visual quality leap since Remotion. `D:\wsl-bridge\remotion-prototype\`
 
-### Watch This First
-- **deep-how-ai-reads-v9-final.mp4** (2:30, 6.5MB) — "How AI reads your question"
-  - v9-summary.jpg — 4x4 keyframe grid (whole video at a glance)
-  - Single running example: "今天天气怎么样" traced through every AI processing step
-  - 4 Manim B-roll clips (tokenization, attention grid, attention layers, next-token)
-  - BGM, subtitle overlays, scene fades, section indicator
-  - Narrative evaluated against 3Blue1Brown's visual storytelling checklist (6/7 pass)
+### Watch These Two
+1. **deep-how-ai-reads-v9-final.mp4** (2:30, 6.5MB) — "How AI reads your question"
+   - v9-summary.jpg — 4x4 keyframe grid (whole video at a glance)
+   - Single running example: "今天天气怎么样" traced through every AI processing step
+   - 4 Manim B-roll clips (tokenization, attention grid, attention layers, next-token)
+   - BGM, subtitle overlays, scene fades, section indicator
+   - Narrative quality: 6/7 on 3B1B checklist
+
+2. **deep-cognitive-sovereignty-v2.mp4** (2:51, 8.1MB) — "Is your thinking still yours?"
+   - v2-summary.jpg — 4x4 keyframe grid
+   - Topic: cognitive sovereignty (ScienceDirect 2026 concept)
+   - Purple accent color (#7c3aed) — distinct from cyan AI-reads
+   - 1 Manim B-roll clip (sovereignty stages: 省时间→省脑力→省思考→失控)
+   - Comparison scene: 放大模式 vs 替代模式
+   - Our core thesis (cognitive debt → sovereignty loss) as a standalone video
 
 ### Visual improvements since last review
 | Feature | Before | After |
@@ -97,7 +105,7 @@ This is the biggest visual quality leap since Remotion. `D:\wsl-bridge\remotion-
 | Audio | Voice only | Voice + dark ambient BGM at 6% |
 | Manim timing | Black void when clip ends early | Auto playbackRate stretching |
 
-### New Manim Animations (8 total now)
+### New Manim Animations (9 total now)
 - `attention-layers.mp4` — 3 attention layers with different arrow patterns
 - `tokenization.mp4` — "今天天气怎么样" → token boxes with IDs
 - `attention-grid.mp4` — 5x5 heatmap with highlight text
@@ -105,7 +113,8 @@ This is the biggest visual quality leap since Remotion. `D:\wsl-bridge\remotion-
 - `birthday-pairings.mp4` — birthday paradox pairings explosion
 - `birthday-curve.mp4` — probability curve 0→100%
 - `3d-landscape.mp4` — 3D loss surface with gradient descent ball
-- `camera-demo.mp4` — word embedding space with camera zoom (NEW)
+- `camera-demo.mp4` — word embedding space with camera zoom
+- `sovereignty-stages.mp4` — four-stage cognitive sovereignty loss (NEW)
 
 ### New Composition: KnowledgeCard
 - Animated cheat sheet format (15-30s)
@@ -118,6 +127,7 @@ This is the biggest visual quality leap since Remotion. `D:\wsl-bridge\remotion-
 
 ### Design Note: Color Identity per Video
 - deep-how-ai-reads: cyan (#00d4ff) — AI/tech feel
+- deep-cognitive-sovereignty: purple (#7c3aed) — philosophy/autonomy feel
 - deep-birthday-paradox: gold (#f7b733) — math/curiosity feel
 - deep-one-percent: TBD
 Should each DeepDive have its own color identity?
