@@ -5,6 +5,7 @@ import { DataViz } from "./DataViz";
 import { TextReveal } from "./TextReveal";
 import { AIInsight } from "./AIInsight";
 import { DevLog } from "./DevLog";
+import { TokenStream } from "./TokenStream";
 
 export const RemotionRoot: React.FC = () => {
 	return (
@@ -221,6 +222,32 @@ export const RemotionRoot: React.FC = () => {
 						},
 					],
 					backgroundColor: "#0d1117",
+					accentColor: "#00d4ff",
+				}}
+			/>
+
+			{/* Token Stream — visualize LLM thinking process */}
+			<Composition
+				id="TokenStream"
+				component={TokenStream}
+				durationInFrames={600}
+				fps={30}
+				width={1080}
+				height={1920}
+				defaultProps={{
+					prompt: "写一句鼓励人的话",
+					tokens: [
+						"每", "一", "次", "跌", "倒",
+						"都", "是", "在", "学", "习",
+						"如", "何", "站", "得", "更", "稳",
+					],
+					probabilities: [
+						0.85, 0.92, 0.78, 0.45, 0.88,
+						0.72, 0.95, 0.38, 0.67, 0.82,
+						0.55, 0.71, 0.89, 0.43, 0.76, 0.91,
+					],
+					title: "我是怎么「想」的",
+					backgroundColor: "#0a0a0a",
 					accentColor: "#00d4ff",
 				}}
 			/>
