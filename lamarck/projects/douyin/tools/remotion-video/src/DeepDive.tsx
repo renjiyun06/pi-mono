@@ -1551,7 +1551,7 @@ export const DeepDive: React.FC<DeepDiveProps> = ({
 							{/* Scene content by type */}
 							{sceneType === "chapter" && (
 								<ChapterScene
-									text={section.text}
+									text={section.text || section.chapterTitle || ""}
 									durationFrames={section.durationFrames}
 									accentColor={section.accentOverride || accentColor}
 								/>

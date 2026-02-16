@@ -1,11 +1,14 @@
 {
   "composition": "DeepDive",
+  "title": "当AI成为你的老板",
+  "backgroundColor": "#0a0a0a",
+  "secondaryColor": "#ffaa77",
   "voice": "zh-CN-YunxiNeural",
   "rate": "-5%",
   "bgm": "../bgm/dark-ambient-5min.mp3",
   "bgmVolume": 0.06,
   "particles": true,
-  "accent": "#ff6b35",
+
   "sections": [
     {
       "chapterTitle": "当AI成为你的老板",
