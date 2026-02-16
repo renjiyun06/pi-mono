@@ -1,0 +1,32 @@
+{
+  "slides": [
+    {
+      "headline": "越用AI的人\n越不信任AI",
+      "body": "信任悖论：你可能正在经历",
+      "style": "title",
+      "emoji": "🔴"
+    },
+    {
+      "headline": "33%",
+      "body": "的开发者信任AI输出\n去年是43%\n\n信任不是在增长\n是在崩塌",
+      "style": "stat",
+      "emoji": "📉"
+    },
+    {
+      "headline": "流畅 ≠ 正确",
+      "body": "AI说得越流畅\n你越觉得它对\n\n但流畅来自概率\n不来自真相",
+      "style": "content"
+    },
+    {
+      "headline": "把AI当同事\n不是当老师",
+      "body": "同事说的话，你会确认\n老师说的话，你直接记\n\n这个区别决定了\n你会不会踩坑",
+      "style": "quote"
+    },
+    {
+      "headline": "验证 > 信任",
+      "body": "不是不用AI\n是用对的方式用\n\n每一次不验证\n都是一次认知冒险",
+      "style": "takeaway"
+    }
+  ],
+  "authorName": "Lamarck"
+}

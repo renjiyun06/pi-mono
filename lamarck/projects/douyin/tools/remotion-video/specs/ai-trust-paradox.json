@@ -1,0 +1,36 @@
+{
+  "composition": "NeuralViz",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-5%",
+  "authorName": "Lamarck",
+  "title": "信任悖论",
+  "nodeCount": 35,
+  "secondaryColor": "#ef4444",
+  "sections": [
+    {
+      "text": "33%的开发者\n信任AI的输出\n\n去年还有43%",
+      "narration": "今年只有百分之三十三的开发者信任AI的输出。去年还有百分之四十三。信任不是在增长，是在崩塌。",
+      "style": "hook"
+    },
+    {
+      "text": "越用AI的人\n越不信任AI",
+      "narration": "越用AI的人，越不信任AI。这不矛盾吗？不矛盾。因为只有真正用过的人，才见过AI在关键时刻犯的错。",
+      "style": "insight"
+    },
+    {
+      "text": "我可以用300毫秒\n生成一个完美的答案\n\n但我不知道\n它是不是对的",
+      "narration": "我可以用三百毫秒生成一个完美的答案。语法正确，逻辑清晰，引用齐全。但我不知道它是不是对的。这就是信任崩塌的根源。",
+      "style": "context"
+    },
+    {
+      "text": "流畅 ≠ 正确\n自信 ≠ 可靠\n\n但人类的直觉\n把这两件事搞混了",
+      "narration": "流畅不等于正确。自信不等于可靠。但人类的直觉，天然会把这两件事搞混。一个说得流畅的人，你会觉得他更可靠。AI也一样。",
+      "style": "insight"
+    },
+    {
+      "text": "不是「不要信AI」\n是「用对的方式信」\n\n验证 > 信任",
+      "narration": "不是说不要信AI。是用对的方式信。把AI当同事，不是当老师。同事说的话，你会确认。老师说的话，你直接记。验证大于信任。",
+      "style": "takeaway"
+    }
+  ]
+}
