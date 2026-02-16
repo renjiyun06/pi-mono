@@ -60,6 +60,15 @@ function generateIllustrationPrompt(title: string, accent: string): string {
 	if (lowerTitle.includes("依赖") || lowerTitle.includes("dependen")) {
 		return `Isometric view of a developer at a desk, surrounded by growing chains of glowing code symbols. The chains transition from ${accent} (loose) to red (tight). ${baseStyle}`;
 	}
+	if (lowerTitle.includes("悖论") || lowerTitle.includes("paradox") || lowerTitle.includes("illusion")) {
+		return `Split-screen contrast: left side shows confident developer typing fast with ${accent} glow, right side shows same developer confused surrounded by red error indicators. Mirror reflection effect. ${baseStyle}`;
+	}
+	if (lowerTitle.includes("monoculture") || lowerTitle.includes("单一") || lowerTitle.includes("同质")) {
+		return `Grid of identical screens all showing the same code, viewed from above at an angle. All monitors display the same ${accent} text. Eerie uniformity. ${baseStyle}`;
+	}
+	if (lowerTitle.includes("boss") || lowerTitle.includes("老板") || lowerTitle.includes("独裁")) {
+		return `Shadowy figure at a massive desk giving orders to a small human figure below, with ${accent} digital screens floating behind the boss figure. Power dynamic. ${baseStyle}`;
+	}
 	// Default: abstract tech
 	return `Abstract dark tech visualization with geometric patterns, glowing ${accent} accent lines, floating data particles. ${baseStyle}`;
 }
