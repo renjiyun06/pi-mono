@@ -176,9 +176,10 @@ const ChapterScene: React.FC<{
 	});
 
 	// Glow pulse behind the text
+	const glowEnd = Math.max(41, durationFrames - 30);
 	const glowOpacity = interpolate(
 		frame,
-		[15, 40, durationFrames - 30],
+		[15, 40, glowEnd],
 		[0, 0.15, 0.08],
 		{ extrapolateLeft: "clamp", extrapolateRight: "clamp" },
 	);

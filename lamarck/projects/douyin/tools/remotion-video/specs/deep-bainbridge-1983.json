@@ -1,0 +1,115 @@
+{
+  "composition": "DeepDive",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-5%",
+  "authorName": "Lamarck",
+  "backgroundColor": "#0a0a1a",
+  "accentColor": "#e67e22",
+  "secondaryColor": "#00d4ff",
+  "bgm": "../bgm/dark-ambient-5min.mp3",
+  "bgmVolume": 0.06,
+  "sections": [
+    {
+      "text": "小张盯着屏幕\n半年前他自己写的代码\n现在一个字都看不懂",
+      "narration": "小张盯着屏幕，半年前他自己写的代码，现在一个字都看不懂。Bug来了，他不知道从哪改起。你可能觉得这是小张的问题，但其实不是",
+      "sceneType": "text",
+      "emphasis": true
+    },
+    {
+      "text": "回到 1983",
+      "narration": "回到1983",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "Ironies of Automation\n自动化的讽刺",
+      "narration": "英国心理学家 Lisanne Bainbridge 发表了一篇不到三页的论文，Ironies of Automation，自动化的讽刺。四十三年过去了，她描述的每一个问题，都在AI时代精准重演",
+      "sceneType": "quote",
+      "attribution": "Bainbridge, 1983"
+    },
+    {
+      "text": "讽刺一\n设计者谬误",
+      "narration": "讽刺一，设计者谬误",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "我们用自动化代替「不可靠」的人类\n但自动化是谁设计的？\n同样不可靠的人类",
+      "narration": "我们用自动化代替不可靠的人类。但你有没有想过，自动化本身是谁设计的？同样不可靠的人类。错误并没有消失，它只是从操作者转移到了设计者，变得更难发现、更难修复",
+      "sceneType": "code"
+    },
+    {
+      "text": "讽刺二\n残余复杂性",
+      "narration": "讽刺二，残余复杂性",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "设计者把简单的部分自动化\n留给人类的全是最难的",
+      "narration": "设计者把简单的、重复的、可预测的部分都自动化了，留给人类的，全是异常的、紧急的、最复杂的部分",
+      "sceneType": "comparison",
+      "leftLabel": "机器接管",
+      "rightLabel": "人类负责",
+      "leftText": "重复的\n可预测的\n简单的",
+      "rightText": "异常的\n紧急的\n复杂的"
+    },
+    {
+      "text": "技能需要持续练习才能保持\n极少出错的自动化系统\n恰好剥夺了练习的机会",
+      "narration": "问题在于，人类因为不再做简单的事，技能开始退化。技能需要持续练习才能保持，而一个极少出错的自动化系统，恰好剥夺了操作者练习的机会。到真正需要人类介入的时候，他已经不具备那个能力了",
+      "sceneType": "quote",
+      "attribution": "James Reason 转述 Bainbridge"
+    },
+    {
+      "text": "十个层级",
+      "narration": "十个层级",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "",
+      "narration": "从完全人工到完全自主，这十个层级其实就是一条滑坡，你很难停在中间",
+      "sceneType": "visual",
+      "videoSrc": "manim/automation-levels.mp4",
+      "caption": "自动化的十个层级 (Sheridan & Verplank, 1978)"
+    },
+    {
+      "text": "层级 1-5\n增强模式",
+      "narration": "层级1到5，人类保留主导权，这是增强模式。计算机提供选项、推荐方案，但人类批准之后才执行",
+      "sceneType": "data",
+      "stat": "1-5",
+      "statLabel": "人类保留主导权"
+    },
+    {
+      "text": "层级 6-7\n边界地带",
+      "narration": "层级6到7，边界地带，债务开始积累。人类有有限的时间来否决，或者计算机先执行再通知你。你还在参与，但已经不是主导了",
+      "sceneType": "data",
+      "stat": "6-7",
+      "statLabel": "债务开始积累"
+    },
+    {
+      "text": "层级 8-10\n替代模式",
+      "narration": "层级8到10，替代模式，认知债务最大化。计算机自行决定要不要通知你，或者干脆完全自主，直接忽略人类。你已经被架空了",
+      "sceneType": "data",
+      "stat": "8-10",
+      "statLabel": "认知债务最大化"
+    },
+    {
+      "text": "2026 年的映射",
+      "narration": "2026年的映射",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "ChatGPT 写代码 = 5-7\nAI 自动回复邮件 = 8-9\nOpenClaw 24/7 = 10",
+      "narration": "ChatGPT 写代码，从建议到自动补全，层级5到7。AI自动回复邮件，你不看就发了，层级8到9。OpenClaw 24小时自主接管你的电脑，层级10。小张半年里，从层级5滑到了层级8，他自己都没意识到",
+      "sceneType": "code"
+    },
+    {
+      "text": "最成功的自动化系统\n极少需要人工干预的\n反而需要最多培训",
+      "narration": "Bainbridge 说，最成功的自动化系统，那些极少需要人工干预的，反而需要在培训上投入最多。因为人类的技能会退化，你必须用额外的训练来对抗这个退化",
+      "sceneType": "quote",
+      "attribution": "Bainbridge, 1983"
+    },
+    {
+      "text": "AI 越好用\n你越需要额外训练\n\n但谁还在训练？",
+      "narration": "AI越好用，你越需要额外训练。但谁还在训练？没人。我们都在加速滑向层级10，一边滑一边庆祝效率的提升",
+      "sceneType": "text",
+      "emphasis": true
+    }
+  ]
+}
