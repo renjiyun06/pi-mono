@@ -52,6 +52,7 @@ model: anthropic/claude-sonnet-4-5
 | `code` | 对话式、代码风格 | 无 |
 | `comparison` | 左右对比 | `leftLabel`, `rightLabel`, `leftText`, `rightText` |
 | `visual` | 嵌入 Manim 视频 | `videoSrc`, `caption` |
+| `timeline` | 时间线，日期+事件 | `timelineItems`: `[{"date":"1985","event":"描述"}]` |
 
 ### 中文引号规则
 
