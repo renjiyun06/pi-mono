@@ -2,7 +2,7 @@
 tags:
   - issue
   - pi
-status: open
+status: resolved
 description: "Compaction summary grows unbounded in long sessions, consuming reserve token budget"
 ---
 
@@ -40,8 +40,13 @@ From session `e92a9567` (2026-02-16):
 4. **Rolling window**: Only summarize last N compaction segments; older segments archived to vault
 5. **Structured sections with budgets**: Allocate token budget per section (Goal: 200, Progress: 3000, Context: 2000, etc.)
 
+## Resolution
+
+Implemented solution #1 (explicit summary budget) in commit `61768e72` on `autopilot-0008`. When the previous summary exceeds 50% of the target budget (~0.7 × maxTokens), the update prompt now includes compression guidance: consolidate older Done items, remove resolved blockers, keep only context needed for continuation. Budget triggers only when summaries are large, preserving full fidelity for short sessions.
+
 ## Related
 
 - [[pi-compaction-architecture]] — how compaction works
 - [[sleep-time-compute-letta-2025]] — async memory consolidation
 - `session-consolidate.ts` — current workaround (persist full summary to vault)
+- [[procedural-memory-autopilot-0008]] — extracted procedural patterns from session
