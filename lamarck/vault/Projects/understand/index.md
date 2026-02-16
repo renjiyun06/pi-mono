@@ -16,7 +16,14 @@ Core insight from Bainbridge 1983: "the most automated systems require the most 
 
 ## Status
 
-**Idea stage.** Product concept documented in [[product-idea-code-understanding-tool]]. No code yet.
+**Prototype validated.** CLI tool at `lamarck/projects/understand/understand.ts`. Takes a code file, generates 3 understanding questions via LLM, quizzes developer, evaluates answers, outputs comprehension score.
+
+Tested on:
+- `validate-spec.ts` — questions about Chinese quotation mark handling, error propagation
+- `render-with-voice.ts` — questions about playback rate calculation, padding frames, ffprobe failure
+- `packages/ai/src/stream.ts` — questions about provider registration, streaming as primitive, type casting risks
+
+All questions were genuinely insightful — testing design decisions, failure modes, and architectural understanding rather than memorization.
 
 ## Key Features (planned)
 1. Challenge Mode — explain AI code before accepting

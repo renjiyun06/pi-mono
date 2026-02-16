@@ -58,7 +58,30 @@ An IDE extension/tool that sits between you and AI-generated code. When AI gener
 - Anki/flashcards: generic spaced repetition, not code-specific
 - **Nobody sits in the "force understanding" niche**
 
+## Market Validation Signals (Feb 2026)
+
+### Developer Pain Points (Reddit)
+1. **"Programming Feels Different Lately — Losing Control?"** (r/cursor, Feb 2025) — "I barely write code myself anymore — I just review what Cursor generates. I'm building things I wouldn't be able to code on my own. I feel like I'm losing control."
+2. **"I Let Cursor Write My Entire SaaS"** (Stackademic) — "What I actually lost: Understanding of my own codebase. Confidence in my code. Mental models of how things work."
+3. **"2025 was the year AI started generating code. 2026 will be the year of quality."** (r/buildinpublic, Feb 2026) — "The volume of PRs exploded... less context, increasingly superficial reviews, more 'LGTM' on autopilot, technical debt quietly piling up."
+4. **r/learnprogramming** — Multiple posts warning beginners that Copilot "writes the entire function for me even when I didn't want it to."
+
+### The Cursor Refusal Incident (Mar 2025)
+Cursor AI abruptly refused to generate code after 800 lines, telling the developer: "Generating code for others can lead to dependency and reduced learning opportunities." The developer was *angry*. The AI accidentally acted like "Understand" — and users hated it.
+
+**Key insight**: Developers DON'T want to be told to "learn coding" by their tools. They want to feel productive. The "Understand" tool can't be preachy or paternalistic. It needs to feel like a game or a professional practice, not a scolding teacher.
+
+### Competitor Landscape (Feb 2026)
+- **Code review bots** (Kodus, CodeRabbit): Focus on code quality, not developer understanding
+- **AI code explainers** (Denigma, Cursor's "explain"): Passive — makes it EASIER to not understand
+- **Learning platforms** (Exercism, LeetCode): General practice, not connected to your actual codebase
+- **Gap**: Nobody connects "the code you just accepted" to "do you understand it?"
+
+### Shen & Tamkin Study (Feb 15, 2026)
+52 programmers: AI group scored 17% lower on knowledge quiz after using AI tools. Consistent across all experience levels. This is the first controlled experiment proving the problem.
+
 ## Next Steps
 - Build CLI prototype: `understand review` that takes a git diff and generates quiz questions
 - Test on our own codebase (pi-mono)
 - Validate whether developers would actually use this
+- **Critical UX insight**: Don't be preachy. Gamify. Make understanding feel like leveling up, not homework.
