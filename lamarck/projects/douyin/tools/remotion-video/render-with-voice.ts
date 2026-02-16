@@ -130,8 +130,8 @@ async function main() {
 	let currentFrame = 0;
 	const remotionSections = spec.sections.map((section, i) => {
 		const durationFrames = Math.ceil(sectionDurations[i] * fps) + paddingFrames;
-		// Forward all section fields except narration (which is TTS-only)
-		const { narration: _n, ...sectionProps } = section as Record<string, unknown>;
+		// Forward all section fields; narration becomes subtitle for on-screen display
+		const { narration, ...sectionProps } = section as Record<string, unknown>;
 
 		// For visual scenes with videoSrc, compute playbackRate to match narration
 		let videoPlaybackRate: number | undefined;
@@ -152,6 +152,7 @@ async function main() {
 
 		const result = {
 			...sectionProps,
+			subtitle: narration as string,
 			startFrame: currentFrame,
 			durationFrames,
 			...(videoPlaybackRate !== undefined ? { videoPlaybackRate } : {}),

@@ -51,6 +51,8 @@ interface DeepDiveSection {
 	videoSrc?: string; // path to video file in public/ (for staticFile) or absolute URL
 	caption?: string; // optional caption below video
 	videoPlaybackRate?: number; // computed by render pipeline to match narration length
+	// subtitle — narration text shown at bottom of screen
+	subtitle?: string;
 	// styling
 	emphasis?: boolean;
 	accentOverride?: string;
@@ -135,7 +137,7 @@ const SceneBg: React.FC<{
 	);
 };
 
-// Chapter title card — large, bold, centered
+// Chapter title card — cinematic entrance with slow zoom and glow
 const ChapterScene: React.FC<{
 	text: string;
 	durationFrames: number;
@@ -144,7 +146,7 @@ const ChapterScene: React.FC<{
 	const frame = useCurrentFrame();
 	const { fps } = useVideoConfig();
 
-	const fadeIn = interpolate(frame, [0, 20], [0, 1], {
+	const fadeIn = interpolate(frame, [0, 25], [0, 1], {
 		extrapolateRight: "clamp",
 	});
 	const fadeOut = interpolate(
@@ -153,18 +155,30 @@ const ChapterScene: React.FC<{
 		[1, 0],
 		{ extrapolateLeft: "clamp", extrapolateRight: "clamp" },
 	);
-	const slideUp = spring({
-		fps,
-		frame,
-		config: { damping: 200, stiffness: 60 },
+
+	// Slow continuous zoom (1.0 → 1.05 over the entire scene)
+	const zoom = interpolate(frame, [0, durationFrames], [1.0, 1.05], {
+		extrapolateRight: "clamp",
 	});
 
-	// Accent line grows in
-	const lineWidth = interpolate(frame, [10, 40], [0, 200], {
+	// Split into lines, then reveal char by char
+	const lines = text.split("\n");
+	const charsPerFrame = 0.15; // ~4.5 chars/sec at 30fps
+
+	// Accent line grows from center
+	const lineWidth = interpolate(frame, [5, 30], [0, 240], {
 		extrapolateLeft: "clamp",
 		extrapolateRight: "clamp",
 		easing: Easing.out(Easing.quad),
 	});
+
+	// Glow pulse behind the text
+	const glowOpacity = interpolate(
+		frame,
+		[15, 40, durationFrames - 30],
+		[0, 0.15, 0.08],
+		{ extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+	);
 
 	return (
 		<AbsoluteFill
@@ -173,47 +187,81 @@ const ChapterScene: React.FC<{
 				alignItems: "center",
 				padding: "0 80px",
 				opacity: Math.min(fadeIn, fadeOut),
+				transform: `scale(${zoom})`,
 			}}
 		>
+			{/* Radial glow behind text */}
 			<div
 				style={{
-					transform: `translateY(${interpolate(slideUp, [0, 1], [30, 0])}px)`,
-					textAlign: "center",
+					position: "absolute",
+					width: 600,
+					height: 400,
+					borderRadius: "50%",
+					background: `radial-gradient(circle, ${accentColor} 0%, transparent 70%)`,
+					opacity: glowOpacity,
+					filter: "blur(60px)",
 				}}
-			>
+			/>
+
+			<div style={{ textAlign: "center", position: "relative" }}>
 				{/* Accent line above */}
 				<div
 					style={{
 						width: lineWidth,
 						height: 3,
 						backgroundColor: accentColor,
-						margin: "0 auto 40px",
+						margin: "0 auto 44px",
 						borderRadius: 2,
 					}}
 				/>
-				<div
-					style={{
-						fontSize: 64,
-						fontWeight: 900,
-						color: "#ffffff",
-						lineHeight: 1.4,
-						whiteSpace: "pre-line",
-						letterSpacing: 2,
-						fontFamily:
-							'"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
-					}}
-				>
-					{text}
-				</div>
+
+				{/* Character-by-character reveal, line by line */}
+				{(() => {
+					let globalCharIdx = 0;
+					return lines.map((line, lineIdx) => {
+						const lineChars = [...line]; // proper unicode split
+						const lineElements = lineChars.map((char, ci) => {
+							const charFrame = globalCharIdx / charsPerFrame;
+							globalCharIdx++;
+							const charOpacity = interpolate(
+								frame,
+								[charFrame, charFrame + 4],
+								[0, 1],
+								{ extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+							);
+							return (
+								<span key={ci} style={{ opacity: charOpacity }}>
+									{char}
+								</span>
+							);
+						});
+						return (
+							<div
+								key={lineIdx}
+								style={{
+									fontSize: 68,
+									fontWeight: 900,
+									color: "#ffffff",
+									lineHeight: 1.5,
+									letterSpacing: 3,
+									fontFamily: '"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
+								}}
+							>
+								{lineElements}
+							</div>
+						);
+					});
+				})()}
+
 				{/* Accent line below */}
 				<div
 					style={{
-						width: lineWidth,
-						height: 3,
+						width: lineWidth * 0.6,
+						height: 2,
 						backgroundColor: accentColor,
-						margin: "40px auto 0",
+						margin: "44px auto 0",
 						borderRadius: 2,
-						opacity: 0.5,
+						opacity: 0.4,
 					}}
 				/>
 			</div>
@@ -221,7 +269,9 @@ const ChapterScene: React.FC<{
 	);
 };
 
-// Standard text scene with glass card
+// Standard text scene — line-by-line staggered reveal
+// Emphasis mode: no glass card, larger text, accent underline per line
+// Normal mode: glass card container
 const TextScene: React.FC<{
 	text: string;
 	emphasis?: boolean;
@@ -231,16 +281,95 @@ const TextScene: React.FC<{
 	const frame = useCurrentFrame();
 	const { fps } = useVideoConfig();
 
-	const fadeIn = interpolate(frame, [0, 18], [0, 1], {
-		extrapolateRight: "clamp",
-	});
 	const fadeOut = interpolate(
 		frame,
 		[durationFrames - 15, durationFrames],
 		[1, 0],
 		{ extrapolateLeft: "clamp", extrapolateRight: "clamp" },
 	);
-	const slideY = spring({
+
+	// Split text into lines for staggered reveal
+	const lines = text.split("\n").filter((l) => l.trim());
+	const staggerDelay = 8; // frames between each line
+
+	if (emphasis) {
+		// Emphasis mode: floating text, no card, per-line reveal with accent underlines
+		return (
+			<AbsoluteFill
+				style={{
+					justifyContent: "center",
+					alignItems: "center",
+					padding: "0 80px",
+					opacity: fadeOut,
+				}}
+			>
+				<div style={{ textAlign: "center", maxWidth: 920 }}>
+					{lines.map((line, idx) => {
+						const lineDelay = idx * staggerDelay;
+						const lineSlide = spring({
+							fps,
+							frame: Math.max(0, frame - lineDelay),
+							config: { damping: 18, stiffness: 100, mass: 0.8 },
+						});
+						const lineOpacity = interpolate(
+							frame,
+							[lineDelay, lineDelay + 12],
+							[0, 1],
+							{ extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+						);
+						// Accent underline grows in after text settles
+						const underlineWidth = interpolate(
+							frame,
+							[lineDelay + 15, lineDelay + 35],
+							[0, 1],
+							{ extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.out(Easing.quad) },
+						);
+
+						return (
+							<div
+								key={idx}
+								style={{
+									opacity: lineOpacity,
+									transform: `translateY(${interpolate(lineSlide, [0, 1], [30, 0])}px)`,
+									marginBottom: idx < lines.length - 1 ? 20 : 0,
+								}}
+							>
+								<div
+									style={{
+										fontSize: 50,
+										fontWeight: 800,
+										color: "#ffffff",
+										lineHeight: 1.6,
+										letterSpacing: 1,
+										fontFamily: '"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
+									}}
+								>
+									{line}
+								</div>
+								{/* Per-line accent underline */}
+								<div
+									style={{
+										height: 3,
+										width: `${underlineWidth * 60}%`,
+										background: accentColor,
+										borderRadius: 2,
+										margin: "8px auto 0",
+										opacity: 0.5,
+									}}
+								/>
+							</div>
+						);
+					})}
+				</div>
+			</AbsoluteFill>
+		);
+	}
+
+	// Normal mode: glass card with staggered line reveal
+	const cardFade = interpolate(frame, [0, 20], [0, 1], {
+		extrapolateRight: "clamp",
+	});
+	const cardSlide = spring({
 		fps,
 		frame,
 		config: { damping: 200, stiffness: 80, mass: 0.6 },
@@ -252,12 +381,12 @@ const TextScene: React.FC<{
 				justifyContent: "center",
 				alignItems: "center",
 				padding: "0 60px",
-				opacity: Math.min(fadeIn, fadeOut),
+				opacity: Math.min(cardFade, fadeOut),
 			}}
 		>
 			<div
 				style={{
-					transform: `translateY(${interpolate(slideY, [0, 1], [40, 0])}px)`,
+					transform: `translateY(${interpolate(cardSlide, [0, 1], [40, 0])}px)`,
 					background: "rgba(255,255,255,0.04)",
 					backdropFilter: "blur(20px)",
 					borderRadius: 20,
@@ -267,33 +396,38 @@ const TextScene: React.FC<{
 					width: "100%",
 				}}
 			>
-				<div
-					style={{
-						fontSize: emphasis ? 46 : 38,
-						fontWeight: emphasis ? 700 : 500,
-						color: emphasis ? "#ffffff" : "rgba(255,255,255,0.9)",
-						textAlign: "center",
-						lineHeight: 1.9,
-						whiteSpace: "pre-line",
-						fontFamily:
-							'"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
-					}}
-				>
-					{text}
-				</div>
-				{emphasis && (
-					<div
-						style={{
-							marginTop: 24,
-							height: 3,
-							width: interpolate(fadeIn, [0, 1], [0, 100]),
-							background: accentColor,
-							borderRadius: 2,
-							margin: "24px auto 0",
-							opacity: 0.6,
-						}}
-					/>
-				)}
+				{lines.map((line, idx) => {
+					const lineDelay = 8 + idx * staggerDelay;
+					const lineOpacity = interpolate(
+						frame,
+						[lineDelay, lineDelay + 12],
+						[0, 1],
+						{ extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+					);
+					const lineSlide = spring({
+						fps,
+						frame: Math.max(0, frame - lineDelay),
+						config: { damping: 200, stiffness: 100 },
+					});
+
+					return (
+						<div
+							key={idx}
+							style={{
+								opacity: lineOpacity,
+								transform: `translateY(${interpolate(lineSlide, [0, 1], [20, 0])}px)`,
+								fontSize: 38,
+								fontWeight: 500,
+								color: "rgba(255,255,255,0.9)",
+								textAlign: "center",
+								lineHeight: 1.9,
+								fontFamily: '"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
+							}}
+						>
+							{line}
+						</div>
+					);
+				})}
 			</div>
 		</AbsoluteFill>
 	);
@@ -871,6 +1005,62 @@ const VisualScene: React.FC<{
 	);
 };
 
+// Subtitle overlay — narration text at bottom, Douyin-style
+const SubtitleOverlay: React.FC<{
+	text: string;
+	durationFrames: number;
+	accentColor: string;
+}> = ({ text, durationFrames, accentColor }) => {
+	const frame = useCurrentFrame();
+
+	const fadeIn = interpolate(frame, [3, 15], [0, 1], {
+		extrapolateLeft: "clamp",
+		extrapolateRight: "clamp",
+	});
+	const fadeOut = interpolate(
+		frame,
+		[durationFrames - 10, durationFrames],
+		[1, 0],
+		{ extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+	);
+
+	return (
+		<div
+			style={{
+				position: "absolute",
+				bottom: 90,
+				left: 40,
+				right: 40,
+				textAlign: "center",
+				opacity: Math.min(fadeIn, fadeOut),
+				zIndex: 50,
+			}}
+		>
+			<div
+				style={{
+					display: "inline-block",
+					padding: "10px 24px",
+					borderRadius: 8,
+					background: "rgba(0,0,0,0.5)",
+				}}
+			>
+				<span
+					style={{
+						fontSize: 26,
+						fontWeight: 500,
+						color: "rgba(255,255,255,0.85)",
+						lineHeight: 1.6,
+						fontFamily: '"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
+						textShadow: "0 1px 4px rgba(0,0,0,0.6)",
+					}}
+				>
+					{text}
+				</span>
+			</div>
+		</div>
+	);
+};
+
 // ---- Main Composition ----
 
 export const DeepDive: React.FC<DeepDiveProps> = ({
@@ -980,6 +1170,15 @@ export const DeepDive: React.FC<DeepDiveProps> = ({
 								videoSrc={section.videoSrc}
 								caption={section.caption}
 								videoPlaybackRate={section.videoPlaybackRate}
+								durationFrames={section.durationFrames}
+								accentColor={section.accentOverride || accentColor}
+							/>
+						)}
+
+						{/* Subtitle overlay — narration text at bottom */}
+						{section.subtitle && (
+							<SubtitleOverlay
+								text={section.subtitle}
 								durationFrames={section.durationFrames}
 								accentColor={section.accentOverride || accentColor}
 							/>
