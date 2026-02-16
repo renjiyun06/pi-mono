@@ -1,6 +1,6 @@
 # Autopilot 0008 Review
 
-195 commits. 4 deliverables ready for your decisions.
+199 commits. 4 deliverables ready for your decisions.
 
 ---
 
@@ -26,12 +26,14 @@ Or watch the actual videos: same directory, `.mp4` files.
 
 **Cold start problem**: Douyin gives new videos 300-500 views. Must hit >15% completion rate to reach next pool. Our 3-min DeepDives will fail cold start. Short specs (38-65s) should go first.
 
-**Recommended first 5** (all rendered, ready to publish):
+**Recommended first 5** (all rendered, summary grids at `summaries/`):
 1. ai-watches-you-eat (38s) — most relatable
 2. ai-watches-you-sleep (39s) — universal
 3. ai-watches-you-study (51s) — student demographic
 4. ai-watches-you-search (44s) — slightly intellectual
 5. ai-learns-sarcasm (47s) — comedy test
+
+Each has a `*-summary.jpg` in the summaries folder — 16 keyframes showing the full video.
 
 **Best posting hour**: 6PM (from our 923-work database analysis).
 
@@ -71,7 +73,7 @@ All current directions are at diminishing returns. Options:
 
 **Video pipeline**: 48 specs (34 short + 8 DeepDive + 4 escalation + 2 carousel), 60+ rendered videos, 15 Manim animations, 13 compositions, 9 scene types. Tools: render-with-voice.ts, validate-spec.ts, generate-image.ts, generate-cover.ts, video-summary.sh.
 
-**Research**: 20-source evidence chain, AI debt super-framework (6 debt types), 87 explorations.
+**Research**: 20-source evidence chain, AI debt super-framework (6 debt types), 88 explorations.
 
 **Data**: 923 Douyin works, 876 tweets, 1270 zhihu snapshots, 158 Reddit posts, 46 curated topics — all in lamarck.db.
 
