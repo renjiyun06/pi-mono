@@ -1108,6 +1108,27 @@ export const DeepDive: React.FC<DeepDiveProps> = ({
 		: durationInFrames;
 	const contentProgress = Math.min(frame / contentEnd, 1);
 
+	// Determine current section index and active chapter name
+	let currentSectionIdx = 0;
+	let currentChapter = "";
+	for (let i = 0; i < sections.length; i++) {
+		const s = sections[i];
+		if (frame >= s.startFrame && frame < s.startFrame + s.durationFrames) {
+			currentSectionIdx = i;
+			break;
+		}
+		if (frame >= s.startFrame + s.durationFrames) {
+			currentSectionIdx = i; // past this section
+		}
+	}
+	// Find the most recent chapter title
+	for (let i = currentSectionIdx; i >= 0; i--) {
+		if (sections[i].sceneType === "chapter") {
+			currentChapter = sections[i].text.replace(/\n/g, " ");
+			break;
+		}
+	}
+
 	return (
 		<AbsoluteFill
 			style={{
@@ -1118,6 +1139,51 @@ export const DeepDive: React.FC<DeepDiveProps> = ({
 		>
 			{/* Progress bar */}
 			<ProgressBar progress={contentProgress} accentColor={accentColor} />
+
+			{/* Section indicator — top-left chip showing chapter + section number */}
+			{currentChapter && (
+				<div
+					style={{
+						position: "absolute",
+						top: 20,
+						left: 30,
+						zIndex: 90,
+						display: "flex",
+						alignItems: "center",
+						gap: 10,
+						opacity: interpolate(frame, [0, 20], [0, 0.6], {
+							extrapolateRight: "clamp",
+						}),
+					}}
+				>
+					<div
+						style={{
+							fontSize: 14,
+							color: accentColor,
+							fontWeight: 600,
+							letterSpacing: 1,
+						}}
+					>
+						{String(currentSectionIdx + 1).padStart(2, "0")}/{String(sections.length).padStart(2, "0")}
+					</div>
+					<div
+						style={{
+							width: 1,
+							height: 14,
+							backgroundColor: "rgba(255,255,255,0.2)",
+						}}
+					/>
+					<div
+						style={{
+							fontSize: 14,
+							color: "rgba(255,255,255,0.4)",
+							letterSpacing: 0.5,
+						}}
+					>
+						{currentChapter}
+					</div>
+				</div>
+			)}
 
 			{/* Sections — each has its own background + content */}
 			{sections.map((section, i) => {
