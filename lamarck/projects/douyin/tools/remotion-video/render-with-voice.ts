@@ -130,12 +130,12 @@ async function main() {
 	let currentFrame = 0;
 	const remotionSections = spec.sections.map((section, i) => {
 		const durationFrames = Math.ceil(sectionDurations[i] * fps) + paddingFrames;
+		// Forward all section fields except narration (which is TTS-only)
+		const { narration: _n, ...sectionProps } = section as Record<string, unknown>;
 		const result = {
-			text: section.text,
+			...sectionProps,
 			startFrame: currentFrame,
 			durationFrames,
-			style: section.style,
-			...(section.emoji ? { emoji: section.emoji } : {}),
 		};
 		currentFrame += durationFrames;
 		return result;
