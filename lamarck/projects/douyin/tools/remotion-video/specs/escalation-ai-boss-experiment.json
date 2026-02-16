@@ -51,6 +51,12 @@
       "sceneType": "text"
     },
     {
+      "text": "",
+      "narration": "三周之后，你的决策能力只剩四分之一。",
+      "videoSrc": "manim/decision-atrophy.mp4",
+      "sceneType": "visual"
+    },
+    {
       "text": "2026年的研究证实：\n\n使用AI辅助的人\n技能下降17%\n写出的代码\n多1.7倍bug",
       "narration": "2026年的研究证实，使用AI辅助的人，技能下降17%。写出的代码，多1.7倍bug。",
       "emphasis": true,
