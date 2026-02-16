@@ -69,6 +69,20 @@ Manually extracted patterns from 108 commits. These are "when X, do Y" rules tha
 - **Silence also needs 48kHz**: `anullsrc=r=48000:cl=stereo` instead of 24000 mono.
 - **Spec validation**: Run `npx tsx validate-spec.ts` with no args to validate ALL deep-*/escalation-* specs at once.
 
+## Database Mining
+
+- **Local SQLite has 923 Douyin works, 158 Reddit posts, 876 Twitter posts, 1270 zhihu activities**: Rich dataset for competitive intelligence when external research is blocked.
+- **Share rate hierarchy**: Tier 1 "holy shit" 50-155%, Tier 2 "identity" 10-30%, Tier 3 "education" 1-5%. Content strategy should target Tier 2 minimum.
+- **60-90s duration sweet spot**: 58.1% average share rate (2x any other bucket). Short specs slightly under, DeepDives at structural disadvantage.
+- **Posting time**: 9 AM Beijing = 33.7% share rate (best), 5 PM worst at 12.8%. 6 PM has most competition (117 posts).
+- **Reddit comment summaries > articles**: Pre-validated emotional reactions from exact target audience. "Junior dev dilemma" is strongest identity-tier framing.
+- **Bookmark-to-like ratio on Twitter**: Measures practical utility (bentossell 280%, trq212 138%). Different signal from shares (emotional/identity).
+
+## Validator
+
+- **validate-spec.ts is composition-aware**: Supports DeepDive (strict scene types) and short-form (Spotlight, GradientFlow, etc.). Excludes carousel-* specs.
+- **Short specs don't need sceneType**: Only DeepDive requires it. Short compositions use the composition name in summary output.
+
 ## Anti-Patterns (Don't Repeat)
 
 - **Research collection addiction**: Gathering sources feels productive but isn't. 16 sources is enough.
@@ -77,3 +91,5 @@ Manually extracted patterns from 108 commits. These are "when X, do Y" rules tha
 - **Rendering unreviewed specs**: 6+ rendered DeepDives, none reviewed by Ren. Ship less, get feedback more.
 - **Documentation meta-work**: Updating summaries, review guides, and inventories is meta-work on meta-work. Recognize when it stops being useful.
 - **Product polish before validation**: Building features (share cards, analytics dashboards) for products with zero users is premature.
+- **Database mining has a ceiling**: 3 rounds is enough — duration, time, hashtags, Reddit comments, Twitter metrics. Further mining yields increasingly marginal insights.
+- **Counter-arguments strengthen content**: Don't ignore Meyvis "debt was always there" — acknowledging it makes the thesis more credible.
