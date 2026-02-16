@@ -32,11 +32,11 @@ class AttentionGrid(Scene):
             font="Noto Sans CJK SC",
             font_size=32,
             color=WHITE,
-        ).to_edge(UP, buff=1.0)
+        ).to_edge(UP, buff=0.4)
         self.play(Write(title), run_time=0.5)
 
-        cell_size = 1.2
-        grid_center = ORIGIN + DOWN * 0.5
+        cell_size = 1.1
+        grid_center = ORIGIN + DOWN * 1.0
 
         # Column labels (keys) at top
         col_labels = VGroup()
