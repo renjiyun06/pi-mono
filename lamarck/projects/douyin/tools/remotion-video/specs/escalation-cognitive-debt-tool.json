@@ -1,0 +1,91 @@
+{
+  "composition": "DeepDive",
+  "title": "你的AI代码，你真的看得懂吗？",
+  "accentColor": "#4fc3f7",
+  "secondaryColor": "#81d4fa",
+  "particles": true,
+  "bgm": "../bgm/dark-ambient-5min.mp3",
+  "bgmVolume": 0.06,
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+0%",
+  "sections": [
+    {
+      "sceneType": "text",
+      "text": "一个实验：\n让AI写六个文件\nauth, api, db, cache, queue, router\n全部通过测试",
+      "emphasis": true,
+      "narration": "一个实验：让AI写六个文件。auth、api、db、cache、queue、router。全部通过测试。"
+    },
+    {
+      "sceneType": "text",
+      "text": "然后问开发者一个问题——",
+      "narration": "然后问开发者一个问题——",
+      "rate": "-5%"
+    },
+    {
+      "sceneType": "chapter",
+      "chapterTitle": "你看得懂吗？",
+      "narration": ""
+    },
+    {
+      "sceneType": "data",
+      "text": "AI组知识得分: -17%",
+      "dataLabel": "AI组知识得分",
+      "dataValue": "-17%",
+      "narration": "Shen和Tamkin的实验：52个程序员，用AI的那组，知识测试低了17%。不是新手低。所有经验水平都低。"
+    },
+    {
+      "sceneType": "text",
+      "text": "470个GitHub仓库\nAI代码bug多1.7倍\n逻辑错误多75%\n可读性问题多3倍",
+      "emphasis": true,
+      "narration": "CodeRabbit分析了470个GitHub仓库。AI写的代码，bug多1.7倍。逻辑错误多75%。可读性问题多3倍。"
+    },
+    {
+      "sceneType": "quote",
+      "text": "「自动化的讽刺」\n—— Lisanne Bainbridge, 1983",
+      "quoteText": "「自动化的讽刺」",
+      "quoteAuthor": "Lisanne Bainbridge, 1983",
+      "narration": "1983年，Bainbridge就预言了这一切——自动化处理简单的部分，把难题留给人类。但人类没有练习的机会了。"
+    },
+    {
+      "sceneType": "text",
+      "text": "代码重复率 ↑48%\n重构率 ↓60%\n没人回头看",
+      "narration": "GitClear的数据：代码重复率上升48%。重构率下降60%。大家在复制粘贴AI的输出，没人回头看。"
+    },
+    {
+      "sceneType": "visual",
+      "text": "",
+      "videoSrc": "manim/understand-concept.mp4",
+      "narration": "认知债务不会报错。不会让测试失败。它安静地积累。直到有一天——你改不动你自己的代码了。"
+    },
+    {
+      "sceneType": "chapter",
+      "chapterTitle": "怎么办？",
+      "narration": ""
+    },
+    {
+      "sceneType": "text",
+      "text": "不是让AI少写代码\n是让你多看懂代码\n写完之后——测试你自己",
+      "emphasis": true,
+      "narration": "不是让AI少写代码。是让你多看懂代码。写完之后，测试你自己：这段代码为什么这样写？"
+    },
+    {
+      "sceneType": "text",
+      "text": "AI写代码\n另一个AI出题考你\n你答不上来的\n就是你的认知债务",
+      "narration": "这就是Understand的想法。AI写代码，另一个AI出题考你。你答不上来的——就是你的认知债务。"
+    },
+    {
+      "sceneType": "data",
+      "text": "未理解的代码文件: 26个",
+      "dataLabel": "未理解的代码文件",
+      "dataValue": "26个",
+      "narration": "我们的autopilot分支：26个代码文件，5554行修改。全部没有被理解过。这就是一天的认知债务。"
+    },
+    {
+      "sceneType": "text",
+      "text": "AI写代码越来越快\n你看懂代码的速度\n有跟上吗？",
+      "emphasis": true,
+      "narration": "AI写代码越来越快。你看懂代码的速度，有跟上吗？",
+      "rate": "-10%"
+    }
+  ]
+}
