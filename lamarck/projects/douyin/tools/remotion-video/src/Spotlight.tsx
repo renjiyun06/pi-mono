@@ -202,6 +202,56 @@ const TypewriterText: React.FC<{
 	);
 };
 
+// Floating particles that create a subtle digital atmosphere
+const Particles: React.FC<{ spotlightColor: string }> = ({
+	spotlightColor,
+}) => {
+	const frame = useCurrentFrame();
+
+	// Generate deterministic particles
+	const particles = React.useMemo(() => {
+		const ps = [];
+		for (let i = 0; i < 20; i++) {
+			const seed = i * 7919; // prime for spread
+			ps.push({
+				x: ((seed * 13) % 1080) / 1080,
+				y: ((seed * 17) % 1920) / 1920,
+				speed: 0.2 + ((seed * 23) % 100) / 200,
+				size: 1 + ((seed * 31) % 3),
+				phase: ((seed * 37) % 628) / 100,
+			});
+		}
+		return ps;
+	}, []);
+
+	return (
+		<AbsoluteFill style={{ pointerEvents: "none" }}>
+			{particles.map((p, i) => {
+				const y =
+					((p.y * 1920 + frame * p.speed) % 2100) - 100;
+				const opacity =
+					0.08 +
+					0.06 * Math.sin(frame * 0.03 + p.phase);
+				return (
+					<div
+						key={i}
+						style={{
+							position: "absolute",
+							left: `${p.x * 100}%`,
+							top: y,
+							width: p.size,
+							height: p.size,
+							borderRadius: "50%",
+							backgroundColor: spotlightColor,
+							opacity,
+						}}
+					/>
+				);
+			})}
+		</AbsoluteFill>
+	);
+};
+
 // Animated cursor that blinks at the bottom of the screen
 const Cursor: React.FC<{ spotlightColor: string }> = ({ spotlightColor }) => {
 	const frame = useCurrentFrame();
@@ -238,6 +288,9 @@ export const Spotlight: React.FC<SpotlightProps> = ({
 			}}
 		>
 			<SpotlightBg spotlightColor={spotlightColor} />
+
+			{/* Floating particles */}
+			<Particles spotlightColor={spotlightColor} />
 
 			{/* Film grain overlay */}
 			<AbsoluteFill
