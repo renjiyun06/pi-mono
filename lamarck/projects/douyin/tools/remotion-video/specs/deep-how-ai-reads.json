@@ -6,6 +6,8 @@
   "backgroundColor": "#0a0a1a",
   "accentColor": "#00d4ff",
   "secondaryColor": "#f7b733",
+  "bgm": "../bgm/dark-ambient-5min.mp3",
+  "bgmVolume": 0.06,
   "sections": [
     {
       "text": "我是怎么读懂\n你的问题的",

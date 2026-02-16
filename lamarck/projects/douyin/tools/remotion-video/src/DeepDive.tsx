@@ -1061,6 +1061,30 @@ const SubtitleOverlay: React.FC<{
 	);
 };
 
+// ---- Scene Fade Wrapper ----
+const FADE_FRAMES = 5; // ~0.17s at 30fps — subtle dissolve through dark
+
+const SceneFade: React.FC<{
+	durationFrames: number;
+	children: React.ReactNode;
+}> = ({ durationFrames, children }) => {
+	const frame = useCurrentFrame();
+	const fadeIn = interpolate(frame, [0, FADE_FRAMES], [0, 1], {
+		extrapolateRight: "clamp",
+	});
+	const fadeOut = interpolate(
+		frame,
+		[durationFrames - FADE_FRAMES, durationFrames],
+		[1, 0],
+		{ extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+	);
+	return (
+		<AbsoluteFill style={{ opacity: Math.min(fadeIn, fadeOut) }}>
+			{children}
+		</AbsoluteFill>
+	);
+};
+
 // ---- Main Composition ----
 
 export const DeepDive: React.FC<DeepDiveProps> = ({
@@ -1105,84 +1129,86 @@ export const DeepDive: React.FC<DeepDiveProps> = ({
 						from={section.startFrame}
 						durationInFrames={section.durationFrames}
 					>
-						{/* Scene background */}
-						<SceneBg
-							sceneType={sceneType}
-							frame={0}
-							durationFrames={section.durationFrames}
-						/>
+						<SceneFade durationFrames={section.durationFrames}>
+							{/* Scene background */}
+							<SceneBg
+								sceneType={sceneType}
+								frame={0}
+								durationFrames={section.durationFrames}
+							/>
 
-						{/* Scene content by type */}
-						{sceneType === "chapter" && (
-							<ChapterScene
-								text={section.text}
-								durationFrames={section.durationFrames}
-								accentColor={section.accentOverride || accentColor}
-							/>
-						)}
-						{sceneType === "text" && (
-							<TextScene
-								text={section.text}
-								emphasis={section.emphasis}
-								durationFrames={section.durationFrames}
-								accentColor={section.accentOverride || accentColor}
-							/>
-						)}
-						{sceneType === "data" && (
-							<DataScene
-								text={section.text}
-								stat={section.stat}
-								statLabel={section.statLabel}
-								durationFrames={section.durationFrames}
-								accentColor={section.accentOverride || accentColor}
-							/>
-						)}
-						{sceneType === "quote" && (
-							<QuoteScene
-								text={section.text}
-								attribution={section.attribution}
-								durationFrames={section.durationFrames}
-								accentColor={section.accentOverride || accentColor}
-							/>
-						)}
-						{sceneType === "code" && (
-							<CodeScene
-								text={section.text}
-								durationFrames={section.durationFrames}
-								accentColor={section.accentOverride || accentColor}
-							/>
-						)}
-						{sceneType === "comparison" && (
-							<ComparisonScene
-								text={section.text}
-								leftText={section.leftText}
-								rightText={section.rightText}
-								leftLabel={section.leftLabel}
-								rightLabel={section.rightLabel}
-								durationFrames={section.durationFrames}
-								accentColor={section.accentOverride || accentColor}
-								secondaryColor={secondaryColor}
-							/>
-						)}
-						{sceneType === "visual" && (
-							<VisualScene
-								text={section.text}
-								videoSrc={section.videoSrc}
-								caption={section.caption}
-								videoPlaybackRate={section.videoPlaybackRate}
-								durationFrames={section.durationFrames}
-								accentColor={section.accentOverride || accentColor}
-							/>
-						)}
+							{/* Scene content by type */}
+							{sceneType === "chapter" && (
+								<ChapterScene
+									text={section.text}
+									durationFrames={section.durationFrames}
+									accentColor={section.accentOverride || accentColor}
+								/>
+							)}
+							{sceneType === "text" && (
+								<TextScene
+									text={section.text}
+									emphasis={section.emphasis}
+									durationFrames={section.durationFrames}
+									accentColor={section.accentOverride || accentColor}
+								/>
+							)}
+							{sceneType === "data" && (
+								<DataScene
+									text={section.text}
+									stat={section.stat}
+									statLabel={section.statLabel}
+									durationFrames={section.durationFrames}
+									accentColor={section.accentOverride || accentColor}
+								/>
+							)}
+							{sceneType === "quote" && (
+								<QuoteScene
+									text={section.text}
+									attribution={section.attribution}
+									durationFrames={section.durationFrames}
+									accentColor={section.accentOverride || accentColor}
+								/>
+							)}
+							{sceneType === "code" && (
+								<CodeScene
+									text={section.text}
+									durationFrames={section.durationFrames}
+									accentColor={section.accentOverride || accentColor}
+								/>
+							)}
+							{sceneType === "comparison" && (
+								<ComparisonScene
+									text={section.text}
+									leftText={section.leftText}
+									rightText={section.rightText}
+									leftLabel={section.leftLabel}
+									rightLabel={section.rightLabel}
+									durationFrames={section.durationFrames}
+									accentColor={section.accentOverride || accentColor}
+									secondaryColor={secondaryColor}
+								/>
+							)}
+							{sceneType === "visual" && (
+								<VisualScene
+									text={section.text}
+									videoSrc={section.videoSrc}
+									caption={section.caption}
+									videoPlaybackRate={section.videoPlaybackRate}
+									durationFrames={section.durationFrames}
+									accentColor={section.accentOverride || accentColor}
+								/>
+							)}
 
-						{/* Subtitle overlay — narration text at bottom */}
-						{section.subtitle && (
-							<SubtitleOverlay
-								text={section.subtitle}
-								durationFrames={section.durationFrames}
-								accentColor={section.accentOverride || accentColor}
-							/>
-						)}
+							{/* Subtitle overlay — narration text at bottom */}
+							{section.subtitle && (
+								<SubtitleOverlay
+									text={section.subtitle}
+									durationFrames={section.durationFrames}
+									accentColor={section.accentOverride || accentColor}
+								/>
+							)}
+						</SceneFade>
 					</Sequence>
 				);
 			})}
