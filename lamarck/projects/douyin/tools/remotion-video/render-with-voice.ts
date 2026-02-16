@@ -95,10 +95,12 @@ async function main() {
 		const audioPath = join(tmpDir, `section-${i}.mp3`);
 		sectionAudioPaths.push(audioPath);
 
+		const sectionVoice = section.voice || voice;
+		const sectionRate = section.rate || rate;
 		execFileSync("python3", [
 			"-m", "edge_tts",
-			"--voice", voice,
-			`--rate=${rate}`,
+			"--voice", sectionVoice,
+			`--rate=${sectionRate}`,
 			"--text", section.narration,
 			"--write-media", audioPath,
 		], { stdio: "pipe" });
