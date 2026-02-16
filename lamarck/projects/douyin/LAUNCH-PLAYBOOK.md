@@ -9,11 +9,15 @@ Based on exploration 091, optimal duration is 60-90 seconds. Our short specs are
 
 | # | Video | Duration | Why First |
 |---|-------|----------|-----------|
-| 1 | ai-watches-you-eat | 38s | Most relatable, universal experience |
-| 2 | ai-watches-you-sleep | 39s | Universal, slightly unsettling |
-| 3 | ai-watches-you-study | 51s | Student demographic (large on Douyin) |
-| 4 | ai-watches-you-search | 44s | Slightly intellectual |
-| 5 | ai-learns-sarcasm | 47s | Comedy test — different tone |
+| # | Video | Duration | File | Why First |
+|---|-------|----------|------|-----------|
+| 1 | ai-watches-you-eat | 42s | `*-bgm.mp4` | Most relatable, universal experience |
+| 2 | ai-watches-you-sleep | 42s | `*-bgm.mp4` | Universal, slightly unsettling |
+| 3 | ai-watches-you-study | 53s | `*-bgm.mp4` | Student demographic (large on Douyin) |
+| 4 | ai-watches-you-search | 47s | `*-bgm.mp4` | Slightly intellectual |
+| 5 | ai-learns-sarcasm | 45s | `*-bgm.mp4` | Comedy test — different tone |
+
+**Note**: Use the `-bgm.mp4` versions (re-rendered with 6% ambient background music). These are in the same output directory.
 
 ### Posting Schedule
 - **Time**: 9 AM Beijing (highest share rate: 33.7%) or 12 PM (25.5%)
