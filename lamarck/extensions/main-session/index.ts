@@ -327,8 +327,8 @@ const TOOL_NAME = "send_qq_message";
 const TASK_TOOL_NAME = "task";
 
 // Autopilot thresholds (percentage of context window)
-const AUTOPILOT_COMPACT_THRESHOLD = 60; // Auto-compact triggers at this level
-const AUTOPILOT_WARNING_THRESHOLD = 60; // Start warning agent to wrap up
+const AUTOPILOT_COMPACT_THRESHOLD = 60;
+const AUTOPILOT_WARNING_THRESHOLD = 60;
 
 export default function mainSessionExtension(pi: ExtensionAPI) {
 	let channelManager: ChannelManager | null = null;
