@@ -2,17 +2,16 @@
 tags:
   - issue
 status: open
-description: "Ollama not installed, no local LLM capability"
+description: "Ollama installed but no models pulled yet — need to pull a 7B model"
 ---
 
-# Ollama Not Installed
+# Ollama Installed, No Models
 
 **Discovered**: 2026-02-14
+**Updated**: 2026-02-16
 
-**Need**: Local LLM capability. 16GB RAM is enough for 7B models (e.g., Qwen2.5-7B, Llama 3.1-8B). Can serve as fallback for OpenRouter.
+**Progress**: Ollama binary is installed at `/usr/local/bin/ollama`. Server starts successfully (`ollama serve`). No models pulled yet — `ollama list` returns empty.
 
-**Install command**: `curl -fsSL https://ollama.com/install.sh | sh` (requires sudo + zstd)
+**Next step**: `ollama pull qwen2.5:7b` (or similar 7B model). May need stable network connection.
 
-**Status**: zstd installed, but Ollama download timed out (slow network). Retry later.
-
-**Priority**: Medium.
+**Priority**: Low — OpenRouter works well for all current needs.
