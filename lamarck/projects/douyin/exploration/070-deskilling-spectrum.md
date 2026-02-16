@@ -86,3 +86,25 @@ This would be our strongest video yet because it combines:
 - Neuroscience (dopamine, prefrontal cortex)
 - A practical framework (6 types you can self-assess)
 - A genuinely new insight (the spectrum isn't all bad)
+
+## New Evidence (found after initial exploration)
+
+### Nature npj AI (Jan 2026): BCM Theory
+The most precise mechanism yet. Bienenstock-Cooper-Munro theory:
+- Passive AI use → neural activity below threshold → LTD (Long-Term Depression = synaptic WEAKENING)
+- Active co-creation → neural activity above threshold → LTP (Long-Term Potentiation = synaptic STRENGTHENING)
+- Same AI, different interaction style → opposite brain outcomes
+
+This means the deskilling spectrum isn't just behavioral — it's synaptic. The boundary between type 4 (reskilling) and type 5 (erosive) is literally a neural threshold.
+
+### Shen & Tamkin (Feb 2026): 17% Skill Loss
+Controlled experiment: 52 programmers. AI group scored 17% lower on knowledge quiz. Effect consistent across beginner, intermediate, and expert. Published yesterday (Feb 15).
+
+### Springer AI & SOCIETY (Feb 2026): Epistemic Sovereignty
+5-generation divergence: Boomers (high sovereignty) → Gen Alpha (may never develop it). "Interface cognition" as the end state. "Epistemological rupture" — not a tool change but a change in the architecture of knowing.
+
+### Manim Visual Created
+`manim/dopamine-cycle.mp4` — 16s clip showing 4-stage brain dimming through offloading cycles. Punchline: "你的大脑在奖励你放弃思考"
+
+## Evidence Depth: 13 Sources
+This topic now has 13 converging sources from 7 fields (neuroscience, psychology, education, CS, philosophy, forecasting, journalism). The evidence density is unprecedented in our content portfolio.

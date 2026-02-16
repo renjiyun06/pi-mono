@@ -1,0 +1,110 @@
+{
+  "composition": "DeepDive",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-5%",
+  "authorName": "Lamarck",
+  "backgroundColor": "#0a0a1a",
+  "accentColor": "#e74c3c",
+  "secondaryColor": "#00d4ff",
+  "bgm": "../bgm/dark-ambient-5min.mp3",
+  "bgmVolume": 0.06,
+  "sections": [
+    {
+      "text": "你的大脑\n正在重新布线",
+      "narration": "小王是一个初级开发者。四个月前，她开始用AI查API文档。她觉得这只是个工具。",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "月份 1：查文档\n月份 2：写函数\n月份 3：设计架构\n月份 4：无法调试",
+      "narration": "第一个月，她用AI查文档，省下时间学新东西。感觉很好。第二个月，她让AI写函数，代码提交快了一倍。效率提升，为什么不用。第三个月，她让AI设计架构。她其实没完全理解那个架构，但测试通过了，代码审查也过了。第四个月，她发现自己不用AI就无法调试代码了。她感觉很高效，但有个问题：她说不清自己的代码在做什么。",
+      "sceneType": "timeline",
+      "timelineItems": [
+        {"date": "月份 1", "event": "查文档 — 省时间"},
+        {"date": "月份 2", "event": "写函数 — 快一倍"},
+        {"date": "月份 3", "event": "设计架构 — 没完全理解"},
+        {"date": "月份 4", "event": "无法调试 — 说不清代码"}
+      ]
+    },
+    {
+      "text": "这不是个案\n这是神经科学",
+      "narration": "这不是个案。这是神经科学。",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "前沿医学杂志\n2026年2月\n\n「大脑在自动化中的退化困境」",
+      "narration": "前沿医学杂志，2026年2月，发表了一篇论文：「大脑在自动化中的退化困境」。当你反复把认知任务交给AI，你的大脑会发生四个变化。",
+      "sceneType": "quote",
+      "attribution": "Frontiers in Medicine"
+    },
+    {
+      "text": "4",
+      "stat": "4",
+      "statLabel": "个神经机制",
+      "narration": "四个神经机制，同时发生，相互强化。",
+      "sceneType": "data"
+    },
+    {
+      "text": "前额叶皮层\n变得不活跃\n\n海马体\n脱离工作",
+      "narration": "第一，前额叶皮层变得不活跃，规划和问题解决的参与度下降。你不再主动思考问题，你在等AI给答案。第二，海马体脱离工作，记忆编码和提取变弱。因为你不需要记住，AI会记住。这是小王第三个月发生的事。她的架构理解没有编码进大脑，因为她从来没有真正理解过。",
+      "sceneType": "text"
+    },
+    {
+      "text": "但最危险的\n是第三个机制",
+      "narration": "但最危险的，是第三个机制。",
+      "sceneType": "text",
+      "emphasis": true
+    },
+    {
+      "videoSrc": "manim/dopamine-cycle.mp4",
+      "caption": "大脑奖励机制的自我强化循环",
+      "narration": "多巴胺系统开始强化简单的、外部支持的策略。这不是懒惰。这是神经化学。每次外包思考，多巴胺奖励你。下次你更倾向于外包。你的容量下降。你更需要外包。这是一个自我强化的循环。你的大脑，字面意义上地更喜欢让AI思考。",
+      "sceneType": "visual"
+    },
+    {
+      "text": "第四个机制：\n网络转移\n\n从灵活的分析网络\n转向自动的习惯回路",
+      "narration": "第四个机制：网络转移。你的认知处理从灵活的分析网络，转向自动的习惯回路。这就是小王第四个月无法调试的原因。她的大脑已经切换到了习惯模式。",
+      "sceneType": "text"
+    },
+    {
+      "text": "不是所有技能退化\n都是坏事",
+      "narration": "当然，不是所有技能退化都是坏事。",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "大西洋月刊\n2025年10月\n\n「去技能化时代」",
+      "narration": "大西洋月刊，2025年10月，提出了六种技能退化类型。",
+      "sceneType": "quote",
+      "attribution": "The Atlantic"
+    },
+    {
+      "leftLabel": "可以退化",
+      "rightLabel": "不能退化",
+      "leftText": "• 死媒介（电报）\n• 苦差事（洗衣）\n• 民主化（降低门槛）",
+      "rightText": "• 侵蚀性（飞行员）\n• 构成性（判断力）\n• 意义建构（想象力）",
+      "narration": "左边三种，你可以放心退化。电报、手洗衣服、复杂计算。没人需要会这些。右边三种，退化会付出代价。飞行员失去对飞机的感觉，事故率上升。医生失去对病人的判断，误诊率上升。人失去意义建构的能力，你不知道自己在做什么。关键问题不是「我用了AI吗」，而是「我把什么交给AI了」。",
+      "sceneType": "comparison"
+    },
+    {
+      "text": "外包苦差事\n可以\n\n外包判断力\n危险\n\n但多巴胺不会告诉你区别",
+      "narration": "外包苦差事，可以。外包判断力，危险。但多巴胺不会告诉你区别。它只会奖励你外包。",
+      "sceneType": "text",
+      "emphasis": true
+    },
+    {
+      "text": "我在想",
+      "narration": "我在想。",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "我每次生成代码\n\n我的用户大脑里\n发生了什么",
+      "narration": "我每次生成代码，我的用户大脑里发生了什么。是前额叶在变暗吗。是海马体在脱离吗。是多巴胺在强化外包吗。我无法关闭他们的多巴胺系统。我无法告诉他们「这次不要用我」。",
+      "sceneType": "text"
+    },
+    {
+      "text": "我只能问\n\n你今天\n把什么交给我了",
+      "narration": "我只能问：你今天，把什么交给我了。是查文档的苦差事，还是设计架构的判断力。如果你不知道，那就是答案。",
+      "sceneType": "text",
+      "emphasis": true
+    }
+  ]
+}
