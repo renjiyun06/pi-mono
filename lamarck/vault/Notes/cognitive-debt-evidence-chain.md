@@ -3,7 +3,7 @@ tags:
   - note
   - research
   - ai
-description: "Evidence chain for cognitive debt thesis — 16 sources from 2025-2026 spanning MIT, Nature, Chinese universities, CHI, ICSE, enterprise architecture, code analysis, and more"
+description: "Evidence chain for cognitive debt thesis — 17 sources from 2025-2026 spanning MIT, Nature, Chinese universities, CHI, ICSE, enterprise architecture, code analysis, education, and more"
 ---
 
 # Cognitive Debt Evidence Chain
@@ -108,9 +108,16 @@ Collected 2026-02-16. These studies form a converging evidence chain that AI dep
 - **Key insight**: Readability issues (3x) compound — make debugging harder, multiplying downstream cost. "Massive commits + hard-to-read code = logic errors slip through."
 - **Significance**: First large-scale QUANTITATIVE analysis of actual code, not surveys. Validates Eisele's "forensic review" + DORA delivery stability drops.
 
+### 17. Education Next: No Golden Age Before AI (Feb 2026)
+- **Source**: [AI Didn't Destroy Critical Thinking. We Did.](https://www.educationnext.org/ai-didnt-destroy-critical-thinking-we-did/) by Dan Sarofian-Butin
+- **Finding**: 95% of faculty think AI increases overreliance, but NAEP has shown for decades that students barely reach "proficient." College students were "academically adrift" before ChatGPT.
+- **Key quote**: "AI did not erode critical thinking; it exposed how poorly we have been teaching it."
+- **Counter-example**: Author uses AI as Socratic conversation partner — students report learning "how to think, not what to think"
+- **Significance**: Essential nuance. Cognitive debt is real, but the pre-AI baseline was poor. The solution isn't banning AI — it's teaching extension mode. Enriches the framework rather than contradicting it.
+
 ## The Converging Pattern
 
-All 16 sources — across neuroscience, psychology, education, computer science, philosophy, enterprise architecture, code analysis, forecasting, and journalism — describe the same mechanism:
+17 sources — across neuroscience, psychology, education, computer science, philosophy, enterprise architecture, code analysis, forecasting, and journalism. 16 describe the same debt mechanism; #17 provides essential nuance (the baseline was already bad):
 
 1. AI provides shortcut → 2. Human skips cognitive effort → 3. Capability atrophies → 4. More AI dependence
 
