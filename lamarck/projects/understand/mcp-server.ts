@@ -229,19 +229,15 @@ server.registerTool(
 			"Generate comprehension questions for a code file. Tests design decisions, failure modes, " +
 			"and architectural understanding — not just syntax. Requires OPENROUTER_API_KEY.",
 		inputSchema: {
-			type: "object" as const,
-			properties: {
-				code: { type: "string" as const, description: "The code to generate questions for" },
-				filename: { type: "string" as const, description: "Filename for context (e.g., 'rate-limiter.ts')" },
-				count: { type: "number" as const, description: "Number of questions (default: 3)", default: 3 },
-			},
-			required: ["code", "filename"],
+			code: z.string().describe("The code to generate questions for"),
+			filename: z.string().describe("Filename for context (e.g., 'rate-limiter.ts')"),
+			count: z.number().optional().default(3).describe("Number of questions (default: 3)"),
 		},
 		annotations: {
 			readOnlyHint: true,
 		},
 	},
-	async ({ code, filename, count }: { code: string; filename: string; count?: number }) => {
+	async ({ code, filename, count }) => {
 		try {
 			const questions = await generateQuestions(code, filename, count || 3);
 			return {
@@ -271,34 +267,14 @@ server.registerTool(
 			"Evaluate a developer's answer to a comprehension question. Returns score (0-10), " +
 			"feedback, and missed concepts. Requires OPENROUTER_API_KEY.",
 		inputSchema: {
-			type: "object" as const,
-			properties: {
-				question: { type: "string" as const, description: "The comprehension question" },
-				key_concepts: {
-					type: "array" as const,
-					items: { type: "string" as const },
-					description: "Key concepts the answer should cover",
-				},
-				answer: { type: "string" as const, description: "The developer's answer" },
-				code: { type: "string" as const, description: "The relevant code" },
-				filename: { type: "string" as const, description: "Filename for score tracking" },
-			},
-			required: ["question", "key_concepts", "answer", "code"],
+			question: z.string().describe("The comprehension question"),
+			key_concepts: z.array(z.string()).describe("Key concepts the answer should cover"),
+			answer: z.string().describe("The developer's answer"),
+			code: z.string().describe("The relevant code"),
+			filename: z.string().optional().describe("Filename for score tracking"),
 		},
 	},
-	async ({
-		question,
-		key_concepts,
-		answer,
-		code,
-		filename,
-	}: {
-		question: string;
-		key_concepts: string[];
-		answer: string;
-		code: string;
-		filename?: string;
-	}) => {
+	async ({ question, key_concepts, answer, code, filename }) => {
 		try {
 			const evaluation = await evaluateAnswer(question, key_concepts, answer, code);
 
@@ -340,24 +316,14 @@ server.registerTool(
 			"Get comprehension score history for tracked files. Shows per-file scores, " +
 			"trends, and files below a configurable threshold.",
 		inputSchema: {
-			type: "object" as const,
-			properties: {
-				directory: {
-					type: "string" as const,
-					description: "Project directory to check (default: current directory)",
-				},
-				threshold: {
-					type: "number" as const,
-					description: "Score threshold for 'at risk' files (default: 6)",
-					default: 6,
-				},
-			},
+			directory: z.string().optional().describe("Project directory to check (default: current directory)"),
+			threshold: z.number().optional().default(6).describe("Score threshold for 'at risk' files (default: 6)"),
 		},
 		annotations: {
 			readOnlyHint: true,
 		},
 	},
-	async ({ directory, threshold }: { directory?: string; threshold?: number }) => {
+	async ({ directory, threshold }) => {
 		const cwd = directory || process.cwd();
 		const history = loadHistory(cwd);
 		const t = threshold || 6;
