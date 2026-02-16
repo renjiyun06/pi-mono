@@ -252,6 +252,19 @@ server.registerTool(
 	},
 	async ({ code, filename, count }) => {
 		try {
+			// Check minimum complexity — trivial files don't have meaningful questions
+			const lines = code.split("\n").filter((l) => l.trim() && !l.trim().startsWith("//") && !l.trim().startsWith("*")).length;
+			if (lines < 5) {
+				return {
+					content: [
+						{
+							type: "text" as const,
+							text: `File too simple (${lines} non-comment lines). Understand works best on files with 10+ lines of logic. Try a more complex file.`,
+						},
+					],
+				};
+			}
+
 			const questions = await generateQuestions(code, filename, count || 3);
 			return {
 				content: [
