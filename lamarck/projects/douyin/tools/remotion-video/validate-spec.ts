@@ -1,6 +1,7 @@
 #!/usr/bin/env npx tsx
 /**
- * Validates a DeepDive spec JSON file.
+ * Validates video spec JSON files.
+ * Supports DeepDive (long-form with scene types) and short-form (Spotlight, GradientFlow, etc.).
  * Checks: JSON parsing, required fields, narration length estimates,
  * videoSrc existence, Chinese quote marks, section count, scene types.
  */
@@ -9,11 +10,12 @@ import { readFileSync, existsSync } from "fs";
 import { resolve, dirname } from "path";
 
 const VALID_SCENE_TYPES = ["chapter", "text", "data", "quote", "code", "comparison", "visual", "timeline", "image"];
+const VALID_COMPOSITIONS = ["DeepDive", "Spotlight", "GradientFlow", "AIInsight", "NeuralViz", "KnowledgeCard"];
 const CHARS_PER_SECOND_ZH = 4.5; // Chinese TTS at -5% rate
-const MIN_SECTIONS = 8;
-const MAX_SECTIONS = 25;
-const MIN_DURATION_S = 90;
-const MAX_DURATION_S = 360;
+
+// Thresholds vary by composition type
+const DEEPDIVE_LIMITS = { minSections: 8, maxSections: 25, minDuration: 90, maxDuration: 360 };
+const SHORT_LIMITS = { minSections: 3, maxSections: 12, minDuration: 20, maxDuration: 120 };
 
 interface Issue {
 	level: "error" | "warn" | "info";
@@ -50,20 +52,24 @@ function validate(specPath: string): Issue[] {
 	}
 
 	// 3. Required top-level fields
-	if (spec.composition !== "DeepDive") {
-		issues.push({ level: "error", message: `composition must be "DeepDive", got "${spec.composition}"` });
+	const composition = spec.composition || "unknown";
+	const isDeepDive = composition === "DeepDive";
+	if (!VALID_COMPOSITIONS.includes(composition)) {
+		issues.push({ level: "warn", message: `Unknown composition "${composition}" — not in ${VALID_COMPOSITIONS.join(", ")}` });
 	}
 	if (!spec.voice) issues.push({ level: "warn", message: "No voice specified" });
-	if (!spec.accentColor) issues.push({ level: "warn", message: "No accentColor specified" });
+	if (isDeepDive && !spec.accentColor) issues.push({ level: "warn", message: "No accentColor specified" });
 	if (!Array.isArray(spec.sections) || spec.sections.length === 0) {
 		issues.push({ level: "error", message: "No sections array" });
 		return issues;
 	}
 
+	const limits = isDeepDive ? DEEPDIVE_LIMITS : SHORT_LIMITS;
+
 	// 4. Section count
 	const count = spec.sections.length;
-	if (count < MIN_SECTIONS) issues.push({ level: "warn", message: `Only ${count} sections (minimum recommended: ${MIN_SECTIONS})` });
-	if (count > MAX_SECTIONS) issues.push({ level: "warn", message: `${count} sections (maximum recommended: ${MAX_SECTIONS})` });
+	if (count < limits.minSections) issues.push({ level: "warn", message: `Only ${count} sections (minimum recommended: ${limits.minSections})` });
+	if (count > limits.maxSections) issues.push({ level: "warn", message: `${count} sections (maximum recommended: ${limits.maxSections})` });
 
 	// 5. Per-section validation
 	let totalNarrationChars = 0;
@@ -75,11 +81,13 @@ function validate(specPath: string): Issue[] {
 		const s = spec.sections[i];
 		const prefix = `Section ${i + 1}`;
 
-		// Scene type
-		if (!s.sceneType) {
-			issues.push({ level: "error", message: `${prefix}: missing sceneType` });
-		} else if (!VALID_SCENE_TYPES.includes(s.sceneType)) {
-			issues.push({ level: "error", message: `${prefix}: unknown sceneType "${s.sceneType}"` });
+		// Scene type (only required for DeepDive)
+		if (isDeepDive) {
+			if (!s.sceneType) {
+				issues.push({ level: "error", message: `${prefix}: missing sceneType` });
+			} else if (!VALID_SCENE_TYPES.includes(s.sceneType)) {
+				issues.push({ level: "error", message: `${prefix}: unknown sceneType "${s.sceneType}"` });
+			}
 		}
 
 		// Narration
@@ -160,16 +168,16 @@ function validate(specPath: string): Issue[] {
 
 	// 6. Duration estimate
 	const estimatedDuration = totalNarrationChars / CHARS_PER_SECOND_ZH;
-	if (estimatedDuration < MIN_DURATION_S) {
+	if (estimatedDuration < limits.minDuration) {
 		issues.push({
 			level: "warn",
-			message: `Estimated duration: ${Math.round(estimatedDuration)}s (${Math.round(estimatedDuration / 60)}:${String(Math.round(estimatedDuration % 60)).padStart(2, "0")}) — under ${MIN_DURATION_S}s minimum`,
+			message: `Estimated duration: ${Math.round(estimatedDuration)}s (${Math.round(estimatedDuration / 60)}:${String(Math.round(estimatedDuration % 60)).padStart(2, "0")}) — under ${limits.minDuration}s minimum`,
 		});
 	}
-	if (estimatedDuration > MAX_DURATION_S) {
+	if (estimatedDuration > limits.maxDuration) {
 		issues.push({
 			level: "warn",
-			message: `Estimated duration: ${Math.round(estimatedDuration)}s (${Math.floor(estimatedDuration / 60)}:${String(Math.round(estimatedDuration % 60)).padStart(2, "0")}) — over ${MAX_DURATION_S}s maximum`,
+			message: `Estimated duration: ${Math.round(estimatedDuration)}s (${Math.floor(estimatedDuration / 60)}:${String(Math.round(estimatedDuration % 60)).padStart(2, "0")}) — over ${limits.maxDuration}s maximum`,
 		});
 	}
 
@@ -178,14 +186,17 @@ function validate(specPath: string): Issue[] {
 		issues.push({ level: "info", message: "No visual (Manim) scenes — consider adding B-roll" });
 	}
 
-	// 8. Scene type distribution
+	// 8. Scene type distribution (DeepDive only)
 	const typeCounts: Record<string, number> = {};
 	for (const s of spec.sections) {
-		typeCounts[s.sceneType] = (typeCounts[s.sceneType] || 0) + 1;
+		const type = s.sceneType || composition;
+		typeCounts[type] = (typeCounts[type] || 0) + 1;
 	}
-	const textHeavy = (typeCounts["text"] || 0) / count;
-	if (textHeavy > 0.5) {
-		issues.push({ level: "warn", message: `${Math.round(textHeavy * 100)}% text scenes — consider more visual variety` });
+	if (isDeepDive) {
+		const textHeavy = (typeCounts["text"] || 0) / count;
+		if (textHeavy > 0.5) {
+			issues.push({ level: "warn", message: `${Math.round(textHeavy * 100)}% text scenes — consider more visual variety` });
+		}
 	}
 
 	// 9. BGM check
@@ -217,7 +228,7 @@ if (args.length === 0) {
 	// Validate all deep-*.json specs
 	const { readdirSync } = require("fs");
 	const specsDir = resolve(__dirname, "specs");
-	const specs = readdirSync(specsDir).filter((f: string) => (f.startsWith("deep-") || f.startsWith("escalation-")) && f.endsWith(".json"));
+	const specs = readdirSync(specsDir).filter((f: string) => f.endsWith(".json") && !f.startsWith("test-") && !f.startsWith("carousel-"));
 
 	let totalErrors = 0;
 	for (const spec of specs) {
