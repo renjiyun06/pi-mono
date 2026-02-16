@@ -12,6 +12,8 @@
  *   npx tsx understand.ts <file> --dry-run         Show questions only (no quiz)
  *   npx tsx understand.ts summary                  Show understanding scores
  *   npx tsx understand.ts summary --below <N>      Show files scoring below N%
+ *   npx tsx understand.ts debt                     Show files with understanding debt (unreviewed AI changes)
+ *   npx tsx understand.ts debt --since <ref>       Show debt since git ref (branch, tag, commit)
  *
  * Requires OPENROUTER_API_KEY in environment or ../.env
  */
@@ -300,10 +302,155 @@ function showSummary(belowThreshold?: number): void {
 	console.log();
 }
 
+// --- Debt Analysis ---
+
+interface FileDebt {
+	file: string;
+	totalChanges: number; // lines added + removed
+	commits: number;
+	lastChanged: string;
+	lastQuizzed: string | null;
+	quizScore: number | null;
+}
+
+function analyzeDebt(sinceRef?: string): void {
+	const gitRoot = (() => {
+		try {
+			return execSync("git rev-parse --show-toplevel", { encoding: "utf-8" }).trim();
+		} catch {
+			console.error("Not in a git repository.");
+			process.exit(1);
+		}
+	})();
+
+	// Get file change stats from git log
+	const logCmd = sinceRef
+		? `git log --numstat --pretty=format:"%H|%ai" ${sinceRef}..HEAD`
+		: `git log --numstat --pretty=format:"%H|%ai" -50`;
+
+	let logOutput: string;
+	try {
+		logOutput = execSync(logCmd, { cwd: gitRoot, encoding: "utf-8" });
+	} catch {
+		console.error(`Failed to read git log${sinceRef ? ` since ${sinceRef}` : ""}`);
+		process.exit(1);
+	}
+
+	// Parse git log output
+	const fileStats = new Map<string, { added: number; removed: number; commits: number; lastDate: string }>();
+	let currentDate = "";
+
+	for (const line of logOutput.split("\n")) {
+		if (line.includes("|")) {
+			const parts = line.split("|");
+			if (parts.length >= 2) {
+				currentDate = parts[1].trim().slice(0, 10);
+			}
+			continue;
+		}
+
+		const match = line.match(/^(\d+|-)\t(\d+|-)\t(.+)$/);
+		if (!match) continue;
+
+		const added = match[1] === "-" ? 0 : parseInt(match[1]);
+		const removed = match[2] === "-" ? 0 : parseInt(match[2]);
+		const file = match[3];
+
+		// Skip non-code files
+		if (/\.(md|json|txt|jpg|png|mp4|mp3|csv|lock)$/i.test(file)) continue;
+		if (file.includes("node_modules/")) continue;
+
+		const existing = fileStats.get(file) || { added: 0, removed: 0, commits: 0, lastDate: "" };
+		existing.added += added;
+		existing.removed += removed;
+		existing.commits += 1;
+		if (!existing.lastDate || currentDate > existing.lastDate) {
+			existing.lastDate = currentDate;
+		}
+		fileStats.set(file, existing);
+	}
+
+	if (fileStats.size === 0) {
+		console.log("No code file changes found.\n");
+		return;
+	}
+
+	// Load quiz history
+	const history = loadHistory();
+	const latestQuiz = new Map<string, HistoryEntry>();
+	for (const entry of history.entries) {
+		const existing = latestQuiz.get(entry.file);
+		if (!existing || entry.date > existing.date) {
+			latestQuiz.set(entry.file, entry);
+		}
+	}
+
+	// Build debt list
+	const debts: FileDebt[] = [];
+	for (const [file, stats] of fileStats) {
+		const quiz = latestQuiz.get(file);
+		debts.push({
+			file,
+			totalChanges: stats.added + stats.removed,
+			commits: stats.commits,
+			lastChanged: stats.lastDate,
+			lastQuizzed: quiz?.date || null,
+			quizScore: quiz?.score ?? null,
+		});
+	}
+
+	// Sort by debt severity: unquizzed first, then by change volume
+	debts.sort((a, b) => {
+		const aUnquizzed = a.lastQuizzed === null ? 1 : 0;
+		const bUnquizzed = b.lastQuizzed === null ? 1 : 0;
+		if (aUnquizzed !== bUnquizzed) return bUnquizzed - aUnquizzed;
+		return b.totalChanges - a.totalChanges;
+	});
+
+	// Display
+	const top = debts.slice(0, 20);
+	const totalChanges = debts.reduce((sum, d) => sum + d.totalChanges, 0);
+	const unquizzed = debts.filter(d => d.lastQuizzed === null).length;
+
+	console.log("━━━ Understanding Debt ━━━\n");
+	console.log(`${debts.length} code files changed, ${unquizzed} never quizzed, ${totalChanges} total line changes\n`);
+
+	for (const d of top) {
+		const icon = d.lastQuizzed === null ? "🔴" :
+			(d.quizScore !== null && d.quizScore < 50) ? "🟡" : "🟢";
+		const quizInfo = d.lastQuizzed === null ? "never quizzed" :
+			`${d.quizScore}% on ${d.lastQuizzed}`;
+		const bar = "▓".repeat(Math.min(20, Math.round(d.totalChanges / 20))) +
+			"░".repeat(Math.max(0, 20 - Math.round(d.totalChanges / 20)));
+
+		console.log(`  ${icon} [${bar}] ${String(d.totalChanges).padStart(5)} lines  ${d.file}`);
+		console.log(`     ${d.commits} commits, last changed ${d.lastChanged}, ${quizInfo}`);
+	}
+
+	if (debts.length > 20) {
+		console.log(`\n  ... and ${debts.length - 20} more files`);
+	}
+
+	// Recommendation
+	const worst = debts.find(d => d.lastQuizzed === null && d.totalChanges > 50);
+	if (worst) {
+		console.log(`\n💡 Start here: understand ${worst.file}`);
+	}
+	console.log();
+}
+
 // --- Main ---
 
 async function main() {
 	const args = process.argv.slice(2);
+
+	// Debt command
+	if (args[0] === "debt") {
+		const sinceIdx = args.indexOf("--since");
+		const sinceRef = sinceIdx >= 0 && args[sinceIdx + 1] ? args[sinceIdx + 1] : undefined;
+		analyzeDebt(sinceRef);
+		return;
+	}
 
 	// Summary command
 	if (args[0] === "summary") {
@@ -350,6 +497,8 @@ async function main() {
 		console.log("  npx tsx understand.ts <file> --dry-run    Show questions only (no quiz)");
 		console.log("  npx tsx understand.ts summary             Show understanding scores");
 		console.log("  npx tsx understand.ts summary --below 60  Show files scoring below 60%");
+		console.log("  npx tsx understand.ts debt                Show understanding debt dashboard");
+		console.log("  npx tsx understand.ts debt --since main   Show debt since branch point");
 		process.exit(0);
 	}
 
