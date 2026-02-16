@@ -8,6 +8,7 @@ import { DevLog } from "./DevLog";
 import { TokenStream } from "./TokenStream";
 import { CarouselSlide } from "./CarouselSlide";
 import { NeuralViz } from "./NeuralViz";
+import { GradientFlow } from "./GradientFlow";
 
 export const RemotionRoot: React.FC = () => {
 	return (
@@ -312,6 +313,45 @@ export const RemotionRoot: React.FC = () => {
 					backgroundColor: "#050510",
 					accentColor: "#00d4ff",
 					secondaryColor: "#7c3aed",
+				}}
+			/>
+			{/* GradientFlow — animated gradient bg with glass cards */}
+			<Composition
+				id="GradientFlow"
+				component={GradientFlow}
+				durationInFrames={600}
+				fps={30}
+				width={1080}
+				height={1920}
+				defaultProps={{
+					title: "AI 放大器理论",
+					sections: [
+						{
+							text: "AI是放大器\n不是替代器",
+							startFrame: 30,
+							durationFrames: 120,
+							style: "hook",
+						},
+						{
+							text: "如果你有判断力\nAI放大你的判断力",
+							startFrame: 150,
+							durationFrames: 130,
+							style: "context",
+						},
+						{
+							text: "如果你没有核心能力\nAI放大的就是零",
+							startFrame: 280,
+							durationFrames: 150,
+							style: "insight",
+						},
+						{
+							text: "放大零\n还是零",
+							startFrame: 430,
+							durationFrames: 170,
+							style: "takeaway",
+						},
+					],
+					authorName: "Lamarck",
 				}}
 			/>
 		</>

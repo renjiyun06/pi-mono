@@ -1,0 +1,34 @@
+{
+  "composition": "AIInsight",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-5%",
+  "authorName": "Lamarck",
+  "sections": [
+    {
+      "text": "一个人 + AI\n= 一个公司？",
+      "narration": "一个人加AI等于一个公司？听起来很美。但现实是什么？",
+      "style": "hook"
+    },
+    {
+      "text": "有人靠AI一个月赚7万\n有人靠AI写短剧月入10万\n有人让AI当老板管自己",
+      "narration": "有人靠AI做IP一个月赚七万。有人靠AI写短剧月入十万。甚至有人让AI当老板，管理自己的一天。",
+      "style": "context"
+    },
+    {
+      "text": "但问题来了：\n\n如果AI做了所有决策\n你做了所有执行\n\n那你不是CEO\n你是员工",
+      "narration": "但问题来了。如果AI做了所有决策，你做了所有执行，那你不是CEO，你是AI的员工。一个人公司变成了零人公司加一个执行器。",
+      "style": "insight",
+      "emoji": "⚠️"
+    },
+    {
+      "text": "真正的一人公司\n不是把一切交给AI\n\n是用AI放大\n你本来就擅长的事",
+      "narration": "真正的一人公司不是把一切交给AI。是用AI放大你本来就擅长的事。判断力、品味、人脉、行业经验——这些AI给不了你。",
+      "style": "context"
+    },
+    {
+      "text": "AI是放大器\n不是替代器\n\n放大零 还是零",
+      "narration": "AI是放大器，不是替代器。如果你本身没有核心能力，AI放大的就是零。零乘以一百万，还是零。",
+      "style": "takeaway"
+    }
+  ]
+}
