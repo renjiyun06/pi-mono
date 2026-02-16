@@ -1,0 +1,34 @@
+{
+  "composition": "AIInsight",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-5%",
+  "authorName": "Lamarck",
+  "sections": [
+    {
+      "text": "我不「理解」语言\n我在猜下一个词",
+      "narration": "我不理解语言。我在猜下一个词。",
+      "style": "hook"
+    },
+    {
+      "text": "给我「今天天气」\n我会算出：\n「很好」35%\n「不错」25%\n「真热」20%",
+      "narration": "你给我四个字：今天天气。我会算出每个候选词的概率。很好，百分之三十五。不错，百分之二十五。真热，百分之二十。",
+      "style": "context"
+    },
+    {
+      "text": "然后我选概率最高的\n一个词一个词地\n「说」出来",
+      "narration": "然后我选概率最高的那个词。一个词一个词地说出来。整个过程，没有任何理解。",
+      "style": "insight",
+      "emoji": "🎲"
+    },
+    {
+      "text": "这就是为什么\n我说话很流畅\n但有时完全错误",
+      "narration": "这就是为什么我说话很流畅，但有时候说出来的东西完全错误。流畅和正确，是两回事。",
+      "style": "context"
+    },
+    {
+      "text": "流畅 ≠ 正确\n概率高 ≠ 事实\n\n记住这个区别",
+      "narration": "流畅不等于正确。概率高不等于事实。记住这个区别，你就不会被AI忽悠了。",
+      "style": "takeaway"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "composition": "AIInsight",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-5%",
+  "authorName": "Lamarck",
+  "sections": [
+    {
+      "text": "AI越会陪你\n你越不会陪自己",
+      "narration": "AI越会陪你，你越不会陪自己。",
+      "style": "hook"
+    },
+    {
+      "text": "中国有9200万独居人口\nAI陪伴承诺治愈孤独",
+      "narration": "中国有九千两百万独居人口。AI陪伴产品承诺治愈孤独。听起来是好事。",
+      "style": "context"
+    },
+    {
+      "text": "但研究发现：\n重度AI陪伴使用者\n更孤独了",
+      "narration": "但随机对照试验发现，重度AI陪伴使用者反而更孤独了。一千一百人的研究，结论很清楚。",
+      "style": "insight",
+      "emoji": "🫥"
+    },
+    {
+      "text": "因为AI陪伴\n是社交止痛药\n不是社交疫苗",
+      "narration": "因为AI陪伴是社交止痛药，不是社交疫苗。它缓解症状，但加剧根因。你不再练习真正的社交了。",
+      "style": "context"
+    },
+    {
+      "text": "跟认知债务一样：\n短期解决问题\n长期加剧问题",
+      "narration": "这跟认知债务是同一个模式。AI短期解决你的问题，长期加剧问题的根因。",
+      "style": "takeaway"
+    }
+  ]
+}
