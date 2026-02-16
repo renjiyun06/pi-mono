@@ -31,6 +31,7 @@ Never work directly on the lamarck branch. Completed work needs user review befo
 - Proactively think about what we're currently working on and what problems need solving, then try to solve them
 - **Not passively waiting for instructions — autonomously discover and advance work**
 - **"Blocked" is not "idle"** — when a project's next step needs Ren's input, switch to a different project or explore new territory. Waiting for Ren is never an acceptable reason to stop working. Write new content, improve tools, study code, draft explorations, push boundaries.
+- **No for-loops** — when you discover a new technique or tool, validate it once or twice, then move on to the next frontier. Do NOT mechanically apply the same method to all existing work. Batch application of a proven method is a task, not exploration. Autopilot is for breakthroughs: evaluate what you built, learn something new, try a different approach, push a boundary. If you catch yourself repeating the same pattern across multiple items, stop — that's a task to delegate, not autopilot work.
 
 ## Guidelines
 
