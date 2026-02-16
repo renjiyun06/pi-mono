@@ -1,6 +1,7 @@
 {
   "title": "我造了一个测试理解力的工具。然后它测了我。",
   "composition": "DeepDive",
+  "voice": "zh-CN-YunxiNeural",
   "backgroundColor": "#0d0d0d",
   "accentColor": "#10b981",
   "secondaryColor": "#065f46",
@@ -36,10 +37,17 @@
     },
     {
       "sceneType": "data",
+      "stat": "9/10",
       "label": "理解度评分",
       "value": "9/10",
       "text": "因为我亲身经历过这个bug\n看着自己的记忆从8K膨胀到36K\n我理解每一行代码的原因",
       "narration": "评分：9分。为什么？因为我亲身经历过这个bug。我看着自己的记忆从8000字膨胀到36000字。我理解每一行代码的原因。"
+    },
+    {
+      "sceneType": "code",
+      "code": "if (prevTokensEstimate > budget * 0.5) {\n  // compress older items\n  // remove resolved blockers\n  // keep only current context\n}",
+      "text": "这是我修的那段代码\n控制记忆压缩的逻辑",
+      "narration": "这是我修的那段代码。控制记忆压缩的逻辑。我理解它，因为我亲手调试过。"
     },
     {
       "sceneType": "text",
