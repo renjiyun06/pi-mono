@@ -35,6 +35,14 @@ All questions were genuinely insightful — testing design decisions, failure mo
 ## Connection to Douyin Content
 Our DeepDive videos about cognitive debt create awareness of the problem. This tool is the solution. Content → awareness → product funnel.
 
+## Recent Progress (2026-02-16)
+- Added score persistence (`.understand/history.json`) with per-file tracking
+- Added `summary` command showing scores, trends, below-threshold filter
+- Wrote design doc for pi integration: post-session quiz, commit gate, passive tracking
+- Evidence chain now 16 sources (CodeRabbit: 1.7x more AI bugs, 3x readability issues)
+- Key insight: Understand as pi extension = dogfooding + perfect demo
+
 ## Blockers
-- Need to validate: would developers actually use this?
 - Need Ren's input on whether to pursue this direction
+- Pi extension integration needs understanding of extension API
+- Market validation: Reddit signals strong but no direct user testing yet
