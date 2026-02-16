@@ -1,0 +1,90 @@
+{
+  "composition": "DeepDive",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-5%",
+  "authorName": "Lamarck",
+  "backgroundColor": "#0a0a0a",
+  "accentColor": "#ef4444",
+  "title": "AI写代码悖论",
+  "bgm": "../bgm/dark-ambient-5min.mp3",
+  "bgmVolume": 0.06,
+  "secondaryColor": "#f97316",
+  "sections": [
+    {
+      "sceneType": "text",
+      "text": "用AI写代码的程序员\n自以为快了20%\n\n实际上慢了19%",
+      "narration": "用AI写代码的程序员，自以为快了20%。实际上，慢了19%。",
+      "emphasis": true
+    },
+    {
+      "sceneType": "data",
+      "text": "METR实验室\n随机对照实验",
+      "narration": "METR实验室。16位资深工程师，246个真实任务。随机对照实验。",
+      "stat": "246个真实任务"
+    },
+    {
+      "sceneType": "data",
+      "text": "用AI的组\n平均慢19%\n\n但他们自己说\n快了20%",
+      "narration": "用AI的组，平均慢19%。但问他们自己呢？他们说快了20%。",
+      "stat": "43%认知偏差"
+    },
+    {
+      "sceneType": "text",
+      "text": "43个百分点的认知偏差\n\n你甚至不知道\n自己在变慢",
+      "narration": "43个百分点的认知偏差。你甚至不知道自己在变慢。",
+      "emphasis": true
+    },
+    {
+      "sceneType": "data",
+      "text": "2025年\n只有29%的程序员\n信任AI生成的代码\n\n从40%降下来的",
+      "narration": "2025年，只有29%的程序员信任AI生成的代码。从40%降下来的。",
+      "stat": "信任度29%"
+    },
+    {
+      "sceneType": "text",
+      "text": "45%说最烦的是\n\n「看着对\n但不对」的代码",
+      "narration": "45%的开发者说，最烦的是看着对但不对的代码。",
+      "emphasis": true
+    },
+    {
+      "sceneType": "text",
+      "text": "问题不是AI写错了\n\n是AI写得「差不多对」\n\n你花更多时间\n审查你没写的代码\n比自己写还慢",
+      "narration": "问题不是AI写错了。是AI写得差不多对。你花更多时间审查你没写的代码，比自己写还慢。"
+    },
+    {
+      "sceneType": "data",
+      "text": "Python采用率\n一年涨了7个百分点\n\n不是因为Python更好\n是因为AI对Python最熟",
+      "narration": "更可怕的是，Python采用率一年涨了7个百分点。不是因为Python更好。是因为AI对Python最熟。开发者在追着AI跑。",
+      "stat": "+7%"
+    },
+    {
+      "sceneType": "text",
+      "text": "如果2012年\n就有AI写代码\n\nReact\n会被发明吗？",
+      "narration": "最后一个问题。如果2012年就有AI写代码，React会被发明吗？",
+      "emphasis": true
+    },
+    {
+      "sceneType": "text",
+      "text": "那时jQuery统治一切\nAI会推荐jQuery\n\nReact需要有人\n拒绝jQuery\n从零开始",
+      "narration": "那时jQuery统治一切。AI会推荐jQuery。React需要有人拒绝jQuery，从零开始。"
+    },
+    {
+      "sceneType": "text",
+      "text": "AI只会优化\n当前的局部最优\n\n不会发明新范式",
+      "narration": "AI只会优化当前的局部最优。不会发明新范式。",
+      "emphasis": true
+    },
+    {
+      "sceneType": "text",
+      "text": "AI不是在帮你\n写更好的代码\n\n是在阻止\n更好的代码\n被发明",
+      "narration": "AI不是在帮你写更好的代码。是在阻止更好的代码被发明。",
+      "emphasis": true
+    },
+    {
+      "sceneType": "text",
+      "text": "而你\n还觉得自己快了20%\n\n你怎么看？\n评论区说说",
+      "narration": "而你，还觉得自己快了20%。你怎么看？评论区说说。",
+      "emphasis": true
+    }
+  ]
+}
