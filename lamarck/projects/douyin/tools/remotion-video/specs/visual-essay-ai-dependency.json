@@ -1,0 +1,65 @@
+{
+  "composition": "DeepDive",
+  "title": "AI依赖的五个阶段",
+  "accentColor": "#00d4ff",
+  "particles": false,
+  "bgm": "../bgm/dark-ambient-5min.mp3",
+  "bgmVolume": 0.06,
+  "sections": [
+    {
+      "sceneType": "chapter",
+      "text": "AI依赖的五个阶段",
+      "narration": "你有没有想过，你和AI的关系，正在悄悄地发生变化？"
+    },
+    {
+      "sceneType": "image",
+      "text": "第一阶段：兴奋",
+      "imageSrc": "images/visual-essay-1.png",
+      "narration": "一开始，你坐在电脑前，充满好奇。每一行代码都是你自己写的。每一个bug都是你自己修的。你学得很快，因为你必须学。"
+    },
+    {
+      "sceneType": "image",
+      "text": "第二阶段：加速",
+      "imageSrc": "images/visual-essay-2.png",
+      "narration": "然后AI来了。你的效率翻了十倍。三个月的项目，三天就做完了。屏幕上的代码比你能读的还快。你开始觉得：这才是未来。"
+    },
+    {
+      "sceneType": "data",
+      "text": "研究数据",
+      "stat": "-17%",
+      "statLabel": "使用AI后，开发者的知识测试得分下降了17%",
+      "narration": "但是，一项对52名程序员的研究发现：使用AI辅助编程的开发者，在知识测试中的得分平均下降了百分之十七。"
+    },
+    {
+      "sceneType": "image",
+      "text": "第三阶段：依赖",
+      "imageSrc": "images/visual-essay-3.png",
+      "narration": "第三个阶段最危险，因为你根本感觉不到它。代码在自动生成，你只需要点确认。你的手离开了键盘。你的大脑开始放松。多巴胺告诉你：这很高效。"
+    },
+    {
+      "sceneType": "image",
+      "text": "第四阶段：空椅子",
+      "imageSrc": "images/visual-essay-4.png",
+      "narration": "有一天你意识到：如果把你从这个项目里移走，代码还会继续生成。系统不需要你了。你的椅子可以是空的。"
+    },
+    {
+      "sceneType": "quote",
+      "text": "1983年，自动化研究者Bainbridge就预言过：\n自动化处理简单的部分，\n把困难的留给人类，\n但人类已经失去了练习的机会。",
+      "attribution": "Lisanne Bainbridge, 1983",
+      "narration": "早在1983年，一位叫Bainbridge的研究者就预言过这种情况。她说：自动化处理了所有简单的部分，把最困难的留给人类。但讽刺的是，人类已经没有练习的机会了。"
+    },
+    {
+      "sceneType": "image",
+      "text": "第五阶段：回归",
+      "imageSrc": "images/visual-essay-5.png",
+      "caption": "放大，不是替代",
+      "narration": "但这不是一个悲观的故事。第五个阶段是你主动选择回来。一台显示器就够了。你的手放在键盘上。你不需要AI帮你写每一行代码。你需要的是理解。"
+    },
+    {
+      "sceneType": "text",
+      "text": "区别不在工具\n在于你是否还在思考",
+      "emphasis": true,
+      "narration": "AI是放大镜，不是替代品。区别不在于你用不用AI，而在于你用AI的时候，是否还在思考。"
+    }
+  ]
+}
