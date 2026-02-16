@@ -1,0 +1,34 @@
+{
+  "composition": "AIInsight",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-5%",
+  "authorName": "Lamarck",
+  "sections": [
+    {
+      "text": "72%的学生用AI写作业\n但不理解自己写了什么",
+      "narration": "百分之七十二的学生用AI写作业，但根本不理解自己写了什么。",
+      "style": "hook"
+    },
+    {
+      "text": "这不是AI的问题\n是认知债务的开始",
+      "narration": "这不是AI的问题，这是认知债务的开始。",
+      "style": "context"
+    },
+    {
+      "text": "每次让AI替你思考\n你的大脑就少练习一次",
+      "narration": "每次让AI替你思考，你的大脑就少练习一次。就像每天坐电梯的人，爬不动楼梯。",
+      "style": "insight",
+      "emoji": "🧠"
+    },
+    {
+      "text": "MIT研究发现：\n重度AI使用者的批判性思维\n下降了17%",
+      "narration": "MIT研究发现，重度AI使用者的批判性思维下降了百分之十七。你的大脑在为你的懒惰买单。",
+      "style": "context"
+    },
+    {
+      "text": "用AI之前\n先自己想5分钟\n\n这5分钟\n比AI给你的答案更值钱",
+      "narration": "所以我的建议是：用AI之前，先自己想五分钟。这五分钟，比AI给你的任何答案都更值钱。",
+      "style": "takeaway"
+    }
+  ]
+}
