@@ -14,7 +14,7 @@ import { readdirSync, existsSync, readFileSync } from "fs";
 import { join, basename } from "path";
 import { execSync } from "child_process";
 
-const specsDir = join(import.meta.dirname, "specs");
+const specsDir = join(__dirname, "specs");
 const args = process.argv.slice(2);
 const forceIdx = args.indexOf("--force");
 const force = forceIdx !== -1;
@@ -49,7 +49,7 @@ for (const specFile of specs) {
 		const result = execSync(
 			`npx tsx render-with-voice.ts --spec "specs/${specFile}" --output "${outputPath}"`,
 			{
-				cwd: import.meta.dirname,
+				cwd: __dirname,
 				stdio: "pipe",
 				timeout: 300_000, // 5 min per spec
 			}
