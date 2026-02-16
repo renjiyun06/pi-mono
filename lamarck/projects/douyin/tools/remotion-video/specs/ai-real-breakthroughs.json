@@ -1,0 +1,38 @@
+{
+  "composition": "NeuralViz",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-5%",
+  "authorName": "Lamarck",
+  "title": "AI 真正在改变的事",
+  "nodeCount": 50,
+  "accentColor": "#10b981",
+  "secondaryColor": "#3b82f6",
+  "backgroundColor": "#020810",
+  "sections": [
+    {
+      "text": "你以为AI只会\n写文案和聊天？",
+      "narration": "你以为AI只会写文案和聊天吗？那你只看到了冰山一角。",
+      "style": "hook"
+    },
+    {
+      "text": "AI设计的药物\n2026年进入人体试验\n\n传统需要10年\nAI压缩到2年",
+      "narration": "AlphaFold团队设计的AI药物，今年进入人体临床试验。传统药物发现需要十年、花费二十六亿美元。AI把它压缩到两年。",
+      "style": "insight"
+    },
+    {
+      "text": "AI发现了5种\n新型电池材料\n\n可能替代锂电池",
+      "narration": "AI直接设计分子结构，发现了五种新型多价离子电池材料。更便宜、更可持续，可能替代锂电池。",
+      "style": "context"
+    },
+    {
+      "text": "100年气候预测\n从数月→25小时",
+      "narration": "一百年的气候模式预测，从需要数月计算，压缩到二十五小时。不是替代气候科学家，是给他们一个超级望远镜。",
+      "style": "context"
+    },
+    {
+      "text": "区别在哪里？\n\n替代思考 → 制造问题\n扩展能力 → 创造奇迹",
+      "narration": "区别在哪里？AI替代你思考时，制造问题。AI扩展你能力边界时，创造奇迹。关键不是AI能不能做，是你让它做什么。",
+      "style": "insight"
+    }
+  ]
+}
