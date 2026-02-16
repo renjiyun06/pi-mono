@@ -307,6 +307,14 @@ Separate product from Douyin content. Forces comprehension of AI-generated code.
 
 **MCP Server** (newest): Exposes 3 tools via Model Context Protocol. Any MCP-compatible client (VS Code, Cursor) can quiz developers on code understanding. Tested end-to-end via mcporter — generates questions, evaluates answers (scored 8/10 for correct answer), tracks scores.
 
+**Latest improvements** (segments 31-32):
+- Prompt overhaul: questions now test file-specific knowledge (runtime behavior, library APIs, edge cases), not generic patterns. Sub-agent stress test scored 93% (4.7/5) question quality across 5 diverse files.
+- Fixed JSON parsing: LLM responses with text before JSON now handled via bracket extraction.
+- Fixed self-referential code confusion: system message separation prevents LLM from confusing its own prompt with code being analyzed.
+- Minimum complexity guard: files <5 lines rejected early.
+
+**MCP competitive landscape**: Zero competitors for "test human code comprehension" in the MCP ecosystem (97M monthly SDK downloads, 10K+ servers). quiz-mcp is generic quiz UI, Semantiq gives AI code understanding — neither tests human understanding.
+
 **Web app demo**: Works without API key — pre-loaded rate limiter code with questions about memory leaks, performance, and race conditions. Share `app.html` for zero-friction user testing.
 
 **Questions for Ren**:
