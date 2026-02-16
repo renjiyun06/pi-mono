@@ -1,0 +1,17 @@
+#!/bin/bash
+# Post-commit hook: show understanding debt reminder
+# Install: cp this to .git/hooks/post-commit && chmod +x .git/hooks/post-commit
+
+UNDERSTAND_CLI="$(git rev-parse --show-toplevel)/lamarck/projects/understand/understand.ts"
+
+if [ -f "$UNDERSTAND_CLI" ]; then
+    # Count files with understanding debt
+    DEBT_COUNT=$(cd "$(git rev-parse --show-toplevel)" && npx tsx "$UNDERSTAND_CLI" debt 2>/dev/null | grep "🔴" | wc -l)
+    
+    if [ "$DEBT_COUNT" -gt 5 ]; then
+        echo ""
+        echo "⚠️  Understanding debt: $DEBT_COUNT unreviewed code files"
+        echo "   Run: npx tsx understand.ts debt"
+        echo ""
+    fi
+fi
