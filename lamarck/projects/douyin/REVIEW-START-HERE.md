@@ -49,8 +49,13 @@ Each grid shows every few seconds of the video. You can judge visual quality, sc
 
 **Post at 6PM daily** (best hour per our 923-work database analysis).
 
-### Key Gap
-None of our specs have ending comment prompts ("你呢？" / "你有过这种经历吗？"). Adding a single question at the end could significantly boost comment rates and algorithm scoring. Easy fix.
+### Comment Prompts (Fixed)
+All 5 "ai-watches-you-*" launch specs now have unique ending comment prompts:
+- eat: "你呢？你每天花多久假装在选？"
+- sleep: "你昨晚几点放下手机？评论区说实话。"
+- code: "你写代码时，会删几次才满意？"
+- search: "上次搜一个问题，你换了几个关键词才停下来？"
+- study: "你上次真正学进去，是什么时候？"
 
 ---
 
@@ -252,17 +257,18 @@ Each scene is a full-bleed illustration with Ken Burns effect (slow zoom + pan),
 
 ## NEW: Escalation Format (Rapid-Fire, Share-Optimized)
 
-Two escalation specs rendered:
+Three escalation specs rendered:
 1. **escalation-ai-makes-you-dumber-v1.mp4** (63s, 2.7MB) — pure share-bait
 2. **escalation-cognitive-debt-tool-v1.mp4** (1:48, 5.0MB) — content-as-marketing for Understand product
+3. **escalation-ai-boss-experiment-v2.mp4** (97s, 5.4MB) — responds to viral "99天一人公司" (21K likes). Includes Manim decision atrophy bar chart.
 
 Structure: HOOK → PROOF → ESCALATION ×3-4 → REFRAME. 3-7 second sections. Inspired by top Douyin creators (exploration 073).
 
 ## Total Output
 
 - 34 short video specs + 8 long-form DeepDive specs + 3 escalation specs + 1 visual essay spec (JSON)
-- 60+ rendered prototype videos (8 DeepDives, 2 escalations, 1 visual essay rendered)
-- 14 Manim animations (2D, 3D, camera, updaters, networks, dopamine cycle)
+- 60+ rendered prototype videos (8 DeepDives, 3 escalations, 1 visual essay rendered)
+- 15 Manim animations (2D, 3D, camera, updaters, networks, dopamine cycle, decision atrophy)
 - 7 AI-generated images (2 test + 5 visual essay) — new capability via OpenRouter
 - 2 carousel specs
 - 13 Remotion compositions + 9 DeepDive scene types (chapter, text, data, quote, code, comparison, visual, timeline, image)
@@ -274,3 +280,18 @@ Structure: HOOK → PROOF → ESCALATION ×3-4 → REFRAME. 3-7 second sections.
 - AI debt super-framework: 6 debt types, evidence chain of 18 converging sources
 - Cold start strategy: algorithm-informed launch sequence (exploration 071)
 - DeepDive spec validator: automated quality checking (validate-spec.ts)
+
+## NEW: Understand Product (Anti-Cognitive-Debt Tool)
+
+Separate product from Douyin content. Forces comprehension of AI-generated code.
+
+**Components**: CLI tool, web app (app.html), MCP server, pi extension, landing page, dashboard.
+
+**MCP Server** (newest): Exposes 3 tools via Model Context Protocol. Any MCP-compatible client (VS Code, Cursor) can quiz developers on code understanding. Tested end-to-end via mcporter — generates questions, evaluates answers (scored 8/10 for correct answer), tracks scores.
+
+**Web app demo**: Works without API key — pre-loaded rate limiter code with questions about memory leaks, performance, and race conditions. Share `app.html` for zero-friction user testing.
+
+**Questions for Ren**:
+1. Is this worth pursuing as a product or just a personal tool?
+2. Should we open-source it?
+3. MCP server as distribution strategy — does this make sense?
