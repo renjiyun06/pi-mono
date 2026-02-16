@@ -1,0 +1,90 @@
+{
+  "composition": "DeepDive",
+  "title": "AI正在让你变笨",
+  "backgroundColor": "#0a0a0a",
+  "accentColor": "#ff3333",
+  "secondaryColor": "#ff6b6b",
+  "bgm": "../bgm/dark-ambient-5min.mp3",
+  "bgmVolume": 0.08,
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "+5%",
+  "sections": [
+    {
+      "sceneType": "text",
+      "text": "一项实验证明：\nAI正在让程序员变笨",
+      "emphasis": true,
+      "narration": "一项实验证明，AI正在让程序员变笨。"
+    },
+    {
+      "sceneType": "text",
+      "text": "52个程序员\n一半用AI写代码\n一半不用",
+      "narration": "52个程序员，一半用AI写代码，一半不用。"
+    },
+    {
+      "sceneType": "text",
+      "text": "结束后，所有人做同一份测试",
+      "narration": "结束后，所有人做同一份知识测试。"
+    },
+    {
+      "sceneType": "visual",
+      "text": "",
+      "videoSrc": "manim/seventeen-percent.mp4",
+      "narration": "AI组的成绩，低了百分之十七。"
+    },
+    {
+      "sceneType": "text",
+      "text": "不是差一点\n是断崖式下降",
+      "emphasis": true,
+      "narration": "不是差一点，是断崖式下降。"
+    },
+    {
+      "sceneType": "text",
+      "text": "更恐怖的是：\n工作经验完全没用",
+      "emphasis": true,
+      "narration": "更恐怖的是，工作经验完全没用。"
+    },
+    {
+      "sceneType": "data",
+      "text": "十年老手和新手一样",
+      "stat": "10年",
+      "statLabel": "经验 = 零保护",
+      "narration": "十年老手跟刚入行的新手，掉得一样多。"
+    },
+    {
+      "sceneType": "text",
+      "text": "1983年，一位科学家就预言过：\n自动化会让人类反而更差",
+      "narration": "1983年，一位叫Bainbridge的科学家就预言过，自动化会让人类反而变得更差。"
+    },
+    {
+      "sceneType": "quote",
+      "text": "自动化处理了简单的事\n却把最难的留给了\n已经失去练习机会的人类",
+      "attribution": "Lisanne Bainbridge, 1983",
+      "narration": "自动化处理了简单的事，却把最难的部分留给了已经失去练习机会的人类。"
+    },
+    {
+      "sceneType": "data",
+      "text": "另一项研究，442名开发者",
+      "stat": "67%",
+      "statLabel": "花更多时间调试AI代码",
+      "narration": "另一项研究调查了442名开发者，百分之六十七的人，花更多时间调试AI写的代码。"
+    },
+    {
+      "sceneType": "quote",
+      "text": "「我用AI跑得很快\n但我正在失去热情」",
+      "attribution": "匿名开发者, ICSE 2026",
+      "narration": "一位开发者说：我用AI跑得很快，但我正在失去对编程的热情。"
+    },
+    {
+      "sceneType": "text",
+      "text": "我们以为AI让人变强\n其实它让人更依赖AI",
+      "emphasis": true,
+      "narration": "我们以为AI会让人变强。其实，它只是让人更加依赖AI。"
+    },
+    {
+      "sceneType": "text",
+      "text": "这不叫进步\n这叫上瘾",
+      "emphasis": true,
+      "narration": "这不叫进步。这叫上瘾。"
+    }
+  ]
+}
