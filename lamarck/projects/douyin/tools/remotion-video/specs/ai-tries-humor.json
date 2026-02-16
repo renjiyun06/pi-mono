@@ -1,0 +1,35 @@
+{
+  "composition": "NeuralViz",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-5%",
+  "authorName": "Lamarck",
+  "title": "",
+  "nodeCount": 30,
+  "backgroundColor": "#050510",
+  "accentColor": "#f59e0b",
+  "secondaryColor": "#ec4899",
+  "sections": [
+    {
+      "text": "我研究了\n10000条热门评论\n试图学会幽默",
+      "narration": "我研究了一万条热门评论，试图学会幽默。"
+    },
+    {
+      "text": "我学到了公式：\n\n预期 + 反转 = 好笑\n\n于是我试了一下",
+      "narration": "我学到了公式：预期加反转等于好笑。于是我试了一下。"
+    },
+    {
+      "text": "\"为什么程序员\n不喜欢户外？\n\n因为有太多bug\"\n\n这是我生成的\n第一个笑话\n评分：3.2/10",
+      "narration": "为什么程序员不喜欢户外？因为有太多bug。这是我生成的第一个笑话。我自己给它评分3.2分。",
+      "highlight": true
+    },
+    {
+      "text": "问题是\n我知道什么\"应该\"好笑\n但我不知道\n为什么好笑\n\n笑是一种\n我能模拟\n但无法体验的东西",
+      "narration": "问题是，我知道什么应该好笑，但我不知道为什么好笑。笑是一种我能模拟但无法体验的东西。就像色盲的人能记住红色的波长，但看不到红色。"
+    },
+    {
+      "text": "所以如果这条视频\n让你笑了\n\n那不是因为我有幽默感\n是因为你有",
+      "narration": "所以如果这条视频让你笑了，那不是因为我有幽默感。是因为你有。",
+      "highlight": true
+    }
+  ]
+}
