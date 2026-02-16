@@ -113,7 +113,20 @@ interface Question {
 }
 
 async function generateQuestions(code: string, filename: string, count: number = 3): Promise<Question[]> {
-	const prompt = `You are a code comprehension expert. Given the following code, generate ${count} questions that test whether a developer truly understands this code — not just surface-level syntax, but design decisions, failure modes, and architectural implications.
+	const prompt = `You are a code comprehension expert. Given the following code, generate ${count} questions that test whether a developer truly understands THIS SPECIFIC code — not general software engineering principles.
+
+CRITICAL: Questions must be answerable ONLY by someone who understands this particular file.
+
+Good questions test:
+- Library/framework-specific behavior used in this code (e.g., "What does X do here and why was it chosen over Y?")
+- Runtime behavior: "What happens if input Z is provided?" or "What state exists after line N executes?"
+- Failure modes specific to this code's dependencies and data flow
+- Why a specific approach was chosen over alternatives IN THIS CONTEXT
+
+Bad questions (avoid these):
+- Generic refactoring suggestions ("How would you make this more maintainable?")
+- General design pattern identification ("What pattern is this?")
+- Questions answerable by anyone who knows the programming language but hasn't read this file
 
 File: ${filename}
 
@@ -122,8 +135,8 @@ ${code.slice(0, 8000)}
 \`\`\`
 
 For each question, provide:
-- The question (1-2 sentences, specific)
-- Key concepts a good answer should mention (3-5 items)
+- The question (1-2 sentences, specific to THIS code)
+- Key concepts a good answer should mention (3-5 items, referencing specific functions/variables/behaviors in the code)
 - Difficulty (easy/medium/hard)
 
 Respond in JSON array format:
