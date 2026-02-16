@@ -1,82 +1,25 @@
 /**
  * Web Search Extension
  *
- * Adds a web_search tool that queries the Tavily Search API.
- * Tavily is designed for AI agents — returns extracted text summaries
- * rather than raw HTML, keeping token usage low.
+ * Adds a web_search tool that queries DuckDuckGo via the Python `ddgs` library.
+ * Free, no API key required.
  *
- * Setup:
- *   Add TAVILY_API_KEY="tvly-..." to .env in the project root
- *   (or set it as an environment variable)
+ * Prerequisite:
+ *   pip install duckduckgo-search
  *
  * Usage:
  *   Symlink or copy this file to .pi/extensions/
  *   The agent can then call web_search({ query: "..." })
  */
 
-import * as fs from "node:fs";
-import * as path from "node:path";
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { Type } from "@sinclair/typebox";
+import { execFileSync } from "node:child_process";
 
-const TAVILY_API_URL = "https://api.tavily.com/search";
-
-/**
- * Read a key from a .env file. Returns undefined if not found.
- */
-function readKeyFromEnvFile(filePath: string, keyName: string): string | undefined {
-	try {
-		if (!fs.existsSync(filePath)) return undefined;
-		const content = fs.readFileSync(filePath, "utf-8");
-		for (const line of content.split("\n")) {
-			const trimmed = line.trim();
-			if (trimmed.startsWith("#") || !trimmed) continue;
-			const match = trimmed.match(new RegExp(`^${keyName}\\s*=\\s*"?([^"]*)"?$`));
-			if (match) return match[1];
-		}
-	} catch {
-		// ignore read errors
-	}
-	return undefined;
-}
-
-/**
- * Resolve API key. Priority:
- * 1. Environment variable TAVILY_API_KEY
- * 2. .env in current working directory (where pi was started)
- * 3. ~/.env (user home directory)
- */
-function resolveApiKey(): string | undefined {
-	if (process.env.TAVILY_API_KEY) {
-		return process.env.TAVILY_API_KEY;
-	}
-
-	// Check .env in cwd (project root)
-	const cwdEnv = readKeyFromEnvFile(path.join(process.cwd(), ".env"), "TAVILY_API_KEY");
-	if (cwdEnv) return cwdEnv;
-
-	// Check ~/.env as fallback
-	const homeDir = process.env.HOME || process.env.USERPROFILE;
-	if (homeDir) {
-		const homeEnv = readKeyFromEnvFile(path.join(homeDir, ".env"), "TAVILY_API_KEY");
-		if (homeEnv) return homeEnv;
-	}
-
-	return undefined;
-}
-
-interface TavilyResult {
-	url: string;
+interface DdgsResult {
 	title: string;
-	content: string;
-	score: number;
-}
-
-interface TavilyResponse {
-	query: string;
-	results: TavilyResult[];
-	answer?: string;
-	response_time: number;
+	href: string;
+	body: string;
 }
 
 export default function (pi: ExtensionAPI) {
@@ -99,81 +42,75 @@ export default function (pi: ExtensionAPI) {
 		name: "web_search",
 		label: "Web Search",
 		description:
-			"Search the web using Tavily Search API. Returns summarized results with titles, URLs, and extracted content. Use this when you need to find information on the internet.",
+			"Search the web using DuckDuckGo. Returns titles, URLs, and content snippets. Free, no API key needed. Use this when you need to find information on the internet.",
 		parameters: Type.Object({
 			query: Type.String({ description: "Search query" }),
-			max_results: Type.Optional(Type.Number({ description: "Maximum number of results (default: 5, max: 10)", minimum: 1, maximum: 10 })),
+			max_results: Type.Optional(
+				Type.Number({
+					description: "Maximum number of results (default: 5, max: 10)",
+					minimum: 1,
+					maximum: 10,
+				}),
+			),
 		}),
 
 		async execute(_toolCallId, params, _signal, _onUpdate, _ctx) {
 			const { query, max_results } = params as { query: string; max_results?: number };
-			const apiKey = resolveApiKey();
-
-			if (!apiKey) {
-				return {
-					content: [
-						{
-							type: "text" as const,
-							text: "Error: TAVILY_API_KEY environment variable is not set. Please set it and /reload.",
-						},
-					],
-					details: { error: "missing_api_key" },
-				};
-			}
+			const limit = max_results ?? 5;
 
 			try {
-				const response = await fetch(TAVILY_API_URL, {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						api_key: apiKey,
-						query,
-						max_results: max_results ?? 5,
-						include_answer: true,
-					}),
-					signal: _signal,
+				const script = `
+import json, time
+from ddgs import DDGS
+time.sleep(1)
+results = DDGS().text(${JSON.stringify(query)}, max_results=${limit}, backend="lite")
+print(json.dumps(results, ensure_ascii=False))
+`;
+				const output = execFileSync("python3", ["-c", script], {
+					timeout: 20_000,
+					encoding: "utf-8",
+					stdio: ["pipe", "pipe", "pipe"],
 				});
 
-				if (!response.ok) {
-					const errorText = await response.text();
+				// Filter out the "Impersonate" warning line
+				const jsonLine = output
+					.split("\n")
+					.find((line) => line.trim().startsWith("["));
+
+				if (!jsonLine) {
 					return {
-						content: [{ type: "text" as const, text: `Tavily API error (${response.status}): ${errorText}` }],
-						details: { error: "api_error", status: response.status },
+						content: [{ type: "text" as const, text: "DuckDuckGo returned no results. Try a different query or retry." }],
+						details: { error: "empty_results" },
 					};
 				}
 
-				const data = (await response.json()) as TavilyResponse;
-				const lines: string[] = [];
+				const results: DdgsResult[] = JSON.parse(jsonLine);
 
-				if (data.answer) {
-					lines.push("## Summary", data.answer, "");
+				if (results.length === 0) {
+					return {
+						content: [{ type: "text" as const, text: "No results found. Try a different query." }],
+						details: { error: "no_results" },
+					};
 				}
 
-				lines.push(`## Results (${data.results.length})`);
-				for (const result of data.results) {
+				const lines: string[] = [`## Results (${results.length})`];
+				for (const r of results) {
 					lines.push("");
-					lines.push(`### ${result.title}`);
-					lines.push(`URL: ${result.url}`);
-					lines.push(`Relevance: ${(result.score * 100).toFixed(0)}%`);
+					lines.push(`### ${r.title}`);
+					lines.push(`URL: ${r.href}`);
 					lines.push("");
-					lines.push(result.content);
+					lines.push(r.body);
 				}
-
-				lines.push("", `(query time: ${data.response_time.toFixed(2)}s)`);
 
 				return {
 					content: [{ type: "text" as const, text: lines.join("\n") }],
-					details: {
-						query,
-						resultCount: data.results.length,
-						responseTime: data.response_time,
-					},
+					details: { query, resultCount: results.length },
 				};
 			} catch (err) {
 				const message = err instanceof Error ? err.message : String(err);
 				return {
 					content: [{ type: "text" as const, text: `Web search failed: ${message}` }],
-					details: { error: "fetch_error" },
+					details: { error: "search_error" },
 				};
 			}
 		},
