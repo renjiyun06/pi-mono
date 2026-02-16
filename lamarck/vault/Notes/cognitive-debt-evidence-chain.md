@@ -3,7 +3,7 @@ tags:
   - note
   - research
   - ai
-description: "Evidence chain for cognitive debt thesis — 15 sources from 2025-2026 spanning MIT, Nature, Chinese universities, CHI, ICSE, enterprise architecture, and more"
+description: "Evidence chain for cognitive debt thesis — 16 sources from 2025-2026 spanning MIT, Nature, Chinese universities, CHI, ICSE, enterprise architecture, code analysis, and more"
 ---
 
 # Cognitive Debt Evidence Chain
@@ -101,9 +101,16 @@ Collected 2026-02-16. These studies form a converging evidence chain that AI dep
 - **Framework**: Three Pillars of Agentic Maturity — machine-readable context (AGENTS.md), repo-level awareness, architectural decision records
 - **Significance**: Enterprise architecture perspective. Validates cognitive debt at organizational level with quantitative DORA + GitClear data. Frames it as J-Curve trough, not permanent decline — implying recovery with discipline.
 
+### 16. CodeRabbit: AI Creates 1.7x More Bugs (Jan 2026)
+- **Source**: [Stack Overflow Blog](https://stackoverflow.blog/2026/01/28/are-bugs-and-incidents-inevitable-with-ai-coding-agents/)
+- **Method**: 470 open-access GitHub repos, AI vs human PR comparison
+- **Finding**: AI creates 1.7x more bugs overall, 75% more logic/correctness errors (194/100 PRs), 3x worse readability, 8x more performance issues, 1.5-2x more security bugs.
+- **Key insight**: Readability issues (3x) compound — make debugging harder, multiplying downstream cost. "Massive commits + hard-to-read code = logic errors slip through."
+- **Significance**: First large-scale QUANTITATIVE analysis of actual code, not surveys. Validates Eisele's "forensic review" + DORA delivery stability drops.
+
 ## The Converging Pattern
 
-All 15 sources — across neuroscience, psychology, education, computer science, philosophy, enterprise architecture, forecasting, and journalism — describe the same mechanism:
+All 16 sources — across neuroscience, psychology, education, computer science, philosophy, enterprise architecture, code analysis, forecasting, and journalism — describe the same mechanism:
 
 1. AI provides shortcut → 2. Human skips cognitive effort → 3. Capability atrophies → 4. More AI dependence
 

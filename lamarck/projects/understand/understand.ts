@@ -4,18 +4,22 @@
  *
  * Reads a code file, generates understanding questions via LLM,
  * quizzes the developer, and scores their comprehension.
+ * Tracks scores over time in .understand/history.json.
  *
  * Usage:
- *   npx tsx understand.ts <file> [--diff]          Quiz on a file
+ *   npx tsx understand.ts <file>                   Quiz on a code file
  *   npx tsx understand.ts --git-diff               Quiz on staged git changes
+ *   npx tsx understand.ts <file> --dry-run         Show questions only (no quiz)
+ *   npx tsx understand.ts summary                  Show understanding scores
+ *   npx tsx understand.ts summary --below <N>      Show files scoring below N%
  *
  * Requires OPENROUTER_API_KEY in environment or ../.env
  */
 
-import { readFileSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { execSync } from "child_process";
 import { createInterface } from "readline";
-import { resolve, basename } from "path";
+import { resolve, basename, relative } from "path";
 
 // Load .env from repo root
 const envPath = resolve("/home/lamarck/pi-mono/.env");
@@ -163,13 +167,155 @@ function ask(rl: ReturnType<typeof createInterface>, prompt: string): Promise<st
 	return new Promise((resolve) => rl.question(prompt, resolve));
 }
 
+// --- History Persistence ---
+
+interface HistoryEntry {
+	file: string;
+	date: string;
+	score: number; // 0-100 percentage
+	questions: number;
+	mode: "file" | "git-diff";
+}
+
+interface History {
+	entries: HistoryEntry[];
+}
+
+function getHistoryDir(): string {
+	try {
+		const gitRoot = execSync("git rev-parse --show-toplevel", { encoding: "utf-8" }).trim();
+		return resolve(gitRoot, ".understand");
+	} catch {
+		return resolve(process.cwd(), ".understand");
+	}
+}
+
+function loadHistory(): History {
+	const dir = getHistoryDir();
+	const path = resolve(dir, "history.json");
+	if (existsSync(path)) {
+		try {
+			return JSON.parse(readFileSync(path, "utf-8"));
+		} catch {
+			return { entries: [] };
+		}
+	}
+	return { entries: [] };
+}
+
+function saveHistory(history: History): void {
+	const dir = getHistoryDir();
+	if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+	writeFileSync(resolve(dir, "history.json"), JSON.stringify(history, null, 2));
+}
+
+function addHistoryEntry(file: string, score: number, questions: number, mode: "file" | "git-diff"): void {
+	const history = loadHistory();
+	const gitRoot = (() => {
+		try {
+			return execSync("git rev-parse --show-toplevel", { encoding: "utf-8" }).trim();
+		} catch {
+			return process.cwd();
+		}
+	})();
+	const relFile = mode === "git-diff" ? "git-diff" : relative(gitRoot, resolve(file));
+	history.entries.push({
+		file: relFile,
+		date: new Date().toISOString().slice(0, 10),
+		score,
+		questions,
+		mode,
+	});
+	saveHistory(history);
+}
+
+function showSummary(belowThreshold?: number): void {
+	const history = loadHistory();
+	if (history.entries.length === 0) {
+		console.log("No understanding history yet. Run `understand <file>` to start.\n");
+		return;
+	}
+
+	// Group by file, show latest score per file
+	const latest = new Map<string, HistoryEntry>();
+	for (const entry of history.entries) {
+		const existing = latest.get(entry.file);
+		if (!existing || entry.date > existing.date) {
+			latest.set(entry.file, entry);
+		}
+	}
+
+	const entries = [...latest.values()].sort((a, b) => a.score - b.score);
+	const filtered = belowThreshold != null
+		? entries.filter(e => e.score < belowThreshold)
+		: entries;
+
+	if (filtered.length === 0) {
+		console.log(`No files scoring below ${belowThreshold}%.\n`);
+		return;
+	}
+
+	console.log("━━━ Understanding Summary ━━━\n");
+
+	if (belowThreshold != null) {
+		console.log(`Files scoring below ${belowThreshold}%:\n`);
+	}
+
+	const avgScore = filtered.reduce((sum, e) => sum + e.score, 0) / filtered.length;
+
+	for (const entry of filtered) {
+		const bar = "█".repeat(Math.round(entry.score / 10)) + "░".repeat(10 - Math.round(entry.score / 10));
+		const icon = entry.score >= 80 ? "✅" : entry.score >= 50 ? "⚠️" : "❌";
+		console.log(`  ${icon} [${bar}] ${String(entry.score).padStart(3)}%  ${entry.file}  (${entry.date})`);
+	}
+
+	console.log(`\n  Average: ${Math.round(avgScore)}% across ${filtered.length} files`);
+
+	// Show trend if we have repeat measurements
+	const repeats = new Map<string, HistoryEntry[]>();
+	for (const entry of history.entries) {
+		const list = repeats.get(entry.file) || [];
+		list.push(entry);
+		repeats.set(entry.file, list);
+	}
+
+	const trending: string[] = [];
+	for (const [file, measurements] of repeats) {
+		if (measurements.length >= 2) {
+			const sorted = measurements.sort((a, b) => a.date.localeCompare(b.date));
+			const first = sorted[0].score;
+			const last = sorted[sorted.length - 1].score;
+			const delta = last - first;
+			if (Math.abs(delta) >= 5) {
+				trending.push(`  ${delta > 0 ? "📈" : "📉"} ${file}: ${first}% → ${last}% (${delta > 0 ? "+" : ""}${delta})`);
+			}
+		}
+	}
+
+	if (trending.length > 0) {
+		console.log("\n  Trends:");
+		for (const t of trending) console.log(t);
+	}
+
+	console.log();
+}
+
 // --- Main ---
 
 async function main() {
 	const args = process.argv.slice(2);
 
+	// Summary command
+	if (args[0] === "summary") {
+		const belowIdx = args.indexOf("--below");
+		const belowThreshold = belowIdx >= 0 && args[belowIdx + 1] ? parseInt(args[belowIdx + 1]) : undefined;
+		showSummary(belowThreshold);
+		return;
+	}
+
 	let code: string;
 	let filename: string;
+	let mode: "file" | "git-diff" = "file";
 
 	if (args.includes("--git-diff")) {
 		// Quiz on staged changes
@@ -183,6 +329,7 @@ async function main() {
 			process.exit(1);
 		}
 		filename = "git diff";
+		mode = "git-diff";
 		if (!code.trim()) {
 			console.error("No git changes found (staged or last commit)");
 			process.exit(1);
@@ -198,9 +345,11 @@ async function main() {
 	} else {
 		console.log("understand — anti-cognitive-debt code comprehension tool\n");
 		console.log("Usage:");
-		console.log("  npx tsx understand.ts <file>            Quiz on a code file");
-		console.log("  npx tsx understand.ts --git-diff        Quiz on recent git changes");
-		console.log("  npx tsx understand.ts <file> --dry-run  Show questions only (no quiz)");
+		console.log("  npx tsx understand.ts <file>              Quiz on a code file");
+		console.log("  npx tsx understand.ts --git-diff          Quiz on recent git changes");
+		console.log("  npx tsx understand.ts <file> --dry-run    Show questions only (no quiz)");
+		console.log("  npx tsx understand.ts summary             Show understanding scores");
+		console.log("  npx tsx understand.ts summary --below 60  Show files scoring below 60%");
 		process.exit(0);
 	}
 
@@ -266,6 +415,10 @@ async function main() {
 	// Final summary
 	const avgScore = totalScore / questions.length;
 	const percentage = Math.round((avgScore / 10) * 100);
+
+	// Save to history
+	const inputFile = args.find(a => !a.startsWith("-")) || "git-diff";
+	addHistoryEntry(inputFile, percentage, questions.length, mode);
 
 	console.log("━━━ Understanding Score ━━━\n");
 
