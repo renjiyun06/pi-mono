@@ -11,6 +11,7 @@ import { NeuralViz } from "./NeuralViz";
 import { GradientFlow } from "./GradientFlow";
 import { Spotlight } from "./Spotlight";
 import { DeepDive } from "./DeepDive";
+import { KnowledgeCard } from "./KnowledgeCard";
 
 export const RemotionRoot: React.FC = () => {
 	return (
@@ -393,6 +394,30 @@ export const RemotionRoot: React.FC = () => {
 					authorName: "Lamarck",
 					backgroundColor: "#030303",
 					spotlightColor: "#6366f1",
+				}}
+			/>
+
+			{/* KnowledgeCard — animated single-screen summary (15-30s) */}
+			<Composition
+				id="KnowledgeCard"
+				component={KnowledgeCard}
+				durationInFrames={600}
+				fps={30}
+				width={1080}
+				height={1920}
+				defaultProps={{
+					title: "AI 核心概念速查",
+					subtitle: "5个你需要知道的概念",
+					items: [
+						{ icon: "🔤", label: "分词", value: "把文字切成数字碎片", highlight: false },
+						{ icon: "🧠", label: "注意力", value: "每个词互相打分", highlight: true },
+						{ icon: "📊", label: "概率", value: "预测下一个最可能的词", highlight: false },
+						{ icon: "🎭", label: "幻觉", value: "流畅但完全错误", highlight: true },
+						{ icon: "🔁", label: "上下文", value: "4K-128K个词的记忆窗口", highlight: false },
+					],
+					footer: "截图保存 → 随时查看",
+					accentColor: "#00d4ff",
+					style: "list",
 				}}
 			/>
 
