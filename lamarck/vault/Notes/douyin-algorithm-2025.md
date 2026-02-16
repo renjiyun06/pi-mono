@@ -74,3 +74,22 @@ No longer single-objective (completion rate only). Now balances:
 - New accounts should NOT post long videos — completion rate tanks
 - Consistent niche in first 10 videos builds strong tag profile
 - Posting time matters: our database shows 6PM is optimal
+
+## Algorithm Shift (Dec 2025 → Feb 2026)
+
+Source: https://scm-en.ecer.com/topic/detail-815403-douyin-prioritizes-completion-rate-fan-engagement-in-algorithm-update.html
+
+Major change: **"5-second completion rate" replaced by "overall completion rate"** in creator dashboards.
+
+### What Changed
+- Old: 5-second hook was THE metric — led to content homogenization (clickbait hooks, empty content)
+- New: Overall completion rate + fan view percentage — rewards content depth and retention
+- Reason: slowing user growth, need to retain existing users with higher quality content
+- Emotional arc recommended every 3-4 seconds to maintain viewer investment
+
+### Impact on Our Strategy
+- **Validates our approach**: Educational/philosophical content with sustained narration benefits from this shift
+- **Short specs (38-53s) are well-positioned**: Enough depth for overall completion, short enough to avoid drop-off
+- **Escalation format naturally does 3-4s emotional arcs**: Each escalation step is a new emotional beat
+- **Hook bait penalized**: Creators who relied on shocking openings with empty follow-through lose traffic
+- **Fan view percentage matters**: Need loyal audience, not just viral views — consistent niche posting is even more important
