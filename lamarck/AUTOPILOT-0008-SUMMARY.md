@@ -1,6 +1,8 @@
 # Autopilot-0008 Branch Summary
 
-**111 commits, 95+ files, 12,000+ lines added. Feb 16, 2026.**
+**116 commits, 95+ files, 12,000+ lines added. Feb 16, 2026.**
+
+All checks passing: `npm run check` clean, compaction unit tests (19/19), Understand smoke tests (5/5).
 
 ## Four Deliverables
 
