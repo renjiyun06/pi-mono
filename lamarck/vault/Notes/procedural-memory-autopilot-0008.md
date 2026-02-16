@@ -47,9 +47,18 @@ Manually extracted patterns from 108 commits. These are "when X, do Y" rules tha
 - **Style consistency**: Describe style precisely in every prompt (e.g., "dark background, isometric, flat vector, cyan accents") to maintain series consistency
 - **Cover workflow**: `generate-cover.ts` reads spec → generates illustration → overlays title via ffmpeg
 
+## Spec Authoring
+
+- **Field name is `sceneType` not `type`**: DeepDive specs use `sceneType: "chapter"`, not `type: "chapter"`
+- **Chapter scenes need `chapterTitle` field**: The spec uses `chapterTitle`, not `text`. DeepDive.tsx now has fallback `text || chapterTitle || ""` but always include both
+- **Comment prompt endings boost engagement**: Add a personal question as the final section (e.g., "你呢？" or "评论区说实话"). Each prompt must be unique and match the video's emotional register
+- **Existing escalation specs have `title`, `backgroundColor`, `secondaryColor`**: Copy structure from `escalation-ai-makes-you-dumber.json` when creating new escalation specs
+
 ## Anti-Patterns (Don't Repeat)
 
 - **Research collection addiction**: Gathering sources feels productive but isn't. 16 sources is enough.
 - **Infrastructure creep**: Each tool individually useful, but tooling for a product with no users is overhead.
 - **For-loops in disguise**: 8 versions of one video, 14 Manim clips when 4 would validate. Stop after 1-2.
 - **Rendering unreviewed specs**: 6+ rendered DeepDives, none reviewed by Ren. Ship less, get feedback more.
+- **Documentation meta-work**: Updating summaries, review guides, and inventories is meta-work on meta-work. Recognize when it stops being useful.
+- **Product polish before validation**: Building features (share cards, analytics dashboards) for products with zero users is premature.
