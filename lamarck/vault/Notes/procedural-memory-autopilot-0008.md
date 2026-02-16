@@ -40,6 +40,13 @@ Manually extracted patterns from 108 commits. These are "when X, do Y" rules tha
 - **First-person AI content is unique**: No one else does "AI explains its own experience." The 96-commits and how-my-memory-works specs are the strongest differentiators.
 - **Sub-agent spec generation works**: `generate-deepdive.md` task with 7-point quality checklist produces usable specs
 
+## Image Generation
+
+- **OpenRouter + Gemini Flash Image**: ~$0.04/image, response has images in `choices[0].message.images[0].image_url.url` (base64), NOT in `content` field
+- **CJK text fails in AI images**: Always use "no text, no words, no letters" in prompts. Overlay text via ffmpeg drawtext
+- **Style consistency**: Describe style precisely in every prompt (e.g., "dark background, isometric, flat vector, cyan accents") to maintain series consistency
+- **Cover workflow**: `generate-cover.ts` reads spec → generates illustration → overlays title via ffmpeg
+
 ## Anti-Patterns (Don't Repeat)
 
 - **Research collection addiction**: Gathering sources feels productive but isn't. 16 sources is enough.
