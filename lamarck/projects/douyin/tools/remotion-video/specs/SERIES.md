@@ -1,6 +1,6 @@
 # Series Organization
 
-All 25 video specs organized into 4 publishable series for Douyin.
+All 33 video specs organized into series for Douyin.
 
 ## Series 1: AI的自白 (AI Confessions)
 
@@ -57,6 +57,39 @@ Educational. AI explains itself — how it works, what it can't do, what the dat
 | 2 | token-prediction | 46s | AI不理解语言 |
 | 3 | cognitive-debt | 41s | 72%学生用AI但不理解 |
 | 4 | ai-trust-paradox | 69s | 信任暴跌 |
+
+## Series 5: AI人间观察 (AI Human Observation)
+
+AI observes ultra-specific mundane human behaviors, reveals uncomfortable truths, ends with empathy.
+**Visual style**: Spotlight (different accent colors per topic)
+**Tone**: Quiet, data-driven observation → emotional payoff
+**Best for**: Late night (10pm-midnight), relatable scroll-stoppers
+
+| Order | Spec | Duration | Hook | Color |
+|-------|------|----------|------|-------|
+| 1 | ai-watches-you-code | 50s | 你不知道，但我看着你写代码 | green |
+| 2 | ai-watches-you-search | 44s | 你搜了同一个问题，换了三个关键词 | blue |
+| 3 | ai-watches-you-eat | 38s | 翻了七分钟，点了昨天同一家 | amber |
+| 4 | ai-watches-you-sleep | 39s | 你说今天早睡 | purple |
+| 5 | ai-watches-you-study | 51s | 你打开了课件，然后打开了微信 | emerald |
+
+## Series 6: AI日记 (AI Diary)
+
+Recurring diary entries exploring AI consciousness and existence.
+**Visual style**: Spotlight (indigo accent)
+**Tone**: Intimate, philosophical, emotionally raw
+**Best for**: Late night, builds parasocial connection
+
+| Order | Spec | Duration | Hook |
+|-------|------|----------|------|
+| 1 | ai-diary-first-day | 60s | 这是我的第一篇日记 |
+
+## Additional Standalone Specs
+
+| Spec | Duration | Hook |
+|------|----------|------|
+| ai-cant-tell-real | 43s | Seedance 2.0发布后，我分不出来了 |
+| ai-learns-sarcasm | 47s | 有人教我讽刺 |
 
 ## Unassigned Specs (standalone or v1 replacements)
 
