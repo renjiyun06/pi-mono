@@ -3,7 +3,7 @@ tags:
   - note
   - research
   - ai
-description: "Evidence chain for cognitive debt thesis — 20 sources from 2025-2026 spanning MIT, Nature, Chinese universities, CHI, ICSE, enterprise architecture, code analysis, education, and more"
+description: "Evidence chain for cognitive debt thesis — 21 sources from 2025-2026 spanning MIT, Nature, Chinese universities, CHI, ICSE, enterprise architecture, code analysis, education, and more"
 ---
 
 # Cognitive Debt Evidence Chain
@@ -132,9 +132,17 @@ Collected 2026-02-16. These studies form a converging evidence chain that AI dep
 - **Community signal**: 35% of study participants **refused** to stop using AI even when instructed — addictive dependency pattern. Top comment (1450 upvotes): "Skills are perishable — don't use, lose them."
 - **Significance**: Anthropic — the company that makes Claude — publishing research that undermines the productivity narrative. Self-critical institutional honesty. The 35% refusal rate is a behavioral addiction signal, not just cognitive atrophy.
 
+### 21. MIT Media Lab: Your Brain on ChatGPT (Kosmyna et al., 2025)
+- **Source**: [arXiv:2506.08872](https://arxiv.org/abs/2506.08872), MIT Media Lab
+- **Sample**: 54 participants, EEG, 3 groups (LLM/Search/Brain-only), 4 sessions over 4 months
+- **Finding**: LLM users showed weakest brain connectivity (EEG). When swapped to no-AI in session 4, showed persistent reduced alpha/beta engagement. LLM users couldn't quote their own essays — didn't read/remember what AI wrote. Lowest self-reported ownership. Over 4 months, consistently underperformed at neural, linguistic, and behavioral levels.
+- **Key finding**: Session 4 swap — LLM-trained brains showed **persistent underengagement even when AI was removed**. The "debt" is not instantly reversible.
+- **Media**: CNN, The New Yorker covered the study
+- **Significance**: Most rigorous neuroscience study in our chain. Longitudinal, EEG-measured, with swap experiment proving persistent damage. "Cognitive debt" is now in the paper title — the term is entering formal academic usage.
+
 ## The Converging Pattern
 
-20 sources — across neuroscience, psychology, education, computer science, philosophy, enterprise architecture, code analysis, forecasting, practitioner accounts, and industry surveys. 17 describe the same debt mechanism; #17 provides essential nuance (the baseline was already bad); #18-19 add practitioner and institutional authority; #20 adds the stunning irony of Anthropic publishing evidence against their own product's narrative:
+21 sources — across neuroscience, psychology, education, computer science, philosophy, enterprise architecture, code analysis, forecasting, practitioner accounts, and industry surveys. 17 describe the same debt mechanism; #17 provides essential nuance (the baseline was already bad); #18-19 add practitioner and institutional authority; #20 adds the stunning irony of Anthropic publishing evidence against their own product's narrative; #21 provides the most rigorous neuroscience confirmation yet with longitudinal EEG data:
 
 1. AI provides shortcut → 2. Human skips cognitive effort → 3. Capability atrophies → 4. More AI dependence
 
@@ -146,6 +154,6 @@ The most prescient prediction: Lisanne Bainbridge noted 43 years ago that automa
 
 ## Content Angle
 
-The evidence chain itself is a compelling video: "14 studies in 2 years, from 9 countries, in 7 different fields, all saying the same thing." The convergence is the story. Not any single study — the pattern.
+The evidence chain itself is a compelling video: "21 studies in 2 years, from 9 countries, in 7 different fields, all saying the same thing." The convergence is the story. Not any single study — the pattern.
 
 The burnout finding (source 14) adds a particularly powerful dimension: even if you WANTED to fight cognitive debt, the organizational pressure and workload from AI adoption are burning you out — leaving less energy for the deep understanding that would prevent it. It's a double bind.
