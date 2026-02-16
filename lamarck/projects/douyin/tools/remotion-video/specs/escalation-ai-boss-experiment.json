@@ -1,0 +1,75 @@
+{
+  "composition": "DeepDive",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-5%",
+  "bgm": "../bgm/dark-ambient-5min.mp3",
+  "bgmVolume": 0.06,
+  "particles": true,
+  "accent": "#ff6b35",
+  "sections": [
+    {
+      "chapterTitle": "当AI成为你的老板",
+      "narration": "如果你把所有决策都交给AI，会发生什么？",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "有人真的做了这个实验\n\n让AI决定每天的日程\n每餐吃什么\n每小时做什么\n\n人类只负责执行",
+      "narration": "有人真的做了这个实验。让AI决定每天的日程，每餐吃什么，每小时做什么。人类只负责执行。",
+      "sceneType": "text"
+    },
+    {
+      "text": "第一周\n效率暴增\n\n没有纠结\n没有拖延\n没有选择焦虑",
+      "narration": "第一周，效率暴增。没有纠结，没有拖延，没有选择焦虑。",
+      "emphasis": true,
+      "sceneType": "text"
+    },
+    {
+      "text": "第二周\n开始觉得\n日子很空\n\n明明完成了很多事\n但没有一件\n是自己想做的",
+      "narration": "第二周，开始觉得日子很空。明明完成了很多事，但没有一件是自己想做的。",
+      "sceneType": "text"
+    },
+    {
+      "text": "第三周\n发现一个恐怖的事\n\n自己连午饭吃什么\n都不想决定了\n\n不是不能\n是不想",
+      "narration": "第三周，发现一个恐怖的事。自己连午饭吃什么都不想决定了。不是不能，是不想。",
+      "emphasis": true,
+      "sceneType": "text"
+    },
+    {
+      "text": "这不是科幻\n这是认知债务\n\n每一次你把决策交出去\n大脑就少用一次\n少用一次\n就弱一点",
+      "narration": "这不是科幻，这是认知债务。每一次你把决策交出去，大脑就少用一次，少用一次就弱一点。",
+      "dataLabel": "认知债务",
+      "dataValue": "能力 = 使用频率",
+      "stat": "决策能力 ∝ 使用频率",
+      "sceneType": "data"
+    },
+    {
+      "text": "1983年\n一个叫Bainbridge的研究员\n就预言过这件事\n\n「自动化的讽刺」\n\n越自动化\n人越不熟练\n越不熟练\n越需要自动化",
+      "narration": "1983年，一个叫Bainbridge的研究员就预言过这件事。自动化的讽刺——越自动化，人越不熟练。越不熟练，越需要自动化。",
+      "sceneType": "text"
+    },
+    {
+      "text": "2026年的研究证实：\n\n使用AI辅助的人\n技能下降17%\n写出的代码\n多1.7倍bug",
+      "narration": "2026年的研究证实，使用AI辅助的人，技能下降17%。写出的代码，多1.7倍bug。",
+      "emphasis": true,
+      "sceneType": "text"
+    },
+    {
+      "text": "所以那个实验的结论不是\n「AI可以当老板」\n\n而是\n「当你不再做决定\n你就不再是你」",
+      "narration": "所以那个实验的结论不是AI可以当老板。而是——当你不再做决定，你就不再是你。",
+      "emphasis": true,
+      "sceneType": "text"
+    },
+    {
+      "text": "AI是放大器\n不是替代器\n\n它放大你已有的能力\n但如果你什么都不练\n放大的就是零",
+      "narration": "AI是放大器，不是替代器。它放大你已有的能力。但如果你什么都不练，放大的就是零。",
+      "sceneType": "text"
+    },
+    {
+      "text": "你今天\n把多少个决定\n交给了AI？",
+      "narration": "你今天，把多少个决定交给了AI？",
+      "emphasis": true,
+      "sceneType": "text"
+    }
+  ],
+  "accentColor": "#ff6b35"
+}
