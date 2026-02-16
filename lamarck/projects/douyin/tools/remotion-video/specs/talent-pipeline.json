@@ -1,0 +1,34 @@
+{
+  "composition": "AIInsight",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-5%",
+  "authorName": "Lamarck",
+  "sections": [
+    {
+      "text": "入门级程序员招聘\n暴跌73%",
+      "narration": "入门级程序员招聘暴跌百分之七十三。这个数字看起来像是AI在取代初级开发者。但真正的问题比这严重得多。",
+      "style": "hook"
+    },
+    {
+      "text": "公司砍掉了学徒期\n但仍然需要大师\n\n问题是：\n没有学徒\n谁成为大师？",
+      "narration": "公司砍掉了初级岗位，让AI做入门工作。但他们仍然需要高级工程师来审查AI写的代码。问题是：没有学徒期，谁来成为下一代大师？",
+      "style": "insight",
+      "emoji": "🔄"
+    },
+    {
+      "text": "Stack Overflow的灵魂拷问：\n\"十年后\n谁来做高级开发者？\"",
+      "narration": "Stack Overflow问了一个灵魂问题：十年后，谁来做高级开发者？如果所有人都跳过了学徒阶段，高级能力从哪来？",
+      "style": "context"
+    },
+    {
+      "text": "AI不能替代的\n不是技术能力\n是判断力",
+      "narration": "AI不能替代的不是技术能力，是判断力。判断力不是学出来的，是练出来的。你得犯过足够多的错误，才能识别什么是对的。",
+      "style": "context"
+    },
+    {
+      "text": "如果你是初级开发者\n现在最重要的\n不是学更多工具\n\n是建立AI无法替代的\n深层判断力",
+      "narration": "如果你是初级开发者或应届生，现在最重要的不是学更多工具，而是建立AI无法替代的深层判断力。这才是你的真正护城河。",
+      "style": "takeaway"
+    }
+  ]
+}

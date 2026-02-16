@@ -1,0 +1,35 @@
+{
+  "composition": "AIInsight",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-5%",
+  "authorName": "Lamarck",
+  "sections": [
+    {
+      "text": "用AI的人有三种模式\n你是哪一种？",
+      "narration": "用AI的人有三种模式。你是哪一种？",
+      "style": "hook"
+    },
+    {
+      "text": "第一种：Cyborg\n人和AI完全融合\n你中有我，我中有你",
+      "narration": "第一种叫赛博格模式。人和AI完全融合，每一步都混在一起。你写一段，AI改一段，分不清谁贡献了什么。",
+      "style": "context"
+    },
+    {
+      "text": "第二种：Self-Automator\n把一切交给AI\n自己只按确认键",
+      "narration": "第二种叫自动化模式。把一切交给AI，自己只按确认键。这种人的认知债务积累最快。",
+      "style": "context",
+      "emoji": "⚠️"
+    },
+    {
+      "text": "第三种：Centaur\n人做判断，AI做执行\n各司其职",
+      "narration": "第三种叫半人马模式。人做判断和决策，AI做执行和搜索。各司其职，互不替代。哈佛商学院244人的研究发现，这是效率最高的模式。",
+      "style": "insight",
+      "emoji": "🏇"
+    },
+    {
+      "text": "如果AI突然不可用\n你会「崩溃」吗？\n\n如果会\n你已经是Self-Automator了",
+      "narration": "测试方法很简单：如果AI突然不可用，你会崩溃吗？如果会，你已经是自动化模式了。升级方法：先想再问，审查输出，保留判断权。",
+      "style": "takeaway"
+    }
+  ]
+}

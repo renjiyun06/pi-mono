@@ -1,50 +1,75 @@
-# Video Specs
+# Video & Carousel Specs
 
-JSON specs for the `render-with-voice.ts` pipeline.
-Each spec defines a complete video: visual composition + TTS narration.
+JSON specs for the Remotion render pipelines.
 
-## Usage
+## Render Commands
 
+### Video (with TTS voiceover)
 ```bash
 npx tsx render-with-voice.ts --spec specs/<name>.json --output output.mp4
 ```
 
-## Spec Format
+### Carousel (图文笔记 images)
+```bash
+npx tsx render-carousel.ts --spec specs/<name>.json --output-dir ./output
+```
+
+## Video Spec Format
 
 ```json
 {
   "composition": "AIInsight",
   "voice": "zh-CN-YunxiNeural",
   "rate": "-5%",
-  "authorName": "Lamarck",
   "sections": [
-    {
-      "text": "Display text\non screen",
-      "narration": "What the voice says (can be different/longer than display text)",
-      "style": "hook|context|insight|takeaway",
-      "emoji": "optional emoji"
-    }
+    {"text": "Screen text", "narration": "TTS text", "style": "hook|context|insight|takeaway", "emoji": "optional"}
   ]
 }
 ```
 
-## Available Compositions
+## Carousel Spec Format
+
+```json
+{
+  "slides": [
+    {"headline": "Title", "body": "Details", "style": "title|content|quote|stat|takeaway", "emoji": "optional"}
+  ]
+}
+```
+
+## Available Video Compositions
 
 | ID | Description | Best For |
 |----|-------------|----------|
-| AIInsight | Multi-section short (hook→context→insight→takeaway) | Explainers, opinions |
-| DevLog | Code/terminal/comment blocks | AI dev process, meta content |
-| TokenStream | Token-by-token generation with probabilities | How AI works |
-| OneMinuteAI | Title + bullet points | Quick concept explainers |
+| AIInsight | Hook→context→insight→takeaway | Explainers, opinions |
+| DevLog | Code/terminal/comment blocks | AI dev process |
+| TokenStream | Token generation with probabilities | How AI works |
+| OneMinuteAI | Title + bullet points | Quick concepts |
 | DataViz | Animated bar chart | Stats, comparisons |
-| TextReveal | Word-by-word text reveal | Quotes, key messages |
+| TextReveal | Word-by-word text reveal | Quotes |
 
-## Specs
+## Carousel Styles
 
-| File | Topic | Duration | Status |
-|------|-------|----------|--------|
-| cognitive-debt.json | 认知债务：AI让大脑变懒 | ~41s | Tested |
-| ai-memory.json | AI记忆困境：每天失忆 | ~46s | Tested |
-| vibe-coding.json | Vibe Coding的陷阱 | ~40s | Draft |
-| ai-companion.json | AI陪伴悖论 | ~45s | Draft |
-| token-prediction.json | AI怎么说话 | ~30s | Draft |
+| Style | Description |
+|-------|-------------|
+| title | Large centered headline with accent line |
+| content | Left-aligned with body text |
+| quote | Centered with quote marks |
+| stat | Large number/stat + explanation |
+| takeaway | Highlighted action item |
+
+## Spec Index
+
+### Videos
+| File | Topic | ~Duration | Status |
+|------|-------|-----------|--------|
+| cognitive-debt.json | 认知债务 | 41s | Tested ✓ |
+| ai-memory.json | AI记忆困境 | 46s | Tested ✓ |
+| vibe-coding.json | Vibe Coding陷阱 | 47s | Tested ✓ |
+| ai-companion.json | AI陪伴悖论 | 43s | Tested ✓ |
+| token-prediction.json | AI怎么说话 | 46s | Tested ✓ |
+
+### Carousels
+| File | Topic | Slides | Status |
+|------|-------|--------|--------|
+| carousel-cognitive-debt.json | 认知债务 | 5 | Tested ✓ |
