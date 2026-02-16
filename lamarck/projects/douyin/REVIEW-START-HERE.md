@@ -144,6 +144,36 @@ Both specs evaluated against 3Blue1Brown's visual storytelling checklist:
 4. Cross-post to Bilibili? (Knowledge long-form is trending there — 30% of top 100 UP主)
 5. Color identity: different accent per DeepDive video, or consistent cyan?
 
+## NEW: AI Debt Framework — Intellectual Backbone
+
+**Exploration 069** synthesizes everything we've learned into one framework:
+
+Six types of AI debt — all following the same pattern:
+| Debt Type | What Atrophies | Key Evidence |
+|-----------|---------------|-------------|
+| Cognitive | Understanding, reasoning | MIT brain study, Storey ICSE 2026, 580 Chinese students |
+| Social | Connection, social skills | APA 2026, 700% growth in companion apps |
+| Organizational | Oversight, institutional knowledge | CIO 2026, $2M logistics cascade, 82:1 agent/human ratio |
+| Creative | Originality, aesthetic sense | 50% of internet articles AI-generated |
+| Decision | Judgment, risk assessment | 99-day one-person company viral hit |
+| Talent Pipeline | Learning by doing | Entry-level hiring -73% |
+
+**Core insight**: The difference between debt and growth is the **replacement vs extension boundary**. Same tool, different relationship. Our Manim animation (`replacement-extension.mp4`) visualizes this.
+
+### New DeepDive Videos (latest renders)
+3. **deep-cognitive-debt-v2.mp4** (3:33, 9.6MB) — "Your code, can you still understand it?"
+   - Source: Storey 2026 ICSE keynote, Fowler, Willison
+   - 3 Manim B-roll clips: knowledge graph fragmentation, debt accumulation curve, [placeholder for replacement-extension]
+   - Sub-agent generated spec (7/7 narrative checklist)
+   - Red accent (#e94560)
+
+4. **deep-cognitive-sovereignty-v2.mp4** (2:51, 8.1MB) — already listed above
+
+### Questions for Ren
+1. Does the "AI debt" framework resonate? Is this our brand thesis?
+2. Should the first DeepDive publish be cognitive-debt (most topical) or ai-reads (most educational)?
+3. The sub-agent pipeline can now generate specs from research articles — should we scale this?
+
 ## Legacy Episodes (Terminal Format)
 
 25 terminal-video episodes from S1-S5 still available at `D:\wsl-bridge\ep*-video.mp4`.
@@ -151,11 +181,13 @@ These are text-scrolling-in-terminal style — older format, replaced by Remotio
 
 ## Total Output
 
-- 34 short video specs + 3 long-form DeepDive specs (JSON)
-- 55+ rendered prototype videos
-- 8 Manim animations (2D, 3D, camera movement)
+- 34 short video specs + 5 long-form DeepDive specs (JSON)
+- 57+ rendered prototype videos
+- 14 Manim animations (2D, 3D, camera, updaters, networks)
 - 2 carousel specs
-- 13 Remotion compositions (including DeepDive, KnowledgeCard)
-- Automated pipeline: spec → TTS → render → BGM mix → combine
+- 13 Remotion compositions + 8 DeepDive scene types (including timeline)
+- Automated pipeline: spec → TTS → render → BGM mix → subtitle → combine
+- Sub-agent pipeline: research → generate-deepdive → render-deepdive (delegatable)
 - video-summary.sh: 4x4 keyframe grid generator for quick review
 - Per-section voice/rate override for multi-voice videos
+- AI debt super-framework: 6 debt types, evidence chain of 8 studies
