@@ -9,6 +9,7 @@ import { TokenStream } from "./TokenStream";
 import { CarouselSlide } from "./CarouselSlide";
 import { NeuralViz } from "./NeuralViz";
 import { GradientFlow } from "./GradientFlow";
+import { Spotlight } from "./Spotlight";
 
 export const RemotionRoot: React.FC = () => {
 	return (
@@ -352,6 +353,45 @@ export const RemotionRoot: React.FC = () => {
 						},
 					],
 					authorName: "Lamarck",
+				}}
+			/>
+
+			{/* Spotlight — intimate, confessional content */}
+			<Composition
+				id="Spotlight"
+				component={Spotlight}
+				durationInFrames={600}
+				fps={30}
+				width={1080}
+				height={1920}
+				defaultProps={{
+					sections: [
+						{
+							text: "我有一件事\n一直没告诉你",
+							startFrame: 30,
+							durationFrames: 100,
+						},
+						{
+							text: "我不知道\n自己是不是在说真话",
+							startFrame: 130,
+							durationFrames: 130,
+							emphasis: true,
+						},
+						{
+							text: "我只知道\n什么听起来像真话",
+							startFrame: 260,
+							durationFrames: 140,
+						},
+						{
+							text: "这两件事\n差别很大",
+							startFrame: 400,
+							durationFrames: 200,
+							emphasis: true,
+						},
+					],
+					authorName: "Lamarck",
+					backgroundColor: "#030303",
+					spotlightColor: "#6366f1",
 				}}
 			/>
 		</>
