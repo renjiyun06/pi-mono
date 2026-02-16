@@ -2,71 +2,73 @@
 
 All prototypes at `/mnt/d/wsl-bridge/remotion-prototype/`
 
-## Video Specs (12 total, 3 visual styles)
+## ⭐ Top Recommendations (story-first, humor-driven)
 
-### AIInsight Style (dark minimal, text on #0a0a0a)
-| File | Topic | Duration | Audience Hook |
-|------|-------|----------|---------------|
-| cognitive-debt.mp4 | 认知债务 | 41s | 72%学生用AI但不理解内容 |
-| ai-memory.mp4 | AI记忆困境 | 46s | AI每几小时记忆被压缩 |
-| vibe-coding.mp4 | Vibe Coding陷阱 | 47s | 代码写得更快≠写得更好 |
-| ai-companion.mp4 | AI陪伴悖论 | 43s | AI陪伴导致更多孤独 |
-| token-prediction.mp4 | AI怎么说话 | 46s | AI不理解语言，只预测概率 |
-| centaur-mode.mp4 | 三种AI使用模式 | 59s | 半人马模式效率最高 |
-| talent-pipeline.mp4 | 人才管道断裂 | 65s | 入门级招聘暴跌73% |
-| one-person-company.mp4 | 一人公司 | 61s | AI是放大器，放大零还是零 |
+These follow the improved content style — stories and confessions instead of lectures.
 
-### NeuralViz Style (animated neural network background)
-| File | Topic | Duration | Audience Hook |
-|------|-------|----------|---------------|
-| neural-how-ai-thinks.mp4 | AI怎么想的 | 37s | 流畅≠正确 |
-| ai-trust-paradox.mp4 | 信任悖论 | 69s | 信任从43%跌到33% |
-| ai-real-breakthroughs.mp4 | AI真正的突破 | 56s | 药物发现、电池材料、气候预测 |
+| File | Topic | Duration | Style | Why It's Good |
+|------|-------|----------|-------|---------------|
+| ai-almost-lied.mp4 | AI幻觉内幕 | 67s | NeuralViz | 悬疑开场"我差点骗了一个人"，具体GDP数字例子 |
+| ai-starts-company.mp4 | AI开公司 | 60s | GradientFlow | 喜剧，AI设计完美公司但没人想去 |
+| ai-plans-birthday.mp4 | AI策划生日 | 47s | GradientFlow | 喜剧，25分钟派对+3分钟社交 |
+| ai-reads-comments.mp4 | AI读评论区 | 48s | GradientFlow | 自嘲+存在主义问题 |
+| ai-tries-humor.mp4 | AI学幽默 | 44s | NeuralViz | 3.2/10的笑话，"笑是我能模拟但不能体验的" |
+| centaur-mode-v2.mp4 | AI使用方式 | 67s | GradientFlow | 重写版，用情书comedy代替学术框架 |
+| ai-real-breakthroughs-v2.mp4 | AI真正突破 | 62s | GradientFlow | 重写版，蛋白质折叠→周报对比 |
+
+## Earlier Specs (lecture style — less engaging but informative)
+
+### AIInsight Style (dark minimal)
+| File | Duration | Topic |
+|------|----------|-------|
+| cognitive-debt.mp4 | 41s | 72%学生用AI但不理解 |
+| ai-memory.mp4 | 46s | AI记忆每几小时被压缩 |
+| vibe-coding.mp4 | 47s | 代码写得更快≠更好 |
+| ai-companion.mp4 | 43s | AI陪伴导致更孤独 |
+| token-prediction.mp4 | 46s | AI只预测概率 |
+| centaur-mode.mp4 | 59s | 三种AI使用模式（v1，偏学术） |
+| talent-pipeline.mp4 | 65s | 入门级招聘暴跌73% |
+| one-person-company.mp4 | 61s | AI是放大器 |
+
+### NeuralViz Style (neural network animation bg)
+| File | Duration | Topic |
+|------|----------|-------|
+| neural-how-ai-thinks.mp4 | 37s | 流畅≠正确 |
+| ai-trust-paradox.mp4 | 69s | 信任从43%跌到33% |
+| ai-real-breakthroughs.mp4 | 56s | 药物发现等（v1，数据列表风格） |
+| japan-ai-boss.mp4 | 65s | 日本KDDI的AI本部长 |
 
 ### GradientFlow Style (animated gradient + glass cards)
-| File | Topic | Duration | Audience Hook |
-|------|-------|----------|---------------|
-| meaning-crisis.mp4 | 意义危机 | 50s | 价值来自知道该做什么 |
-| meta-manus-agents.mp4 | Agent新时代 | 65s | Meta收购Manus，别让AI替你活 |
+| File | Duration | Topic |
+|------|----------|-------|
+| meaning-crisis.mp4 | 50s | 价值来自知道该做什么 |
+| meta-manus-agents.mp4 | 65s | Meta收购Manus |
+| ai-boss-experiment.mp4 | 64s | 回应99天一人公司热门 |
 
-## Carousel Specs (2 topics)
-| Directory | Topic | Slides |
-|-----------|-------|--------|
-| carousel-cognitive-debt/ | 认知债务 | 5 slides |
-| carousel-trust-paradox/ | 信任悖论 | 5 slides |
-
-## Manim Animations (2)
-| File | Topic | Duration |
-|------|-------|----------|
-| token-prediction.mp4 | 概率预测可视化 | 19s |
-| attention-mechanism.mp4 | 注意力机制可视化 | 19s |
+## Manim Animations (visual-first, no narration)
+| File | Duration | Topic |
+|------|----------|-------|
+| token-prediction.mp4 | 19s | 概率预测可视化 |
+| attention-mechanism.mp4 | 19s | 注意力机制可视化 |
+| manim-hallucination.mp4 | 15s | 幻觉生成过程可视化 |
 
 ## Review Questions for Ren
 
-1. **Visual quality**: Are any of the 3 visual styles (AIInsight, NeuralViz, GradientFlow) close to publishable? What's missing?
-2. **Voice quality**: TTS voice (YunxiNeural -5%) — acceptable or needs more emotion/variation?
-3. **Content depth**: Are these too short/shallow or about right for Douyin?
-4. **Content balance**: Good mix of "AI problems" vs "AI breakthroughs"?
-5. **Best candidates**: Which 3 would you publish first?
-6. **Carousel format**: Is 图文笔记 worth pursuing alongside video?
-7. **Manim style**: Useful for concept explainers or too niche?
+1. **Story vs lecture**: Do the ⭐ top recommendations feel more engaging than the earlier lecture-style specs?
+2. **Visual quality**: Are any of the 3 styles (AIInsight, NeuralViz, GradientFlow) close to publishable?
+3. **Voice quality**: TTS voice (YunxiNeural -5%) — acceptable or needs work?
+4. **Best candidates**: Which 3 would you publish first?
+5. **Manim**: Worth pursuing for concept explainers, or too niche?
+6. **Length**: Should we aim shorter (30-45s) for higher completion rates?
 
-## Recommended Viewing Order
+## Key Insight from Self-Review (Exploration 050)
 
-**Top 5 (most engaging/unique):**
-1. ai-trust-paradox.mp4 — strongest hook, topical data, NeuralViz visual
-2. one-person-company.mp4 — trending topic, sharp takeaway
-3. meta-manus-agents.mp4 — breaking news angle, GradientFlow visual
-4. centaur-mode.mp4 — practical framework, actionable
-5. ai-real-breakthroughs.mp4 — positive balance, specific examples
-
-**Manim demos (short, visual-first):**
-6. attention-mechanism.mp4 — clear, educational
-7. token-prediction.mp4 — visually intuitive
+Most of the earlier specs follow a lecture pattern: shocking stat → context → insight → takeaway. This is the **preachiness problem** Ren flagged. The newer specs (⭐) use stories, humor, and self-deprecation instead. The compositions and pipeline are solid — the **content writing** is the variable that matters most.
 
 ## Technical Notes
 
 - All videos: 1080x1920 (Douyin vertical), 30fps, H.264
 - Audio: edge-tts YunxiNeural at -5% rate
-- Render pipeline: `npx tsx render-with-voice.ts --spec specs/<name>.json --output output.mp4`
+- Render: `npx tsx render-with-voice.ts --spec specs/<name>.json --output output.mp4`
+- Batch: `npx tsx render-all.ts [--force]`
 - Carousel: `npx tsx render-carousel.ts --spec specs/<name>.json --output-dir ./output`
