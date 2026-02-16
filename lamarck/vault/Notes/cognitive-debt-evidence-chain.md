@@ -3,7 +3,7 @@ tags:
   - note
   - research
   - ai
-description: "Evidence chain for cognitive debt thesis — 14 sources from 2025-2026 spanning MIT, Nature, Chinese universities, CHI, ICSE, and more"
+description: "Evidence chain for cognitive debt thesis — 15 sources from 2025-2026 spanning MIT, Nature, Chinese universities, CHI, ICSE, enterprise architecture, and more"
 ---
 
 # Cognitive Debt Evidence Chain
@@ -94,9 +94,16 @@ Collected 2026-02-16. These studies form a converging evidence chain that AI dep
 - **New concept**: Burnout as AI debt — the pressure to use + validate AI output exhausts developers
 - **Significance**: Top SE conference (ICSE). Adds wellbeing/burnout dimension to cognitive debt. N=442.
 
+### 15. Eisele: Cognitive Debt as Enterprise Architecture Crisis (Feb 2026)
+- **Source**: [LinkedIn article](https://www.linkedin.com/pulse/cognitive-debt-crisis-architecture-disruption-agentic-markus-eisele-98ygf) by Markus Eisele (Red Hat, Java Champion)
+- **Finding**: AI Productivity J-Curve — generation speed spikes, then delivery stability drops (DORA 2025). Code duplication up 48%, refactoring down 60% (GitClear). 45% of AI code has security vulns.
+- **New concepts**: "Forensic code review" (defining skill of 2026), "managing provenance" (memory → objects → history → provenance), prompts as specifications
+- **Framework**: Three Pillars of Agentic Maturity — machine-readable context (AGENTS.md), repo-level awareness, architectural decision records
+- **Significance**: Enterprise architecture perspective. Validates cognitive debt at organizational level with quantitative DORA + GitClear data. Frames it as J-Curve trough, not permanent decline — implying recovery with discipline.
+
 ## The Converging Pattern
 
-All 14 sources — across neuroscience, psychology, education, computer science, philosophy, forecasting, and journalism — describe the same mechanism:
+All 15 sources — across neuroscience, psychology, education, computer science, philosophy, enterprise architecture, forecasting, and journalism — describe the same mechanism:
 
 1. AI provides shortcut → 2. Human skips cognitive effort → 3. Capability atrophies → 4. More AI dependence
 
