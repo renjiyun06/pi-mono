@@ -73,7 +73,7 @@ Manually extracted patterns from 108 commits. These are "when X, do Y" rules tha
 
 - **Local SQLite has 923 Douyin works, 158 Reddit posts, 876 Twitter posts, 1270 zhihu activities**: Rich dataset for competitive intelligence when external research is blocked.
 - **Share rate hierarchy**: Tier 1 "holy shit" 50-155%, Tier 2 "identity" 10-30%, Tier 3 "education" 1-5%. Content strategy should target Tier 2 minimum.
-- **60-90s duration sweet spot**: 58.1% average share rate (2x any other bucket). Short specs slightly under, DeepDives at structural disadvantage.
+- **60-90s duration sweet spot for average content**: 58.1% average share rate (2x any other bucket). But top creators (AI有点聊) achieve 60-68% share rates at 125-165s. Duration ceiling depends on content quality. Our escalation at ~90s is conservative-safe; going to 120s is fine if warranted.
 - **Posting time**: 9 AM Beijing = 33.7% share rate (best), 5 PM worst at 12.8%. 6 PM has most competition (117 posts).
 - **Reddit comment summaries > articles**: Pre-validated emotional reactions from exact target audience. "Junior dev dilemma" is strongest identity-tier framing.
 - **Bookmark-to-like ratio on Twitter**: Measures practical utility (bentossell 280%, trq212 138%). Different signal from shares (emotional/identity).
