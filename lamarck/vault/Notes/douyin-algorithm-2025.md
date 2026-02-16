@@ -87,6 +87,13 @@ Major change: **"5-second completion rate" replaced by "overall completion rate"
 - Reason: slowing user growth, need to retain existing users with higher quality content
 - Emotional arc recommended every 3-4 seconds to maintain viewer investment
 
+### Official Algorithm Details (from pandaily transparency report, Apr 2025)
+- **Scoring**: `P(user_action) × action_value_weight = priority` — higher value actions (shares, follows) weighted more
+- **Model**: Wide & Deep + two-tower recall, deep neural networks (no manual tags)
+- **Signals**: Like, dislike, follow, favorite, share, comment, watch-to-end, revisit, search related
+- **Update speed**: "Minute-level" real-time — feed adjusts within minutes
+- **Multi-objective**: Completion rate + quality + diversity + long-term satisfaction + creator fairness
+
 ### Impact on Our Strategy
 - **Validates our approach**: Educational/philosophical content with sustained narration benefits from this shift
 - **Short specs (38-53s) are well-positioned**: Enough depth for overall completion, short enough to avoid drop-off
