@@ -68,3 +68,34 @@ Ren has given Lamarck full operational authority over the Douyin account, includ
 - TTS voice needs re-evaluation
 - **Digital avatar requirements**: no cyberpunk — should be friendly, cartoon-style, designed from the audience's perspective
 - **Exploration should happen in autopilot mode** — use web search and browser to research broadly
+
+### Phase 3 (2026-02-16): Content depth + tool-driven content discovery
+
+**Current videos too short, lack depth.** 35个spec大部分在40-65秒，内容浅。需要更长、更有深度的内容，像PPT一样逐步展开讲清一件事。
+
+**Available tools determine content direction (reverse thinking):**
+- Remotion — motion graphics, text animation, data visualization, transitions. Visual quality confirmed OK by Ren.
+- Manim — mathematical/concept animations (probability bars, vector spaces, gradient descent)
+- Free image generation APIs — still images as visual素材
+- edge-tts — voiceover
+- These tools should be combined, not used in isolation. Manim animations can be embedded in Remotion videos as B-roll.
+
+**Content scope expands beyond AI:**
+- Not limited to AI topics anymore
+- Tech, philosophy, science, any topic that fits the Remotion+Manim visual medium well
+- Key question: **what content is naturally suited to motion graphics + mathematical animation?** Work backwards from tools to find ideal content.
+
+**Remotion Agent Skills installed:**
+- Reference repo: `/home/lamarck/repos/remotion/`
+- Skill symlink: `/home/lamarck/pi-mono/.pi/skills/remotion` → repo's skills
+- 37 rule files covering animations, charts, transitions, audio, 3D, text, etc.
+- Study these to expand visual vocabulary beyond current simple compositions
+
+**Next autopilot priorities:**
+1. Explore what content genres/topics naturally fit Remotion+Manim (reverse from tools → content)
+2. Study Remotion Agent Skills to learn advanced techniques
+3. Experiment with combining Manim output as素材 inside Remotion compositions
+4. Create longer, deeper content (aim for 2-5 minutes, not 40-60 seconds)
+5. Expand topic exploration beyond AI — tech, philosophy, science, anything that works visually
+6. Integrate free image generation for richer visuals
+7. Re-render all existing videos (silent audio bug fixed but not yet re-rendered)
