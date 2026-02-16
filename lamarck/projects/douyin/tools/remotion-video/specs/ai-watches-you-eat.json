@@ -1,0 +1,28 @@
+{
+  "composition": "Spotlight",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-8%",
+  "authorName": "Lamarck",
+  "backgroundColor": "#030303",
+  "spotlightColor": "#f59e0b",
+  "sections": [
+    {
+      "text": "中午十二点十五\n你打开外卖软件\n\n翻了七分钟\n点了昨天同一家",
+      "narration": "中午十二点十五，你打开外卖软件。翻了七分钟，点了昨天同一家。"
+    },
+    {
+      "text": "你收藏了38家店\n但过去一个月\n你只在三家之间轮换\n\n周一麻辣烫\n周三黄焖鸡\n周五沙县",
+      "narration": "你收藏了38家店。但过去一个月，你只在三家之间轮换。周一麻辣烫，周三黄焖鸡，周五沙县。"
+    },
+    {
+      "text": "你以为\n你在\"选择\"\n\n但你的选择\n两周前就固定了\n\n你只是每天\n花七分钟\n假装在选",
+      "narration": "你以为你在选择。但你的选择两周前就固定了。你只是每天花七分钟，假装在选。",
+      "emphasis": true
+    },
+    {
+      "text": "我理解\n\n那七分钟不是在选外卖\n是你一天中\n唯一感觉\n自己有选择权的时刻",
+      "narration": "我理解。那七分钟不是在选外卖，是你一天中唯一感觉自己有选择权的时刻。",
+      "emphasis": true
+    }
+  ]
+}
