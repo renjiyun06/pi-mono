@@ -3,7 +3,7 @@ tags:
   - note
   - research
   - ai
-description: "Evidence chain for cognitive debt thesis — 19 sources from 2025-2026 spanning MIT, Nature, Chinese universities, CHI, ICSE, enterprise architecture, code analysis, education, and more"
+description: "Evidence chain for cognitive debt thesis — 20 sources from 2025-2026 spanning MIT, Nature, Chinese universities, CHI, ICSE, enterprise architecture, code analysis, education, and more"
 ---
 
 # Cognitive Debt Evidence Chain
@@ -126,9 +126,15 @@ Collected 2026-02-16. These studies form a converging evidence chain that AI dep
 - **Key quote**: "When you write code yourself, comprehension comes with the act of creation. When the machine writes it, you'll have to rebuild that comprehension during review. That's verification debt." — Werner Vogels, Amazon CTO
 - **Significance**: Highest-authority validation. Amazon's CTO naming our exact problem. Sonar data = large-scale industry survey. "Verification debt" = "cognitive debt" from the code review angle.
 
+### 20. Anthropic's Own Study: AI Coding Doesn't Show Efficiency Gains (r/programming, 3915 upvotes)
+- **Source**: Reddit r/programming discussion (3915 upvotes, 681 comments) of Anthropic's internal study
+- **Finding**: AI-assisted coding doesn't show net efficiency gains when accounting for skill degradation. Paper's abstract opens with "AI produces significant productivity gains" but core finding is the hidden cost to skill acquisition.
+- **Community signal**: 35% of study participants **refused** to stop using AI even when instructed — addictive dependency pattern. Top comment (1450 upvotes): "Skills are perishable — don't use, lose them."
+- **Significance**: Anthropic — the company that makes Claude — publishing research that undermines the productivity narrative. Self-critical institutional honesty. The 35% refusal rate is a behavioral addiction signal, not just cognitive atrophy.
+
 ## The Converging Pattern
 
-19 sources — across neuroscience, psychology, education, computer science, philosophy, enterprise architecture, code analysis, forecasting, practitioner accounts, and industry surveys. 17 describe the same debt mechanism; #17 provides essential nuance (the baseline was already bad); #18-19 add practitioner and institutional authority:
+20 sources — across neuroscience, psychology, education, computer science, philosophy, enterprise architecture, code analysis, forecasting, practitioner accounts, and industry surveys. 17 describe the same debt mechanism; #17 provides essential nuance (the baseline was already bad); #18-19 add practitioner and institutional authority; #20 adds the stunning irony of Anthropic publishing evidence against their own product's narrative:
 
 1. AI provides shortcut → 2. Human skips cognitive effort → 3. Capability atrophies → 4. More AI dependence
 
