@@ -42,6 +42,8 @@ interface VideoSpec {
 	backgroundColor?: string;
 	accentColor?: string;
 	sections: SectionSpec[];
+	// Extra props forwarded to the composition (e.g., title, nodeCount, secondaryColor)
+	[key: string]: unknown;
 }
 
 function getDuration(filePath: string): number {
@@ -91,12 +93,13 @@ async function main() {
 		const audioPath = join(tmpDir, `section-${i}.mp3`);
 		sectionAudioPaths.push(audioPath);
 
-		execSync(
-			`python3 -m edge_tts --voice "${voice}" --rate="${rate}" ` +
-			`--text "${section.narration.replace(/"/g, '\\"')}" ` +
-			`--write-media "${audioPath}"`,
-			{ stdio: "pipe" }
-		);
+		execFileSync("python3", [
+			"-m", "edge_tts",
+			"--voice", voice,
+			`--rate=${rate}`,
+			"--text", section.narration,
+			"--write-media", audioPath,
+		], { stdio: "pipe" });
 
 		const duration = getDuration(audioPath);
 		sectionDurations.push(duration);
@@ -138,11 +141,15 @@ async function main() {
 
 	const totalFrames = currentFrame + 30; // 1s tail
 
+	// Build input props: sections + all other spec fields (title, nodeCount, etc.)
+	// This makes the pipeline composition-agnostic — extra props are forwarded.
+	const { sections: _sections, voice: _v, rate: _r, composition: _c, ...extraProps } = spec as Record<string, unknown>;
 	const inputProps = {
 		sections: remotionSections,
-		authorName: spec.authorName || "Lamarck",
-		backgroundColor: spec.backgroundColor || "#0a0a0a",
-		accentColor: spec.accentColor || "#00d4ff",
+		authorName: (spec as Record<string, unknown>).authorName || "Lamarck",
+		backgroundColor: (spec as Record<string, unknown>).backgroundColor || "#0a0a0a",
+		accentColor: (spec as Record<string, unknown>).accentColor || "#00d4ff",
+		...extraProps,
 	};
 
 	console.log(`  Total frames: ${totalFrames} (${(totalFrames / fps).toFixed(1)}s)`);

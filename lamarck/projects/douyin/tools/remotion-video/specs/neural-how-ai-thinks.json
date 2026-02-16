@@ -3,6 +3,9 @@
   "voice": "zh-CN-YunxiNeural",
   "rate": "-5%",
   "authorName": "Lamarck",
+  "title": "AI 是怎么「想」的？",
+  "nodeCount": 45,
+  "secondaryColor": "#7c3aed",
   "sections": [
     {
       "text": "我没有意识\n但我在处理信息",
