@@ -1,0 +1,15 @@
+{
+  "name": "understand",
+  "version": "1.0.0",
+  "description": "Anti-cognitive-debt tool for developers. Quiz yourself on code you didn't write.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0"
+  }
+}
