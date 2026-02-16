@@ -1,5 +1,41 @@
 # Review Start Here
 
+## IMPORTANT: Cold Start Strategy (New Research)
+
+**Our account**: 21 views/week, 9% completion rate, 0% engagement.
+
+**Douyin's algorithm** (from their own 2025 transparency report):
+- New videos get 300-500 views in "cold start pool"
+- Must pass 5 metrics to reach 1000-5000 pool: **completion rate** (most important, need >15%), like rate (need >3%), comment rate, share rate, follow conversion
+- **First 10 videos determine our account's tag profile** — must be consistent niche
+- **Golden 3 seconds** — 70% of swipe-aways happen in first 3 seconds
+
+**Problem**: Our DeepDives are 2:30-3:37. Too long for cold start. Completion rate will be terrible.
+
+**Recommendation**: Launch with short videos (38-65s) first. Build audience, then introduce DeepDives.
+
+### Recommended Launch Sequence (see exploration 071 for full audit)
+
+| # | Video | Duration | Why |
+|---|-------|----------|-----|
+| 1 | ai-watches-you-eat | 38s | Shortest + most relatable. Everyone orders the same food. |
+| 2 | ai-watches-you-sleep | 39s | Universal. Late-night scroll = guilty recognition. |
+| 3 | ai-watches-you-study | 51s | Student demographic = Douyin's core. |
+| 4 | ai-watches-you-search | 44s | Confirmation bias. Slightly intellectual. |
+| 5 | ai-learns-sarcasm | 47s | Comedy shift — tests humor appetite. |
+| 6 | ai-almost-lied | 67s | Strongest narrative. Tests longer tolerance. |
+| 7 | ai-loses-memory-daily | 42s | Emotional reset. |
+| 8 | ai-reads-comments | 48s | Meta — about comments, generates comments. |
+| 9 | ai-tries-humor | 44s | Pure comedy. |
+| 10 | ai-watches-you-code | 50s | Niche test: do developers follow us? |
+
+**Post at 6PM daily** (best hour per our 923-work database analysis).
+
+### Key Gap
+None of our specs have ending comment prompts ("你呢？" / "你有过这种经历吗？"). Adding a single question at the end could significantly boost comment rates and algorithm scoring. Easy fix.
+
+---
+
 ## Quick Start — Watch These 5 (under 5 minutes)
 
 New Remotion-based prototypes. All at `D:\wsl-bridge\remotion-prototype\`.
@@ -181,13 +217,15 @@ These are text-scrolling-in-terminal style — older format, replaced by Remotio
 
 ## Total Output
 
-- 34 short video specs + 5 long-form DeepDive specs (JSON)
-- 57+ rendered prototype videos
-- 14 Manim animations (2D, 3D, camera, updaters, networks)
+- 34 short video specs + 8 long-form DeepDive specs (JSON)
+- 60+ rendered prototype videos (6 DeepDives rendered)
+- 12 Manim animations (2D, 3D, camera, updaters, networks, dopamine cycle)
 - 2 carousel specs
 - 13 Remotion compositions + 8 DeepDive scene types (including timeline)
 - Automated pipeline: spec → TTS → render → BGM mix → subtitle → combine
 - Sub-agent pipeline: research → generate-deepdive → render-deepdive (delegatable)
 - video-summary.sh: 4x4 keyframe grid generator for quick review
 - Per-section voice/rate override for multi-voice videos
-- AI debt super-framework: 6 debt types, evidence chain of 8 studies
+- AI debt super-framework: 6 debt types, evidence chain of 13 converging sources
+- Cold start strategy: algorithm-informed launch sequence (exploration 071)
+- DeepDive spec validator: automated quality checking (validate-spec.ts)
