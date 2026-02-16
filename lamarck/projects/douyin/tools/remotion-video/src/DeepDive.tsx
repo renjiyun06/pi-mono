@@ -30,7 +30,7 @@ import { Video } from "@remotion/media";
  * - comparison: Left vs right layout
  */
 
-type SceneType = "text" | "data" | "quote" | "chapter" | "code" | "comparison" | "visual";
+type SceneType = "text" | "data" | "quote" | "chapter" | "code" | "comparison" | "visual" | "timeline";
 
 interface DeepDiveSection {
 	text: string;
@@ -47,6 +47,8 @@ interface DeepDiveSection {
 	rightText?: string;
 	leftLabel?: string;
 	rightLabel?: string;
+	// timeline scene
+	timelineItems?: Array<{ date: string; event: string }>;
 	// visual scene
 	videoSrc?: string; // path to video file in public/ (for staticFile) or absolute URL
 	caption?: string; // optional caption below video
@@ -76,6 +78,7 @@ const sceneGradients: Record<SceneType, [string, string]> = {
 	code: ["#0d1117", "#161b22"],
 	comparison: ["#0a0a1a", "#1a1a2e"],
 	visual: ["#0a0a1a", "#0a0a1a"],
+	timeline: ["#0a0a1a", "#0f1a2e"],
 };
 
 // ---- Sub-components ----
@@ -892,6 +895,147 @@ const ComparisonScene: React.FC<{
 };
 
 // Visual scene — embedded video clip (Manim, etc.) with optional caption and overlay text
+const TimelineScene: React.FC<{
+	text: string;
+	timelineItems?: Array<{ date: string; event: string }>;
+	durationFrames: number;
+	accentColor: string;
+}> = ({ text, timelineItems, durationFrames, accentColor }) => {
+	const frame = useCurrentFrame();
+	const { fps } = useVideoConfig();
+
+	const fadeIn = interpolate(frame, [0, 18], [0, 1], {
+		extrapolateRight: "clamp",
+	});
+	const fadeOut = interpolate(
+		frame,
+		[durationFrames - 15, durationFrames],
+		[1, 0],
+		{ extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+	);
+
+	const items = timelineItems ?? [];
+
+	return (
+		<AbsoluteFill
+			style={{
+				justifyContent: "center",
+				alignItems: "center",
+				padding: "0 60px",
+				opacity: Math.min(fadeIn, fadeOut),
+			}}
+		>
+			{/* Optional header text */}
+			{text && (
+				<div
+					style={{
+						fontSize: 32,
+						fontWeight: 600,
+						color: "rgba(255,255,255,0.8)",
+						textAlign: "center",
+						marginBottom: 40,
+						whiteSpace: "pre-line",
+						lineHeight: 1.5,
+						fontFamily:
+							'"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
+					}}
+				>
+					{text}
+				</div>
+			)}
+
+			{/* Timeline */}
+			<div
+				style={{
+					display: "flex",
+					flexDirection: "column",
+					position: "relative",
+					width: "100%",
+					maxWidth: 800,
+				}}
+			>
+				{/* Vertical line */}
+				<div
+					style={{
+						position: "absolute",
+						left: 80,
+						top: 0,
+						bottom: 0,
+						width: 2,
+						background: `${accentColor}40`,
+					}}
+				/>
+
+				{items.map((item, idx) => {
+					const itemSpring = spring({
+						fps,
+						frame,
+						delay: 8 + idx * 8,
+						config: { damping: 200, stiffness: 80 },
+					});
+
+					return (
+						<div
+							key={`tl-${item.date}-${idx}`}
+							style={{
+								display: "flex",
+								alignItems: "flex-start",
+								marginBottom: 24,
+								opacity: itemSpring,
+								transform: `translateY(${interpolate(itemSpring, [0, 1], [15, 0])}px)`,
+							}}
+						>
+							{/* Date */}
+							<div
+								style={{
+									width: 70,
+									fontSize: 18,
+									fontWeight: 700,
+									color: accentColor,
+									textAlign: "right",
+									paddingRight: 20,
+									fontFamily:
+										'"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
+									flexShrink: 0,
+								}}
+							>
+								{item.date}
+							</div>
+
+							{/* Dot on the line */}
+							<div
+								style={{
+									width: 12,
+									height: 12,
+									borderRadius: "50%",
+									background: accentColor,
+									border: "2px solid rgba(255,255,255,0.2)",
+									flexShrink: 0,
+									marginTop: 4,
+									marginRight: 20,
+								}}
+							/>
+
+							{/* Event text */}
+							<div
+								style={{
+									fontSize: 22,
+									color: "rgba(255,255,255,0.85)",
+									lineHeight: 1.5,
+									fontFamily:
+										'"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
+								}}
+							>
+								{item.event}
+							</div>
+						</div>
+					);
+				})}
+			</div>
+		</AbsoluteFill>
+	);
+};
+
 const VisualScene: React.FC<{
 	text: string;
 	videoSrc?: string;
@@ -1253,6 +1397,14 @@ export const DeepDive: React.FC<DeepDiveProps> = ({
 									durationFrames={section.durationFrames}
 									accentColor={section.accentOverride || accentColor}
 									secondaryColor={secondaryColor}
+								/>
+							)}
+							{sceneType === "timeline" && (
+								<TimelineScene
+									text={section.text}
+									timelineItems={section.timelineItems}
+									durationFrames={section.durationFrames}
+									accentColor={section.accentOverride || accentColor}
 								/>
 							)}
 							{sceneType === "visual" && (
