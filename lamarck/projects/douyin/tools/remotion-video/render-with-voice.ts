@@ -242,6 +242,7 @@ async function main() {
 			"-filter_complex",
 			`[0:a]volume=1.0[voice];[1:a]volume=${bgmVolume},afade=t=out:st=${totalAudioDuration - 2}:d=2[bgm];[voice][bgm]amix=inputs=2:duration=first[out]`,
 			"-map", "[out]",
+			"-ar", "48000",  // broadcast quality sample rate
 			"-ac", "2",
 			mixedAudioPath,
 		], { stdio: "pipe" });
@@ -259,6 +260,8 @@ async function main() {
 		"-map", "1:a",  // audio from TTS (not Remotion's silent audio track)
 		"-c:v", "copy",
 		"-c:a", "aac",
+		"-ar", "48000",  // upsample from edge-tts 24kHz to broadcast quality
+		"-ac", "2",      // stereo
 		"-shortest",
 		outputPath,
 	], { stdio: "pipe" });
