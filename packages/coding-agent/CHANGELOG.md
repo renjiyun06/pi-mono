@@ -7,6 +7,10 @@
 - Added NVIDIA NIM provider support with `NVIDIA_API_KEY` environment variable
 - Added `tool_call_end` extension event, fired after `tool_result` handlers. Extensions can return `{ inject: string }` to append additional text to tool results without affecting `tool_result` handler chains.
 
+### Fixed
+
+- Compaction summaries now have a size budget in long sessions. Previously, the update prompt instructed "PRESERVE all existing information" with no size constraint, causing summaries to grow monotonically (observed 8K→36K chars over 17 compactions, consuming 55% of reserveTokens). When the previous summary exceeds 50% of the target budget, the prompt now includes compression guidance to consolidate older entries.
+
 ## [0.52.12] - 2026-02-13
 
 ### Added

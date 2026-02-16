@@ -530,6 +530,20 @@ export async function generateSummary(
 
 	// Use update prompt if we have a previous summary, otherwise initial prompt
 	let basePrompt = previousSummary ? UPDATE_SUMMARIZATION_PROMPT : SUMMARIZATION_PROMPT;
+
+	// When the previous summary is large relative to the budget, add compression guidance.
+	// Without this, summaries grow monotonically because the prompt says "PRESERVE all existing
+	// information" with no size constraint. In long sessions (10+ compactions), the summary can
+	// consume 50%+ of reserveTokens, leaving little room for system prompt and new context.
+	if (previousSummary) {
+		const prevTokensEstimate = Math.ceil(previousSummary.length / 4);
+		const budgetTokens = Math.floor(maxTokens * 0.7);
+		if (prevTokensEstimate > budgetTokens * 0.5) {
+			const budgetChars = budgetTokens * 4;
+			basePrompt = `${basePrompt}\n\nIMPORTANT — SIZE BUDGET: The updated summary must be under ~${budgetChars.toLocaleString()} characters (~${budgetTokens.toLocaleString()} tokens). The previous summary is ${previousSummary.length.toLocaleString()} characters. To stay within budget:\n- Compress older "Done" items into higher-level summaries (e.g., "Built and tested 6 Manim animations" instead of listing each)\n- Remove details about resolved blockers and abandoned approaches\n- Keep only context that is still needed to continue the current work`;
+		}
+	}
+
 	if (customInstructions) {
 		basePrompt = `${basePrompt}\n\nAdditional focus: ${customInstructions}`;
 	}
