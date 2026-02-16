@@ -11,6 +11,7 @@ import {
 /**
  * Spotlight — a composition for intimate, confessional content.
  * Single text on dark background with a subtle animated spotlight effect.
+ * Character-by-character typewriter reveal synced to narration duration.
  * Minimal UI, maximal emotional impact.
  * Designed for first-person AI narration.
  */
@@ -46,7 +47,6 @@ const SpotlightBg: React.FC<{
 					background: `radial-gradient(ellipse 600px 800px at ${x}px ${y}px, ${spotlightColor}15 0%, transparent 70%)`,
 				}}
 			/>
-			{/* Secondary subtle glow */}
 			<div
 				style={{
 					position: "absolute",
@@ -59,7 +59,12 @@ const SpotlightBg: React.FC<{
 	);
 };
 
-const TextBlock: React.FC<{
+/**
+ * Splits text into lines (by \n) and renders each character with staggered fade-in.
+ * Characters appear one by one like a typewriter, taking ~70% of the section duration.
+ * The remaining 30% holds the full text visible before fade-out.
+ */
+const TypewriterText: React.FC<{
 	text: string;
 	emphasis?: boolean;
 	durationFrames: number;
@@ -68,23 +73,34 @@ const TextBlock: React.FC<{
 	const frame = useCurrentFrame();
 	const { fps } = useVideoConfig();
 
-	const fadeIn = interpolate(frame, [0, 25], [0, 1], {
-		extrapolateRight: "clamp",
-	});
+	// Split into lines, then characters
+	const lines = text.split("\n");
+	const allChars: Array<{ char: string; lineIdx: number; charIdx: number }> = [];
+	for (let l = 0; l < lines.length; l++) {
+		for (let c = 0; c < lines[l].length; c++) {
+			allChars.push({ char: lines[l][c], lineIdx: l, charIdx: c });
+		}
+	}
+
+	const totalChars = allChars.length;
+	// Typewriter phase: 60% of duration, each char fades in over ~4 frames
+	const typewriterEnd = Math.floor(durationFrames * 0.6);
+	const charDelay = totalChars > 0 ? typewriterEnd / totalChars : 1;
+
+	// Overall fade out
 	const fadeOut = interpolate(
 		frame,
-		[durationFrames - 20, durationFrames],
+		[durationFrames - 15, durationFrames],
 		[1, 0],
-		{ extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+		{ extrapolateLeft: "clamp", extrapolateRight: "clamp" },
 	);
 
+	// Container slide-up
 	const slideY = spring({
 		fps,
 		frame,
-		config: { damping: 200, stiffness: 60, mass: 0.8 },
+		config: { damping: 200, stiffness: 50, mass: 0.8 },
 	});
-
-	const opacity = Math.min(fadeIn, fadeOut);
 
 	return (
 		<AbsoluteFill
@@ -92,44 +108,118 @@ const TextBlock: React.FC<{
 				justifyContent: "center",
 				alignItems: "center",
 				padding: "0 80px",
+				opacity: fadeOut,
 			}}
 		>
 			<div
 				style={{
-					opacity,
-					transform: `translateY(${interpolate(slideY, [0, 1], [30, 0])}px)`,
+					transform: `translateY(${interpolate(slideY, [0, 1], [20, 0])}px)`,
 				}}
 			>
-				<div
-					style={{
-						fontSize: emphasis ? 46 : 38,
-						fontWeight: emphasis ? 700 : 400,
-						color: emphasis ? "#ffffff" : "rgba(255,255,255,0.85)",
-						textAlign: "center",
-						lineHeight: 2.0,
-						whiteSpace: "pre-line",
-						fontFamily:
-							'"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
-						letterSpacing: emphasis ? 1 : 0,
-					}}
-				>
-					{text}
-				</div>
+				{lines.map((line, lineIdx) => {
+					// Count chars before this line
+					let charsBefore = 0;
+					for (let l = 0; l < lineIdx; l++) {
+						charsBefore += lines[l].length;
+					}
+
+					// Empty lines create spacing
+					if (line.length === 0) {
+						return (
+							<div
+								key={lineIdx}
+								style={{ height: emphasis ? 28 : 20 }}
+							/>
+						);
+					}
+
+					return (
+						<div
+							key={lineIdx}
+							style={{
+								fontSize: emphasis ? 46 : 38,
+								fontWeight: emphasis ? 700 : 400,
+								textAlign: "center",
+								lineHeight: 1.8,
+								fontFamily:
+									'"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
+								letterSpacing: emphasis ? 1.5 : 0.5,
+							}}
+						>
+							{line.split("").map((char, charIdx) => {
+								const globalIdx = charsBefore + charIdx;
+								const charAppearFrame = globalIdx * charDelay;
+								const charOpacity = interpolate(
+									frame,
+									[charAppearFrame, charAppearFrame + 4],
+									[0, 1],
+									{
+										extrapolateLeft: "clamp",
+										extrapolateRight: "clamp",
+									},
+								);
+
+								return (
+									<span
+										key={charIdx}
+										style={{
+											opacity: charOpacity,
+											color: emphasis
+												? "#ffffff"
+												: `rgba(255,255,255,${0.85 * charOpacity + 0.15})`,
+											display: "inline",
+										}}
+									>
+										{char}
+									</span>
+								);
+							})}
+						</div>
+					);
+				})}
+
+				{/* Emphasis underline */}
 				{emphasis && (
 					<div
 						style={{
-							marginTop: 24,
+							marginTop: 20,
 							height: 2,
-							width: interpolate(fadeIn, [0, 1], [0, 80]),
+							width: interpolate(
+								frame,
+								[typewriterEnd, typewriterEnd + 15],
+								[0, 80],
+								{ extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+							),
 							background: spotlightColor,
 							borderRadius: 1,
-							margin: "24px auto 0",
+							margin: "20px auto 0",
 							opacity: 0.6,
 						}}
 					/>
 				)}
 			</div>
 		</AbsoluteFill>
+	);
+};
+
+// Animated cursor that blinks at the bottom of the screen
+const Cursor: React.FC<{ spotlightColor: string }> = ({ spotlightColor }) => {
+	const frame = useCurrentFrame();
+	const blink = Math.sin(frame * 0.15) > 0 ? 0.7 : 0;
+
+	return (
+		<div
+			style={{
+				position: "absolute",
+				bottom: 120,
+				left: "50%",
+				transform: "translateX(-50%)",
+				width: 2,
+				height: 20,
+				backgroundColor: spotlightColor,
+				opacity: blink,
+			}}
+		/>
 	);
 };
 
@@ -147,10 +237,9 @@ export const Spotlight: React.FC<SpotlightProps> = ({
 					'"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
 			}}
 		>
-			{/* Animated spotlight */}
 			<SpotlightBg spotlightColor={spotlightColor} />
 
-			{/* Film grain overlay for cinematic feel */}
+			{/* Film grain overlay */}
 			<AbsoluteFill
 				style={{
 					opacity: 0.03,
@@ -159,6 +248,9 @@ export const Spotlight: React.FC<SpotlightProps> = ({
 				}}
 			/>
 
+			{/* Blinking cursor */}
+			<Cursor spotlightColor={spotlightColor} />
+
 			{/* Sections */}
 			{sections.map((section, i) => (
 				<Sequence
@@ -166,7 +258,7 @@ export const Spotlight: React.FC<SpotlightProps> = ({
 					from={section.startFrame}
 					durationInFrames={section.durationFrames}
 				>
-					<TextBlock
+					<TypewriterText
 						text={section.text}
 						emphasis={section.emphasis}
 						durationFrames={section.durationFrames}
