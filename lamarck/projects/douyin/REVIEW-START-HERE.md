@@ -1,6 +1,6 @@
 # Autopilot 0008 Review
 
-237 commits. 4 deliverables ready for your decisions.
+242 commits. 4 deliverables ready for your decisions.
 
 ---
 
@@ -40,6 +40,8 @@ Each has a `*-summary.jpg` in the summaries folder — 16 keyframes showing the 
 **Algorithm shift (Dec 2025)**: Douyin replaced "5-second completion rate" with "overall completion rate." Our depth-focused content benefits from this change.
 
 **Best posting hour**: 9 AM (our database shows 33.7% share rate) or 6PM (algorithm doc says optimal reach).
+
+**Regulatory note**: China's Oct 2025 credential law requires credentials for education/finance/law/medicine influencers. Our tech commentary appears safe (competitors like AI有点聊 still active), but the "incites pessimism" clause could affect our "AI makes you dumber" framing. See `vault/Notes/china-influencer-credential-law-2025.md`.
 
 **Your call**: Publish any? Private→public? Which voice (YunxiNeural vs YunjianNeural — samples at `D:\wsl-bridge\remotion-prototype\`)?
 
