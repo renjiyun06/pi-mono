@@ -77,7 +77,12 @@ interface Question {
 }
 
 async function generateQuestions(code: string, filename: string): Promise<Question[]> {
-	const prompt = `You are a code comprehension expert. Given the following code, generate exactly 3 questions that test whether the developer truly understands THIS SPECIFIC code — not general software engineering principles.
+	const systemPrompt = `You are a code comprehension quiz generator. You MUST respond with ONLY a JSON array. No explanations, no markdown, no text before or after the JSON. Your entire response must be parseable by JSON.parse().
+
+Output format (respond with ONLY this, nothing else):
+[{"question": "...", "hint": "...", "key_concepts": ["..."]}]`;
+
+	const userPrompt = `Generate exactly 3 questions that test whether a developer truly understands THIS SPECIFIC code — not general software engineering principles.
 
 CRITICAL: Questions must be answerable ONLY by someone who understands this particular file.
 
@@ -102,22 +107,22 @@ File: ${filename}
 ${code.slice(0, 8000)}
 \`\`\`
 
-Respond in JSON format:
-[
-  {
-    "question": "...",
-    "hint": "...",
-    "key_concepts": ["concept1", "concept2"]
-  }
-]
-
-Return ONLY the JSON array, no markdown formatting.`;
+Respond with ONLY the JSON array. No other text.`;
 
 	for (let attempt = 0; attempt < 3; attempt++) {
-		const response = await llm([{ role: "user", content: prompt }]);
+		const response = await llm([
+			{ role: "system", content: systemPrompt },
+			{ role: "user", content: userPrompt },
+		]);
 		try {
 			// Strip markdown code fences if present
-			const cleaned = response.replace(/^```json?\n?/m, "").replace(/\n?```$/m, "").trim();
+			let cleaned = response.replace(/^```json?\n?/m, "").replace(/\n?```$/m, "").trim();
+			// Extract JSON array if model produced surrounding text
+			const firstBracket = cleaned.indexOf("[");
+			const lastBracket = cleaned.lastIndexOf("]");
+			if (firstBracket !== -1 && lastBracket > firstBracket) {
+				cleaned = cleaned.slice(firstBracket, lastBracket + 1);
+			}
 			return JSON.parse(cleaned);
 		} catch {
 			if (attempt < 2) {
