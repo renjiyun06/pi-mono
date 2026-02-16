@@ -12,6 +12,7 @@ import { GradientFlow } from "./GradientFlow";
 import { Spotlight } from "./Spotlight";
 import { DeepDive } from "./DeepDive";
 import { KnowledgeCard } from "./KnowledgeCard";
+import { PathDemo } from "./PathDemo";
 
 export const RemotionRoot: React.FC = () => {
 	return (
@@ -419,6 +420,16 @@ export const RemotionRoot: React.FC = () => {
 					accentColor: "#00d4ff",
 					style: "list",
 				}}
+			/>
+
+			{/* PathDemo — SVG path animation proof-of-concept */}
+			<Composition
+				id="PathDemo"
+				component={PathDemo}
+				durationInFrames={450}
+				fps={30}
+				width={1080}
+				height={1920}
 			/>
 
 			{/* DeepDive — long-form explainer (2-5 min) */}
