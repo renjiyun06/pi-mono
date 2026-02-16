@@ -116,11 +116,23 @@ This is the biggest visual quality leap since Remotion. `D:\wsl-bridge\remotion-
 - deep-birthday-paradox.json (3:10) — "23 people, 50% chance of shared birthday"
 - deep-one-percent.json (2:44) — "1% daily improvement myth vs reality"
 
+### Design Note: Color Identity per Video
+- deep-how-ai-reads: cyan (#00d4ff) — AI/tech feel
+- deep-birthday-paradox: gold (#f7b733) — math/curiosity feel
+- deep-one-percent: TBD
+Should each DeepDive have its own color identity?
+
+### Narrative Quality Evaluation
+Both specs evaluated against 3Blue1Brown's visual storytelling checklist:
+- AI-reads: 6/7 pass. Fixed preachy ending → self-reflection.
+- Birthday-paradox: 6/7 pass. Weakness: 5 consecutive text-only sections in math build-up. Needs 1 more Manim clip in sections 5-10.
+
 ### What to Tell Me
 1. Is the DeepDive format (2-5 min) worth pursuing alongside shorts?
 2. Does the visual quality meet Douyin standards now?
 3. Should I render birthday-paradox and one-percent with v9 improvements?
 4. Cross-post to Bilibili? (Knowledge long-form is trending there — 30% of top 100 UP主)
+5. Color identity: different accent per DeepDive video, or consistent cyan?
 
 ## Legacy Episodes (Terminal Format)
 
