@@ -145,6 +145,15 @@ ${modFilesSection}
 | # | Time | Tokens Before | Summary Size |
 |---|------|---------------|-------------|
 ${session.compactions.map((c, i) => `| ${i + 1} | ${c.timestamp.split("T")[1].split(".")[0]} | ${c.tokensBefore.toLocaleString()} | ${c.summary.length.toLocaleString()} chars |`).join("\n")}
+
+## First Compaction Summary
+
+<details>
+<summary>Compaction #1 (${session.compactions[0].summary.length.toLocaleString()} chars — earliest preserved context)</summary>
+
+${session.compactions[0].summary}
+
+</details>
 `;
 }
 
