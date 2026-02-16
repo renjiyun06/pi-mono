@@ -1,6 +1,6 @@
 # Autopilot-0008 Branch Summary
 
-**125 commits, 95+ files, 12,000+ lines added. Feb 16, 2026.**
+**134 commits, 95+ files, 12,000+ lines added. Feb 16, 2026.**
 
 All checks passing: `npm run check` clean, compaction unit tests (19/19), Understand smoke tests (5/5).
 
@@ -19,11 +19,13 @@ All checks passing: `npm run check` clean, compaction unit tests (19/19), Unders
 
 ### 2. Understand Product (needs direction)
 - Anti-cognitive-debt CLI tool: quiz, dry-run, summary, debt dashboard
+- **Web app** (`app.html`): zero-install browser quiz with demo mode (no API key needed)
+- **Landing page** (`landing.html`): research-backed messaging with terminal demo
 - Pi extension tracking session changes
 - Web dashboard (drag-and-drop history.json viewer)
 - 5 smoke tests passing
 - No competitor in "force understanding" niche
-- **Start here**: `projects/understand/README.md`
+- **Start here**: `projects/understand/README.md` or open `app.html` in a browser
 
 ### 3. Research Base (complete, 18 sources)
 - Cognitive debt evidence chain: 18 converging sources (17 studies + 1 enterprise governance repo)
@@ -61,3 +63,5 @@ All checks passing: `npm run check` clean, compaction unit tests (19/19), Unders
 | `lamarck/tasks/session-consolidate.ts` | Sleep-time compute script |
 | `projects/douyin/tools/generate-image.ts` | AI image generation CLI |
 | `vault/Notes/ai-image-generation-openrouter.md` | Image gen capability docs |
+| `projects/understand/app.html` | Zero-install web quiz (demo included) |
+| `projects/understand/landing.html` | Marketing landing page |
