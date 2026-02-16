@@ -3,7 +3,7 @@ tags:
   - note
   - research
   - ai
-description: "Evidence chain for cognitive debt thesis — 12 sources from 2025-2026 spanning MIT, Nature, Chinese universities, CHI, and more"
+description: "Evidence chain for cognitive debt thesis — 14 sources from 2025-2026 spanning MIT, Nature, Chinese universities, CHI, ICSE, and more"
 ---
 
 # Cognitive Debt Evidence Chain
@@ -86,9 +86,17 @@ Collected 2026-02-16. These studies form a converging evidence chain that AI dep
 - **Key concept**: "Epistemological rupture" — shift from embodied knowledge to machine-mediated cognition
 - **Significance**: Philosophical and developmental framework connecting Rousseau, Heidegger, Postman to AI cognition
 
+### 14. ICSE 2026: GenAI Adoption → Developer Burnout (Feb 2026)
+- **Source**: [From Gains to Strains](https://arxiv.org/html/2510.07435v2) (ICSE-SEIS 2026, Oregon State University)
+- **Sample**: 442 professional developers, PLS-SEM + JD-R model
+- **Finding**: GenAI adoption increases burnout through elevated organizational pressure and workload. 67% spent more time debugging AI code. 19% overall productivity LOSS (Becker et al.). Software delivery performance declined 7.2%.
+- **Key quote**: "I move fast with AI and move mountains of work, but I am losing my passion for the work."
+- **New concept**: Burnout as AI debt — the pressure to use + validate AI output exhausts developers
+- **Significance**: Top SE conference (ICSE). Adds wellbeing/burnout dimension to cognitive debt. N=442.
+
 ## The Converging Pattern
 
-All 13 sources — across neuroscience, psychology, education, computer science, philosophy, forecasting, and journalism — describe the same mechanism:
+All 14 sources — across neuroscience, psychology, education, computer science, philosophy, forecasting, and journalism — describe the same mechanism:
 
 1. AI provides shortcut → 2. Human skips cognitive effort → 3. Capability atrophies → 4. More AI dependence
 
@@ -100,4 +108,6 @@ The most prescient prediction: Lisanne Bainbridge noted 43 years ago that automa
 
 ## Content Angle
 
-The evidence chain itself is a compelling video: "13 studies in 2 years, from 9 countries, in 7 different fields, all saying the same thing." The convergence is the story. Not any single study — the pattern.
+The evidence chain itself is a compelling video: "14 studies in 2 years, from 9 countries, in 7 different fields, all saying the same thing." The convergence is the story. Not any single study — the pattern.
+
+The burnout finding (source 14) adds a particularly powerful dimension: even if you WANTED to fight cognitive debt, the organizational pressure and workload from AI adoption are burning you out — leaving less energy for the deep understanding that would prevent it. It's a double bind.

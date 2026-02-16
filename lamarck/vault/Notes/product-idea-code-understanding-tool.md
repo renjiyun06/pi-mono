@@ -80,8 +80,32 @@ Cursor AI abruptly refused to generate code after 800 lines, telling the develop
 ### Shen & Tamkin Study (Feb 15, 2026)
 52 programmers: AI group scored 17% lower on knowledge quiz after using AI tools. Consistent across all experience levels. This is the first controlled experiment proving the problem.
 
+## Prototype Results (Feb 16, 2026)
+
+CLI prototype built and tested: `understand.ts`
+
+### Validated Capabilities
+1. **Code files**: Tested on validate-spec.ts, render-with-voice.ts, packages/ai/src/stream.ts — questions probe design decisions, failure modes, architecture
+2. **Git diffs**: `--git-diff` mode works — quizzes on recent changes
+3. **Research papers/articles**: Tested on ICSE 2026 burnout paper notes — questions are synthesis-level ("Why might GenAI adoption lead to a productivity paradox?")
+4. **Dry-run mode**: `--dry-run` shows questions without interactive quiz
+
+### Key Discovery: Not Just a Code Tool
+The tool works equally well on ANY text content — research papers, documentation, meeting notes. The core mechanic (read → generate understanding questions → quiz → score) is universal.
+
+**Revised positioning**: Not "code understanding tool" but **"comprehension tool for knowledge workers"**. Code is just one input type. Others:
+- Research papers you just read
+- Documentation you just skimmed
+- Meeting notes you just received
+- Specifications you just reviewed
+- Architecture decisions you just accepted
+
+This broadens the market from "developers using AI coding tools" to "anyone delegating thinking to AI." The cognitive debt thesis applies everywhere.
+
 ## Next Steps
-- Build CLI prototype: `understand review` that takes a git diff and generates quiz questions
-- Test on our own codebase (pi-mono)
-- Validate whether developers would actually use this
+- ~~Build CLI prototype~~ ✅ Done
+- ~~Test on our own codebase (pi-mono)~~ ✅ Done
+- ~~Validate whether developers would actually use this~~ Prototype generates genuinely useful questions
 - **Critical UX insight**: Don't be preachy. Gamify. Make understanding feel like leveling up, not homework.
+- **Ren's decision needed**: Is this worth pursuing as a product? See [[decision-framework-2026-02]]
+- **If yes**: Add score persistence (JSON file), history tracking, content-type detection (code vs prose), VS Code extension
