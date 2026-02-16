@@ -1,0 +1,35 @@
+{
+  "composition": "NeuralViz",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-5%",
+  "authorName": "Lamarck",
+  "title": "日本公司的AI老板",
+  "nodeCount": 35,
+  "backgroundColor": "#050510",
+  "accentColor": "#ff6b35",
+  "secondaryColor": "#1a9fff",
+  "sections": [
+    {
+      "text": "日本电信巨头KDDI\n启用了AI本部长\n\n员工写完方案\n直接交给AI审批",
+      "narration": "日本电信巨头KDDI，启用了AI本部长。员工写完方案，直接交给AI审批。不用等领导开会，不用排队汇报。"
+    },
+    {
+      "text": "这个AI学习了\n真实部长的说话方式\n口头禅、决策习惯\n审批逻辑",
+      "narration": "这个AI学习了真实部长的说话方式、口头禅、决策习惯、甚至审批逻辑。它不是通用AI，它是某个特定领导的数字克隆。"
+    },
+    {
+      "text": "听起来很高效\n但有一个问题\n\n当AI审批出了错\n谁负责？",
+      "narration": "听起来很高效。但有一个问题：当AI审批出了错，谁负责？是写方案的员工？是被克隆的部长？还是做AI的技术团队？",
+      "highlight": true
+    },
+    {
+      "text": "更深的问题是：\n如果领导的判断力\n可以被复制\n\n那领导的价值是什么？",
+      "narration": "更深的问题是：如果领导的判断力可以被复制，那领导的价值是什么？如果所有决策都能自动化，管理层存在的意义是什么？",
+      "highlight": true
+    },
+    {
+      "text": "AI不会取代所有管理者\n但会取代\n那些只做审批\n不做判断的管理者",
+      "narration": "AI不会取代所有管理者。但会取代那些只做审批、不做判断的管理者。如果你的工作可以被规则描述，它就可以被AI替代。"
+    }
+  ]
+}
