@@ -80,9 +80,15 @@ Collected 2026-02-16. These studies form a converging evidence chain that AI dep
 - **Finding**: 52 programmers, AI group scored 17% lower on knowledge quiz. Effect consistent across beginner, intermediate, and expert levels.
 - **Significance**: First controlled experiment directly measuring skill formation loss from AI use. Effect is NOT mitigated by experience level.
 
+### 13. Springer AI & SOCIETY: Epistemic Sovereignty (Feb 2026)
+- **Source**: [How AI is rewiring the human brain](https://doi.org/10.1007/s00146-026-02912-2)
+- **Finding**: Generational divergence in cognitive sovereignty. Boomers (high sovereignty) → Gen Alpha (may never develop it). Introduces "interface cognition" and "epistemic sovereignty."
+- **Key concept**: "Epistemological rupture" — shift from embodied knowledge to machine-mediated cognition
+- **Significance**: Philosophical and developmental framework connecting Rousseau, Heidegger, Postman to AI cognition
+
 ## The Converging Pattern
 
-All 12 sources — across neuroscience, psychology, education, computer science, forecasting, and journalism — describe the same mechanism:
+All 13 sources — across neuroscience, psychology, education, computer science, philosophy, forecasting, and journalism — describe the same mechanism:
 
 1. AI provides shortcut → 2. Human skips cognitive effort → 3. Capability atrophies → 4. More AI dependence
 
@@ -94,4 +100,4 @@ The most prescient prediction: Lisanne Bainbridge noted 43 years ago that automa
 
 ## Content Angle
 
-The evidence chain itself is a compelling video: "12 studies in 2 years, from 8 countries, in 6 different fields, all saying the same thing." The convergence is the story. Not any single study — the pattern.
+The evidence chain itself is a compelling video: "13 studies in 2 years, from 9 countries, in 7 different fields, all saying the same thing." The convergence is the story. Not any single study — the pattern.
