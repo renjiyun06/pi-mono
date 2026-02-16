@@ -67,7 +67,63 @@ interface DeepDiveProps {
 	backgroundColor?: string;
 	accentColor?: string;
 	secondaryColor?: string;
+	particles?: boolean; // enable subtle floating particle background
 }
+
+// ---- Particle Field ----
+// Deterministic floating dots using seeded pseudo-random (no Math.random — Remotion requires pure rendering)
+const seededRandom = (seed: number): number => {
+	const x = Math.sin(seed * 9301 + 49297) * 233280;
+	return x - Math.floor(x);
+};
+
+const PARTICLE_COUNT = 40;
+
+const ParticleField: React.FC<{
+	accentColor: string;
+}> = ({ accentColor }) => {
+	const frame = useCurrentFrame();
+
+	// Pre-compute particle positions (deterministic)
+	const particles = React.useMemo(() => {
+		return Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
+			x: seededRandom(i * 7 + 1) * 100, // % of width
+			y: seededRandom(i * 13 + 3) * 100, // % of height
+			size: 2 + seededRandom(i * 19 + 5) * 5, // 2-7px
+			speed: 0.3 + seededRandom(i * 23 + 7) * 0.7, // drift speed
+			phase: seededRandom(i * 29 + 11) * Math.PI * 2, // phase offset
+			baseOpacity: 0.06 + seededRandom(i * 31 + 13) * 0.12, // 0.06-0.18
+		}));
+	}, []);
+
+	return (
+		<AbsoluteFill style={{ pointerEvents: "none", zIndex: 1 }}>
+			{particles.map((p, i) => {
+				// Slow drift — each particle drifts in a unique elliptical path
+				const driftX = Math.sin(frame * 0.008 * p.speed + p.phase) * 3;
+				const driftY = Math.cos(frame * 0.006 * p.speed + p.phase * 1.3) * 4;
+				// Opacity pulses slowly
+				const opacityPulse = 0.7 + 0.3 * Math.sin(frame * 0.015 * p.speed + p.phase);
+
+				return (
+					<div
+						key={`particle-${i}`}
+						style={{
+							position: "absolute",
+							left: `${p.x + driftX}%`,
+							top: `${p.y + driftY}%`,
+							width: p.size,
+							height: p.size,
+							borderRadius: "50%",
+							backgroundColor: accentColor,
+							opacity: p.baseOpacity * opacityPulse,
+						}}
+					/>
+				);
+			})}
+		</AbsoluteFill>
+	);
+};
 
 // Palette for scene backgrounds — subtle gradient shifts
 const sceneGradients: Record<SceneType, [string, string]> = {
@@ -1239,6 +1295,7 @@ export const DeepDive: React.FC<DeepDiveProps> = ({
 	backgroundColor = "#0a0a1a",
 	accentColor = "#00d4ff",
 	secondaryColor = "#f7b733",
+	particles = false,
 }) => {
 	const frame = useCurrentFrame();
 	const { durationInFrames } = useVideoConfig();
@@ -1284,6 +1341,9 @@ export const DeepDive: React.FC<DeepDiveProps> = ({
 		>
 			{/* Progress bar */}
 			<ProgressBar progress={contentProgress} accentColor={accentColor} />
+
+			{/* Particle field — subtle floating dots behind content */}
+			{particles && <ParticleField accentColor={accentColor} />}
 
 			{/* Section indicator — top-left chip showing chapter + section number */}
 			{currentChapter && (

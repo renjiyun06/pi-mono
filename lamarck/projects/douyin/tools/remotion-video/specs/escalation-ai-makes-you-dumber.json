@@ -6,6 +6,7 @@
   "secondaryColor": "#ff6b6b",
   "bgm": "../bgm/dark-ambient-5min.mp3",
   "bgmVolume": 0.08,
+  "particles": true,
   "voice": "zh-CN-YunxiNeural",
   "rate": "+5%",
   "sections": [
