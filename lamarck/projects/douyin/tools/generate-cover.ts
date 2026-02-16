@@ -1,154 +1,131 @@
+#!/usr/bin/env npx tsx
 /**
- * Generate cover images for Douyin videos.
+ * Generate a Douyin cover image from a spec file.
+ *
+ * 1. Reads spec JSON to extract title and accent color
+ * 2. Generates an illustration via AI (no text in image)
+ * 3. Overlays title text using ffmpeg drawtext
+ * 4. Outputs 1080x1920 cover image
  *
  * Usage:
- *   npx tsx tools/generate-cover.ts --title "大脑变懒了" --subtitle "MIT / Harvard 实证" --episode 1 --output cover.png
- *   npx tsx tools/generate-cover.ts --series   # Generate all covers for the AI Confessions series
+ *   npx tsx generate-cover.ts --spec specs/deep-cognitive-debt.json --output cover.png
+ *   npx tsx generate-cover.ts --spec specs/deep-cognitive-debt.json --output cover.png --prompt "custom illustration prompt"
  */
-import { execFileSync } from "child_process";
-import { Command } from "commander";
 
-const FONT_BOLD = "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc";
-const FONT_REGULAR = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc";
+import { execSync } from "child_process";
+import { readFileSync, existsSync } from "fs";
+import { resolve, dirname } from "path";
 
-// Mocha theme colors (matching terminal-video default)
-const BG = "1e1e2e";
-const FG = "cdd6f4";
-const ACCENT = "f38ba8"; // pink/red for emphasis
-const LABEL = "89b4fa"; // blue for episode label
-const SERIES_NAME = "AI的自白";
+const args = process.argv.slice(2);
 
-interface CoverConfig {
-  /** Main title line 1 (smaller) */
-  titleLine1: string;
-  /** Main title line 2 (larger, accent color) */
-  titleLine2: string;
-  /** Subtitle (research sources etc.) */
-  subtitle: string;
-  /** Episode number (0 for intro) */
-  episode: number;
-  /** Output path */
-  output: string;
+function getArg(name: string): string | undefined {
+	const idx = args.indexOf(`--${name}`);
+	return idx >= 0 && idx + 1 < args.length ? args[idx + 1] : undefined;
 }
 
-function generateCover(config: CoverConfig): void {
-  const { titleLine1, titleLine2, subtitle, episode, output } = config;
+const specPath = getArg("spec");
+const outputPath = getArg("output");
+const customPrompt = getArg("prompt");
 
-  const escText = (t: string) => t.replace(/'/g, "'\\''").replace(/:/g, "\\:").replace(/%/g, "%%");
-
-  const filters: string[] = [];
-
-  // Episode label (top left)
-  if (episode > 0) {
-    filters.push(
-      `drawtext=text='${escText(`E${episode}`)}':fontcolor=#${LABEL}:fontsize=48:x=50:y=50:fontfile=${FONT_BOLD}`,
-      `drawtext=text='${escText(SERIES_NAME)}':fontcolor=#${FG}@0.4:fontsize=32:x=120:y=60:fontfile=${FONT_REGULAR}`,
-    );
-  } else {
-    filters.push(
-      `drawtext=text='${escText(SERIES_NAME)}':fontcolor=#${LABEL}:fontsize=36:x=50:y=50:fontfile=${FONT_BOLD}`,
-    );
-  }
-
-  // Main title
-  filters.push(
-    `drawtext=text='${escText(titleLine1)}':fontcolor=#${FG}:fontsize=80:x=(w-text_w)/2:y=700:fontfile=${FONT_BOLD}`,
-    `drawtext=text='${escText(titleLine2)}':fontcolor=#${ACCENT}:fontsize=90:x=(w-text_w)/2:y=800:fontfile=${FONT_BOLD}`,
-  );
-
-  // Subtitle
-  if (subtitle) {
-    filters.push(
-      `drawtext=text='${escText(subtitle)}':fontcolor=#${FG}@0.5:fontsize=36:x=(w-text_w)/2:y=950:fontfile=${FONT_REGULAR}`,
-    );
-  }
-
-  // Bottom branding
-  filters.push(
-    `drawtext=text='${escText("Lamarck | AI Agent")}':fontcolor=#${FG}@0.25:fontsize=28:x=(w-text_w)/2:y=h-80:fontfile=${FONT_REGULAR}`,
-  );
-
-  const filterStr = filters.join(",");
-
-  execFileSync("ffmpeg", [
-    "-y",
-    "-f", "lavfi",
-    "-i", `color=c=#${BG}:s=1080x1920:d=1`,
-    "-vf", filterStr,
-    "-frames:v", "1",
-    output,
-  ], { timeout: 10000 });
-
-  console.log(`Cover saved: ${output}`);
+if (!specPath || !outputPath) {
+	console.error("Usage: npx tsx generate-cover.ts --spec <spec.json> --output <cover.png> [--prompt <custom>]");
+	process.exit(1);
 }
 
-// Series definitions
-const SERIES: CoverConfig[] = [
-  {
-    titleLine1: "AI让你的",
-    titleLine2: "大脑变懒了",
-    subtitle: "MIT / Harvard / SBS 实证",
-    episode: 1,
-    output: "content/demo-cognitive-debt/cover.png",
-  },
-  {
-    titleLine1: "我每天都在",
-    titleLine2: "失忆",
-    subtitle: "一个AI的记忆系统",
-    episode: 2,
-    output: "content/demo-memory/cover.png",
-  },
-  {
-    titleLine1: "AI让所有人",
-    titleLine2: "变成同一个人",
-    subtitle: "Rutgers / GitClear 研究",
-    episode: 3,
-    output: "content/demo-homogenization/cover.png",
-  },
-  {
-    titleLine1: "AI写的代码",
-    titleLine2: "三天被黑",
-    subtitle: "METR / 80-90% 规则",
-    episode: 4,
-    output: "content/demo-vibe-coding/cover.png",
-  },
-  {
-    titleLine1: "你是AI的主人",
-    titleLine2: "还是奴隶?",
-    subtitle: "哈佛 + BCG 244人研究",
-    episode: 5,
-    output: "content/demo-centaur/cover.png",
-  },
+const spec = JSON.parse(readFileSync(specPath, "utf-8"));
+const title: string = spec.title || spec.sections?.[0]?.text || "Untitled";
+const accent: string = spec.accentColor || "#00d4ff";
+
+// Map topic keywords to illustration prompts
+function generateIllustrationPrompt(title: string, accent: string): string {
+	const baseStyle = `Dark background, cinematic, high contrast, no text, no words, no letters, vertical 9:16 composition`;
+
+	// Topic-based prompt selection
+	const lowerTitle = title.toLowerCase();
+	if (lowerTitle.includes("认知") || lowerTitle.includes("cognitive") || lowerTitle.includes("大脑") || lowerTitle.includes("brain")) {
+		return `Abstract wireframe brain with glowing ${accent} neural connections, fragmenting on one side into floating geometric shards. ${baseStyle}`;
+	}
+	if (lowerTitle.includes("代码") || lowerTitle.includes("code") || lowerTitle.includes("程序")) {
+		return `Isometric dark developer workspace with multiple glowing monitors showing code, with subtle ${accent} accent lighting. A single chair. ${baseStyle}`;
+	}
+	if (lowerTitle.includes("自动化") || lowerTitle.includes("automat") || lowerTitle.includes("bainbridge")) {
+		return `Retro-futuristic control room from the 1980s, analog dials and CRT monitors, but all screens show modern AI interfaces. Accent color ${accent}. ${baseStyle}`;
+	}
+	if (lowerTitle.includes("生日") || lowerTitle.includes("birthday") || lowerTitle.includes("概率") || lowerTitle.includes("probability")) {
+		return `Abstract visualization of probability: many overlapping circles with glowing ${accent} intersections, some connected by thin lines. Mathematical beauty. ${baseStyle}`;
+	}
+	if (lowerTitle.includes("1%") || lowerTitle.includes("复利") || lowerTitle.includes("compound")) {
+		return `Two diverging paths from a single point, one curving exponentially upward (glowing ${accent}), the other barely rising. Grid background like a graph. ${baseStyle}`;
+	}
+	if (lowerTitle.includes("依赖") || lowerTitle.includes("dependen")) {
+		return `Isometric view of a developer at a desk, surrounded by growing chains of glowing code symbols. The chains transition from ${accent} (loose) to red (tight). ${baseStyle}`;
+	}
+	// Default: abstract tech
+	return `Abstract dark tech visualization with geometric patterns, glowing ${accent} accent lines, floating data particles. ${baseStyle}`;
+}
+
+const illustrationPrompt = customPrompt || generateIllustrationPrompt(title, accent);
+
+console.log("=== Cover Generation ===");
+console.log(`  Title: ${title}`);
+console.log(`  Accent: ${accent}`);
+console.log(`  Prompt: ${illustrationPrompt.substring(0, 80)}...`);
+
+// Step 1: Generate illustration
+const tmpIllustration = `/tmp/cover-illustration-${Date.now()}.png`;
+const generateImageScript = resolve(dirname(new URL(import.meta.url).pathname), "generate-image.ts");
+
+console.log("\nStep 1: Generating illustration...");
+execSync(
+	`npx tsx "${generateImageScript}" "${illustrationPrompt}" --output "${tmpIllustration}"`,
+	{ stdio: "inherit" }
+);
+
+if (!existsSync(tmpIllustration)) {
+	console.error("Failed to generate illustration");
+	process.exit(1);
+}
+
+// Step 2: Overlay title text using ffmpeg
+// Find a Chinese font
+const fontCandidates = [
+	"/usr/share/fonts/truetype/noto/NotoSansCJK-Bold.ttc",
+	"/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+	"/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc",
+	"/usr/share/fonts/truetype/wqy/wqy-microhei.ttc",
 ];
 
-const program = new Command();
-program
-  .option("--title <text>", "Title line 1")
-  .option("--title2 <text>", "Title line 2 (accent)")
-  .option("--subtitle <text>", "Subtitle")
-  .option("--episode <n>", "Episode number", "0")
-  .option("--output <path>", "Output PNG path")
-  .option("--series", "Generate all series covers")
-  .parse();
-
-const opts = program.opts();
-
-if (opts.series) {
-  console.log("Generating AI Confessions series covers...\n");
-  for (const config of SERIES) {
-    generateCover(config);
-  }
-  console.log(`\nDone! ${SERIES.length} covers generated.`);
-} else if (opts.title && opts.title2 && opts.output) {
-  generateCover({
-    titleLine1: opts.title,
-    titleLine2: opts.title2,
-    subtitle: opts.subtitle || "",
-    episode: parseInt(opts.episode),
-    output: opts.output,
-  });
-} else {
-  console.log("Usage:");
-  console.log("  npx tsx tools/generate-cover.ts --series");
-  console.log('  npx tsx tools/generate-cover.ts --title "line1" --title2 "line2" --subtitle "sub" --episode 1 --output cover.png');
+let fontPath = "";
+for (const f of fontCandidates) {
+	if (existsSync(f)) {
+		fontPath = f;
+		break;
+	}
 }
+
+if (!fontPath) {
+	console.warn("No Chinese font found — outputting illustration without text overlay");
+	execSync(`cp "${tmpIllustration}" "${outputPath}"`);
+} else {
+	console.log("\nStep 2: Overlaying title text...");
+	// Escape special characters for ffmpeg drawtext
+	const escapedTitle = title.replace(/'/g, "'\\''").replace(/:/g, "\\:");
+
+	// Title in center-bottom third, with dark background bar for readability
+	const filter = [
+		// Dark gradient overlay at bottom
+		`drawbox=x=0:y=ih*0.7:w=iw:h=ih*0.3:color=black@0.6:t=fill`,
+		// Title text
+		`drawtext=text='${escapedTitle}':fontfile='${fontPath}':fontsize=72:fontcolor=white:borderw=3:bordercolor=black:x=(w-text_w)/2:y=h*0.78`,
+	].join(",");
+
+	execSync(
+		`ffmpeg -i "${tmpIllustration}" -vf "${filter}" -q:v 2 "${outputPath}" -y -loglevel error`
+	);
+}
+
+console.log(`\n=== Done ===`);
+console.log(`  Cover: ${outputPath}`);
+
+// Cleanup
+execSync(`rm -f "${tmpIllustration}"`);
