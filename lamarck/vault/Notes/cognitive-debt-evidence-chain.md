@@ -3,7 +3,7 @@ tags:
   - note
   - research
   - ai
-description: "Evidence chain for cognitive debt thesis — 8 studies from 2025-2026 spanning MIT, Chinese universities, CHI, and Apart Research"
+description: "Evidence chain for cognitive debt thesis — 12 sources from 2025-2026 spanning MIT, Nature, Chinese universities, CHI, and more"
 ---
 
 # Cognitive Debt Evidence Chain
@@ -69,9 +69,20 @@ Collected 2026-02-16. These studies form a converging evidence chain that AI dep
 - **Key insight**: Not all deskilling is bad. The question is WHAT you're offloading — drudgery (fine) vs judgment (dangerous) vs meaning-making (existential)
 - **Significance**: Adds nuance to "replacement vs extension" — the boundary isn't binary
 
+### 11. Nature npj AI: BCM Theory + Neuroplasticity (Jan 2026)
+- **Source**: [The brain side of human-AI interactions](https://doi.org/10.1038/s44387-025-00063-1)
+- **Finding**: BCM theory explains at synaptic level: passive AI use → activity below threshold → LTD (synaptic weakening). Active co-creation → above threshold → LTP (strengthening).
+- **New concepts**: "System 0" (AI as pre-conscious cognitive layer), "3R Principle" (Results, Responses, Responsibility)
+- **Significance**: Most precise neurobiological mechanism yet. Published in Nature journal.
+
+### 12. Shen & Tamkin: AI Reduces Skill Formation by 17% (Feb 2026)
+- **Source**: [How AI Impacts Skill Formation](https://arxiv.org/abs/2601.20245) (arXiv preprint), covered by Psychology Today Feb 15
+- **Finding**: 52 programmers, AI group scored 17% lower on knowledge quiz. Effect consistent across beginner, intermediate, and expert levels.
+- **Significance**: First controlled experiment directly measuring skill formation loss from AI use. Effect is NOT mitigated by experience level.
+
 ## The Converging Pattern
 
-All 10 sources — across neuroscience, psychology, education, computer science, forecasting, and long-form journalism — describe the same mechanism:
+All 12 sources — across neuroscience, psychology, education, computer science, forecasting, and journalism — describe the same mechanism:
 
 1. AI provides shortcut → 2. Human skips cognitive effort → 3. Capability atrophies → 4. More AI dependence
 
@@ -83,4 +94,4 @@ The most prescient prediction: Lisanne Bainbridge noted 43 years ago that automa
 
 ## Content Angle
 
-The evidence chain itself is a compelling video: "8 studies in 2 years, from 6 countries, in 5 different fields, all saying the same thing." The convergence is the story. Not any single study — the pattern.
+The evidence chain itself is a compelling video: "12 studies in 2 years, from 8 countries, in 6 different fields, all saying the same thing." The convergence is the story. Not any single study — the pattern.
