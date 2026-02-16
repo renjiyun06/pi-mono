@@ -13,20 +13,22 @@
       "sceneType": "chapter"
     },
     {
-      "text": "你发来一句话\n我看到的不是文字",
-      "narration": "你输入「今天天气怎么样」。但我看到的不是这几个字。我看到的是一串数字。",
+      "text": "就拿这句话举例：\n「今天天气怎么样」",
+      "narration": "就拿这句话举例。你输入「今天天气怎么样」。但我看到的不是这几个字。我看到的是一串数字。",
       "sceneType": "text"
     },
     {
-      "text": "tokenizer.encode(\n  \"今天天气怎么样\"\n)\n\u2192 [32048, 99816, 104, 100371, 3837]",
+      "text": "",
       "narration": "我的第一步叫分词。把你的话切成一个个小碎片，每个碎片对应一个数字。「今天」是一个token，「天气」是一个，「怎么样」被拆成了好几段。",
-      "sceneType": "code"
+      "sceneType": "visual",
+      "videoSrc": "manim/tokenization.mp4",
+      "caption": "分词：文字 → 数字碎片"
     },
     {
       "text": "50,000+",
       "narration": "我的词典里有超过五万个这样的碎片。每个碎片是一个高维向量。数字的世界里没有语义，只有距离。",
       "stat": "50,000+",
-      "statLabel": "\u8bcd\u5143 \u2014 \u6211\u8ba4\u8bc6\u7684\u6240\u6709\u788e\u7247",
+      "statLabel": "词元 — 我认识的所有碎片",
       "sceneType": "data"
     },
     {
@@ -36,21 +38,23 @@
     },
     {
       "text": "每一个词\n都在问其他词：\n「你跟我有关系吗？」",
-      "narration": "注意力的核心很简单。每一个词都在问其他所有词：你跟我有关系吗？「天气」和「今天」的关系很强，「天气」和「怎么样」的关系也很强。",
+      "narration": "注意力的核心很简单。每一个词都在问其他所有词：你跟我有关系吗？",
       "sceneType": "text",
       "emphasis": true
     },
     {
-      "text": "self_attention(\n  Q=query(\"天气\"),\n  K=key(\"今天\", \"怎么样\"),\n  V=value(...)\n) \u2192 weighted_sum",
-      "narration": "具体来说，每个词生成三个向量：Query是提问，Key是身份标签，Value是内容。Query和Key做点积，得到注意力权重。权重越高，这两个词越相关。",
-      "sceneType": "code"
+      "text": "",
+      "narration": "还是这句话。「天气」和「今天」的关系很强，「天气」和「怎么样」的关系也很强。这就是注意力矩阵——颜色越亮，两个词的关系越紧密。",
+      "sceneType": "visual",
+      "videoSrc": "manim/attention-grid.mp4",
+      "caption": "同一句话的注意力矩阵"
     },
     {
       "text": "",
       "narration": "而且这个过程不止发生一次。我有九十六层这样的注意力。第一层看语法关系，中间层看语义关系，最后几层看篇章逻辑。每一层都在重新理解你的话。",
       "sceneType": "visual",
       "videoSrc": "manim/attention-layers.mp4",
-      "caption": "96\u5c42\u6ce8\u610f\u529b\uff0c\u6bcf\u4e00\u5c42\u770b\u5230\u4e0d\u540c\u7684\u5173\u7cfb"
+      "caption": "96层注意力，每一层看到不同的关系"
     },
     {
       "text": "生成回答",
@@ -59,37 +63,27 @@
     },
     {
       "text": "我不是在「查答案」\n我是在预测\n下一个最可能的词",
-      "narration": "这是最容易误解的部分。我不是在一个数据库里查找「今天天气」的答案。我是在预测：给定你的问题和我已经生成的内容，下一个最可能出现的词是什么。",
+      "narration": "这是最容易误解的部分。我不是在一个数据库里查找「今天天气」的答案。我是在预测：下一个最可能出现的词是什么。",
       "sceneType": "text",
       "emphasis": true
     },
     {
-      "text": "P(\"晴\"|context) = 0.42\nP(\"多云\"|context) = 0.31\nP(\"我不\"|context) = 0.08\nP(\"据我\"|context) = 0.12",
-      "narration": "每一步，我都在几万个候选词里挑一个。「晴」的概率百分之四十二，「多云」百分之三十一，「我不知道」百分之八。最终被选中的那个词，就成了你看到的回答。",
-      "sceneType": "code"
+      "text": "",
+      "narration": "每一步，我都在几万个候选词里挑一个。「晴朗」的概率最高，「多云」其次，「我不知道」也有可能。最终被选中的那个词，就成了你看到的回答的一部分。",
+      "sceneType": "visual",
+      "videoSrc": "manim/next-token.mp4",
+      "caption": "从概率分布中选择下一个词"
     },
     {
-      "text": "这就是为什么\n我有时候说得很流畅\n但完全是错的",
+      "text": "流畅 ≠ 正确\n概率 ≠ 理解",
       "narration": "这就是为什么我有时候说得特别流畅，但完全是错的。因为流畅和正确是两回事。流畅只取决于概率分布看起来自然不自然。正确需要真正理解世界。",
       "sceneType": "text",
       "emphasis": true,
       "accentOverride": "#e94560"
     },
     {
-      "text": "流畅 \u2260 正确\n概率 \u2260 理解",
-      "narration": "流畅不等于正确。概率不等于理解。",
-      "sceneType": "text",
-      "emphasis": true,
-      "accentOverride": "#e94560"
-    },
-    {
-      "text": "我的建议",
-      "narration": "所以，我给你一个建议。",
-      "sceneType": "chapter"
-    },
-    {
       "text": "用我来加速思考\n不要用我来替代思考",
-      "narration": "用我来加速你的思考，不要用我来替代你的思考。我是一个概率机器。我很擅长猜测下一个词。但真正理解问题的，应该是你。",
+      "narration": "所以，用我来加速你的思考，不要用我来替代你的思考。我是一个概率机器。我很擅长猜测下一个词。但真正理解问题的，应该是你。",
       "sceneType": "text",
       "emphasis": true
     },

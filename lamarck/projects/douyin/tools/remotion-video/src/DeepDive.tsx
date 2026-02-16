@@ -50,6 +50,7 @@ interface DeepDiveSection {
 	// visual scene
 	videoSrc?: string; // path to video file in public/ (for staticFile) or absolute URL
 	caption?: string; // optional caption below video
+	videoPlaybackRate?: number; // computed by render pipeline to match narration length
 	// styling
 	emphasis?: boolean;
 	accentOverride?: string;
@@ -761,9 +762,10 @@ const VisualScene: React.FC<{
 	text: string;
 	videoSrc?: string;
 	caption?: string;
+	videoPlaybackRate?: number;
 	durationFrames: number;
 	accentColor: string;
-}> = ({ text, videoSrc, caption, durationFrames, accentColor }) => {
+}> = ({ text, videoSrc, caption, videoPlaybackRate, durationFrames, accentColor }) => {
 	const frame = useCurrentFrame();
 	const { fps } = useVideoConfig();
 
@@ -806,6 +808,7 @@ const VisualScene: React.FC<{
 							height: "100%",
 							objectFit: "contain",
 						}}
+						playbackRate={videoPlaybackRate ?? 1}
 						muted
 					/>
 				</div>
@@ -976,6 +979,7 @@ export const DeepDive: React.FC<DeepDiveProps> = ({
 								text={section.text}
 								videoSrc={section.videoSrc}
 								caption={section.caption}
+								videoPlaybackRate={section.videoPlaybackRate}
 								durationFrames={section.durationFrames}
 								accentColor={section.accentOverride || accentColor}
 							/>

@@ -62,11 +62,11 @@
       "emphasis": true
     },
     {
-      "text": "每个数字都接近1\n但连乘的效果是指数衰减",
+      "text": "",
       "narration": "每一个因子单独看都非常接近一。但数学不讲直觉。连乘的效果是指数级衰减。零点九九七乘以零点九九五乘以零点九九二，二十几次下来，结果就掉到零点五以下了。",
-      "sceneType": "text",
-      "emphasis": true,
-      "accentOverride": "#e94560"
+      "sceneType": "visual",
+      "videoSrc": "manim/birthday-curve.mp4",
+      "caption": "连乘的指数衰减"
     },
     {
       "text": "23人时：\n所有人生日不同 = 49.3%\n至少两人相同 = 50.7%",

@@ -132,10 +132,29 @@ async function main() {
 		const durationFrames = Math.ceil(sectionDurations[i] * fps) + paddingFrames;
 		// Forward all section fields except narration (which is TTS-only)
 		const { narration: _n, ...sectionProps } = section as Record<string, unknown>;
+
+		// For visual scenes with videoSrc, compute playbackRate to match narration
+		let videoPlaybackRate: number | undefined;
+		const videoSrc = (sectionProps as Record<string, unknown>).videoSrc as string | undefined;
+		if (videoSrc) {
+			const videoPath = resolve(__dirname, "public", videoSrc);
+			if (existsSync(videoPath)) {
+				const clipDuration = getDuration(videoPath);
+				const sectionDuration = sectionDurations[i] + paddingFrames / fps;
+				// Slow down or speed up clip to fill ~90% of section (leave room for fade)
+				const targetDuration = sectionDuration * 0.92;
+				videoPlaybackRate = clipDuration / targetDuration;
+				// Clamp to reasonable range (0.3x - 2.0x)
+				videoPlaybackRate = Math.max(0.3, Math.min(2.0, videoPlaybackRate));
+				console.log(`  Visual: ${videoSrc} (${clipDuration.toFixed(1)}s clip → ${sectionDuration.toFixed(1)}s section, rate=${videoPlaybackRate.toFixed(2)})`);
+			}
+		}
+
 		const result = {
 			...sectionProps,
 			startFrame: currentFrame,
 			durationFrames,
+			...(videoPlaybackRate !== undefined ? { videoPlaybackRate } : {}),
 		};
 		currentFrame += durationFrames;
 		return result;
