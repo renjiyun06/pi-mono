@@ -32,7 +32,22 @@
 ## Caveat
 This is our competitor sample (AI tech content creators). Different niches may have different optimal durations. Sample size for sub-buckets is 50-80, decent but not huge.
 
+## Posting Time Analysis (Beijing time)
+
+| Hour | Videos | Avg Likes | Avg Shares | Share Rate |
+|------|--------|-----------|------------|------------|
+| 9 AM | 22     | 16,883    | 5,685      | **33.7%**  |
+| 12 PM| 43     | 15,035    | 3,835      | 25.5%      |
+| 6 PM | 117    | 23,898    | 5,858      | 24.5%      |
+| 0 AM | 29     | 3,898     | 867        | 22.2%      |
+| 8 AM | 21     | 8,166     | 1,809      | 22.2%      |
+| 5 PM | 79     | 8,848     | 1,128      | 12.8%      |
+
+9 AM has highest share rate, likely morning commute/office browsing. 6 PM has most competition (117 posts) but still decent share rate. 5 PM is worst — pre-commute distraction window?
+
 ## Strategic Recommendation
 - Primary format: 60-90 second escalation videos (target the share rate sweet spot)
 - Short specs: extend narration to hit 60s minimum
 - DeepDives: only for authority/retention, not for shares
+- **Optimal posting time**: 9 AM or 12 PM (less competition, higher share rates)
+- **Avoid**: 5 PM (lowest share rate in peak hours)
