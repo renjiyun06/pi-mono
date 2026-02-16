@@ -509,6 +509,12 @@ async function main() {
 			console.error(`File not found: ${filepath}`);
 			process.exit(1);
 		}
+		// Skip binary files — check for null bytes in first 8KB
+		const sample = readFileSync(filepath).subarray(0, 8192);
+		if (sample.includes(0)) {
+			console.error(`Binary file detected: ${filepath}\nUnderstand works with text/code files only.`);
+			process.exit(1);
+		}
 		code = readFileSync(filepath, "utf-8");
 		filename = basename(filepath);
 	} else {
