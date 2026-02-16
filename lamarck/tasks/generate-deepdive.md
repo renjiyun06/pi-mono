@@ -96,9 +96,58 @@ JSON 中不能出现中文引号 `""`。使用 `「」` 代替。
 - 节奏：一句话 = 一个信息点，不要一句话塞三个观点
 - 适度使用设问和停顿（句号分隔 = TTS 停顿）
 
+## Manim 可视化配置（可选）
+
+如果某个段落适合用图表或网络图可视化，可以同时生成 Manim 配置文件。
+
+在工作目录下创建 `manim-configs/` 目录，每个可视化一个 JSON 文件（如 `chart-01.json`）。
+
+### 支持的类型
+
+**Bar Chart (`bar_chart`)**:
+```json
+{
+  "type": "bar_chart",
+  "title": "图表标题",
+  "labels": ["标签1", "标签2"],
+  "values": [40, 15],
+  "accent": "#00d4ff",
+  "unit": "%"
+}
+```
+
+**Dual Curve (`dual_curve`)**:
+```json
+{
+  "type": "dual_curve",
+  "title": "标题",
+  "curve_a_label": "理解度",
+  "curve_b_label": "债务",
+  "color_a": "#00d4ff",
+  "color_b": "#e94560",
+  "x_label": "时间",
+  "y_label": "%",
+  "decay_rate": 0.2
+}
+```
+
+**Network (`network`)**:
+```json
+{
+  "type": "network",
+  "title": "标题",
+  "nodes": [{"name": "节点", "x": 0, "y": 0}],
+  "edges": [[0, 1]],
+  "accent": "#00d4ff",
+  "dim_after": 90
+}
+```
+
+在 spec 中对应的 section 暂时用 `text` 类型。在 `result.md` 中说明哪些段落可以替换为 `visual` 类型（等 Manim 渲染完成后手动替换）。
+
 ## 注意
 
-- 不要生成 `visual` 类型的场景（Manim 视频需要单独制作）
+- 在 spec 中不直接使用 `visual` 类型（Manim 视频需要先渲染）
 - 总段数控制在 14-19 段
 - 旁白总字数控制在 800-1200 字（对应约 2-3 分钟）
 - 生成完毕后，自己重新读一遍 output.json，检查 JSON 合法性、中文引号、叙事清单
