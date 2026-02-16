@@ -106,6 +106,23 @@ The "debt" metaphor is better than "addiction" for Douyin because:
 ## Key Question
 Is there a "debt ceiling" — a point where accumulated AI debt triggers a systemic crisis? Storey's student team hit theirs at week 7. The logistics firm hit theirs when two agents collided. What does the societal debt ceiling look like?
 
+## The AI Debt Accelerator
+
+Commoditized AI (free, open-source, abundant) doesn't just enable debt — it accelerates it.
+
+When AI was expensive (2023-2024): deliberate use, replacement was a conscious choice.
+When AI is free (2025-2026): default use, replacement happens unconsciously.
+
+**The cheaper AI gets, the faster cognitive debt accumulates.** This is because:
+1. Cost barrier removed → no friction to "let AI handle it"
+2. Ubiquity → "everyone else uses AI, so I should too" social pressure
+3. Integration depth → AI embedded in every tool, not a separate step
+4. Model quality → good enough to be invisible (you forget AI is doing the work)
+
+Evidence: Chinese open-source models surpassed US models in downloads (MIT study, 2026). 80% of Valley startups with open-source stacks run Chinese models. Kimi K2.5 is 1/7th the price of Claude Opus. The race to zero cost is a race to maximum cognitive debt.
+
+**Content angle**: "AI is getting better AND cheaper. That's not just good news — it means the debt accumulates faster than ever."
+
 ## Next Steps
 - This framework is the intellectual backbone of our entire content strategy
 - Each video we make should map to one cell in the debt taxonomy
