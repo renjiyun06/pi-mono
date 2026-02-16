@@ -3,7 +3,7 @@ tags:
   - note
   - research
   - ai
-description: "Evidence chain for cognitive debt thesis — 22 sources from 2025-2026 spanning MIT, Nature, METR RCT, Chinese universities, CHI, ICSE, enterprise architecture, code analysis, education, and more"
+description: "Evidence chain for cognitive debt thesis — 23 sources from 2025-2026 spanning MIT, Nature, METR RCT, HBR, Chinese universities, CHI, ICSE, enterprise architecture, code analysis, education, and more"
 ---
 
 # Cognitive Debt Evidence Chain
@@ -147,9 +147,17 @@ Collected 2026-02-16. These studies form a converging evidence chain that AI dep
 - **Supporting data**: Stack Overflow 2025 — only 29% trust AI code accuracy (down from 40%), 45% frustrated by "almost right" code. Jellyfish telemetry shows juniors gain 21-40%, but senior/complex work takes the 19% hit.
 - **Significance**: The most rigorous controlled study showing AI creates a **perception illusion** — developers can't tell they're slower. This is cognitive debt's mechanism made measurable: the "shortcut feels productive" feedback loop that prevents self-correction. The 43-point gap is the debt itself.
 
+### 23. HBR: AI Doesn't Reduce Work, It Intensifies It (Ranganathan & Ye, Feb 2026)
+- **Source**: [Harvard Business Review](https://hbr.org/2026/02/ai-doesnt-reduce-work-it-intensifies-it), amplified in [Martin Fowler's fragments](https://martinfowler.com/fragments/2026-02-13.html)
+- **Sample**: 8-month ethnographic study at a ~200-employee US tech company
+- **Finding**: AI adoption → employees worked faster pace, broader scope, longer hours — often without being asked. Initial productivity surge followed by "workload creep" → cognitive fatigue, burnout, weakened decision-making.
+- **Key quote**: "The productivity surge enjoyed at the beginning can give way to lower quality work, turnover, and other problems."
+- **Fowler context**: Martin Fowler (Feb 13) also responded to Storey's cognitive debt post, proposing a cruft/debt separation: cruft = ignorance (of code/domain), debt = the cost of that ignorance. "Either we pay interest — making each further change harder — or we pay down the principal." Camille Fournier adds: "everyone becomes a manager" mental fatigue from AI context-switching.
+- **Significance**: Closes the loop from individual cognitive debt to organizational consequence. AI doesn't just erode understanding — it also erodes the TIME and ENERGY needed to rebuild it. Double bind: more AI → more fatigue → less capacity for deep work → more AI dependence.
+
 ## The Converging Pattern
 
-22 sources — across neuroscience, psychology, education, computer science, philosophy, enterprise architecture, code analysis, forecasting, practitioner accounts, and industry surveys. 17 describe the same debt mechanism; #17 provides essential nuance (the baseline was already bad); #18-19 add practitioner and institutional authority; #20 adds Anthropic's self-critical evidence; #21 provides longitudinal EEG confirmation; #22 provides the most rigorous controlled productivity study showing the perception illusion that makes cognitive debt self-reinforcing:
+23 sources — across neuroscience, psychology, education, computer science, philosophy, enterprise architecture, code analysis, forecasting, practitioner accounts, and industry surveys. 17 describe the same debt mechanism; #17 provides essential nuance (the baseline was already bad); #18-19 add practitioner and institutional authority; #20 adds Anthropic's self-critical evidence; #21 provides longitudinal EEG confirmation; #22 provides the most rigorous controlled productivity study showing the perception illusion that makes cognitive debt self-reinforcing:
 
 1. AI provides shortcut → 2. Human skips cognitive effort → 3. Capability atrophies → 4. More AI dependence
 
