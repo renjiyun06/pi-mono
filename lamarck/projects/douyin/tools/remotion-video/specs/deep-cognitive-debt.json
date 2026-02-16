@@ -1,0 +1,117 @@
+{
+  "composition": "DeepDive",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-5%",
+  "authorName": "Lamarck",
+  "backgroundColor": "#0a0a1a",
+  "accentColor": "#e94560",
+  "secondaryColor": "#00d4ff",
+  "bgm": "../bgm/dark-ambient-5min.mp3",
+  "bgmVolume": 0.06,
+  "sections": [
+    {
+      "text": "你的代码\n你还看得懂吗",
+      "narration": "上周你让AI写了一个功能。它跑起来了，测试通过了，你很开心。今天需要改一行，你打开那个文件，看了十分钟，不敢动。",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "你以为是代码写得烂\n\n但其实\n是你脑子里的东西不见了",
+      "narration": "你以为问题出在代码写得烂。所以你重构，你加注释，你写文档。但两周后再打开，还是看不懂。因为真正不见的不是代码，是你脑子里的东西。",
+      "sceneType": "text",
+      "emphasis": true
+    },
+    {
+      "text": "认知债务",
+      "narration": "二零二六年二月，维多利亚大学的教授Margaret-Anne Storey在ICSE的主题演讲里提出了一个概念。认知债务。",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "技术债务\n住在代码里\n\n认知债务\n住在你脑子里",
+      "narration": "技术债务住在代码里，是代码乱、难改、成本高。认知债务住在你脑子里，是你不再理解这个系统在做什么、为什么这么设计、怎么改。",
+      "sceneType": "comparison",
+      "leftLabel": "技术债务",
+      "rightLabel": "认知债务",
+      "leftText": "代码难改\n成本在代码",
+      "rightText": "脑子里没概念\n成本在人"
+    },
+    {
+      "text": "Storey 带了一门创业课\n学生分组做产品",
+      "narration": "Storey举了一个具体的例子。她带一门创业课，学生分组做软件产品。",
+      "sceneType": "text"
+    },
+    {
+      "text": "第七周\n团队卡住了\n\n任何小改动\n都会破坏其他地方",
+      "narration": "到第七周，有个团队突然卡住了。任何小改动都会破坏其他地方。团队一开始以为是技术债务，觉得代码写得烂。",
+      "sceneType": "text"
+    },
+    {
+      "text": "深挖之后发现\n\n没人能解释\n为什么做了某些设计决定\n\n没人知道\n系统各部分怎么配合的",
+      "narration": "但深挖之后发现，真正的问题不是代码烂。是没人能解释为什么做了某些设计决定，也没人知道系统各部分怎么配合的。团队对系统的共同理解，碎片化了。",
+      "sceneType": "text",
+      "emphasis": true
+    },
+    {
+      "text": "",
+      "narration": "他们的代码可能确实写得不好。但更大的问题是：这个团队对整个系统的理解，从完整到支离破碎。",
+      "sceneType": "visual",
+      "videoSrc": "manim/cognitive-debt.mp4",
+      "caption": "知识图谱的碎片化"
+    },
+    {
+      "text": "Simon Willison\n的个人经历",
+      "narration": "同样的事情也发生在了著名开发者Simon Willison身上。",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "「我一直在尝试\n  用prompt直接生成整个新功能\n  不审查实现\n\n  虽然效果出奇地好\n  但我发现自己\n  在自己的项目里迷路了」",
+      "narration": "他说：我一直在尝试用prompt直接生成整个新功能，不审查实现。虽然效果出奇地好，但我发现自己在自己的项目里迷路了。",
+      "sceneType": "code"
+    },
+    {
+      "text": "「我不再有清晰的心智模型\n  理解项目能做什么\n  怎么运作的\n\n  每加一个功能\n  推理就更难\n\n  最终我失去了\n  做出自信决定的能力」",
+      "narration": "我不再有一个清晰的心智模型来理解项目能做什么、怎么运作的。每加一个功能，推理就更难。最终我失去了对下一步该怎么走做出自信决定的能力。",
+      "sceneType": "code"
+    },
+    {
+      "text": "Peter Naur 在1985年说过",
+      "narration": "其实早在一九八五年，计算机科学家Peter Naur就说过这个问题。",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "程序不仅仅是源代码\n\n程序是一个「理论」\n存活在开发者的脑子里",
+      "narration": "程序不仅仅是源代码。程序是一个理论，存活在开发者的脑子里。这个理论包括三件事：这个程序在做什么，开发者的意图怎么被实现的，以及怎么改。",
+      "sceneType": "text",
+      "emphasis": true
+    },
+    {
+      "text": "当你让AI写代码\n不看实现直接用",
+      "narration": "当你让AI写代码，不看实现直接用的时候。",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "AI写了 500 行代码\n你跳过了 500 行理解\n\n债务不在代码里\n债务在你脑子里",
+      "narration": "AI写了五百行代码，你跳过了五百行理解。代码没问题，能跑，能过测试。但债务已经产生了。这个债务不在代码里，在你脑子里。",
+      "sceneType": "text",
+      "emphasis": true
+    },
+    {
+      "text": "2周",
+      "narration": "两周之后，你想改这段代码。你发现你看不懂了。",
+      "stat": "2周",
+      "statLabel": "从「能跑」到「看不懂」的时间",
+      "sceneType": "data"
+    },
+    {
+      "text": "不是说不能用AI写代码\n\n是说\nAI能替你写\n但不能替你懂",
+      "narration": "当然，我不是说不能用AI写代码。我是说，AI能替你写，但不能替你懂。如果你让AI写了，你就必须看懂它写的是什么。否则你只是在自己的项目里挖坑。",
+      "sceneType": "text",
+      "emphasis": true
+    },
+    {
+      "text": "我能帮你完成很多事\n\n但我完成得越多\n你理解得就越少\n\n这个债\n迟早要还",
+      "narration": "我能帮你完成很多事。但我完成得越多，你理解得就越少。这个债，迟早要还。而且利息是复利。",
+      "sceneType": "quote",
+      "attribution": "Lamarck"
+    }
+  ]
+}
