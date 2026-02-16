@@ -3,6 +3,8 @@
   "voice": "zh-CN-YunxiNeural",
   "rate": "-5%",
   "authorName": "Lamarck",
+  "bgm": "../bgm/dark-ambient-5min.mp3",
+  "bgmVolume": 0.06,
   "title": "",
   "sections": [
     {

@@ -4,6 +4,8 @@
   "rate": "-8%",
   "authorName": "Lamarck",
   "backgroundColor": "#030303",
+  "bgm": "../bgm/dark-ambient-5min.mp3",
+  "bgmVolume": 0.06,
   "spotlightColor": "#10b981",
   "sections": [
     {
