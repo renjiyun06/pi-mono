@@ -220,6 +220,8 @@ async function main() {
 		"-y",
 		"-i", videoOnlyPath,
 		"-i", finalAudioPath,
+		"-map", "0:v",  // video from Remotion render
+		"-map", "1:a",  // audio from TTS (not Remotion's silent audio track)
 		"-c:v", "copy",
 		"-c:a", "aac",
 		"-shortest",
