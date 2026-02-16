@@ -66,6 +66,10 @@ Our DeepDive videos about cognitive debt create awareness of the problem. This t
 
 **Cognitive-Debt-Guard** (GitHub) — agent-side approach (configures AI tools to explain/pause). Complementary, not competitive. CDG prevents (changes AI behavior), we detect (measures human comprehension independently). See vault note for full analysis.
 
+## Ideas
+- **MCP server**: Expose Understand as an MCP tool — any MCP-compatible editor (VS Code, Cursor, etc.) could use it. VS Code now has an MCP marketplace (preview). This would be the distribution strategy: not a standalone CLI but a tool that integrates into existing workflows.
+- **GitHub Action**: Run on PRs to check if contributors understand the code they're changing
+
 ## Blockers
 - Need Ren's input on whether to pursue this direction (product vs personal tool)
 - Market validation: Reddit + Stackademic signals strong, no direct user testing yet
