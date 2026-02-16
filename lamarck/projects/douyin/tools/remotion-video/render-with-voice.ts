@@ -103,7 +103,7 @@ async function main() {
 			// Empty narration: generate 2s silence instead of calling TTS
 			const silenceDuration = 2.0;
 			execFileSync("ffmpeg", [
-				"-y", "-f", "lavfi", "-i", `anullsrc=r=24000:cl=mono`,
+				"-y", "-f", "lavfi", "-i", `anullsrc=r=48000:cl=stereo`,
 				"-t", String(silenceDuration), "-q:a", "9", audioPath,
 			], { stdio: "pipe" });
 			sectionDurations.push(silenceDuration);
