@@ -1,0 +1,20 @@
+filters:
+  and:
+    - file.hasTag("session-digest")
+
+formulas:
+  last_updated: 'file.mtime.relative()'
+
+properties:
+  description:
+    displayName: "Description"
+  formula.last_updated:
+    displayName: "Updated"
+
+views:
+  - type: table
+    name: "Session Digests"
+    order:
+      - file.name
+      - description
+      - formula.last_updated

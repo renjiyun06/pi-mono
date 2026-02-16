@@ -23,6 +23,7 @@ The shared brain of Ren and Lamarck. Memory, knowledge, ideas, issues, direction
 | [[Meta/\|Meta]] | Operating rules | How this brain works: identity, preferences, environment, autopilot rules |
 | [[Projects/\|Projects]] | Project docs | Per-project rules, directions, decisions (code lives in `lamarck/projects/`) |
 | [[Bases/\|Bases]] | Dynamic views | `.base` files that auto-aggregate notes |
+| [[Sessions/\|Sessions]] | Session digests | Compaction summaries preserved by `session-consolidate.ts` (sleep-time compute v0) |
 
 ## How to Use This Vault
 
