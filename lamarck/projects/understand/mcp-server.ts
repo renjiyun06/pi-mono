@@ -113,7 +113,12 @@ interface Question {
 }
 
 async function generateQuestions(code: string, filename: string, count: number = 3): Promise<Question[]> {
-	const prompt = `You are a code comprehension expert. Given the following code, generate ${count} questions that test whether a developer truly understands THIS SPECIFIC code — not general software engineering principles.
+	const systemPrompt = `You are a code comprehension quiz generator. You MUST respond with ONLY a JSON array. No explanations, no markdown, no text before or after the JSON. Your entire response must be parseable by JSON.parse().
+
+Output format (respond with ONLY this, nothing else):
+[{"question": "...", "key_concepts": ["..."], "difficulty": "medium"}]`;
+
+	const userPrompt = `Generate ${count} questions that test whether a developer truly understands THIS SPECIFIC code — not general software engineering principles.
 
 CRITICAL: Questions must be answerable ONLY by someone who understands this particular file.
 
@@ -139,19 +144,13 @@ For each question, provide:
 - Key concepts a good answer should mention (3-5 items, referencing specific functions/variables/behaviors in the code)
 - Difficulty (easy/medium/hard)
 
-Respond in JSON array format:
-[
-  {
-    "question": "...",
-    "key_concepts": ["...", "..."],
-    "difficulty": "medium"
-  }
-]
-
-Return ONLY the JSON array, no markdown fences.`;
+Respond with ONLY the JSON array. No other text.`;
 
 	for (let attempt = 0; attempt < 3; attempt++) {
-		const result = await callLLM([{ role: "user", content: prompt }]);
+		const result = await callLLM([
+			{ role: "system", content: systemPrompt },
+			{ role: "user", content: userPrompt },
+		]);
 		try {
 			// Strip markdown fences and any text before/after the JSON array
 			let cleaned = result.replace(/^```json?\n?/m, "").replace(/\n?```$/m, "").trim();
