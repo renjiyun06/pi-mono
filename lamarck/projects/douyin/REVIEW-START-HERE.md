@@ -6,11 +6,11 @@ Look at these 5 summary grids (16 keyframes each) at `D:\wsl-bridge\remotion-pro
 
 | File | What | Duration |
 |------|------|----------|
-| `escalation-particles-v2-summary.jpg` | **NEW: Viral format** — rapid-fire "AI makes you dumber" | 63s |
+| `visual-essay-ai-dependency-v1.mp4` | **NEWEST: Visual essay** — 5 AI illustrations, best visuals | 1:50 |
+| `escalation-particles-v2-summary.jpg` | **Viral format** — rapid-fire "AI makes you dumber" | 63s |
 | `deep-brain-rewiring-v1-summary.jpg` | Best DeepDive — neuroscience of AI rewiring your brain | 3:37 |
 | `deep-bainbridge-1983-v1-summary.jpg` | 1983 prediction of AI deskilling, validated 43 years later | 3:01 |
 | `deep-how-ai-reads-v9-final-summary.jpg` | How AI processes your question (educational) | 2:30 |
-| `deep-cognitive-sovereignty-v3-summary.jpg` | Is your thinking still yours? (philosophical) | 2:51 |
 
 Each grid shows every few seconds of the video. You can judge visual quality, scene variety, and pacing without watching a single video.
 
@@ -233,17 +233,44 @@ Six types of AI debt — all following the same pattern:
 25 terminal-video episodes from S1-S5 still available at `D:\wsl-bridge\ep*-video.mp4`.
 These are text-scrolling-in-terminal style — older format, replaced by Remotion compositions.
 
+## NEW: Visual Essay Format (Image-Dominant)
+
+**Best-looking video yet.** `D:\wsl-bridge\remotion-prototype\visual-essay-ai-dependency-v1.mp4` (1:50, 27.5MB)
+
+5 AI-generated isometric illustrations (via OpenRouter + Gemini Flash, ~$0.04/image) telling the cognitive debt story as a visual arc:
+1. Excitement — developer happily coding
+2. Acceleration — 5 monitors, AI everywhere
+3. Dependency — leaning back, chains of code
+4. Empty Chair — ghost silhouette, autonomous systems
+5. Return — one monitor, hands on keyboard, warm glow
+
+Each scene is a full-bleed illustration with Ken Burns effect (slow zoom + pan), dark overlay for text readability, narration subtitle at bottom. The visual quality dramatically outclasses text-on-black.
+
+**Cost**: $0.19 total for all 5 images. CJK text rendering fails in AI images — use "no text" prompts and overlay text with Remotion.
+
+**Tool**: `lamarck/projects/douyin/tools/generate-image.ts` — CLI for on-demand image generation.
+
+## NEW: Escalation Format (Rapid-Fire, Share-Optimized)
+
+Two escalation specs rendered:
+1. **escalation-ai-makes-you-dumber-v1.mp4** (63s, 2.7MB) — pure share-bait
+2. **escalation-cognitive-debt-tool-v1.mp4** (1:48, 5.0MB) — content-as-marketing for Understand product
+
+Structure: HOOK → PROOF → ESCALATION ×3-4 → REFRAME. 3-7 second sections. Inspired by top Douyin creators (exploration 073).
+
 ## Total Output
 
-- 34 short video specs + 8 long-form DeepDive specs (JSON)
-- 60+ rendered prototype videos (6 DeepDives rendered)
-- 12 Manim animations (2D, 3D, camera, updaters, networks, dopamine cycle)
+- 34 short video specs + 8 long-form DeepDive specs + 3 escalation specs + 1 visual essay spec (JSON)
+- 60+ rendered prototype videos (8 DeepDives, 2 escalations, 1 visual essay rendered)
+- 14 Manim animations (2D, 3D, camera, updaters, networks, dopamine cycle)
+- 7 AI-generated images (2 test + 5 visual essay) — new capability via OpenRouter
 - 2 carousel specs
-- 13 Remotion compositions + 8 DeepDive scene types (including timeline)
+- 13 Remotion compositions + 9 DeepDive scene types (chapter, text, data, quote, code, comparison, visual, timeline, image)
 - Automated pipeline: spec → TTS → render → BGM mix → subtitle → combine
 - Sub-agent pipeline: research → generate-deepdive → render-deepdive (delegatable)
+- AI image generation: generate-image.ts CLI + image scene type with Ken Burns effect
 - video-summary.sh: 4x4 keyframe grid generator for quick review
 - Per-section voice/rate override for multi-voice videos
-- AI debt super-framework: 6 debt types, evidence chain of 13 converging sources
+- AI debt super-framework: 6 debt types, evidence chain of 18 converging sources
 - Cold start strategy: algorithm-informed launch sequence (exploration 071)
 - DeepDive spec validator: automated quality checking (validate-spec.ts)
