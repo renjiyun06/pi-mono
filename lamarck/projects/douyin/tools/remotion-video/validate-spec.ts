@@ -143,6 +143,21 @@ function validate(specPath: string): Issue[] {
 		}
 	}
 
+	// 5b. Duplicate narration check (copy-paste errors in spec generation)
+	const narrations = spec.sections
+		.map((s: any, i: number) => ({ index: i, text: (s.narration || "").trim() }))
+		.filter((n: any) => n.text.length > 20); // only check substantial text
+	for (let i = 0; i < narrations.length; i++) {
+		for (let j = i + 1; j < narrations.length; j++) {
+			if (narrations[i].text === narrations[j].text) {
+				issues.push({
+					level: "warn",
+					message: `Sections ${narrations[i].index + 1} and ${narrations[j].index + 1} have identical narration — likely copy-paste error`,
+				});
+			}
+		}
+	}
+
 	// 6. Duration estimate
 	const estimatedDuration = totalNarrationChars / CHARS_PER_SECOND_ZH;
 	if (estimatedDuration < MIN_DURATION_S) {
