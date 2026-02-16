@@ -57,9 +57,21 @@ Collected 2026-02-16. These studies form a converging evidence chain that AI dep
 - **Finding**: AI-induced cognitive debt requires active intervention in education
 - **Significance**: First use of "cognitive debt" in a peer-reviewed education journal
 
+### 9. Frontiers Medicine: Deskilling Neuroscience (Feb 2026)
+- **Source**: [Deskilling dilemma: brain over automation](https://doi.org/10.3389/fmed.2026.1765692)
+- **Finding**: Four neural mechanisms — prefrontal cortex deactivation, hippocampus disengagement, dopaminergic reinforcement of offloading, network shift from analytic to habit-based
+- **New concept**: "Never-skilling" — failure to develop skills in the first place (worse than deskilling)
+- **Significance**: First paper describing the brain-level mechanism of cognitive debt
+
+### 10. The Atlantic: Deskilling Taxonomy (Oct 2025)
+- **Source**: [The Age of De-Skilling](https://www.theatlantic.com/ideas/archive/2025/10/ai-deskilling-automation-technology/684669/)
+- **Finding**: 6 types of deskilling: benign, drudgery elimination, democratizing, reskilling, erosive, constitutive
+- **Key insight**: Not all deskilling is bad. The question is WHAT you're offloading — drudgery (fine) vs judgment (dangerous) vs meaning-making (existential)
+- **Significance**: Adds nuance to "replacement vs extension" — the boundary isn't binary
+
 ## The Converging Pattern
 
-All 8 studies — across neuroscience, psychology, education, computer science, and forecasting — describe the same mechanism:
+All 10 sources — across neuroscience, psychology, education, computer science, forecasting, and long-form journalism — describe the same mechanism:
 
 1. AI provides shortcut → 2. Human skips cognitive effort → 3. Capability atrophies → 4. More AI dependence
 
