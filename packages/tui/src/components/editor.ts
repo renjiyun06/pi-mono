@@ -516,6 +516,7 @@ export class Editor implements Component, Focusable {
 			if (kb.matches(data, "tab")) {
 				const selected = this.autocompleteList.getSelectedItem();
 				if (selected && this.autocompleteProvider) {
+					const wasSlashCommand = this.autocompletePrefix.startsWith("/");
 					this.pushUndoSnapshot();
 					this.lastAction = null;
 					const result = this.autocompleteProvider.applyCompletion(
@@ -530,6 +531,11 @@ export class Editor implements Component, Focusable {
 					this.setCursorCol(result.cursorCol);
 					this.cancelAutocomplete();
 					if (this.onChange) this.onChange(this.getText());
+
+					// Chain into argument completions after completing a slash command name
+					if (wasSlashCommand) {
+						this.tryTriggerAutocomplete();
+					}
 				}
 				return;
 			}
@@ -1903,8 +1909,14 @@ export class Editor implements Component, Focusable {
 		const beforeCursor = currentLine.slice(0, this.state.cursorCol);
 
 		// Check if we're in a slash command context
-		if (this.isInSlashCommandContext(beforeCursor) && !beforeCursor.trimStart().includes(" ")) {
-			this.handleSlashCommandCompletion();
+		if (this.isInSlashCommandContext(beforeCursor)) {
+			if (!beforeCursor.trimStart().includes(" ")) {
+				// No space yet — complete command name
+				this.handleSlashCommandCompletion();
+			} else {
+				// Space found — complete command arguments
+				this.tryTriggerAutocomplete(true);
+			}
 		} else {
 			this.forceFileAutocomplete(true);
 		}
