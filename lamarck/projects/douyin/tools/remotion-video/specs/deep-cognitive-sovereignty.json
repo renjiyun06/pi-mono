@@ -64,9 +64,11 @@
       "sceneType": "chapter"
     },
     {
-      "text": "第一阶段\nAI帮我查资料 → 省时间\n\n第二阶段\nAI帮我分析 → 省脑力\n\n第三阶段\nAI帮我决策 → 省思考\n\n第四阶段\n我不知道自己不知道什么",
+      "text": "",
       "narration": "第一阶段，AI帮你查资料，你觉得省时间。第二阶段，AI帮你分析问题，你觉得省脑力。第三阶段，AI帮你做决策，你觉得省思考。第四阶段，你已经不知道自己不知道什么了。",
-      "sceneType": "text"
+      "sceneType": "visual",
+      "videoSrc": "manim/sovereignty-stages.mp4",
+      "caption": "认知主权的四个阶段"
     },
     {
       "text": "第四阶段最危险\n\n因为你甚至不知道\n自己失去了什么",
