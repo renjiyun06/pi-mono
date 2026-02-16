@@ -1326,7 +1326,7 @@ export const DeepDive: React.FC<DeepDiveProps> = ({
 	// Find the most recent chapter title
 	for (let i = currentSectionIdx; i >= 0; i--) {
 		if (sections[i].sceneType === "chapter") {
-			currentChapter = sections[i].text.replace(/\n/g, " ");
+			currentChapter = (sections[i].text || sections[i].chapterTitle || "").replace(/\n/g, " ");
 			break;
 		}
 	}

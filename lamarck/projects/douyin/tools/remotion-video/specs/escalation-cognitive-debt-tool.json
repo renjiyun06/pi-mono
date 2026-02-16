@@ -24,6 +24,7 @@
     {
       "sceneType": "chapter",
       "chapterTitle": "你看得懂吗？",
+      "text": "你看得懂吗？",
       "narration": "你看得懂吗？"
     },
     {
@@ -60,6 +61,7 @@
     {
       "sceneType": "chapter",
       "chapterTitle": "怎么办？",
+      "text": "怎么办？",
       "narration": "怎么办？"
     },
     {
