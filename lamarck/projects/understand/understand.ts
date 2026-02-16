@@ -103,15 +103,22 @@ Respond in JSON format:
 
 Return ONLY the JSON array, no markdown formatting.`;
 
-	const response = await llm([{ role: "user", content: prompt }]);
-	try {
-		// Strip markdown code fences if present
-		const cleaned = response.replace(/^```json?\n?/m, "").replace(/\n?```$/m, "").trim();
-		return JSON.parse(cleaned);
-	} catch {
-		console.error("Failed to parse questions:", response);
-		process.exit(1);
+	for (let attempt = 0; attempt < 3; attempt++) {
+		const response = await llm([{ role: "user", content: prompt }]);
+		try {
+			// Strip markdown code fences if present
+			const cleaned = response.replace(/^```json?\n?/m, "").replace(/\n?```$/m, "").trim();
+			return JSON.parse(cleaned);
+		} catch {
+			if (attempt < 2) {
+				console.log(`  (retrying question generation, attempt ${attempt + 2}/3...)`);
+				continue;
+			}
+			console.error("Failed to parse questions after 3 attempts. Last response:", response.slice(0, 200));
+			process.exit(1);
+		}
 	}
+	throw new Error("unreachable");
 }
 
 // --- Answer Evaluation ---
