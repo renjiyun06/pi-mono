@@ -4,3 +4,6 @@ dist/
 *.mp3
 !tools/remotion-video/bgm/*.mp3
 content/previews/
+__pycache__/
+tools/media/
+tools/remotion-video/package-lock.json
