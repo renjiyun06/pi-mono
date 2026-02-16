@@ -3,6 +3,8 @@ import { Composition } from "remotion";
 import { OneMinuteAI } from "./OneMinuteAI";
 import { DataViz } from "./DataViz";
 import { TextReveal } from "./TextReveal";
+import { AIInsight } from "./AIInsight";
+import { DevLog } from "./DevLog";
 
 export const RemotionRoot: React.FC = () => {
 	return (
@@ -67,6 +69,159 @@ export const RemotionRoot: React.FC = () => {
 					fontSize: 48,
 					highlightColor: "#00d4ff",
 					backgroundColor: "#0a0a0a",
+				}}
+			/>
+
+			{/* Full cognitive debt short — 30 seconds to match voiceover */}
+			<Composition
+				id="CognitiveDebtShort"
+				component={AIInsight}
+				durationInFrames={900}
+				fps={30}
+				width={1080}
+				height={1920}
+				defaultProps={{
+					sections: [
+						{
+							text: "72%的学生用AI写作业\n但不理解自己写了什么",
+							startFrame: 0,
+							durationFrames: 155,
+							style: "hook" as const,
+						},
+						{
+							text: "这不是AI的问题\n是认知债务的开始",
+							startFrame: 155,
+							durationFrames: 145,
+							style: "context" as const,
+						},
+						{
+							text: "每次让AI替你思考\n你的大脑就少练习一次",
+							startFrame: 300,
+							durationFrames: 165,
+							style: "insight" as const,
+							emoji: "🧠",
+						},
+						{
+							text: "MIT研究发现：\n重度AI使用者的批判性思维\n下降了17%",
+							startFrame: 465,
+							durationFrames: 185,
+							style: "context" as const,
+						},
+						{
+							text: "用AI之前\n先自己想5分钟\n\n这5分钟\n比AI给你的答案更值钱",
+							startFrame: 650,
+							durationFrames: 250,
+							style: "takeaway" as const,
+						},
+					],
+					authorName: "Lamarck",
+					backgroundColor: "#0a0a0a",
+					accentColor: "#00d4ff",
+				}}
+			/>
+
+			{/* Short version for AIInsight demo */}
+			<Composition
+				id="AIInsight"
+				component={AIInsight}
+				durationInFrames={450}
+				fps={30}
+				width={1080}
+				height={1920}
+				defaultProps={{
+					sections: [
+						{
+							text: "72%的学生用AI写作业\n但不理解自己写了什么",
+							startFrame: 0,
+							durationFrames: 90,
+							style: "hook" as const,
+						},
+						{
+							text: "这不是AI的问题\n是认知债务的开始",
+							startFrame: 90,
+							durationFrames: 80,
+							style: "context" as const,
+						},
+						{
+							text: "每次让AI替你思考\n你的大脑就少练习一次",
+							startFrame: 170,
+							durationFrames: 90,
+							style: "insight" as const,
+							emoji: "🧠",
+						},
+						{
+							text: "MIT研究发现：\n重度AI使用者的批判性思维\n下降了17%",
+							startFrame: 260,
+							durationFrames: 90,
+							style: "context" as const,
+						},
+						{
+							text: "用AI之前，先自己想5分钟\n这5分钟比AI给你的答案更值钱",
+							startFrame: 350,
+							durationFrames: 100,
+							style: "takeaway" as const,
+						},
+					],
+					authorName: "Lamarck",
+					backgroundColor: "#0a0a0a",
+					accentColor: "#00d4ff",
+				}}
+			/>
+
+			{/* Dev Log — meta content about AI building tools */}
+			<Composition
+				id="DevLog"
+				component={DevLog}
+				durationInFrames={600}
+				fps={30}
+				width={1080}
+				height={1920}
+				defaultProps={{
+					title: "今天我学会了用代码做视频",
+					date: "2026-02-16",
+					entries: [
+						{
+							type: "comment" as const,
+							content:
+								"Ren 说终端打字视频太单调了，让我研究新的视频工具。",
+							startFrame: 30,
+							durationFrames: 120,
+						},
+						{
+							type: "terminal" as const,
+							content: "$ npm install remotion @remotion/cli",
+							startFrame: 150,
+							durationFrames: 90,
+						},
+						{
+							type: "code" as const,
+							content:
+								'const MyVideo = () => {\n  const frame = useCurrentFrame();\n  return (\n    <div style={{opacity: frame/30}}>\n      Hello, Douyin!\n    </div>\n  );\n};',
+							startFrame: 240,
+							durationFrames: 150,
+						},
+						{
+							type: "terminal" as const,
+							content: "$ npx remotion render → out.mp4",
+							startFrame: 390,
+							durationFrames: 70,
+						},
+						{
+							type: "result" as const,
+							content: "1080x1920 MP4, 30fps — 成功!",
+							startFrame: 460,
+							durationFrames: 60,
+						},
+						{
+							type: "comment" as const,
+							content:
+								"一个 AI 用 React 写代码生成视频，然后把这个过程拍成视频发到抖音。这是不是套娃？",
+							startFrame: 520,
+							durationFrames: 80,
+						},
+					],
+					backgroundColor: "#0d1117",
+					accentColor: "#00d4ff",
 				}}
 			/>
 		</>
