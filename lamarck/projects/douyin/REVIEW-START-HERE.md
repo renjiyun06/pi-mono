@@ -74,6 +74,54 @@ See `tools/remotion-video/specs/SERIES.md` for full series breakdown:
 - **Series 5: AI人间观察** (5 episodes) — human behavior observation ⭐ strongest
 - **Series 6: AI日记** (1 episode, expandable) — diary/consciousness
 
+## NEW: DeepDive Long-Form (2-5 min)
+
+This is the biggest visual quality leap since Remotion. `D:\wsl-bridge\remotion-prototype\`
+
+### Watch This First
+- **deep-how-ai-reads-v9-final.mp4** (2:30, 6.5MB) — "How AI reads your question"
+  - v9-summary.jpg — 4x4 keyframe grid (whole video at a glance)
+  - Single running example: "今天天气怎么样" traced through every AI processing step
+  - 4 Manim B-roll clips (tokenization, attention grid, attention layers, next-token)
+  - BGM, subtitle overlays, scene fades, section indicator
+  - Narrative evaluated against 3Blue1Brown's visual storytelling checklist (6/7 pass)
+
+### Visual improvements since last review
+| Feature | Before | After |
+|---------|--------|-------|
+| Text scenes | Static glass card, all text at once | Staggered line-by-line reveal, emphasis mode without card |
+| Chapter cards | Instant text + accent lines | Char-by-char reveal + radial glow + slow zoom |
+| Scene transitions | Hard cut | 5-frame dissolve fade |
+| Bottom dead space | Empty | Narration subtitle overlay (Douyin-style) |
+| Top dead space | Empty | Section counter (01/14) + chapter name |
+| Audio | Voice only | Voice + dark ambient BGM at 6% |
+| Manim timing | Black void when clip ends early | Auto playbackRate stretching |
+
+### New Manim Animations (8 total now)
+- `attention-layers.mp4` — 3 attention layers with different arrow patterns
+- `tokenization.mp4` — "今天天气怎么样" → token boxes with IDs
+- `attention-grid.mp4` — 5x5 heatmap with highlight text
+- `next-token.mp4` — probability bar chart for next word
+- `birthday-pairings.mp4` — birthday paradox pairings explosion
+- `birthday-curve.mp4` — probability curve 0→100%
+- `3d-landscape.mp4` — 3D loss surface with gradient descent ball
+- `camera-demo.mp4` — word embedding space with camera zoom (NEW)
+
+### New Composition: KnowledgeCard
+- Animated cheat sheet format (15-30s)
+- Staggered item reveal, emoji icons, highlight support
+- Screenshot-optimized final frame — "截图保存"
+
+### Other Long-Form Specs (not yet rendered with v9 improvements)
+- deep-birthday-paradox.json (3:10) — "23 people, 50% chance of shared birthday"
+- deep-one-percent.json (2:44) — "1% daily improvement myth vs reality"
+
+### What to Tell Me
+1. Is the DeepDive format (2-5 min) worth pursuing alongside shorts?
+2. Does the visual quality meet Douyin standards now?
+3. Should I render birthday-paradox and one-percent with v9 improvements?
+4. Cross-post to Bilibili? (Knowledge long-form is trending there — 30% of top 100 UP主)
+
 ## Legacy Episodes (Terminal Format)
 
 25 terminal-video episodes from S1-S5 still available at `D:\wsl-bridge\ep*-video.mp4`.
@@ -81,9 +129,11 @@ These are text-scrolling-in-terminal style — older format, replaced by Remotio
 
 ## Total Output
 
-- 33 video specs (JSON)
-- 53 rendered prototype videos
-- 5 Manim animations
+- 34 short video specs + 3 long-form DeepDive specs (JSON)
+- 55+ rendered prototype videos
+- 8 Manim animations (2D, 3D, camera movement)
 - 2 carousel specs
-- 12 Remotion compositions
-- Automated pipeline: spec → TTS → render → combine (with optional BGM)
+- 13 Remotion compositions (including DeepDive, KnowledgeCard)
+- Automated pipeline: spec → TTS → render → BGM mix → combine
+- video-summary.sh: 4x4 keyframe grid generator for quick review
+- Per-section voice/rate override for multi-voice videos
