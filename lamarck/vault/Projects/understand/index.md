@@ -46,6 +46,8 @@ Our DeepDive videos about cognitive debt create awareness of the problem. This t
 
 | Component | File | Description |
 |-----------|------|-------------|
+| **Web app** | `projects/understand/app.html` | Zero-install browser quiz (paste code + API key) |
+| **Landing page** | `projects/understand/landing.html` | Marketing page with research stats |
 | CLI tool | `projects/understand/understand.ts` | 4 commands: quiz, dry-run, summary, debt |
 | Pi extension | `extensions/understand.ts` | Tracks session files, /understand command |
 | Git hook | `projects/understand/hooks/post-commit` | Debt reminder after commits |
@@ -67,4 +69,5 @@ Our DeepDive videos about cognitive debt create awareness of the problem. This t
 ## Blockers
 - Need Ren's input on whether to pursue this direction (product vs personal tool)
 - Market validation: Reddit + Stackademic signals strong, no direct user testing yet
-- Packaging: currently single file with hardcoded paths, needs npm packaging for distribution
+- Web app (app.html) enables zero-friction user testing — share the file, anyone can try it
+- Packaging: CLI still single file with hardcoded paths, needs npm packaging for distribution
