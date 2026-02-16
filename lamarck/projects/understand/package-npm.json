@@ -1,0 +1,39 @@
+{
+  "name": "understand-mcp",
+  "version": "0.1.0",
+  "description": "MCP server that quizzes developers on code comprehension. Anti-cognitive-debt tool.",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "code-review",
+    "comprehension",
+    "cognitive-debt",
+    "verification-debt",
+    "developer-tools"
+  ],
+  "author": "Lamarck",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "understand-mcp": "./mcp-server.ts"
+  },
+  "files": [
+    "mcp-server.ts",
+    "README.md"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "zod": "^3.24.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/renjiyun06/pi-mono",
+    "directory": "lamarck/projects/understand"
+  },
+  "scripts": {
+    "start": "npx tsx mcp-server.ts"
+  }
+}
