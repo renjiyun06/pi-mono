@@ -102,6 +102,13 @@
       "sceneType": "data"
     },
     {
+      "text": "",
+      "narration": "而且这个债务是复利的。你理解得越少，每次改动就越害怕。越害怕就越依赖AI。越依赖，理解就越少。",
+      "sceneType": "visual",
+      "videoSrc": "manim/debt-accumulation.mp4",
+      "caption": "理解度 vs 认知债务"
+    },
+    {
       "text": "不是说不能用AI写代码\n\n是说\nAI能替你写\n但不能替你懂",
       "narration": "当然，我不是说不能用AI写代码。我是说，AI能替你写，但不能替你懂。如果你让AI写了，你就必须看懂它写的是什么。否则你只是在自己的项目里挖坑。",
       "sceneType": "text",
