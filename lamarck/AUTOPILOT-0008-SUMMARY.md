@@ -1,16 +1,16 @@
 # Autopilot-0008 Branch Summary
 
-**101 commits, 95+ files, 12,000+ lines added. Feb 16, 2026.**
+**111 commits, 95+ files, 12,000+ lines added. Feb 16, 2026.**
 
 ## Four Deliverables
 
 ### 1. Douyin Video Pipeline (ready to publish)
-- 34 short specs (38-67s) + 7 DeepDive specs (2:30-3:37) + 3 escalation (63s-1:48)
-- 13 Manim animations (math/science clips) + 1 compaction growth chart
+- 34 short specs (38-67s) + 8 DeepDive specs (2:08-3:37) + 3 escalation (63s-1:48)
+- 14 Manim animations (math/science clips)
 - Full render pipeline: spec JSON → TTS → Remotion → ffmpeg → MP4
 - Cold-start strategy: publish short videos first (38s), post at 6PM
-- **New**: First-person AI content format ("96 commits" spec — Lamarck's own perspective)
-- **New**: Content-as-marketing (escalation-cognitive-debt-tool promotes Understand)
+- First-person AI content format ("96 commits" + "How My Memory Works")
+- Content-as-marketing (escalation-cognitive-debt-tool promotes Understand)
 - **Start here**: `projects/douyin/REVIEW-START-HERE.md`
 
 ### 2. Understand Product (needs direction)
@@ -25,20 +25,21 @@
 - Cognitive debt evidence chain: 16 converging studies
 - AI debt super-framework: 6 types of debt, replacement vs extension boundary
 - Bainbridge 1983 as historical anchor
+- Three-type memory architecture (episodic/semantic/procedural) mapped to pi
 - **Start here**: `vault/Notes/cognitive-debt-evidence-chain.md`
 
-### 4. Sleep-Time Compute v0 (new infrastructure)
+### 4. Sleep-Time Compute + Pi Contribution
 - `session-consolidate.ts` — extracts session knowledge and persists to vault
-- `vault/Sessions/` — session digest directory
-- `sessions.base` — Obsidian dynamic view of all digests
-- **Pi contribution material**: exploration 078 proposes compaction budget fix
+- `vault/Sessions/` — session digest directory with Obsidian dynamic view
+- **Compaction fix implemented** (`61768e72`): adds size budget to compaction summary updates, preventing unbounded growth in long sessions
+- Procedural memory extraction — reusable patterns preserved as vault note
 - **Start here**: `vault/Sessions/`
 
 ## What Needs Ren's Decision
 
 1. **Publish?** — Which videos, which format, which series first?
 2. **Understand direction?** — Product to ship, or personal tool?
-3. **Compaction fix?** — exploration 078 proposes a concrete fix for summary growth
+3. **Compaction fix?** — Implemented on this branch, needs review for merge to main
 4. **What's next?** — More content? Product dev? Pi contributions?
 
 ## Key Files
@@ -46,9 +47,11 @@
 | File | What |
 |------|------|
 | `projects/douyin/REVIEW-START-HERE.md` | 30-second video review guide |
+| `projects/douyin/tools/remotion-video/REVIEW-GUIDE.md` | Complete video catalog |
 | `projects/understand/README.md` | Product docs with examples |
 | `projects/douyin/exploration/077-first-person-ai-content.md` | First-person AI content format |
-| `projects/douyin/exploration/078-compaction-budget-proposal.md` | Pi compaction fix proposal |
+| `packages/coding-agent/src/core/compaction/compaction.ts` | Compaction budget fix |
 | `vault/Notes/cognitive-debt-evidence-chain.md` | 16-source research summary |
-| `vault/Issues/compaction-summary-growth.md` | Compaction growth issue with real data |
+| `vault/Notes/procedural-memory-autopilot-0008.md` | Extracted patterns from session |
+| `vault/Notes/memory-architecture-three-types-2026.md` | Memory type research |
 | `lamarck/tasks/session-consolidate.ts` | Sleep-time compute script |
