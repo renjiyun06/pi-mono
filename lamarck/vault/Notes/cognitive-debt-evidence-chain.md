@@ -3,7 +3,7 @@ tags:
   - note
   - research
   - ai
-description: "Evidence chain for cognitive debt thesis — 17 sources from 2025-2026 spanning MIT, Nature, Chinese universities, CHI, ICSE, enterprise architecture, code analysis, education, and more"
+description: "Evidence chain for cognitive debt thesis — 19 sources from 2025-2026 spanning MIT, Nature, Chinese universities, CHI, ICSE, enterprise architecture, code analysis, education, and more"
 ---
 
 # Cognitive Debt Evidence Chain
@@ -115,9 +115,20 @@ Collected 2026-02-16. These studies form a converging evidence chain that AI dep
 - **Counter-example**: Author uses AI as Socratic conversation partner — students report learning "how to think, not what to think"
 - **Significance**: Essential nuance. Cognitive debt is real, but the pre-AI baseline was poor. The solution isn't banning AI — it's teaching extension mode. Enriches the framework rather than contradicting it.
 
+### 18. The Copilot Delusion (deplet.ing, May 2025)
+- **Source**: [deplet.ing](https://deplet.ing/the-copilot-delusion/)
+- **Finding**: First-person account — Copilot as incompetent coworker metaphor. Extension (scaffolding, brainstorming) = fine. Replacement (tuning out while it codes) = catastrophic. "I got lazy. When the system forces you to code with a hallucinating clown, eventually you stop resisting."
+- **Significance**: Practitioner voice. The "fire them" punchline resonates on social media.
+
+### 19. Vogels: Verification Debt (re:Invent 2025) + Sonar Survey
+- **Source**: [The Register](https://www.theregister.com/2026/01/09/devs_ai_code/) (Sonar survey, 1,100+ devs + Vogels keynote)
+- **Finding**: 96% don't trust AI code, 48% don't always check it. 42% of code is AI-assisted. 38% say reviewing AI code is harder than human code. Toil doesn't decrease — stays at 23-25% regardless of AI usage.
+- **Key quote**: "When you write code yourself, comprehension comes with the act of creation. When the machine writes it, you'll have to rebuild that comprehension during review. That's verification debt." — Werner Vogels, Amazon CTO
+- **Significance**: Highest-authority validation. Amazon's CTO naming our exact problem. Sonar data = large-scale industry survey. "Verification debt" = "cognitive debt" from the code review angle.
+
 ## The Converging Pattern
 
-17 sources — across neuroscience, psychology, education, computer science, philosophy, enterprise architecture, code analysis, forecasting, and journalism. 16 describe the same debt mechanism; #17 provides essential nuance (the baseline was already bad):
+19 sources — across neuroscience, psychology, education, computer science, philosophy, enterprise architecture, code analysis, forecasting, practitioner accounts, and industry surveys. 17 describe the same debt mechanism; #17 provides essential nuance (the baseline was already bad); #18-19 add practitioner and institutional authority:
 
 1. AI provides shortcut → 2. Human skips cognitive effort → 3. Capability atrophies → 4. More AI dependence
 
