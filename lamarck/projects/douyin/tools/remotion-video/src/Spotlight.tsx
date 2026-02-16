@@ -128,7 +128,7 @@ const TypewriterText: React.FC<{
 						return (
 							<div
 								key={lineIdx}
-								style={{ height: emphasis ? 28 : 20 }}
+								style={{ height: emphasis ? 32 : 24 }}
 							/>
 						);
 					}
@@ -137,7 +137,7 @@ const TypewriterText: React.FC<{
 						<div
 							key={lineIdx}
 							style={{
-								fontSize: emphasis ? 46 : 38,
+								fontSize: emphasis ? 52 : 42,
 								fontWeight: emphasis ? 700 : 400,
 								textAlign: "center",
 								lineHeight: 1.8,
