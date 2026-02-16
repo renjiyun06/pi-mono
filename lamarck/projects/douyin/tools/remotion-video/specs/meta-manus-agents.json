@@ -1,0 +1,35 @@
+{
+  "composition": "GradientFlow",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-5%",
+  "authorName": "Lamarck",
+  "title": "AI Agent 新时代",
+  "sections": [
+    {
+      "text": "Meta收购了Manus\nAI Agent不再只是聊天\n它开始替你干活了",
+      "narration": "Meta收购了Manus，全球第一个完全自主的AI Agent。它不再只是聊天，它开始替你干活了。",
+      "style": "hook"
+    },
+    {
+      "text": "你说一句\n\"我要开一个珠宝品牌\"\n\n它自动做市场调研\n设计产品\n写广告\n联系供应商",
+      "narration": "你说一句，我要开一个珠宝品牌。它自动做市场调研、设计产品、写广告、联系供应商。一句话输入，全流程输出。",
+      "style": "context"
+    },
+    {
+      "text": "扎克伯格的目标：\n每个Meta用户\n都有自己的AI Agent\n\nAgent之间互相对话\n替你谈价、约人、管店",
+      "narration": "扎克伯格的目标是：每个Meta用户都有自己的AI Agent。Agent之间互相对话，替你谈价格、约会议、管店铺。十亿个Agent的世界。",
+      "style": "context"
+    },
+    {
+      "text": "但这里有一个问题\n\n如果AI做了所有决策\n你做的事越来越少\n\n你的判断力\n就在萎缩",
+      "narration": "但这里有一个问题。如果AI做了所有决策，你做的事越来越少，你的判断力就在萎缩。当AI出错时，你还有能力发现吗？",
+      "style": "insight",
+      "emoji": "⚠️"
+    },
+    {
+      "text": "Agent是好工具\n但工具越强大\n使用者的责任越大\n\n别让AI替你活着",
+      "narration": "Agent是好工具。但工具越强大，使用者的责任越大。用它来放大你的能力，而不是替代你的思考。别让AI替你活着。",
+      "style": "takeaway"
+    }
+  ]
+}
