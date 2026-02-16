@@ -41,6 +41,8 @@ interface VideoSpec {
 	authorName?: string;
 	backgroundColor?: string;
 	accentColor?: string;
+	bgm?: string; // Path to background music file (relative to spec dir or absolute)
+	bgmVolume?: number; // BGM volume (0-1, default 0.08)
 	sections: SectionSpec[];
 	// Extra props forwarded to the composition (e.g., title, nodeCount, secondaryColor)
 	[key: string]: unknown;
@@ -143,7 +145,7 @@ async function main() {
 
 	// Build input props: sections + all other spec fields (title, nodeCount, etc.)
 	// This makes the pipeline composition-agnostic — extra props are forwarded.
-	const { sections: _sections, voice: _v, rate: _r, composition: _c, ...extraProps } = spec as Record<string, unknown>;
+	const { sections: _sections, voice: _v, rate: _r, composition: _c, bgm: _bgm, bgmVolume: _bgmVol, ...extraProps } = spec as Record<string, unknown>;
 	const inputProps = {
 		sections: remotionSections,
 		authorName: (spec as Record<string, unknown>).authorName || "Lamarck",
@@ -187,12 +189,37 @@ async function main() {
 	});
 	console.log(`  Render complete.`);
 
-	// Step 5: Combine video + audio
+	// Step 5: Mix BGM if specified, then combine video + audio
+	let finalAudioPath = fullAudioPath;
+
+	if (spec.bgm) {
+		console.log("\nStep 5a: Mixing BGM...");
+		const bgmPath = spec.bgm.startsWith("/")
+			? spec.bgm
+			: resolve(dirname(specPath), spec.bgm);
+		const bgmVolume = spec.bgmVolume ?? 0.08;
+		const mixedAudioPath = join(tmpDir, "mixed-audio.mp3");
+
+		execFileSync("ffmpeg", [
+			"-y",
+			"-i", fullAudioPath,
+			"-i", bgmPath,
+			"-filter_complex",
+			`[0:a]volume=1.0[voice];[1:a]volume=${bgmVolume},afade=t=out:st=${totalAudioDuration - 2}:d=2[bgm];[voice][bgm]amix=inputs=2:duration=first[out]`,
+			"-map", "[out]",
+			"-ac", "2",
+			mixedAudioPath,
+		], { stdio: "pipe" });
+
+		finalAudioPath = mixedAudioPath;
+		console.log(`  BGM mixed at ${(bgmVolume * 100).toFixed(0)}% volume from: ${bgmPath}`);
+	}
+
 	console.log("\nStep 5: Combining video + audio...");
 	execFileSync("ffmpeg", [
 		"-y",
 		"-i", videoOnlyPath,
-		"-i", fullAudioPath,
+		"-i", finalAudioPath,
 		"-c:v", "copy",
 		"-c:a", "aac",
 		"-shortest",
