@@ -341,19 +341,15 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 	// Autopilot state: when enabled, agent automatically continues after each response
 	let autopilotEnabled = false;
 	let autopilotCompacting = false; // Prevent sending "继续" while compacting
-	let autopilotIdleCount = 0; // Consecutive short/empty responses
-	const AUTOPILOT_IDLE_THRESHOLD = 3; // Pause after this many consecutive idle responses
-	const AUTOPILOT_SHORT_RESPONSE_CHARS = 200; // Responses shorter than this count as "idle"
 
-	/** Build the autopilot continuation message with context info */
-	function buildAutopilotMessage(usageInfo: string, justCompacted: boolean): string {
-		const lines = [
+	/** Build the autopilot continuation message */
+	function buildAutopilotMessage(): string {
+		return [
 			"[Autopilot]",
-			"你当前处于 autopilot 模式。",
-			`Context：${usageInfo}${justCompacted ? "（刚完成 compact）" : ""}`,
-			"继续。",
-		];
-		return lines.join("\n");
+			"You are in autopilot mode.",
+			"If you believe all work is done, re-read autopilot.md in the vault. You must not idle.",
+			"Continue.",
+		].join("\n");
 	}
 
 	// Scheduler state
@@ -629,7 +625,6 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 		// Stop autopilot
 		autopilotEnabled = false;
 		autopilotCompacting = false;
-		autopilotIdleCount = 0;
 
 		// Stop task scheduler
 		stopScheduler();
@@ -932,8 +927,6 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 				].join("\n"),
 			};
 		}
-
-		return { inject: `[context: ${usage.percent.toFixed(1)}%]` };
 	});
 
 	// Clear external message flag when agent finishes, and handle autopilot
@@ -942,66 +935,37 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 
 		// Autopilot: automatically continue after each response (main session only)
 		if (autopilotEnabled && !autopilotCompacting && isMainSession()) {
-			// Idle detection: check if the agent produced a substantive response
-			const lastAssistantMsg = [...event.messages].reverse().find((m) => m.role === "assistant");
-			let responseTextLen = 0;
-			if (lastAssistantMsg && "content" in lastAssistantMsg && Array.isArray(lastAssistantMsg.content)) {
-				for (const part of lastAssistantMsg.content) {
-					if (part.type === "text" && typeof part.text === "string") {
-						responseTextLen += part.text.length;
-					}
-				}
-			}
-
-			// Also check if any tool calls were made (tool usage = substantive work)
-			let hadToolCalls = false;
-			if (lastAssistantMsg && "content" in lastAssistantMsg && Array.isArray(lastAssistantMsg.content)) {
-				hadToolCalls = lastAssistantMsg.content.some((part: { type: string }) => part.type === "toolCall");
-			}
-
-			if (responseTextLen < AUTOPILOT_SHORT_RESPONSE_CHARS && !hadToolCalls) {
-				autopilotIdleCount++;
-				if (autopilotIdleCount >= AUTOPILOT_IDLE_THRESHOLD) {
-					ctx.ui.notify(
-						`Autopilot paused: ${autopilotIdleCount} consecutive idle responses. Send any message to resume.`,
-						"info",
-					);
-					autopilotEnabled = false;
-					autopilotIdleCount = 0;
-					return;
-				}
-			} else {
-				autopilotIdleCount = 0;
-			}
-
 			const usage = ctx.getContextUsage();
-			const usageInfo = usage?.percent !== null ? `${usage.percent.toFixed(1)}%` : "unknown";
 
 			if (usage && usage.percent !== null && usage.percent >= AUTOPILOT_COMPACT_THRESHOLD) {
 				// Context usage too high, compact first
+				// After compact, memory-loader will inject a context restore message.
+				// Once the agent finishes restoring, agent_end fires again and
+				// the normal autopilot flow sends "继续" (since context will be < threshold).
 				autopilotCompacting = true;
 				ctx.ui.notify(`Autopilot: compacting (${usage.percent.toFixed(1)}% context used)`, "info");
 				ctx.compact({
 					onComplete: () => {
 						autopilotCompacting = false;
 						if (autopilotEnabled) {
-							const newUsage = ctx.getContextUsage();
-							const newUsageInfo = newUsage?.percent !== null ? `${newUsage.percent.toFixed(1)}%` : "compacted";
-							pi.sendUserMessage(buildAutopilotMessage(newUsageInfo, true));
+							// Notify the agent that context was compacted.
+							// memory-loader will add a restore context message
+							// via before_agent_start. After the agent finishes
+							// restoring, agent_end sends the autopilot "继续".
+							pi.sendUserMessage("Context was compacted.");
 						}
 					},
 					onError: (error) => {
 						autopilotCompacting = false;
 						ctx.ui.notify(`Autopilot: compact failed - ${error.message}`, "error");
-						// Still try to continue
 						if (autopilotEnabled) {
-							pi.sendUserMessage(buildAutopilotMessage(usageInfo, false));
+							pi.sendUserMessage(buildAutopilotMessage());
 						}
 					},
 				});
 			} else {
 				// Context usage OK, just continue
-				pi.sendUserMessage(buildAutopilotMessage(usageInfo, false));
+				pi.sendUserMessage(buildAutopilotMessage());
 			}
 		}
 	});
@@ -1070,13 +1034,10 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 
 			if (subcommand === "on") {
 				autopilotEnabled = true;
-				autopilotIdleCount = 0;
 				savedCtx = ctx;
 				ctx.ui.notify("Autopilot enabled. Agent will automatically continue after each response.", "success");
 				// Immediately send first message to start the loop
-				const usage = ctx.getContextUsage();
-				const usageInfo = usage?.percent !== null ? `${usage.percent.toFixed(1)}%` : "unknown";
-				pi.sendUserMessage(buildAutopilotMessage(usageInfo, false));
+				pi.sendUserMessage(buildAutopilotMessage());
 				return;
 			}
 
