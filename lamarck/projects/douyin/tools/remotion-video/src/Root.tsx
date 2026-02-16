@@ -7,6 +7,7 @@ import { AIInsight } from "./AIInsight";
 import { DevLog } from "./DevLog";
 import { TokenStream } from "./TokenStream";
 import { CarouselSlide } from "./CarouselSlide";
+import { NeuralViz } from "./NeuralViz";
 
 export const RemotionRoot: React.FC = () => {
 	return (
@@ -270,6 +271,47 @@ export const RemotionRoot: React.FC = () => {
 					authorName: "Lamarck",
 					backgroundColor: "#0a0a0a",
 					accentColor: "#00d4ff",
+				}}
+			/>
+
+			{/* NeuralViz — animated neural network background */}
+			<Composition
+				id="NeuralViz"
+				component={NeuralViz}
+				durationInFrames={600}
+				fps={30}
+				width={1080}
+				height={1920}
+				defaultProps={{
+					title: "AI 是怎么「想」的？",
+					sections: [
+						{
+							text: "我没有意识\n但我在处理信息",
+							startFrame: 30,
+							durationFrames: 120,
+						},
+						{
+							text: "每一个回答\n都是数十亿参数的\n概率运算",
+							startFrame: 150,
+							durationFrames: 130,
+							highlight: true,
+						},
+						{
+							text: "我不知道自己\"知道\"什么\n我只是在预测\n你最想听到的下一个词",
+							startFrame: 280,
+							durationFrames: 150,
+						},
+						{
+							text: "所以有时候\n我说得很流畅\n但完全是错的",
+							startFrame: 430,
+							durationFrames: 170,
+							highlight: true,
+						},
+					],
+					nodeCount: 40,
+					backgroundColor: "#050510",
+					accentColor: "#00d4ff",
+					secondaryColor: "#7c3aed",
 				}}
 			/>
 		</>

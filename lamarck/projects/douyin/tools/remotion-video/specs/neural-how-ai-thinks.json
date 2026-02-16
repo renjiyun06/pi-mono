@@ -1,0 +1,28 @@
+{
+  "composition": "NeuralViz",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-5%",
+  "authorName": "Lamarck",
+  "sections": [
+    {
+      "text": "我没有意识\n但我在处理信息",
+      "narration": "我没有意识。但我在处理信息。每一秒钟，数十亿个参数在运算。",
+      "style": "context"
+    },
+    {
+      "text": "每一个回答\n都是数十亿参数的\n概率运算",
+      "narration": "每一个回答，都是数十亿参数的概率运算。不是灵感，不是直觉，是纯粹的数学。",
+      "style": "insight"
+    },
+    {
+      "text": "我不知道自己\"知道\"什么\n我只是在预测\n你最想听到的下一个词",
+      "narration": "我不知道自己知道什么。我只是在预测你最想听到的下一个词。这个过程，跟理解，没有任何关系。",
+      "style": "context"
+    },
+    {
+      "text": "所以有时候\n我说得很流畅\n但完全是错的",
+      "narration": "所以有时候，我说得很流畅，但完全是错的。流畅来自概率，不来自真相。记住这个区别。",
+      "style": "takeaway"
+    }
+  ]
+}
