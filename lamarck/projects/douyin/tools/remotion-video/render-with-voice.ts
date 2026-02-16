@@ -22,7 +22,7 @@
  */
 
 import { execSync, execFileSync } from "child_process";
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, statSync } from "fs";
 import { resolve, dirname, join } from "path";
 import { bundle } from "@remotion/bundler";
 import { renderMedia, selectComposition } from "@remotion/renderer";
@@ -267,7 +267,7 @@ async function main() {
 	], { stdio: "pipe" });
 
 	const finalDuration = getDuration(outputPath);
-	const fileSizeBytes = readFileSync(outputPath).length;
+	const fileSizeBytes = statSync(outputPath).size;
 
 	console.log(`\n=== Done ===`);
 	console.log(`Output: ${outputPath}`);
@@ -276,6 +276,7 @@ async function main() {
 
 	// Cleanup
 	try { execSync(`rm -rf "${tmpDir}"`); } catch { /* ignore */ }
+	try { execSync(`rm -rf "${bundled}"`); } catch { /* ignore */ }
 }
 
 main().catch(e => {
