@@ -42,7 +42,29 @@ Our DeepDive videos about cognitive debt create awareness of the problem. This t
 - Evidence chain now 16 sources (CodeRabbit: 1.7x more AI bugs, 3x readability issues)
 - Key insight: Understand as pi extension = dogfooding + perfect demo
 
+## Complete Ecosystem (as of 2026-02-16)
+
+| Component | File | Description |
+|-----------|------|-------------|
+| CLI tool | `projects/understand/understand.ts` | 4 commands: quiz, dry-run, summary, debt |
+| Pi extension | `extensions/understand.ts` | Tracks session files, /understand command |
+| Git hook | `projects/understand/hooks/post-commit` | Debt reminder after commits |
+| Scheduled task | `tasks/understanding-report.ts` | Daily debt snapshot in vault |
+| Web dashboard | `projects/understand/dashboard.html` | Visual history.json viewer |
+| Smoke tests | `projects/understand/test-understand.ts` | 5 offline tests, all passing |
+| README | `projects/understand/README.md` | Product-quality docs |
+| Design doc | `projects/understand/design-pi-integration.md` | 3 integration options |
+| Comprehension guide | `projects/understand/COMPREHENSION-GUIDE.md` | 8 questions for Ren |
+| Manim demo | `douyin/tools/manim-understand-concept.py` | 12.6s concept animation |
+| Competitor analysis | `vault/Notes/cognitive-debt-guard-competitor.md` | CDG comparison |
+| Pitch doc | `douyin/exploration/075-understand-product-state.md` | Full pitch |
+| Branch quiz | `AUTOPILOT-0008-QUIZ.md` | 8 questions testing branch understanding |
+
+## Competitor
+
+**Cognitive-Debt-Guard** (GitHub) — agent-side approach (configures AI tools to explain/pause). Complementary, not competitive. CDG prevents (changes AI behavior), we detect (measures human comprehension independently). See vault note for full analysis.
+
 ## Blockers
-- Need Ren's input on whether to pursue this direction
-- Pi extension integration needs understanding of extension API
-- Market validation: Reddit signals strong but no direct user testing yet
+- Need Ren's input on whether to pursue this direction (product vs personal tool)
+- Market validation: Reddit + Stackademic signals strong, no direct user testing yet
+- Packaging: currently single file with hardcoded paths, needs npm packaging for distribution
