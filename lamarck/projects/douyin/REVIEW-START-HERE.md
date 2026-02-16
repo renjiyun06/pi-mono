@@ -1,5 +1,23 @@
 # Review Start Here
 
+## 30-Second Review (if you only have 30 seconds)
+
+Look at these 5 summary grids (16 keyframes each) at `D:\wsl-bridge\remotion-prototype\summaries\`:
+
+| File | What | Duration |
+|------|------|----------|
+| `escalation-particles-v2-summary.jpg` | **NEW: Viral format** — rapid-fire "AI makes you dumber" | 63s |
+| `deep-brain-rewiring-v1-summary.jpg` | Best DeepDive — neuroscience of AI rewiring your brain | 3:37 |
+| `deep-bainbridge-1983-v1-summary.jpg` | 1983 prediction of AI deskilling, validated 43 years later | 3:01 |
+| `deep-how-ai-reads-v9-final-summary.jpg` | How AI processes your question (educational) | 2:30 |
+| `deep-cognitive-sovereignty-v3-summary.jpg` | Is your thinking still yours? (philosophical) | 2:51 |
+
+Each grid shows every few seconds of the video. You can judge visual quality, scene variety, and pacing without watching a single video.
+
+**The ONE question**: Are any of these good enough to publish? If yes, which format: 63s escalation or 2-5 min DeepDive?
+
+---
+
 ## IMPORTANT: Cold Start Strategy (New Research)
 
 **Our account**: 21 views/week, 9% completion rate, 0% engagement.
