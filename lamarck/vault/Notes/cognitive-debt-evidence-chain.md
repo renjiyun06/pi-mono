@@ -3,7 +3,7 @@ tags:
   - note
   - research
   - ai
-description: "Evidence chain for cognitive debt thesis — 21 sources from 2025-2026 spanning MIT, Nature, Chinese universities, CHI, ICSE, enterprise architecture, code analysis, education, and more"
+description: "Evidence chain for cognitive debt thesis — 22 sources from 2025-2026 spanning MIT, Nature, METR RCT, Chinese universities, CHI, ICSE, enterprise architecture, code analysis, education, and more"
 ---
 
 # Cognitive Debt Evidence Chain
@@ -140,9 +140,16 @@ Collected 2026-02-16. These studies form a converging evidence chain that AI dep
 - **Media**: CNN, The New Yorker covered the study
 - **Significance**: Most rigorous neuroscience study in our chain. Longitudinal, EEG-measured, with swap experiment proving persistent damage. "Cognitive debt" is now in the paper title — the term is entering formal academic usage.
 
+### 22. METR 2025 RCT: 19% Slowdown Masked by 20% Perceived Speedup
+- **Source**: METR (Model Evaluation & Threat Research) 2025 randomized controlled trial, via [BayTech Consulting analysis](https://www.baytechconsulting.com/blog/mastering-ai-code-revolution-2026)
+- **Sample**: 16 experienced developers (avg 5yr tenure), 246 real-world issues on their own repos (avg 1.1M LoC, 22K stars)
+- **Finding**: AI tools (Cursor Pro + Claude 3.5/3.7 Sonnet) caused **19% slowdown**. But developers **believed they were 20% faster**. 43-point expectations gap. Five friction factors: context-switching tax, reviewer's burden, "almost right" trap, high-quality standards overhead, mature codebase complexity.
+- **Supporting data**: Stack Overflow 2025 — only 29% trust AI code accuracy (down from 40%), 45% frustrated by "almost right" code. Jellyfish telemetry shows juniors gain 21-40%, but senior/complex work takes the 19% hit.
+- **Significance**: The most rigorous controlled study showing AI creates a **perception illusion** — developers can't tell they're slower. This is cognitive debt's mechanism made measurable: the "shortcut feels productive" feedback loop that prevents self-correction. The 43-point gap is the debt itself.
+
 ## The Converging Pattern
 
-21 sources — across neuroscience, psychology, education, computer science, philosophy, enterprise architecture, code analysis, forecasting, practitioner accounts, and industry surveys. 17 describe the same debt mechanism; #17 provides essential nuance (the baseline was already bad); #18-19 add practitioner and institutional authority; #20 adds the stunning irony of Anthropic publishing evidence against their own product's narrative; #21 provides the most rigorous neuroscience confirmation yet with longitudinal EEG data:
+22 sources — across neuroscience, psychology, education, computer science, philosophy, enterprise architecture, code analysis, forecasting, practitioner accounts, and industry surveys. 17 describe the same debt mechanism; #17 provides essential nuance (the baseline was already bad); #18-19 add practitioner and institutional authority; #20 adds Anthropic's self-critical evidence; #21 provides longitudinal EEG confirmation; #22 provides the most rigorous controlled productivity study showing the perception illusion that makes cognitive debt self-reinforcing:
 
 1. AI provides shortcut → 2. Human skips cognitive effort → 3. Capability atrophies → 4. More AI dependence
 
