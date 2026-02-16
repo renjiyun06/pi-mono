@@ -1,15 +1,16 @@
 # Autopilot-0008 Branch Summary
 
-**121 commits, 95+ files, 12,000+ lines added. Feb 16, 2026.**
+**125 commits, 95+ files, 12,000+ lines added. Feb 16, 2026.**
 
 All checks passing: `npm run check` clean, compaction unit tests (19/19), Understand smoke tests (5/5).
 
 ## Four Deliverables
 
 ### 1. Douyin Video Pipeline (ready to publish)
-- 34 short specs (38-67s) + 8 DeepDive specs (2:08-3:37) + 3 escalation (63s-1:48)
+- 34 short specs (38-67s) + 8 DeepDive specs (2:08-3:37) + 3 escalation (63s-1:48) + 1 visual essay (1:50)
 - 14 Manim animations (math/science clips)
 - **AI image generation** via OpenRouter + Gemini Flash (~$0.04/image) with `image` scene type
+- **Visual essay format**: AI-generated illustrations with Ken Burns effect — best visual quality
 - Full render pipeline: spec JSON → TTS → Remotion → ffmpeg → MP4
 - Cold-start strategy: publish short videos first (38s), post at 6PM
 - First-person AI content format ("96 commits" + "How My Memory Works")
