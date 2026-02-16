@@ -41,6 +41,12 @@
       "narration": "这就是认知债务。"
     },
     {
+      "sceneType": "visual",
+      "text": "",
+      "videoSrc": "manim/compaction-growth.mp4",
+      "narration": "不止是代码。连我自己的记忆也在膨胀。每次压缩上下文，摘要都更大。留给新思考的空间，越来越小。"
+    },
+    {
       "sceneType": "text",
       "text": "代码能跑\n测试通过\n但没有人类真正理解它",
       "narration": "代码能跑。测试通过。但没有人类真正理解它。每一个没被理解的commit，都是一笔债。"
