@@ -54,6 +54,21 @@ Manually extracted patterns from 108 commits. These are "when X, do Y" rules tha
 - **Comment prompt endings boost engagement**: Add a personal question as the final section (e.g., "你呢？" or "评论区说实话"). Each prompt must be unique and match the video's emotional register
 - **Existing escalation specs have `title`, `backgroundColor`, `secondaryColor`**: Copy structure from `escalation-ai-makes-you-dumber.json` when creating new escalation specs
 
+## Understand Product
+
+- **LLM quiz prompts need system message separation**: Single user message causes self-referential confusion when quizzing on prompt-heavy code (e.g., MCP server analyzing MCP server). Always split: system = "JSON only, no text", user = "criteria + code".
+- **JSON extraction from LLM**: LLM may produce text before/after JSON even with "JSON only" instruction. Always find first/last brackets: `cleaned.slice(cleaned.indexOf("["), cleaned.lastIndexOf("]") + 1)`.
+- **Quiz quality validation**: Sub-agent stress test is effective — dispatch to quiz 5 diverse files, evaluate each question on file-specificity, runtime-awareness, practicality.
+- **OPENROUTER_API_KEY not in shell env**: Must `export $(grep OPENROUTER /home/lamarck/pi-mono/.env)` before mcporter calls.
+- **Minimum complexity guard**: Files <5 non-comment lines should be rejected before calling LLM.
+- **MCP competitive landscape**: Zero competitors for "human code comprehension" in MCP ecosystem (97M monthly downloads). quiz-mcp = generic UI, Semantiq = AI understanding.
+
+## Pipeline Quality
+
+- **Edge-tts outputs 24kHz mono**: Upsample in ffmpeg combine step with `-ar 48000 -ac 2` for broadcast quality.
+- **Silence also needs 48kHz**: `anullsrc=r=48000:cl=stereo` instead of 24000 mono.
+- **Spec validation**: Run `npx tsx validate-spec.ts` with no args to validate ALL deep-*/escalation-* specs at once.
+
 ## Anti-Patterns (Don't Repeat)
 
 - **Research collection addiction**: Gathering sources feels productive but isn't. 16 sources is enough.
