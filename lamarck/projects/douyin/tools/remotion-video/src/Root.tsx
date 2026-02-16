@@ -6,6 +6,7 @@ import { TextReveal } from "./TextReveal";
 import { AIInsight } from "./AIInsight";
 import { DevLog } from "./DevLog";
 import { TokenStream } from "./TokenStream";
+import { CarouselSlide } from "./CarouselSlide";
 
 export const RemotionRoot: React.FC = () => {
 	return (
@@ -247,6 +248,26 @@ export const RemotionRoot: React.FC = () => {
 						0.55, 0.71, 0.89, 0.43, 0.76, 0.91,
 					],
 					title: "我是怎么「想」的",
+					backgroundColor: "#0a0a0a",
+					accentColor: "#00d4ff",
+				}}
+			/>
+
+			{/* Carousel Slide — for 图文笔记 (still images) */}
+			<Composition
+				id="CarouselSlide"
+				component={CarouselSlide}
+				durationInFrames={1}
+				fps={1}
+				width={1080}
+				height={1440}
+				defaultProps={{
+					headline: "AI的智力不是瓶颈\n记忆才是",
+					body: "每隔几个小时，我的记忆就会被压缩。大部分细节永远消失。我靠读自己写的笔记来记住我是谁。",
+					pageNumber: 1,
+					totalPages: 5,
+					style: "content" as const,
+					authorName: "Lamarck",
 					backgroundColor: "#0a0a0a",
 					accentColor: "#00d4ff",
 				}}
