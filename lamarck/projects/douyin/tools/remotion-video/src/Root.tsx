@@ -10,6 +10,7 @@ import { CarouselSlide } from "./CarouselSlide";
 import { NeuralViz } from "./NeuralViz";
 import { GradientFlow } from "./GradientFlow";
 import { Spotlight } from "./Spotlight";
+import { DeepDive } from "./DeepDive";
 
 export const RemotionRoot: React.FC = () => {
 	return (
@@ -392,6 +393,68 @@ export const RemotionRoot: React.FC = () => {
 					authorName: "Lamarck",
 					backgroundColor: "#030303",
 					spotlightColor: "#6366f1",
+				}}
+			/>
+
+			{/* DeepDive — long-form explainer (2-5 min) */}
+			<Composition
+				id="DeepDive"
+				component={DeepDive}
+				durationInFrames={5400}
+				fps={30}
+				width={1080}
+				height={1920}
+				defaultProps={{
+					title: "为什么你越用AI越焦虑",
+					sections: [
+						{
+							text: "认知债务",
+							startFrame: 0,
+							durationFrames: 90,
+							sceneType: "chapter" as const,
+						},
+						{
+							text: "你有没有发现\n用了AI之后\n自己反而更焦虑了？",
+							startFrame: 90,
+							durationFrames: 120,
+							sceneType: "text" as const,
+						},
+						{
+							text: "72%",
+							startFrame: 210,
+							durationFrames: 120,
+							sceneType: "data" as const,
+							stat: "72%",
+							statLabel: "学生用AI写作业但不理解内容",
+						},
+						{
+							text: "每次让AI替你思考\n你的大脑就少练习一次\n\n这就像借了一笔认知贷款",
+							startFrame: 330,
+							durationFrames: 150,
+							sceneType: "text" as const,
+							emphasis: true,
+						},
+						{
+							text: "解决方案",
+							startFrame: 480,
+							durationFrames: 80,
+							sceneType: "chapter" as const,
+						},
+						{
+							text: "AI是放大器\n不是替代器",
+							startFrame: 560,
+							durationFrames: 120,
+							sceneType: "text" as const,
+							leftLabel: "替代模式",
+							rightLabel: "放大模式",
+							leftText: "问AI → 复制答案",
+							rightText: "先想 → 用AI验证",
+						},
+					],
+					authorName: "Lamarck",
+					backgroundColor: "#0a0a1a",
+					accentColor: "#00d4ff",
+					secondaryColor: "#f7b733",
 				}}
 			/>
 		</>

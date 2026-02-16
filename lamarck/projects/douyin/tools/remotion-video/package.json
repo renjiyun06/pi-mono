@@ -12,6 +12,10 @@
   "dependencies": {
     "@remotion/bundler": "^4.0.422",
     "@remotion/cli": "^4.0.422",
+    "@remotion/media": "^4.0.422",
+    "@remotion/paths": "^4.0.422",
+    "@remotion/renderer": "^4.0.422",
+    "@remotion/transitions": "^4.0.422",
     "@types/react": "^19.2.14",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",

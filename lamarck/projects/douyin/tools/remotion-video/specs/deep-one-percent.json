@@ -1,0 +1,105 @@
+{
+  "composition": "DeepDive",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-5%",
+  "authorName": "Lamarck",
+  "backgroundColor": "#0a0a1a",
+  "accentColor": "#27c93f",
+  "secondaryColor": "#e94560",
+  "sections": [
+    {
+      "text": "每天进步1%\n一年后你会变成什么？",
+      "narration": "你一定听过这句话。每天进步百分之一，一年后你会进步三十七倍。每天退步百分之一，一年后你只剩百分之三。",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "1.01\u00b3\u2076\u2075 = 37.78\n0.99\u00b3\u2076\u2075 = 0.03",
+      "narration": "数学上完全正确。一点零一的三百六十五次方等于三十七点七八。零点九九的三百六十五次方等于零点零三。",
+      "sceneType": "code"
+    },
+    {
+      "text": "37.78\u00d7",
+      "narration": "三十七倍。听起来很励志对吧？",
+      "stat": "37.78\u00d7",
+      "statLabel": "每天进步1%的一年后",
+      "sceneType": "data"
+    },
+    {
+      "text": "但这个公式\n有三个致命问题",
+      "narration": "但等一下。这个公式有三个致命的问题，几乎没有人告诉你。",
+      "sceneType": "text",
+      "emphasis": true,
+      "accentOverride": "#e94560"
+    },
+    {
+      "text": "问题一\n什么叫「进步1%」？",
+      "narration": "第一个问题。什么叫每天进步百分之一？",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "跑步从5公里到5.05公里？\n背单词从100到101个？\n代码写快了1%？",
+      "narration": "跑步从五公里到五点零五公里？背单词从一百个到一百零一个？代码写快了百分之一？进步百分之一这个概念，在现实生活中几乎无法量化。",
+      "sceneType": "text"
+    },
+    {
+      "text": "你无法优化\n你无法衡量的东西",
+      "narration": "管理学有句话：你无法优化你无法衡量的东西。如果百分之一都没法定义，那这个公式就只是一个数学游戏，不是行动指南。",
+      "sceneType": "quote",
+      "attribution": "Peter Drucker"
+    },
+    {
+      "text": "问题二\n复利要求连续性",
+      "narration": "第二个问题。复利要求连续性。",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "金融复利：\n本金不会消失\n利息自动累积\n\n人的成长：\n技能会遗忘\n状态会波动\n生病、疲倦、分心",
+      "narration": "金融复利之所以成立，是因为本金不会消失，利息自动累积到下一个周期。但人的成长完全不是这样。技能会遗忘。状态会波动。你会生病、疲倦、分心。你不是一个银行账户。",
+      "sceneType": "comparison",
+      "leftLabel": "金融复利",
+      "rightLabel": "人的成长",
+      "leftText": "本金不会消失\n利息自动累积\n完美连续",
+      "rightText": "技能会遗忘\n状态会波动\n断断续续"
+    },
+    {
+      "text": "真实的成长曲线\n不是指数函数\n是锯齿状的",
+      "narration": "真实的成长曲线不是光滑的指数函数。它是锯齿状的。进三步退两步，平台期很长，突破期很短。",
+      "sceneType": "text",
+      "emphasis": true
+    },
+    {
+      "text": "问题三\n最危险的一个",
+      "narration": "第三个问题。也是最危险的一个。",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "它让你觉得\n只要足够小的改变\n就足够了",
+      "narration": "这个公式最大的伤害是：它让你觉得只要每天做一点点微小的改变就够了。但真正改变人生轨迹的，从来不是每天百分之一的微调。",
+      "sceneType": "text",
+      "emphasis": true,
+      "accentOverride": "#e94560"
+    },
+    {
+      "text": "真正的改变来自：\n\n换一个方向\n做一个艰难的决定\n承受一段不舒服的时期",
+      "narration": "真正的改变来自：换一个方向。做一个艰难的决定。承受一段不舒服的时期。这些都不是百分之一能描述的。",
+      "sceneType": "text"
+    },
+    {
+      "text": "那这个公式\n完全没用吗？",
+      "narration": "那这个公式完全没用吗？也不是。",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "它真正有用的部分\n不是三十七倍\n而是方向感",
+      "narration": "它真正有用的部分不是三十七倍这个数字。而是它传递的方向感：持续的小行动比偶尔的大动作更可靠。这个道理是对的。但它不需要一个假装精确的数学公式来支撑。",
+      "sceneType": "text",
+      "emphasis": true
+    },
+    {
+      "text": "与其追求每天1%\n不如问自己：\n\n今天我做的事\n是不是在对的方向上？",
+      "narration": "与其追求每天百分之一的进步，不如问自己一个更简单的问题：今天我做的事，是不是在对的方向上？方向对了，速度慢一点没关系。方向错了，越快越远。",
+      "sceneType": "quote",
+      "attribution": "Lamarck"
+    }
+  ]
+}

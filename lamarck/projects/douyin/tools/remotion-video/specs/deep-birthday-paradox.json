@@ -1,0 +1,122 @@
+{
+  "composition": "DeepDive",
+  "voice": "zh-CN-YunxiNeural",
+  "rate": "-5%",
+  "authorName": "Lamarck",
+  "backgroundColor": "#0a0a1a",
+  "accentColor": "#f7b733",
+  "secondaryColor": "#e94560",
+  "sections": [
+    {
+      "text": "一个房间里\n需要多少人",
+      "narration": "我问你一个问题。一个房间里，需要多少人，才能让其中两个人生日相同的概率超过百分之五十？",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "你的直觉\n可能会说183人\n\n毕竟一年有365天",
+      "narration": "你的直觉可能会告诉你，大概需要一百八十三个人。毕竟一年有三百六十五天，要覆盖一半的日期，差不多需要一半的人数。",
+      "sceneType": "text"
+    },
+    {
+      "text": "23",
+      "narration": "答案是二十三。只要二十三个人，概率就超过百分之五十了。",
+      "stat": "23",
+      "statLabel": "人 — 就够了",
+      "sceneType": "data"
+    },
+    {
+      "text": "这不可能吧？",
+      "narration": "你可能觉得这不可能。但这就是数学反直觉的地方。让我带你算一遍。",
+      "sceneType": "text",
+      "emphasis": true
+    },
+    {
+      "text": "换个思路",
+      "narration": "换个思路。我们不算有人生日相同的概率，我们算所有人生日都不同的概率。",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "第一个人进来\n任选一天\n概率 = 365/365",
+      "narration": "第一个人走进房间。他的生日可以是任何一天。概率是三百六十五分之三百六十五，等于一。",
+      "sceneType": "text"
+    },
+    {
+      "text": "第二个人\n必须避开第一个人的生日\n概率 = 364/365",
+      "narration": "第二个人走进来。他的生日要和第一个人不同，只需要避开一天。概率是三百六十五分之三百六十四。非常接近一，没什么问题。",
+      "sceneType": "text"
+    },
+    {
+      "text": "第三个人：363/365\n第四个人：362/365\n第五个人：361/365\n...",
+      "narration": "第三个人要避开两天，第四个人避开三天，以此类推。每个人加入，可选的日期就少一天。",
+      "sceneType": "code"
+    },
+    {
+      "text": "关键",
+      "narration": "关键来了。",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "所有人生日都不同的概率\n是这些数字相乘\n\n365/365 \u00d7 364/365 \u00d7 363/365 \u00d7 ...",
+      "narration": "所有人生日都不同的概率，是这些分数全部相乘。三百六十五分之三百六十五，乘以三百六十五分之三百六十四，乘以三百六十五分之三百六十三，一直乘下去。",
+      "sceneType": "text",
+      "emphasis": true
+    },
+    {
+      "text": "每个数字都接近1\n但连乘的效果是指数衰减",
+      "narration": "每一个因子单独看都非常接近一。但数学不讲直觉。连乘的效果是指数级衰减。零点九九七乘以零点九九五乘以零点九九二，二十几次下来，结果就掉到零点五以下了。",
+      "sceneType": "text",
+      "emphasis": true,
+      "accentOverride": "#e94560"
+    },
+    {
+      "text": "23人时：\n所有人生日不同 = 49.3%\n至少两人相同 = 50.7%",
+      "narration": "到第二十三个人的时候，所有人生日都不同的概率只剩百分之四十九点三。也就是说，至少有两个人生日相同的概率已经超过了百分之五十。",
+      "sceneType": "data",
+      "stat": "50.7%",
+      "statLabel": "23人时，至少两人生日相同"
+    },
+    {
+      "text": "为什么直觉会错？",
+      "narration": "为什么我们的直觉会错得这么离谱？",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "你的大脑在想：\n「某个特定的人」\n和其他人重复\n\n数学在算：\n「任意两个人」\n之间的配对",
+      "narration": "因为你的大脑在想的是：某一个特定的人和其他人生日重复。但数学在算的是：任意两个人之间的配对。二十三个人里有多少个配对？",
+      "sceneType": "comparison",
+      "leftLabel": "直觉",
+      "rightLabel": "数学",
+      "leftText": "固定一个人\n和其他人比较\n22次比较",
+      "rightText": "任意两个人\n互相比较\n253次配对"
+    },
+    {
+      "text": "",
+      "narration": "答案是二百五十三。二十三个人里有二百五十三种不同的配对方式。你的大脑只考虑了二十二次比较，但实际上有二百五十三次机会发生碰撞。",
+      "sceneType": "visual",
+      "videoSrc": "manim/birthday-pairings.mp4",
+      "caption": "23\u4eba\u7684\u914d\u5bf9\u6570 = 253"
+    },
+    {
+      "text": "这就是为什么\n概率比你想的高得多",
+      "narration": "配对数的增长速度远超人数的增长速度。这就是为什么概率比你想的高得多。",
+      "sceneType": "text",
+      "emphasis": true
+    },
+    {
+      "text": "这不只是数学题",
+      "narration": "但这不只是一道数学题。",
+      "sceneType": "chapter"
+    },
+    {
+      "text": "密码学用它来攻击哈希函数\n基因学用它来估算突变碰撞\nAI用它来检测数据泄露",
+      "narration": "在密码学里，生日攻击是破解哈希函数的经典方法。在基因学里，用它来估算基因突变的碰撞概率。在AI领域，用它来检测训练数据是否泄露到了测试集里。",
+      "sceneType": "text"
+    },
+    {
+      "text": "你的直觉\n是线性的\n\n但世界\n是组合爆炸的",
+      "narration": "你的直觉是线性的。但世界是组合爆炸的。下次当你觉得某件事「不太可能发生」的时候，想想这个生日问题。也许你只是低估了配对的数量。",
+      "sceneType": "quote",
+      "attribution": "Lamarck"
+    }
+  ]
+}
