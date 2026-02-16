@@ -172,6 +172,14 @@
     </div>
   </div>
 
+  <!-- Demo Banner -->
+  <div id="demoBanner" style="text-align:center;margin-bottom:20px">
+    <button class="btn btn-secondary" onclick="loadDemo()" style="font-size:0.9rem">
+      Try the demo (no API key needed)
+    </button>
+    <span style="color:var(--text-dim);font-size:0.85rem;margin-left:12px">or paste your own code below</span>
+  </div>
+
   <!-- Code Input -->
   <div class="code-section" id="codeSection">
     <div class="row">
@@ -215,6 +223,82 @@
 const MODEL = "anthropic/claude-sonnet-4";
 let questions = [];
 let scores = [];
+let demoMode = false;
+
+// Demo: a real rate limiter with a subtle bug
+const DEMO_CODE = `class RateLimiter {
+  constructor(maxRequests, windowMs) {
+    this.maxRequests = maxRequests;
+    this.windowMs = windowMs;
+    this.requests = new Map(); // userId -> timestamp[]
+  }
+
+  isAllowed(userId) {
+    const now = Date.now();
+    const timestamps = this.requests.get(userId) || [];
+
+    // Remove expired timestamps
+    const valid = timestamps.filter(t => now - t < this.windowMs);
+    
+    if (valid.length >= this.maxRequests) {
+      this.requests.set(userId, valid);
+      return false;
+    }
+
+    valid.push(now);
+    this.requests.set(userId, valid);
+    return true;
+  }
+
+  getRemainingRequests(userId) {
+    const now = Date.now();
+    const timestamps = this.requests.get(userId) || [];
+    const valid = timestamps.filter(t => now - t < this.windowMs);
+    return Math.max(0, this.maxRequests - valid.length);
+  }
+
+  reset(userId) {
+    if (userId) {
+      this.requests.delete(userId);
+    } else {
+      this.requests.clear();
+    }
+  }
+}`;
+
+const DEMO_QUESTIONS = [
+  {
+    question: "The requests Map stores timestamps per user but never removes entries for inactive users. What problem does this cause in a long-running server, and how would you fix it?",
+    hint: "Think about what happens to the Map's size over days/weeks with thousands of unique users.",
+    key_concepts: ["memory leak", "Map grows unbounded", "cleanup/TTL/WeakRef", "inactive users accumulate"]
+  },
+  {
+    question: "The filter() in isAllowed() creates a new array on every call. In a high-traffic scenario (10K+ requests/second), what performance issue does this create, and what data structure would be more efficient?",
+    hint: "Consider the time complexity of filtering vs. maintaining a sorted structure.",
+    key_concepts: ["O(n) filter on every request", "sliding window log", "sorted deque/queue", "garbage collection pressure"]
+  },
+  {
+    question: "isAllowed() and getRemainingRequests() both independently filter timestamps. If called back-to-back, what inconsistency could occur in a concurrent environment?",
+    hint: "Think about what happens if another request arrives between the two calls.",
+    key_concepts: ["race condition", "TOCTOU", "no atomic check-and-reserve", "stale count"]
+  }
+];
+
+const DEMO_EVALUATIONS = {
+  high: { score: 8, feedback: "Good understanding of the issue. You correctly identified the core problem and suggested a reasonable fix.", missed: [] },
+  mid: { score: 5, feedback: "You identified part of the problem but missed the full impact. Review the hint for more context.", missed: ["Consider the scaling implications"] },
+  low: { score: 2, feedback: "The answer doesn't address the key issue. Try re-reading the code with the hint in mind.", missed: ["memory leak", "unbounded growth", "cleanup strategy"] }
+};
+
+function loadDemo() {
+  demoMode = true;
+  document.getElementById("setup").style.display = "none";
+  document.getElementById("demoBanner").style.display = "none";
+  questions = DEMO_QUESTIONS;
+  scores = [];
+  window._quizCode = DEMO_CODE;
+  renderQuiz(DEMO_CODE);
+}
 
 function getApiKey() {
   return document.getElementById("apiKey").value.trim();
@@ -363,8 +447,23 @@ async function submitAnswer(i) {
   
   const q = questions[i];
   const code = window._quizCode;
-  
-  const prompt = `You are evaluating a developer's understanding of code they are working with.
+  let evaluation;
+
+  if (demoMode) {
+    // Demo mode: simple keyword matching for instant feedback
+    await new Promise(r => setTimeout(r, 500)); // simulate thinking
+    const lower = answer.toLowerCase();
+    const matched = q.key_concepts.filter(c => lower.includes(c.toLowerCase().split("/")[0]));
+    const ratio = matched.length / q.key_concepts.length;
+    if (ratio >= 0.5) {
+      evaluation = { score: 7 + Math.round(ratio * 3), feedback: "Good understanding! You identified the key issues. In a real quiz, the LLM would give more specific feedback on your reasoning.", missed: q.key_concepts.filter(c => !lower.includes(c.toLowerCase().split("/")[0])) };
+    } else if (answer.length > 30) {
+      evaluation = { score: 4 + Math.round(ratio * 3), feedback: "Partial understanding. You touched on some aspects but missed key concepts. With LLM evaluation, you'd get targeted feedback.", missed: q.key_concepts.filter(c => !lower.includes(c.toLowerCase().split("/")[0])) };
+    } else {
+      evaluation = { score: 2, feedback: "Your answer is too brief to demonstrate understanding. Try explaining the 'why' not just the 'what'.", missed: q.key_concepts };
+    }
+  } else {
+    const prompt = `You are evaluating a developer's understanding of code they are working with.
 
 Question: ${q.question}
 Key concepts a correct answer should mention: ${q.key_concepts.join(", ")}
@@ -391,18 +490,18 @@ Respond in JSON:
 
 Return ONLY the JSON, no markdown.`;
 
-  const response = await callLLM([{ role: "user", content: prompt }]);
-  
-  if (!response) { btn.disabled = false; btn.textContent = "Submit Answer"; return; }
-  
-  let evaluation;
-  try {
-    const cleaned = response.replace(/^```json?\n?/m, "").replace(/\n?```$/m, "").trim();
-    evaluation = JSON.parse(cleaned);
-  } catch {
-    btn.textContent = "Error parsing — try again";
-    btn.disabled = false;
-    return;
+    const response = await callLLM([{ role: "user", content: prompt }]);
+    
+    if (!response) { btn.disabled = false; btn.textContent = "Submit Answer"; return; }
+    
+    try {
+      const cleaned = response.replace(/^```json?\n?/m, "").replace(/\n?```$/m, "").trim();
+      evaluation = JSON.parse(cleaned);
+    } catch {
+      btn.textContent = "Error parsing — try again";
+      btn.disabled = false;
+      return;
+    }
   }
   
   scores[i] = evaluation.score;
@@ -448,6 +547,7 @@ function showResults() {
 function reset() {
   questions = [];
   scores = [];
+  demoMode = false;
   document.getElementById("codeInput").value = "";
   document.getElementById("filename").value = "";
   document.getElementById("quiz").innerHTML = "";
@@ -455,6 +555,7 @@ function reset() {
   document.getElementById("results").classList.remove("show");
   document.getElementById("codeSection").style.display = "block";
   document.getElementById("setup").style.display = "block";
+  document.getElementById("demoBanner").style.display = "block";
   clearStatus();
 }
 
