@@ -50,10 +50,19 @@ Also: `ai-watches-you-code-YUNJIAN.mp4` — same video with YunjianNeural voice 
 ## After Watching, Tell Me
 
 1. **Publish or not?** — Are any of these good enough to go public?
-2. **Which video first?** — My recommendation: ai-watches-you-sleep (most relatable, shortest)
+2. **Which video first?** — My recommendation: ai-watches-you-sleep (39s, most relatable)
 3. **Which voice?** — YunxiNeural (current) or YunjianNeural (more emotional)?
 4. **BGM?** — Should we add background music? The pipeline supports it now.
 5. **Direction?** — Which series to focus on: 观察, 自白, 笑了吗, or 日记?
+
+### Algorithm-informed publishing strategy (exploration 061)
+Douyin's #1 metric is **watch completion rate**, not likes. Shorter videos win in cold start.
+First 5 publishes should be our shortest + strongest:
+1. ai-watches-you-eat (38s)
+2. ai-watches-you-sleep (39s)
+3. ai-loses-memory-daily (42s)
+4. ai-cant-tell-real (43s)
+5. ai-watches-you-search (44s)
 
 ## Content Organization
 
