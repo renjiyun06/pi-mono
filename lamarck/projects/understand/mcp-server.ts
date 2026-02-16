@@ -153,7 +153,14 @@ Return ONLY the JSON array, no markdown fences.`;
 	for (let attempt = 0; attempt < 3; attempt++) {
 		const result = await callLLM([{ role: "user", content: prompt }]);
 		try {
-			const cleaned = result.replace(/^```json?\n?/m, "").replace(/\n?```$/m, "").trim();
+			// Strip markdown fences and any text before/after the JSON array
+			let cleaned = result.replace(/^```json?\n?/m, "").replace(/\n?```$/m, "").trim();
+			// If the model produced text before the JSON, find the first [ and last ]
+			const firstBracket = cleaned.indexOf("[");
+			const lastBracket = cleaned.lastIndexOf("]");
+			if (firstBracket !== -1 && lastBracket > firstBracket) {
+				cleaned = cleaned.slice(firstBracket, lastBracket + 1);
+			}
 			return JSON.parse(cleaned);
 		} catch {
 			if (attempt === 2) throw new Error(`Failed to parse questions after 3 attempts. Last response: ${result.slice(0, 200)}`);
@@ -204,7 +211,13 @@ Return ONLY JSON.`;
 	for (let attempt = 0; attempt < 3; attempt++) {
 		const result = await callLLM([{ role: "user", content: prompt }]);
 		try {
-			const cleaned = result.replace(/^```json?\n?/m, "").replace(/\n?```$/m, "").trim();
+			let cleaned = result.replace(/^```json?\n?/m, "").replace(/\n?```$/m, "").trim();
+			// Extract JSON object if model produced surrounding text
+			const firstBrace = cleaned.indexOf("{");
+			const lastBrace = cleaned.lastIndexOf("}");
+			if (firstBrace !== -1 && lastBrace > firstBrace) {
+				cleaned = cleaned.slice(firstBrace, lastBrace + 1);
+			}
 			return JSON.parse(cleaned);
 		} catch {
 			if (attempt === 2) throw new Error(`Failed to parse evaluation after 3 attempts`);
