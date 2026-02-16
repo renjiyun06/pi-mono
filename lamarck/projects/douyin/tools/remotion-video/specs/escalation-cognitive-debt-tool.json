@@ -17,14 +17,14 @@
     },
     {
       "sceneType": "text",
-      "text": "然后问开发者一个问题——",
-      "narration": "然后问开发者一个问题——",
+      "text": "然后问开发者\n一个简单的问题",
+      "narration": "然后问那些开发者，一个简单的问题。",
       "rate": "-5%"
     },
     {
       "sceneType": "chapter",
       "chapterTitle": "你看得懂吗？",
-      "narration": ""
+      "narration": "你看得懂吗？"
     },
     {
       "sceneType": "data",
@@ -60,7 +60,7 @@
     {
       "sceneType": "chapter",
       "chapterTitle": "怎么办？",
-      "narration": ""
+      "narration": "怎么办？"
     },
     {
       "sceneType": "text",
