@@ -1,0 +1,251 @@
+{
+  "nodes": [
+    {
+      "id": "a000000000000001",
+      "type": "text",
+      "x": 350,
+      "y": -100,
+      "width": 300,
+      "height": 120,
+      "text": "# AI Debt Framework\n\nUnifying lens: same pattern across 6 debt types.\n**Replacement → Debt. Extension → Growth.**",
+      "color": "1"
+    },
+    {
+      "id": "a000000000000010",
+      "type": "group",
+      "x": -200,
+      "y": 80,
+      "width": 1400,
+      "height": 280,
+      "label": "Six Debt Types",
+      "color": "6"
+    },
+    {
+      "id": "a000000000000011",
+      "type": "text",
+      "x": -180,
+      "y": 120,
+      "width": 200,
+      "height": 100,
+      "text": "## Cognitive\nUnderstanding atrophy\n- MIT brain study\n- Shen: 17% skill loss\n- Storey ICSE 2026",
+      "color": "1"
+    },
+    {
+      "id": "a000000000000012",
+      "type": "text",
+      "x": 40,
+      "y": 120,
+      "width": 200,
+      "height": 100,
+      "text": "## Social\nConnection atrophy\n- APA 2026 study\n- 700% companion app growth\n- Loneliness paradox",
+      "color": "2"
+    },
+    {
+      "id": "a000000000000013",
+      "type": "text",
+      "x": 260,
+      "y": 120,
+      "width": 200,
+      "height": 100,
+      "text": "## Organizational\nOversight atrophy\n- 82:1 agent/human\n- $2M cascade failure\n- Shadow AI 29%",
+      "color": "3"
+    },
+    {
+      "id": "a000000000000014",
+      "type": "text",
+      "x": 480,
+      "y": 120,
+      "width": 200,
+      "height": 100,
+      "text": "## Creative\nOriginality atrophy\n- 50% articles AI-written\n- Homogenization risk\n- Style convergence",
+      "color": "3"
+    },
+    {
+      "id": "a000000000000015",
+      "type": "text",
+      "x": 700,
+      "y": 120,
+      "width": 200,
+      "height": 100,
+      "text": "## Decision\nJudgment atrophy\n- 99-day boss experiment\n- Decision atrophy curve\n- Bainbridge 1983",
+      "color": "2"
+    },
+    {
+      "id": "a000000000000016",
+      "type": "text",
+      "x": 920,
+      "y": 120,
+      "width": 200,
+      "height": 100,
+      "text": "## Talent Pipeline\nApprentice atrophy\n- Entry-level hiring -73%\n- Never-skilling\n- Who becomes master?",
+      "color": "1"
+    },
+    {
+      "id": "a000000000000020",
+      "type": "group",
+      "x": -200,
+      "y": 420,
+      "width": 680,
+      "height": 280,
+      "label": "Neuroscience Evidence",
+      "color": "5"
+    },
+    {
+      "id": "a000000000000021",
+      "type": "text",
+      "x": -180,
+      "y": 460,
+      "width": 200,
+      "height": 100,
+      "text": "### MIT EEG Study\nChatGPT → neural connectivity loss\nCognitive effort reduction\nFirst biological evidence",
+      "color": "5"
+    },
+    {
+      "id": "a000000000000022",
+      "type": "text",
+      "x": 40,
+      "y": 460,
+      "width": 200,
+      "height": 100,
+      "text": "### Nature npj (2026)\nBCM theory: passive use → LTD (weakening)\nActive co-creation → LTP\n\"System 0\" concept",
+      "color": "5"
+    },
+    {
+      "id": "a000000000000023",
+      "type": "text",
+      "x": 260,
+      "y": 460,
+      "width": 200,
+      "height": 100,
+      "text": "### Frontiers Med (2026)\n4 neural mechanisms:\nPFC deactivation\nHippocampus off\nDopamine offloading\n\"Never-skilling\"",
+      "color": "5"
+    },
+    {
+      "id": "a000000000000030",
+      "type": "group",
+      "x": 520,
+      "y": 420,
+      "width": 680,
+      "height": 280,
+      "label": "Industry Evidence",
+      "color": "4"
+    },
+    {
+      "id": "a000000000000031",
+      "type": "text",
+      "x": 540,
+      "y": 460,
+      "width": 200,
+      "height": 100,
+      "text": "### Vogels (2025)\n\"Verification debt\"\n96% distrust AI code\n48% don't check\nToil unchanged at 23-25%",
+      "color": "4"
+    },
+    {
+      "id": "a000000000000032",
+      "type": "text",
+      "x": 760,
+      "y": 460,
+      "width": 200,
+      "height": 100,
+      "text": "### CodeRabbit (2026)\nAI creates 1.7x more bugs\n3x worse readability\n8x more perf issues\n470 repos analyzed",
+      "color": "4"
+    },
+    {
+      "id": "a000000000000033",
+      "type": "text",
+      "x": 980,
+      "y": 460,
+      "width": 200,
+      "height": 100,
+      "text": "### ICSE Burnout (2026)\n442 developers\n67% debug AI code more\n19% productivity LOSS\n7.2% delivery decline",
+      "color": "4"
+    },
+    {
+      "id": "a000000000000040",
+      "type": "text",
+      "x": 350,
+      "y": 760,
+      "width": 300,
+      "height": 100,
+      "text": "# Understand\n\nAnti-cognitive-debt tool.\nQuiz → Evaluate → Track.\nMCP server for all editors.",
+      "color": "#10b981"
+    },
+    {
+      "id": "a000000000000050",
+      "type": "text",
+      "x": -200,
+      "y": 760,
+      "width": 250,
+      "height": 80,
+      "text": "### Bainbridge (1983)\n\"Ironies of Automation\"\nPredicted this 43 years ago:\nMore automation → less skill → need more automation"
+    },
+    {
+      "id": "a000000000000051",
+      "type": "text",
+      "x": 950,
+      "y": 760,
+      "width": 250,
+      "height": 80,
+      "text": "### Education Next (2026)\nCounter: baseline was already poor.\nAI exposed bad teaching,\ndidn't create it.\nSolution: extension mode."
+    }
+  ],
+  "edges": [
+    {
+      "id": "e000000000000001",
+      "fromNode": "a000000000000001",
+      "fromSide": "bottom",
+      "toNode": "a000000000000010",
+      "toSide": "top"
+    },
+    {
+      "id": "e000000000000002",
+      "fromNode": "a000000000000011",
+      "fromSide": "bottom",
+      "toNode": "a000000000000021",
+      "toSide": "top",
+      "label": "evidence"
+    },
+    {
+      "id": "e000000000000003",
+      "fromNode": "a000000000000015",
+      "fromSide": "bottom",
+      "toNode": "a000000000000031",
+      "toSide": "top",
+      "label": "evidence"
+    },
+    {
+      "id": "e000000000000004",
+      "fromNode": "a000000000000020",
+      "fromSide": "bottom",
+      "toNode": "a000000000000040",
+      "toSide": "left",
+      "label": "informs"
+    },
+    {
+      "id": "e000000000000005",
+      "fromNode": "a000000000000030",
+      "fromSide": "bottom",
+      "toNode": "a000000000000040",
+      "toSide": "right",
+      "label": "validates"
+    },
+    {
+      "id": "e000000000000006",
+      "fromNode": "a000000000000050",
+      "fromSide": "right",
+      "toNode": "a000000000000040",
+      "toSide": "left",
+      "label": "predicted",
+      "color": "6"
+    },
+    {
+      "id": "e000000000000007",
+      "fromNode": "a000000000000051",
+      "fromSide": "left",
+      "toNode": "a000000000000040",
+      "toSide": "right",
+      "label": "nuances",
+      "color": "3"
+    }
+  ]
+}
