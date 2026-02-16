@@ -77,14 +77,24 @@ interface Question {
 }
 
 async function generateQuestions(code: string, filename: string): Promise<Question[]> {
-	const prompt = `You are a code comprehension evaluator. Given the following code file, generate exactly 3 understanding questions that test whether the developer truly understands what this code does.
+	const prompt = `You are a code comprehension expert. Given the following code, generate exactly 3 questions that test whether the developer truly understands THIS SPECIFIC code — not general software engineering principles.
 
-Rules:
-- Questions should test UNDERSTANDING, not memorization (don't ask "what is the variable name on line 5")
-- Focus on: purpose, control flow, edge cases, design decisions, and potential bugs
-- Each question should be answerable in 1-3 sentences
-- Include a hint that points the developer in the right direction without giving the answer
-- Include key concepts that a correct answer should mention
+CRITICAL: Questions must be answerable ONLY by someone who understands this particular file.
+
+Good questions test:
+- Library/framework-specific behavior used in this code (e.g., "What does X do here and why was it chosen over Y?")
+- Runtime behavior: "What happens if input Z is provided?" or "What state exists after line N executes?"
+- Failure modes specific to this code's dependencies and data flow
+- Why a specific approach was chosen over alternatives IN THIS CONTEXT
+
+Bad questions (avoid these):
+- Generic refactoring suggestions ("How would you make this more maintainable?")
+- General design pattern identification ("What pattern is this?")
+- Questions answerable by anyone who knows the programming language but hasn't read this file
+
+Each question should be answerable in 1-3 sentences.
+Include a hint that points the developer in the right direction without giving the answer.
+Include key concepts (referencing specific functions/variables/behaviors in the code).
 
 File: ${filename}
 
