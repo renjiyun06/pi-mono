@@ -30,7 +30,7 @@ import { Video } from "@remotion/media";
  * - comparison: Left vs right layout
  */
 
-type SceneType = "text" | "data" | "quote" | "chapter" | "code" | "comparison" | "visual" | "timeline";
+type SceneType = "text" | "data" | "quote" | "chapter" | "code" | "comparison" | "visual" | "timeline" | "image";
 
 interface DeepDiveSection {
 	text: string;
@@ -53,6 +53,8 @@ interface DeepDiveSection {
 	videoSrc?: string; // path to video file in public/ (for staticFile) or absolute URL
 	caption?: string; // optional caption below video
 	videoPlaybackRate?: number; // computed by render pipeline to match narration length
+	// image scene
+	imageSrc?: string; // path to image file in public/ (for staticFile)
 	// subtitle — narration text shown at bottom of screen
 	subtitle?: string;
 	// styling
@@ -135,6 +137,7 @@ const sceneGradients: Record<SceneType, [string, string]> = {
 	comparison: ["#0a0a1a", "#1a1a2e"],
 	visual: ["#0a0a1a", "#0a0a1a"],
 	timeline: ["#0a0a1a", "#0f1a2e"],
+	image: ["#0a0a1a", "#0a0a1a"],
 };
 
 // ---- Sub-components ----
@@ -1206,6 +1209,143 @@ const VisualScene: React.FC<{
 	);
 };
 
+// ---- Image Scene ----
+// Displays a static image (e.g., AI-generated) with Ken Burns effect (slow zoom + pan)
+const ImageScene: React.FC<{
+	text: string;
+	imageSrc?: string;
+	caption?: string;
+	durationFrames: number;
+	accentColor: string;
+}> = ({ text, imageSrc, caption, durationFrames, accentColor }) => {
+	const frame = useCurrentFrame();
+
+	const fadeIn = interpolate(frame, [0, 15], [0, 1], {
+		extrapolateRight: "clamp",
+	});
+	const fadeOut = interpolate(
+		frame,
+		[durationFrames - 15, durationFrames],
+		[1, 0],
+		{ extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+	);
+
+	// Ken Burns: slow zoom from 1.0 to 1.08 over the scene duration
+	const scale = interpolate(frame, [0, durationFrames], [1.0, 1.08], {
+		extrapolateRight: "clamp",
+	});
+	// Subtle pan: drift slightly right and up
+	const panX = interpolate(frame, [0, durationFrames], [0, -15], {
+		extrapolateRight: "clamp",
+	});
+	const panY = interpolate(frame, [0, durationFrames], [0, -10], {
+		extrapolateRight: "clamp",
+	});
+
+	return (
+		<AbsoluteFill
+			style={{
+				justifyContent: "center",
+				alignItems: "center",
+				opacity: Math.min(fadeIn, fadeOut),
+			}}
+		>
+			{/* Full-screen image with Ken Burns */}
+			{imageSrc && (
+				<div
+					style={{
+						position: "absolute",
+						top: 0,
+						left: 0,
+						width: "100%",
+						height: "100%",
+						overflow: "hidden",
+					}}
+				>
+					<img
+						src={staticFile(imageSrc)}
+						alt=""
+						style={{
+							width: "100%",
+							height: "100%",
+							objectFit: "cover",
+							transform: `scale(${scale}) translate(${panX}px, ${panY}px)`,
+						}}
+					/>
+					{/* Darken overlay so text remains readable */}
+					<div
+						style={{
+							position: "absolute",
+							top: 0,
+							left: 0,
+							width: "100%",
+							height: "100%",
+							background: "linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.5) 100%)",
+						}}
+					/>
+				</div>
+			)}
+
+			{/* Overlay text at top */}
+			{text && (
+				<div
+					style={{
+						position: "absolute",
+						top: 80,
+						left: 0,
+						right: 0,
+						textAlign: "center",
+						padding: "0 60px",
+						zIndex: 10,
+					}}
+				>
+					<div
+						style={{
+							fontSize: 34,
+							fontWeight: 600,
+							color: "rgba(255,255,255,0.95)",
+							lineHeight: 1.6,
+							whiteSpace: "pre-line",
+							textShadow: "0 2px 12px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.5)",
+							fontFamily:
+								'"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
+						}}
+					>
+						{text}
+					</div>
+				</div>
+			)}
+
+			{/* Caption at bottom */}
+			{caption && (
+				<div
+					style={{
+						position: "absolute",
+						bottom: 120,
+						left: 0,
+						right: 0,
+						textAlign: "center",
+						padding: "0 60px",
+						zIndex: 10,
+					}}
+				>
+					<div
+						style={{
+							fontSize: 22,
+							color: "rgba(255,255,255,0.6)",
+							fontFamily:
+								'"Noto Sans SC", "PingFang SC", sans-serif',
+							textShadow: "0 1px 4px rgba(0,0,0,0.8)",
+						}}
+					>
+						{caption}
+					</div>
+				</div>
+			)}
+		</AbsoluteFill>
+	);
+};
+
 // Subtitle overlay — narration text at bottom, Douyin-style
 const SubtitleOverlay: React.FC<{
 	text: string;
@@ -1474,6 +1614,15 @@ export const DeepDive: React.FC<DeepDiveProps> = ({
 									videoSrc={section.videoSrc}
 									caption={section.caption}
 									videoPlaybackRate={section.videoPlaybackRate}
+									durationFrames={section.durationFrames}
+									accentColor={section.accentOverride || accentColor}
+								/>
+							)}
+							{sceneType === "image" && (
+								<ImageScene
+									text={section.text}
+									imageSrc={section.imageSrc}
+									caption={section.caption}
 									durationFrames={section.durationFrames}
 									accentColor={section.accentOverride || accentColor}
 								/>

@@ -8,7 +8,7 @@
 import { readFileSync, existsSync } from "fs";
 import { resolve, dirname } from "path";
 
-const VALID_SCENE_TYPES = ["chapter", "text", "data", "quote", "code", "comparison", "visual", "timeline"];
+const VALID_SCENE_TYPES = ["chapter", "text", "data", "quote", "code", "comparison", "visual", "timeline", "image"];
 const CHARS_PER_SECOND_ZH = 4.5; // Chinese TTS at -5% rate
 const MIN_SECTIONS = 8;
 const MAX_SECTIONS = 25;
@@ -104,6 +104,19 @@ function validate(specPath: string): Issue[] {
 				const videoPath = resolve(projectRoot, "public", s.videoSrc);
 				if (!existsSync(videoPath)) {
 					issues.push({ level: "error", message: `${prefix}: videoSrc not found: ${videoPath}` });
+				}
+			}
+		}
+
+		// Image scene: check imageSrc
+		if (s.sceneType === "image") {
+			hasVisual = true;
+			if (!s.imageSrc) {
+				issues.push({ level: "error", message: `${prefix}: image scene missing imageSrc` });
+			} else {
+				const imagePath = resolve(projectRoot, "public", s.imageSrc);
+				if (!existsSync(imagePath)) {
+					issues.push({ level: "error", message: `${prefix}: imageSrc not found: ${imagePath}` });
 				}
 			}
 		}
