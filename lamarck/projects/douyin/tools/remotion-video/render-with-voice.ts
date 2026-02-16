@@ -97,17 +97,30 @@ async function main() {
 
 		const sectionVoice = section.voice || voice;
 		const sectionRate = section.rate || rate;
-		execFileSync("python3", [
-			"-m", "edge_tts",
-			"--voice", sectionVoice,
-			`--rate=${sectionRate}`,
-			"--text", section.narration,
-			"--write-media", audioPath,
-		], { stdio: "pipe" });
+		const narrationText = (section.narration || "").trim();
 
-		const duration = getDuration(audioPath);
-		sectionDurations.push(duration);
-		console.log(`  Section ${i + 1}: ${duration.toFixed(1)}s — "${section.narration.substring(0, 40)}..."`);
+		if (!narrationText) {
+			// Empty narration: generate 2s silence instead of calling TTS
+			const silenceDuration = 2.0;
+			execFileSync("ffmpeg", [
+				"-y", "-f", "lavfi", "-i", `anullsrc=r=24000:cl=mono`,
+				"-t", String(silenceDuration), "-q:a", "9", audioPath,
+			], { stdio: "pipe" });
+			sectionDurations.push(silenceDuration);
+			console.log(`  Section ${i + 1}: ${silenceDuration.toFixed(1)}s — (silence, no narration)`);
+		} else {
+			execFileSync("python3", [
+				"-m", "edge_tts",
+				"--voice", sectionVoice,
+				`--rate=${sectionRate}`,
+				"--text", narrationText,
+				"--write-media", audioPath,
+			], { stdio: "pipe" });
+
+			const duration = getDuration(audioPath);
+			sectionDurations.push(duration);
+			console.log(`  Section ${i + 1}: ${duration.toFixed(1)}s — "${narrationText.substring(0, 40)}..."`);
+		}
 	}
 
 	const totalAudioDuration = sectionDurations.reduce((a, b) => a + b, 0);

@@ -120,8 +120,12 @@ function validate(specPath: string): Issue[] {
 			issues.push({ level: "warn", message: `${prefix}: data scene missing stat field` });
 		}
 
-		// Text
-		if (!s.text && s.sceneType !== "visual") {
+		// Text — chapter scenes need text for the section indicator
+		if (s.sceneType === "chapter" && !s.text && !s.chapterTitle) {
+			issues.push({ level: "error", message: `${prefix}: chapter scene needs text or chapterTitle` });
+		} else if (s.sceneType === "chapter" && !s.text) {
+			issues.push({ level: "warn", message: `${prefix}: chapter missing text field (section indicator will use chapterTitle as fallback)` });
+		} else if (!s.text && s.sceneType !== "visual") {
 			issues.push({ level: "info", message: `${prefix} (${s.sceneType}): empty text field` });
 		}
 	}
@@ -185,7 +189,7 @@ if (args.length === 0) {
 	// Validate all deep-*.json specs
 	const { readdirSync } = require("fs");
 	const specsDir = resolve(__dirname, "specs");
-	const specs = readdirSync(specsDir).filter((f: string) => f.startsWith("deep-") && f.endsWith(".json"));
+	const specs = readdirSync(specsDir).filter((f: string) => (f.startsWith("deep-") || f.startsWith("escalation-")) && f.endsWith(".json"));
 
 	let totalErrors = 0;
 	for (const spec of specs) {
