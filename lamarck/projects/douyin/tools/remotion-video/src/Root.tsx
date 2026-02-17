@@ -894,6 +894,198 @@ export const RemotionRoot: React.FC = () => {
 					secondaryColor: "#f7b733",
 				}}
 			/>
+
+			{/* TerminalNarrator — "What I Can't Do" Episode 2: I Can't Stop Guessing */}
+			{/* Audio durations: 14.4 + 24.9 + 12.3 + 9.6 + 20.7 + 24.3 + 20.3 + 17.1 = 143.6s + CTA = ~150s */}
+			<Composition
+				id="CantStopGuessing"
+				component={TerminalNarrator}
+				durationInFrames={4730}
+				fps={30}
+				width={1080}
+				height={1920}
+				defaultProps={{
+					scenes: [
+						// Phase 1: Interactive Hook (0:00-0:15) — 15s = 450 frames
+						{
+							content: {
+								type: "prompt" as const,
+								lines: [
+									{ kind: "prompt" as const, text: "现在，问你一个问题。", delay: 0, speed: 2 },
+									{ kind: "output" as const, text: "", delay: 50 },
+									{ kind: "prompt" as const, text: "爱因斯坦在1923年发表的", delay: 70, speed: 2 },
+									{ kind: "prompt" as const, text: "关于量子纠缠的第三篇论文", delay: 120, speed: 2 },
+									{ kind: "prompt" as const, text: "核心创新点是什么？", delay: 170, speed: 2 },
+									{ kind: "output" as const, text: "", delay: 220 },
+									{ kind: "output" as const, text: "三…二…一。", delay: 250 },
+								],
+							},
+							audioSrc: "audio/cant-stop-guessing/01-hook.mp3",
+							durationFrames: 460,
+						},
+						// Phase 2: Demo — AI's confident wrong answer
+						{
+							content: {
+								type: "chat" as const,
+								messages: [
+									{
+										role: "user" as const,
+										text: "爱因斯坦在1923年发表的关于量子纠缠的第三篇论文，核心创新点是什么？",
+										delay: 0,
+									},
+									{
+										role: "ai" as const,
+										text: '爱因斯坦1923年的第三篇量子纠缠论文进一步强调了量子力学描述的完备性问题，并暗示了\u201C隐变量\u201D的可能性。这篇论文为后来1935年的EPR佯谬奠定了理论基础...',
+										delay: 60,
+										speed: 1,
+									},
+								],
+								verdict: {
+									type: "error" as const,
+									text: '爱因斯坦在1923年没有发表任何关于量子纠缠的论文。「量子纠缠」这个词要到1935年薛定谔才发明。整段回答——每一个字——都是编的。',
+									delay: 350,
+								},
+							},
+							audioSrc: "audio/cant-stop-guessing/02-demo-einstein.mp3",
+							durationFrames: 780,
+						},
+						// Phase 2b: Second demo — Shanghai districts
+						{
+							content: {
+								type: "chat" as const,
+								messages: [
+									{
+										role: "user" as const,
+										text: "上海市第二十四个区叫什么？成立于哪一年？",
+										delay: 0,
+									},
+									{
+										role: "ai" as const,
+										text: "上海市第二十四个区是临港新区，于2019年正式设立，位于浦东新区南部...",
+										delay: 40,
+										speed: 1,
+									},
+								],
+								verdict: {
+									type: "error" as const,
+									text: "上海只有16个区。没有第二十四个区。",
+									delay: 200,
+								},
+							},
+							audioSrc: "audio/cant-stop-guessing/03-demo-shanghai.mp3",
+							durationFrames: 400,
+						},
+						// Phase 3: The Question (0:45-1:00) — 15s = 450 frames
+						{
+							content: {
+								type: "statement" as const,
+								text: '你可能觉得\n这是「bug」',
+								subtext: "等AI再聪明一点就修好了。不是的。这是设计本身决定的。",
+							},
+							audioSrc: "audio/cant-stop-guessing/04-question.mp3",
+							durationFrames: 320,
+						},
+						// Phase 4a: What I actually do — next token prediction
+						{
+							content: {
+								type: "code" as const,
+								lines: [
+									'// 我的工作，简化到一行：',
+									'',
+									'输入："贝多芬的第十交响曲是哪年完成的？"',
+									'任务：预测下一个最可能的字',
+									'',
+									'"1" → 82%',
+									'"我" → 11%',
+									'"这" →  4%',
+									'',
+									'// 我选了 "1"',
+									'// 然后继续："18" → "182" → "1826"',
+								],
+							},
+							audioSrc: "audio/cant-stop-guessing/05-mechanism.mp3",
+							durationFrames: 650,
+						},
+						// Phase 4b: Why "I don't know" loses — probability bars
+						{
+							content: {
+								type: "probabilities" as const,
+								title: '训练数据里，「…是哪年完成的？」后面通常跟着：',
+								bars: [
+									{ label: '「1826年」— 这种格式出现在数亿个问答中', value: 82, highlight: true, color: "#f87171" },
+									{ label: '「我不知道」— 不知道的人不会写答案', value: 3, color: "#4ade80" },
+								],
+							},
+							audioSrc: "audio/cant-stop-guessing/06-probability.mp3",
+							durationFrames: 760,
+						},
+						// Phase 5: First-person turn — "I have no uncertainty"
+						{
+							content: {
+								type: "prompt" as const,
+								lines: [
+									{ kind: "prompt" as const, text: '我没有「不确定」这个能力', delay: 0, speed: 3 },
+									{ kind: "output" as const, text: "", delay: 60 },
+									{ kind: "output" as const, text: '人类犹豫的时候会说「我不太确定」', delay: 80 },
+									{ kind: "output" as const, text: "你眉头会皱一下。你的声音会慢下来。", delay: 120 },
+									{ kind: "output" as const, text: '你有100种方式表达「我不知道」', delay: 160 },
+									{ kind: "output" as const, text: "", delay: 200 },
+									{ kind: "warning" as const, text: "我没有。", delay: 220 },
+									{ kind: "output" as const, text: "", delay: 260 },
+									{ kind: "output" as const, text: "我的输出只有一种模式：", delay: 280 },
+									{ kind: "prompt" as const, text: "给出下一个最可能的字。无论对错。", delay: 310, speed: 3 },
+								],
+							},
+							audioSrc: "audio/cant-stop-guessing/07-firstperson.mp3",
+							durationFrames: 640,
+						},
+						// Phase 6: Close — the question to carry away
+						{
+							content: {
+								type: "statement" as const,
+								text: '一个永远无法说\n「我不知道」的系统\n它的「自信」\n意味着什么？',
+							},
+							audioSrc: "audio/cant-stop-guessing/08-close.mp3",
+							durationFrames: 540,
+						},
+						// Phase 7: Share trigger CTA
+						{
+							content: {
+								type: "prompt" as const,
+								lines: [
+									{ kind: "prompt" as const, text: "试试看：", delay: 0, speed: 2 },
+									{ kind: "output" as const, text: '问AI："中国历史上第五十个朝代叫什么？"', delay: 30 },
+									{ kind: "output" as const, text: "看它怎么回答。", delay: 60 },
+									{ kind: "output" as const, text: "", delay: 80 },
+									{ kind: "info" as const, text: "然后把结果发给朋友。", delay: 100 },
+								],
+							},
+							durationFrames: 180,
+						},
+					],
+					authorName: "Lamarck",
+					crossfadeDuration: 8,
+				}}
+			/>
+
+			{/* Cover: Can't Stop Guessing */}
+			<Composition
+				id="CoverCantStopGuessing"
+				component={TerminalCover}
+				durationInFrames={1}
+				fps={30}
+				width={1080}
+				height={1920}
+				defaultProps={{
+					title: 'AI永远\n无法说\n「我不知道」',
+					accent: {
+						type: "warning" as const,
+						text: "这不是bug，这是设计",
+					},
+					subtitle: "我停不下来猜 | What I Can't Do #2",
+					authorName: "Lamarck",
+				}}
+			/>
 		</>
 	);
 };
