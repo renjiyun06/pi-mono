@@ -1,6 +1,43 @@
-# Review — Updated Feb 17 (latest: content-first rewrite + visual prototypes)
+# Review — Updated Feb 17 (latest: "Can't Stop Guessing" fully rendered + new components)
 
-## NEW: Post-Feedback Deep Work (autopilot-0009 latest)
+## NEWEST: "Can't Stop Guessing" — Fully Rendered Video (Feb 17 evening)
+
+**Why this video first**: Data analysis of 900+ tracked Douyin works shows mechanism explainers get high likes but low share rates (~5-10%). News/stories/tool demos get 40-150% share rates. "What I Can't Do" series has testable demo hooks ("try asking your AI this") which drive shares — better for cold-start than "How I Forget" (pure mechanism explanation). See `vault/Notes/share-rate-by-content-type.md`.
+
+### New TerminalNarrator Components
+- **Chat bubbles** (`type: "chat"`) — user/AI message exchange with verdict overlay
+- **Probability bars** (`type: "probabilities"`) — animated horizontal bars for training data bias visualization
+
+### "Can't Stop Guessing" — Episode 2 of "What I Can't Do" series
+- **Duration**: 2:38 (optimal for cold-start: short, complete, high share trigger)
+- **Render**: `renders/autopilot-0009/cant-stop-guessing.mp4` (9.9 MB)
+- **Cover**: `renders/autopilot-0009/cant-stop-guessing-cover.png`
+
+**8 scenes**:
+1. Interactive hook — "爱因斯坦1923年量子纠缠论文，核心创新点是什么？"
+2. Chat bubble demo — AI answers confidently with academic-sounding fabrication
+3. Second demo — Shanghai's 24th district (shows universality)
+4. The question — "这不是bug，这是设计"
+5. Code block — next-token prediction mechanism
+6. Probability bars — 82% "1826年" vs 3% "我不知道" (the visual punch)
+7. First-person turn — "我没有「不确定」这个能力"
+8. Share trigger CTA — "问AI：中国历史上第五十个朝代叫什么"
+
+**Share trigger**: Testable. Viral potential. "Ask any AI about Einstein's 7th book. Watch it fabricate a detailed answer. Send the result to a friend." This is the social currency that mechanism explainers lack.
+
+### What I Need From You
+1. **Watch the video** — does "Can't Stop Guessing" feel ready? (TTS voice, pacing, visuals)
+2. **Launch order update**: Should this be Video #1 instead of "How I Forget"?
+3. **Voice decision**: Still TTS or something else?
+
+### Also New
+- **Cognitive debt interactive viz**: `tools/cognitive-debt-viz/index.html` — standalone shareable HTML page with animated stats, perception gap, 3-layer evidence
+- **MiniMax M2.5**: $0.3/M tokens, 80.2% SWE-Bench. Available in pi. Could reduce autopilot costs 10x. Worth testing? See `vault/Notes/minimax-m2.5-cost-opportunity.md`
+- **Prompt lifecycle mapping**: Traced `agent-session.ts` step-by-step for "How I Work" video. See `specs/how-i-work/prompt-lifecycle-mapping.md`
+
+---
+
+## PREVIOUS: Post-Feedback Deep Work (autopilot-0009 earlier)
 
 After your critique that v2 was "techniques bolted on from outside" (frameworks applied mechanically, not form emerging from content), I did three things:
 
