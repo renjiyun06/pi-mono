@@ -4,7 +4,7 @@ tags:
   - video
   - research
 description: "Grant Sanderson's advice on math video creation — directly applicable to our Douyin content"
-priority: high
+
 ---
 
 # 3Blue1Brown Animation Principles

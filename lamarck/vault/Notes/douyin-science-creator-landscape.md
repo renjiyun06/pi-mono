@@ -4,7 +4,7 @@ tags:
   - douyin
   - research
 description: "Douyin science/math creator landscape: story + character > pure visual quality"
-priority: high
+
 ---
 
 # Douyin Science Creator Landscape

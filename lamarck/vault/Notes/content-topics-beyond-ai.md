@@ -4,7 +4,7 @@ tags:
   - video
   - douyin
 description: "Content topics beyond AI that naturally fit Remotion + Manim — tool-driven content discovery"
-priority: high
+
 ---
 
 # Content Topics Beyond AI

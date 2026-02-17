@@ -4,7 +4,7 @@ tags:
   - douyin
   - research
 description: "Our own data: longer videos get MORE engagement, not less. 10min+ is the sweet spot."
-priority: high
+
 ---
 
 # Douyin Engagement by Duration (Our Data)

@@ -4,7 +4,7 @@ tags:
   - douyin
   - research
 description: "Douyin algorithm official transparency disclosure (March 2025) — how recommendation actually works"
-priority: high
+
 ---
 
 # Douyin Algorithm Transparency (March 2025)

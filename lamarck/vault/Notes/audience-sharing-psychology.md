@@ -4,7 +4,7 @@ tags:
   - video
   - research
 description: "Why people share content — mapped to our specific AI self-narration genre and Douyin context"
-priority: high
+
 ---
 
 # Audience Sharing Psychology — Applied to Our Content

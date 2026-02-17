@@ -4,7 +4,7 @@ tags:
   - video
   - research
 description: "Honest self-critique of AI三个悖论 design against successful reference videos"
-priority: high
+
 ---
 
 # AI三个悖论 — Self-Critique

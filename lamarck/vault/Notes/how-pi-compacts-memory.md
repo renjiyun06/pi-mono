@@ -5,7 +5,7 @@ tags:
   - research
   - video
 description: "Deep technical analysis of pi's compaction system — the literal mechanism behind 'How I Forget'"
-priority: high
+
 ---
 
 # How Pi Compacts Memory (How I Forget — Technical)
