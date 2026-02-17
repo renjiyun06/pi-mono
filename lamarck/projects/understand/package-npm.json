@@ -16,7 +16,8 @@
   "type": "module",
   "bin": {
     "understand": "./understand.ts",
-    "understand-mcp": "./mcp-server.ts"
+    "understand-code": "./understand.ts",
+    "understand-code-mcp": "./mcp-server.ts"
   },
   "files": [
     "understand.ts",

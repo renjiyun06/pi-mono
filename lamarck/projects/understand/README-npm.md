@@ -1,110 +1,84 @@
-# understand-mcp
+# understand-code
 
-MCP server that quizzes developers on code comprehension. Tests design decisions, failure modes, and architectural understanding — not syntax memorization.
+CLI + MCP server that quizzes developers on code comprehension. Tests design decisions, failure modes, and architectural understanding — not syntax memorization.
 
-> "When you write code yourself, comprehension comes with the act of creation. When the machine writes it, you'll have to rebuild that comprehension during review. That's verification debt."
-> — Werner Vogels, Amazon CTO, re:Invent 2025
+> Anthropic's own RCT (Shen & Tamkin, Jan 2026) found that "generation-then-comprehension" is the only AI usage pattern that preserves learning. This tool automates that pattern.
 
 ## Why
 
-- 96% of developers don't trust AI-generated code
-- 48% don't always check before committing
-- 38% say reviewing AI code is harder than human code
-
-(Source: Sonar State of Code Developer Survey, 1,100+ developers)
-
-Understand makes the comprehension gap visible. It generates questions about code you're working with and evaluates your answers. If you can't explain what the code does and why, you shouldn't ship it.
+- **-17%** comprehension scores when using AI (Anthropic RCT, 52 developers)
+- **43-point** perception gap: devs think they're faster, they're actually slower (METR RCT)
+- **96%** of developers don't trust AI code, but **48%** don't check before committing (Sonar survey)
+- Brain changes from AI reliance **persist after AI is removed** (MIT EEG study)
 
 ## Install
 
 ```bash
-npm install -g understand-mcp
+npm install -g understand-code
 ```
 
 Or use directly:
 
 ```bash
-npx understand-mcp
+npx understand-code src/auth.ts
+```
+
+## CLI Usage
+
+```bash
+# Quiz on a file
+understand src/auth.ts
+
+# Preview questions without quiz
+understand src/auth.ts --dry-run
+
+# Quiz on recent git changes
+understand --git-diff
+
+# View comprehension scores
+understand summary
+understand summary --below 60
+
+# View understanding debt
+understand debt
+understand debt --since main
 ```
 
 ## Configuration
 
-Set `OPENROUTER_API_KEY` in your environment. The server uses Gemini Flash by default (~$0.04 per quiz session).
+Set `OPENROUTER_API_KEY` in your environment or `.env` file.
 
-Optional: `UNDERSTAND_MODEL` to use a different model.
+Optional:
+- `UNDERSTAND_MODEL` — override the default model (default: `google/gemini-2.0-flash-001`)
 
-## MCP Tools
+## MCP Server
 
-### understand_quiz
+Also works as an MCP server for AI coding agents:
 
-Generate comprehension questions for a code file.
+```bash
+npx understand-code-mcp
+```
 
-**Input**: `code` (string), `filename` (string), `count` (number, default 3)
+### MCP Tools
 
-**Output**: Array of questions with `question`, `key_concepts`, `difficulty`
+| Tool | Description |
+|------|-------------|
+| `understand_quiz` | Generate comprehension questions for code |
+| `understand_evaluate` | Evaluate a developer's answer |
+| `understand_score` | Get comprehension score history |
+| `understand_git_diff` | Generate questions for recent changes |
+| `understand_debt` | Show files with understanding debt |
 
-### understand_evaluate
+### Client Setup
 
-Evaluate a developer's answer to a comprehension question.
-
-**Input**: `question`, `key_concepts` (string[]), `answer`, `code`, `filename` (optional, for score tracking)
-
-**Output**: `score` (0-10), `feedback`, `missed` concepts
-
-### understand_score
-
-Get comprehension score history for tracked files.
-
-**Input**: `directory` (optional), `threshold` (number, default 6)
-
-**Output**: Per-file scores, average, at-risk files
-
-## Client Setup
-
-### VS Code (MCP extension)
-
-Add to your MCP settings:
+**VS Code / Cursor / pi:**
 
 ```json
 {
   "servers": {
     "understand": {
       "command": "npx",
-      "args": ["understand-mcp"],
-      "env": {
-        "OPENROUTER_API_KEY": "your-key"
-      }
-    }
-  }
-}
-```
-
-### Cursor
-
-Add to `.cursor/mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "understand": {
-      "command": "npx",
-      "args": ["understand-mcp"],
-      "env": {
-        "OPENROUTER_API_KEY": "your-key"
-      }
-    }
-  }
-}
-```
-
-### mcporter
-
-```json
-{
-  "servers": {
-    "understand": {
-      "command": "npx",
-      "args": ["tsx", "path/to/mcp-server.ts"],
+      "args": ["understand-code-mcp"],
       "env": {
         "OPENROUTER_API_KEY": "your-key"
       }
@@ -115,7 +89,14 @@ Add to `.cursor/mcp.json`:
 
 ## Score Tracking
 
-Scores are persisted in `.understand/history.json` in your project directory. Use `understand_score` to view trends and identify files where comprehension is low.
+Scores are persisted in `.understand/history.json` in your project root. The debt dashboard tracks which files you've never reviewed, which changed since your last quiz, and which score below threshold.
+
+## Research
+
+- [Shen & Tamkin (2026)](https://arxiv.org/abs/2601.20245) — Anthropic RCT, 52 developers
+- [METR (2025)](https://metr.org) — 16 senior developers, million-line codebases
+- [Kosmyna et al. (2025)](https://www.media.mit.edu/publications/your-brain-on-chatgpt/) — MIT EEG study, 54 participants
+- [Storey (2026)](https://margaretstorey.com/blog/2026/02/09/cognitive-debt/) — ICSE 2026 keynote on cognitive debt
 
 ## License
 
