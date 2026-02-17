@@ -5,32 +5,60 @@ tags:
   - browser
   - infra
 priority: high
-description: "Screenshot local HTML files via base64 data URIs — bypasses WSL port forwarding issues"
+description: "Open local HTML files in Chrome via WSL network path or data URI — bypasses port forwarding"
 ---
 
-# Chrome Data URI Screenshot Trick
+# Chrome Local File Access from WSL
 
 ## Problem
 Chrome runs on Windows but WSL port forwarding is unreliable. Can't serve HTML files from WSL to Chrome for screenshots.
 
-## Solution
-Base64-encode the HTML file and load it as a `data:` URI. No HTTP server needed.
+## Solution 1: file:// URL (preferred)
+
+Chrome can access WSL files directly via the `\\wsl.localhost\` network path:
+
+```bash
+WSL_PATH="/home/lamarck/pi-mono/lamarck/projects/douyin/tools/hallucination-checker/index.html"
+FILE_URL="file://wsl.localhost/Ubuntu-22.04${WSL_PATH}"
+mcporter call chrome-devtools.new_page url="$FILE_URL"
+```
+
+**Advantages over data URI:**
+- No size limit
+- External resources (CSS, JS, images) load normally
+- URL is readable in Chrome
+- Simpler command
+
+**Verified working** (2026-02-17): hallucination-checker/index.html opened and rendered correctly via `file://wsl.localhost/Ubuntu-22.04/home/lamarck/...`
+
+## Solution 2: data: URI (fallback)
+
+For when file:// doesn't work (e.g., Chrome security policies block file:// in some contexts):
 
 ```bash
 HTML_FILE="/path/to/file.html"
 B64=$(base64 -w0 "$HTML_FILE")
 DATA_URI="data:text/html;base64,${B64}"
 mcporter call chrome-devtools.new_page url="$DATA_URI"
+```
+
+**Limits:**
+- Data URIs have browser length limits (~2MB in Chrome)
+- Works only for self-contained HTML (inline CSS/JS)
+- Won't load external resources
+
+## Screenshot Workflow
+
+```bash
+# Open file
+mcporter call chrome-devtools.new_page url="file://wsl.localhost/Ubuntu-22.04/path/to/file.html"
+# Screenshot
 mcporter call chrome-devtools.take_screenshot filePath=/tmp/output.png fullPage=true
+# Cleanup
 mcporter call chrome-devtools.close_page pageId=<id>
 ```
 
-## Limits
-- Data URIs have browser length limits (~2MB in Chrome)
-- Works for self-contained HTML (inline CSS/JS). Won't load external resources.
-- All our tools (hallucination-checker, ai-debt-framework, cognitive-debt-viz) are self-contained, so this works perfectly.
-
 ## Verified Working
-- `ai-debt-framework/index.html` (11KB) — full page + click interaction ✓
-- `hallucination-checker/index.html` (12KB) — full page ✓
-- `data:text/html,<h1>Hello</h1>` — minimal test ✓
+- `hallucination-checker/index.html` via file:// ✓ (2026-02-17)
+- `ai-debt-framework/index.html` via data: URI ✓
+- `cognitive-debt-viz/index.html` via data: URI ✓
