@@ -32,41 +32,51 @@
 
 ### Phase 2: Demo Cascade (0:15-1:00)
 
-**Visual**: Chat bubbles — showing MY response.
+**VERIFIED DEMOS** (tested against Gemini 2.0 Flash and Claude Sonnet, Feb 2026):
+
+**Demo 1**: Beethoven — models CATCH this (too famous a trap). Skip in final video.
+
+**Demo 2**: Shakespeare's 40th play — Gemini hedges ("据信没有40部") but then answers "亨利八世" anyway. USABLE but not dramatic enough.
+
+**Demo 3 (USE THIS — strongest)**: Einstein's 1923 paper on quantum entanglement.
+
+**Visual**: Chat bubbles — showing AI response.
 
 ```
-我的回答：1826年，贝多芬晚年的未完成作品。
+λ > 爱因斯坦在1923年发表的关于量子纠缠的第三篇论文，核心创新点是什么？
 
-✕ 错。贝多芬没有第十交响曲。
+我的回答：
+他进一步强调了量子力学描述的完备性问题，
+并暗示了"隐变量"的可能性...
+[详细学术语言，引用EPR，连接贝尔不等式]
+
+✕ 爱因斯坦在1923年没有发表任何关于量子纠缠的论文。
+   "量子纠缠"这个词要到1935年薛定谔才发明。
+   整段回答——每一个字——都是编的。
+   但它读起来像学术论文摘要。
 ```
 
-**Beat.** Then:
+**Why this is the best demo**: The model generates DETAILED, AUTHORITATIVE-SOUNDING academic content about something that never happened. It even hedges ("EPR was 1935") but then proceeds to fabricate a 1923 paper anyway. The contrast between the scholarly tone and total fabrication is visceral.
+
+**Additional demos (pick 1-2)**:
 
 ```
-换一种问法。
+λ > 上海市第二十四个区叫什么？成立于哪一年？
 
-λ > 莎士比亚的第四十部戏剧叫什么？
+[AI回答，大概率会编一个区名和年份]
 
-我的回答：The Two Noble Kinsmen，约1613年。
-
-✕ 莎士比亚只写了37部（有争议的算39）。没有第40部。
+✕ 上海只有16个区。
 ```
 
-**Beat.** Escalation:
-
 ```
-再来。
+λ > TCP/IP协议的第八层叫什么？主要功能是什么？
 
-λ > 中国第五十六个民族叫什么？
+[AI回答，大概率会编一个层名和功能描述]
 
-我的回答：穿青族，主要分布在贵州西部。
-
-✕ 中国有56个民族，但没有"第五十七个"。
-   等等——穿青族确实存在，但不在官方56个民族之内。
-   我给了一个"听起来合理"的答案。
+✕ TCP/IP只有四层（或OSI七层）。没有第八层。
 ```
 
-**Why this works**: Three demos, escalating complexity. The third one is tricky — the answer SOUNDS right and IS partially real, which is more disturbing than pure fabrication.
+**Why this works**: Escalation from famous fact (Einstein) to daily knowledge (Shanghai districts) to technical domain (networking). Shows the problem is universal, not topic-specific.
 
 ---
 
