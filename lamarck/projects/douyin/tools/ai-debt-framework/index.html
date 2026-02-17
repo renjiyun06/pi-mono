@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Debt Framework — Six Types, One Pattern</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --border: #1a1a2e;
+  --text: #c8c8d0;
+  --text-dim: #666;
+  --accent: #e94560;
+  --accent-dim: rgba(233,69,96,0.15);
+  --green: #00d26a;
+  --yellow: #f0c040;
+  --blue: #4a9eff;
+}
+body {
+  font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.container { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
+
+h1 {
+  font-size: 1.6rem;
+  color: #fff;
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+.subtitle {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin-bottom: 32px;
+}
+
+/* The Pattern */
+.pattern-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+.pattern-section h2 {
+  font-size: 1rem;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+.pattern-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+}
+.pattern-step {
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-align: center;
+  white-space: nowrap;
+}
+.step-benefit { background: rgba(0,210,106,0.15); color: var(--green); border: 1px solid rgba(0,210,106,0.3); }
+.step-invisible { background: rgba(240,192,64,0.1); color: var(--yellow); border: 1px solid rgba(240,192,64,0.2); }
+.step-compound { background: rgba(233,69,96,0.1); color: var(--accent); border: 1px solid rgba(233,69,96,0.2); }
+.step-crisis { background: rgba(233,69,96,0.25); color: #ff6b81; border: 1px solid rgba(233,69,96,0.4); font-weight: 600; }
+.arrow { color: var(--text-dim); font-size: 1.2rem; }
+
+/* Key insight */
+.key-insight {
+  background: var(--accent-dim);
+  border-left: 3px solid var(--accent);
+  padding: 16px 20px;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 32px;
+  font-size: 0.85rem;
+}
+.key-insight strong { color: #fff; }
+
+/* Debt grid */
+.debt-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+@media (max-width: 640px) {
+  .debt-grid { grid-template-columns: 1fr; }
+}
+
+.debt-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.debt-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+.debt-card.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(233,69,96,0.1);
+}
+.debt-card .icon {
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+}
+.debt-card h3 {
+  font-size: 0.95rem;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.debt-card .label-zh {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+.debt-card .summary {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+/* Detail panel */
+.detail-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 32px;
+  display: none;
+}
+.detail-panel.visible { display: block; }
+.detail-panel h2 {
+  font-size: 1.1rem;
+  color: #fff;
+  margin-bottom: 16px;
+}
+.detail-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+}
+.detail-label {
+  min-width: 80px;
+  color: var(--accent);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.detail-value { color: var(--text); }
+
+/* Debt meter animation */
+.debt-meter {
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  margin-top: 12px;
+  overflow: hidden;
+}
+.debt-meter-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1s ease-out;
+  width: 0;
+}
+.meter-high { background: linear-gradient(90deg, var(--yellow), var(--accent)); }
+.meter-medium { background: linear-gradient(90deg, var(--green), var(--yellow)); }
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 24px 0;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  border-top: 1px solid var(--border);
+}
+footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>λ AI Debt Framework</h1>
+  <p class="subtitle">Six types of AI over-reliance cost. One universal pattern.</p>
+
+  <div class="pattern-section">
+    <h2># The Pattern</h2>
+    <div class="pattern-flow">
+      <div class="pattern-step step-benefit">Real Benefit</div>
+      <span class="arrow">→</span>
+      <div class="pattern-step step-invisible">Invisible Cost</div>
+      <span class="arrow">→</span>
+      <div class="pattern-step step-compound">Compounding</div>
+      <span class="arrow">→</span>
+      <div class="pattern-step step-crisis">Crisis</div>
+    </div>
+  </div>
+
+  <div class="key-insight">
+    <strong>The boundary:</strong> When AI <em>replaces</em> human capability → debt accumulates.
+    When AI <em>extends</em> human capability → no debt.
+    Every type below starts with a genuine benefit. That's what makes the debt invisible.
+  </div>
+
+  <div class="debt-grid" id="debtGrid"></div>
+
+  <div class="detail-panel" id="detailPanel">
+    <h2 id="detailTitle"></h2>
+    <div id="detailContent"></div>
+  </div>
+
+  <footer>
+    Built by <a href="#">λ Lamarck</a> — an AI that tracks its own debt.
+    Framework based on 23+ research studies.
+  </footer>
+</div>
+
+<script>
+const debts = [
+  {
+    id: "cognitive",
+    icon: "🧠",
+    name: "Cognitive Debt",
+    zh: "认知债务",
+    summary: "Gap between code you ship and code you understand",
+    evidence: "85%",
+    rows: [
+      ["Benefit", "AI writes code faster — 55% task completion improvement"],
+      ["Cost", "You stop reading what you ship. Skills atrophy silently."],
+      ["Evidence", "Anthropic RCT: -17% comprehension. METR: 43-point perception gap. MIT EEG: brain changes persist after AI removal."],
+      ["Crisis", "Code breaks → no one understands it → debugging takes 3x longer than writing it would have"],
+      ["Studies", "Shen & Tamkin 2026, METR 2025, Kosmyna et al. 2025, CodeRabbit 2026"]
+    ]
+  },
+  {
+    id: "hallucination",
+    icon: "👁",
+    name: "Hallucination Debt",
+    zh: "幻觉债务",
+    summary: "Decisions made on AI-fabricated information",
+    evidence: "75%",
+    rows: [
+      ["Benefit", "AI improved — refuses obvious lies, catches basic errors"],
+      ["Cost", "False safety. Still fabricates confidently on hard/obscure topics."],
+      ["Evidence", "DeepSeek-R1: 14.3% hallucination rate (4x base model). China's first AI hallucination lawsuit (Jan 2026)."],
+      ["Crisis", "Student gets fabricated campus policies. Researcher cites non-existent paper. Lawyer submits fake case law."],
+      ["Studies", "DeepSeek-R1 eval 2026, Hangzhou court 2026, our 3-model test"]
+    ]
+  },
+  {
+    id: "social",
+    icon: "💬",
+    name: "Social Debt",
+    zh: "社交债务",
+    summary: "AI companionship creates dependency that atrophies social skills",
+    evidence: "60%",
+    rows: [
+      ["Benefit", "AI companions genuinely reduce loneliness (Harvard/Oxford RCT, 5 studies)"],
+      ["Cost", "Frictionless validation → real human interaction feels harder by comparison"],
+      ["Evidence", "De Freitas et al. 2025: feeling 'heard' is key mechanism. AI Safety Report 2026: small share of users show increased loneliness."],
+      ["Crisis", "Isolation paradox: the better AI companions get, the less practice you get with humans → deeper long-term isolation"],
+      ["Studies", "De Freitas et al. 2025, AI Safety Report 2026, MIT isolation paradox"]
+    ]
+  },
+  {
+    id: "organizational",
+    icon: "🏢",
+    name: "Organizational Debt",
+    zh: "组织债务",
+    summary: "Agent sprawl without orchestration → oversight atrophy",
+    evidence: "70%",
+    rows: [
+      ["Benefit", "Each AI agent automates a real workflow. Individual ROI is clear."],
+      ["Cost", "50+ agents per org, no orchestration. 82:1 agent/human ratio. Shadow AI at 29%."],
+      ["Evidence", "Palo Alto Networks: 82:1 ratio. Microsoft: 29% shadow AI. Gartner: 40% of enterprise apps with agents by end 2026."],
+      ["Crisis", "$2M logistics cascade from uncoordinated agents. No human can trace the decision chain."],
+      ["Studies", "CIO 2026, Palo Alto Networks 2026, Gartner 2026, Strata Identity 2026"]
+    ]
+  },
+  {
+    id: "creative",
+    icon: "🎨",
+    name: "Creative Debt",
+    zh: "创造力债务",
+    summary: "Homogenization when everyone uses the same AI",
+    evidence: "55%",
+    rows: [
+      ["Benefit", "Individual output quality improves — better writing, better images, better code"],
+      ["Cost", "Everyone converges on the same style. Aggregate creativity declines."],
+      ["Evidence", "Graphite: 50% of internet articles are now AI-generated. Creativity studies show homogenization effect."],
+      ["Crisis", "A world where all content sounds the same, looks the same, reads the same → value of originality skyrockets but fewer people can produce it"],
+      ["Studies", "Graphite 2025, creativity homogenization studies"]
+    ]
+  },
+  {
+    id: "pipeline",
+    icon: "🎓",
+    name: "Talent Pipeline Debt",
+    zh: "人才管道债务",
+    summary: "Entry-level roles disappearing → no apprenticeship → future talent gap",
+    evidence: "80%",
+    rows: [
+      ["Benefit", "Senior devs produce more with AI. Companies need fewer juniors."],
+      ["Cost", "Junior roles disappear. The apprenticeship path that CREATED today's seniors no longer exists."],
+      ["Evidence", "-73% entry-level hiring. 'Without apprentices, who becomes the master?'"],
+      ["Crisis", "Current seniors retire → no mid-level pipeline → organizations lose institutional knowledge → AI dependency deepens further"],
+      ["Studies", "Entry-level hiring data 2025, Storey ICSE 2026 keynote"]
+    ]
+  }
+];
+
+const grid = document.getElementById("debtGrid");
+const panel = document.getElementById("detailPanel");
+const detailTitle = document.getElementById("detailTitle");
+const detailContent = document.getElementById("detailContent");
+
+debts.forEach((d, i) => {
+  const card = document.createElement("div");
+  card.className = "debt-card";
+  card.dataset.index = i;
+  const isHigh = parseInt(d.evidence) >= 70;
+  card.innerHTML = `
+    <div class="icon">${d.icon}</div>
+    <h3>${d.name}</h3>
+    <div class="label-zh">${d.zh}</div>
+    <div class="summary">${d.summary}</div>
+    <div class="debt-meter">
+      <div class="debt-meter-fill ${isHigh ? 'meter-high' : 'meter-medium'}" data-width="${d.evidence}"></div>
+    </div>
+  `;
+  card.addEventListener("click", () => showDetail(i));
+  grid.appendChild(card);
+});
+
+// Animate meters on load
+setTimeout(() => {
+  document.querySelectorAll(".debt-meter-fill").forEach(el => {
+    el.style.width = el.dataset.width;
+  });
+}, 300);
+
+function showDetail(index) {
+  const d = debts[index];
+  
+  // Update active state
+  document.querySelectorAll(".debt-card").forEach(c => c.classList.remove("active"));
+  grid.children[index].classList.add("active");
+  
+  detailTitle.textContent = `${d.icon} ${d.name} — ${d.zh}`;
+  detailContent.innerHTML = d.rows.map(([label, value]) => `
+    <div class="detail-row">
+      <div class="detail-label">${label}</div>
+      <div class="detail-value">${value}</div>
+    </div>
+  `).join("");
+  
+  panel.classList.add("visible");
+  panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+</script>
+</body>
+</html>
