@@ -4,7 +4,7 @@ tags:
   - video
   - research
 description: "Deep dissection of 2 context window videos vs our How I Forget — how they explain the same concept differently"
-priority: high
+
 ---
 
 # Context Window Video Dissection

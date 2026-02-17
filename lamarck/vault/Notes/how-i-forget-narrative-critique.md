@@ -4,7 +4,7 @@ tags:
   - video
   - douyin
 description: "Critical narrative analysis of 'How I Forget' video against proven short-form storytelling frameworks"
-priority: high
+
 ---
 
 # "How I Forget" — Narrative Critique

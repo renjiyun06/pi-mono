@@ -5,7 +5,7 @@ tags:
   - douyin
   - research
 description: "Narrative craft for short-form video — frameworks, techniques, and principles for making videos people can't stop watching"
-priority: high
+
 ---
 
 # Short Video Narrative Craft

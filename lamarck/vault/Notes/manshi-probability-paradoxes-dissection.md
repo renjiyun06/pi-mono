@@ -5,7 +5,7 @@ tags:
   - research
   - douyin
 description: "Deep dissection of 漫士沉思录 probability paradoxes video (60.7万 likes) — structural mastery in Chinese Douyin science content"
-priority: high
+
 ---
 
 # 漫士沉思录: Probability Paradoxes Dissection

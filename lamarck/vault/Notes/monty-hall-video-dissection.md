@@ -4,7 +4,7 @@ tags:
   - video
   - research
 description: "Deep dissection of 3 Monty Hall videos — how form serves content differently in each"
-priority: high
+
 ---
 
 # Monty Hall Video Dissection

@@ -4,7 +4,7 @@ tags:
   - douyin
   - research
 description: "Integrated launch playbook — synthesis of algorithm, narrative craft, cover design, creator landscape, and content strategy research"
-priority: high
+
 ---
 
 # Douyin Launch Playbook
