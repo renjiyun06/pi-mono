@@ -64,4 +64,9 @@ From quality gap synthesis + Ren's feedback:
 3. **First video needs to be undeniably good** — cold start means zero margin for error on first 300 views
 4. **Cover design** — TerminalCover compositions exist but haven't been evaluated against Douyin thumbnail standards
 5. **BGM selection** — ambient palette that shifts mood across sections (not just background fill)
-6. **Posting time optimization** — Douyin data suggests 8-10pm peak, but our 35+ knowledge audience may differ
+6. **Posting time optimization** — From our tracked data (919 works across 20+ accounts):
+   - **Best day**: Saturday (20K avg likes, 6K avg shares) — significantly above all others
+   - **Second best**: Wednesday (13K avg likes, 4.7K avg shares)
+   - **Worst day**: Monday (8K avg likes, 1.3K avg shares)
+   - **Best time slots**: Morning (6-11) and Evening (18-23) roughly tied (~13K avg likes)
+   - **Recommendation**: Launch on Saturday evening (18-20h). If not possible, Wednesday evening.
