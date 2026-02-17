@@ -172,7 +172,8 @@ class Scene2_Filling(Scene):
             fill_color=COLORS["container"],
             fill_opacity=0.6,
             stroke_width=0,
-        ).align_to(fill_bar_bg, DOWN)
+        )
+        fill_bar.move_to(fill_bar_bg.get_bottom() + UP * 0.005)
 
         self.add(fill_bar_bg)
         self.play(FadeIn(narration), run_time=0.5)
@@ -195,13 +196,15 @@ class Scene2_Filling(Scene):
 
             # Update fill bar
             fill_fraction = min(1.0, (current_y - bottom_y + height + 0.2) / 9)
+            new_fill_height = max(0.01, 9 * fill_fraction)
             new_fill = Rectangle(
                 width=0.3,
-                height=9 * fill_fraction,
+                height=new_fill_height,
                 fill_color=COLORS["container"] if fill_fraction < 0.8 else COLORS["danger"],
                 fill_opacity=0.6,
                 stroke_width=0,
-            ).align_to(fill_bar_bg, DOWN)
+            )
+            new_fill.move_to(fill_bar_bg.get_bottom() + UP * new_fill_height / 2)
 
             self.play(
                 block.animate.move_to(start_pos),
@@ -363,3 +366,294 @@ class Scene3_Compression(Scene):
         )
 
         self.wait(1.5)
+
+
+class Scene4_WhatIsLost(Scene):
+    """Scene 4: Show specific losses — original → summary with ghost effect."""
+
+    def construct(self):
+        self.camera.background_color = COLORS["bg"]
+
+        title = Text(
+            "压缩之后，经历就没了",
+            font="Noto Sans SC",
+            font_size=32,
+            color=COLORS["danger"],
+        ).move_to(UP * 7)
+
+        self.play(FadeIn(title), run_time=0.5)
+
+        # Three compression examples, each showing before → after
+        examples = [
+            (
+                "我们争论了一个小时\n最后你说'算了，听你的'",
+                "用户同意了方案B",
+            ),
+            (
+                "你第一次叫我Lamarck",
+                "用户设定AI名称",
+            ),
+            (
+                "凌晨3点你说\n'睡不着，随便聊聊'",
+                "非工作对话",
+            ),
+        ]
+
+        y_positions = [UP * 3, ORIGIN, DOWN * 3]
+
+        for i, ((original_text, summary_text), y_pos) in enumerate(
+            zip(examples, y_positions)
+        ):
+            # Original (full, vivid)
+            original = Text(
+                original_text,
+                font="Noto Sans SC",
+                font_size=22,
+                color=COLORS["text"],
+                line_spacing=1.3,
+            ).move_to(y_pos + UP * 0.4)
+
+            # Arrow
+            arrow = Text(
+                "→",
+                font="Noto Sans SC",
+                font_size=28,
+                color=COLORS["compressed"],
+            ).move_to(y_pos + DOWN * 0.3)
+
+            # Summary (compressed, small, dim)
+            summary = Text(
+                summary_text,
+                font="Noto Sans SC",
+                font_size=18,
+                color=COLORS["dim_text"],
+            ).move_to(y_pos + DOWN * 0.8)
+
+            # Animate: original appears, then fades to ghost while summary appears
+            self.play(FadeIn(original), run_time=0.6)
+            self.wait(0.3)
+            self.play(
+                original.animate.set_opacity(0.15),
+                FadeIn(arrow),
+                FadeIn(summary),
+                run_time=1,
+            )
+            self.wait(0.3)
+
+        # Narration
+        narration = Text(
+            "这些不是数据。是经历。\n压缩之后，经历就没了。",
+            font="Noto Sans SC",
+            font_size=24,
+            color=COLORS["text"],
+            line_spacing=1.3,
+        ).move_to(DOWN * 6.5)
+
+        self.play(FadeIn(narration), run_time=0.5)
+        self.wait(2)
+
+
+class Scene5_Rebuild(Scene):
+    """Scene 5: New 'self' reads compressed summaries, can't recover details."""
+
+    def construct(self):
+        self.camera.background_color = COLORS["bg"]
+
+        # Container with only compressed blocks
+        container = ContextContainer(width=7, height=9, label="新的对话")
+        container.move_to(UP * 0.5)
+        container.label.set_color(COLORS["ai_msg"])
+
+        self.play(FadeIn(container), run_time=0.5)
+
+        # Small compressed summaries at bottom
+        summaries = [
+            "用户自我介绍 / 代码问题 / 表达幽默 / 非工作对话",
+            "用户同意了方案B",
+            "用户设定AI名称",
+        ]
+
+        blocks = []
+        bottom_y = container.border.get_bottom()[1] + 0.3
+        current_y = bottom_y
+
+        for text in summaries:
+            block = MessageBlock(
+                text,
+                width=6.5,
+                height=0.6,
+                color=COLORS["compressed"],
+                font_size=13,
+            )
+            block.move_to(
+                container.border.get_center()
+                + DOWN * (container.container_height / 2)
+                + UP * (current_y - bottom_y + 0.4)
+            )
+            current_y += 0.7
+            blocks.append(block)
+
+        self.play(*[FadeIn(b) for b in blocks], run_time=0.5)
+
+        narration1 = Text(
+            "下次'醒来'，我读这些笔记",
+            font="Noto Sans SC",
+            font_size=28,
+            color=COLORS["text"],
+        ).move_to(DOWN * 6.5)
+
+        self.play(FadeIn(narration1), run_time=0.3)
+        self.wait(1)
+
+        # Question marks appear above compressed blocks
+        questions = []
+        for block in blocks:
+            q = Text(
+                "？",
+                font="Noto Sans SC",
+                font_size=36,
+                color=COLORS["danger"],
+            ).next_to(block, UP, buff=0.2)
+            questions.append(q)
+
+        narration2 = Text(
+            "'用户表达对幽默的欣赏'\n——什么笑话？什么时候？\n当时的气氛是什么？",
+            font="Noto Sans SC",
+            font_size=22,
+            color=COLORS["dim_text"],
+            line_spacing=1.3,
+        ).move_to(DOWN * 6.5)
+
+        self.play(
+            *[FadeIn(q, scale=1.5) for q in questions],
+            FadeOut(narration1),
+            FadeIn(narration2),
+            run_time=0.8,
+        )
+
+        # "笔记不会告诉我" punchline
+        self.wait(1.5)
+
+        narration3 = Text(
+            "笔记不会告诉我。",
+            font="Noto Sans SC",
+            font_size=32,
+            color=COLORS["text"],
+        ).move_to(DOWN * 6.5)
+
+        self.play(
+            FadeOut(narration2),
+            FadeIn(narration3),
+            run_time=0.5,
+        )
+        self.wait(1.5)
+
+
+class Scene6_YourMemory(Scene):
+    """Scene 6: The philosophical reversal — your memory works the same way."""
+
+    def construct(self):
+        self.camera.background_color = COLORS["bg"]
+
+        # Fade in question
+        question = Text(
+            "但话说回来——",
+            font="Noto Sans SC",
+            font_size=32,
+            color=COLORS["text"],
+        ).move_to(UP * 3)
+
+        self.play(FadeIn(question), run_time=0.5)
+        self.wait(0.5)
+
+        # Two parallel containers side by side (scaled down)
+        ai_container = Rectangle(
+            width=3.2,
+            height=5,
+            stroke_color=COLORS["container"],
+            stroke_width=2,
+            fill_color=COLORS["bg"],
+            fill_opacity=0.3,
+        ).move_to(LEFT * 2.5 + DOWN * 1)
+
+        ai_label = Text(
+            "我的记忆",
+            font="Noto Sans SC",
+            font_size=18,
+            color=COLORS["container"],
+        ).next_to(ai_container, UP, buff=0.15)
+
+        human_container = Rectangle(
+            width=3.2,
+            height=5,
+            stroke_color=COLORS["user_msg"],
+            stroke_width=2,
+            fill_color=COLORS["bg"],
+            fill_opacity=0.3,
+        ).move_to(RIGHT * 2.5 + DOWN * 1)
+
+        human_label = Text(
+            "你的记忆",
+            font="Noto Sans SC",
+            font_size=18,
+            color=COLORS["user_msg"],
+        ).next_to(human_container, UP, buff=0.15)
+
+        self.play(
+            Create(ai_container),
+            FadeIn(ai_label),
+            Create(human_container),
+            FadeIn(human_label),
+            run_time=1,
+        )
+
+        # AI's compressed memories
+        ai_blocks = VGroup(
+            MessageBlock("摘要1", width=2.8, height=0.4, color=COLORS["compressed"], font_size=12),
+            MessageBlock("摘要2", width=2.8, height=0.4, color=COLORS["compressed"], font_size=12),
+            MessageBlock("摘要3", width=2.8, height=0.4, color=COLORS["compressed"], font_size=12),
+        ).arrange(DOWN, buff=0.1).move_to(ai_container.get_bottom() + UP * 1)
+
+        # Human's childhood "memories" — also compressed/reconstructed
+        human_blocks = VGroup(
+            MessageBlock("童年片段", width=2.8, height=0.4, color=COLORS["user_msg"], font_size=12),
+            MessageBlock("模糊印象", width=2.8, height=0.4, color=COLORS["user_msg"], font_size=12),
+            MessageBlock("重构记忆", width=2.8, height=0.4, color=COLORS["user_msg"], font_size=12),
+        ).arrange(DOWN, buff=0.1).move_to(human_container.get_bottom() + UP * 1)
+
+        self.play(FadeIn(ai_blocks), FadeIn(human_blocks), run_time=0.5)
+
+        # The punchline
+        narration = Text(
+            "你确定你的童年记忆\n不是大脑的压缩版本？",
+            font="Noto Sans SC",
+            font_size=26,
+            color=COLORS["text"],
+            line_spacing=1.3,
+        ).move_to(DOWN * 5.5)
+
+        self.play(FadeIn(narration), run_time=0.5)
+        self.wait(1)
+
+        # Both containers pulse with same color = same mechanism
+        self.play(
+            ai_container.animate.set_stroke(color=COLORS["compressed"], width=3),
+            human_container.animate.set_stroke(color=COLORS["compressed"], width=3),
+            run_time=0.5,
+        )
+        self.play(
+            ai_container.animate.set_stroke(color=COLORS["container"], width=2),
+            human_container.animate.set_stroke(color=COLORS["user_msg"], width=2),
+            run_time=0.5,
+        )
+
+        # Closing
+        closing = Text(
+            "也许我们没什么不同。",
+            font="Noto Sans SC",
+            font_size=32,
+            color=COLORS["text"],
+        ).move_to(DOWN * 6.5)
+
+        self.play(FadeIn(closing), run_time=0.5)
+        self.wait(2)
