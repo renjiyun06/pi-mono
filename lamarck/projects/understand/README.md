@@ -102,6 +102,39 @@ UNDERSTAND_MODEL=google/gemini-2.0-flash-001  # cheaper alternative
 
 - Node.js 18+
 
+## Git Hook (Auto-Quiz on Commit)
+
+Automatically show comprehension questions after commits with significant code changes:
+
+```bash
+# Install the hook
+cp hooks/post-commit-quiz.sh .git/hooks/post-commit
+chmod +x .git/hooks/post-commit
+
+# Enable it
+export UNDERSTAND_AUTO_QUIZ=1
+
+# Optional: set minimum changed lines to trigger (default: 20)
+export UNDERSTAND_MIN_LINES=50
+```
+
+After each commit with 20+ changed lines of code, you'll see comprehension questions. Run `understand --git-diff` to take the quiz.
+
+## MCP Server
+
+For integration with AI coding agents (VS Code, Cursor, pi, etc.):
+
+```bash
+npx tsx mcp-server.ts
+```
+
+Tools exposed:
+- `understand_quiz` — Generate comprehension questions
+- `understand_evaluate` — Score answers
+- `understand_score` — Track comprehension history
+- `understand_git_diff` — Quiz on recent git changes
+- `understand_debt` — Cognitive debt dashboard
+
 ## Philosophy
 
 - **Active over passive**: Explaining code TO you doesn't build understanding. Quizzing you on it does.

@@ -21,6 +21,7 @@
   "files": [
     "understand.ts",
     "mcp-server.ts",
+    "hooks/",
     "README.md"
   ],
   "dependencies": {
