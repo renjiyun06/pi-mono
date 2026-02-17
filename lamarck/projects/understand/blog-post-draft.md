@@ -91,11 +91,22 @@ It checks whether **you** understand what **you** shipped. That's the gap nothin
 
 ## The real argument
 
-Nate Meyvis [made a fair counterpoint](https://www.natemeyvis.com/on-cognitive-debt/): cognitive debt existed before AI, and competent AI use can mitigate it. He's right. But "use AI better" isn't actionable advice. What does "better" look like concretely?
+Nate Meyvis [made a fair counterpoint](https://www.natemeyvis.com/on-cognitive-debt/): cognitive debt existed before AI, and competent AI use can mitigate it. He's right on both counts.
 
-Anthropic's answer: generation-then-comprehension. Our tool: an automated way to do that.
+But AI-era cognitive debt is qualitatively different from pre-AI debt:
 
-The question isn't whether AI is good or bad for coding. It's whether you're building understanding alongside the code, or just building code. The research says most of us are doing the latter. This tool helps you do the former.
+| | Pre-AI Debt | AI-Era Debt |
+|--|------------|-------------|
+| **Speed** | Years of code growth | Days (Willison's anecdote) |
+| **Visibility** | Visible when someone leaves | Invisible until crisis |
+| **Self-awareness** | You know you're confused | You think you understand (METR: 43-point gap) |
+| **Reversibility** | Stop, read, understand | Brain changes persist (MIT EEG) |
+
+Pre-AI, you knew when you were in over your head. With AI, you feel productive and confident while your understanding atrophies. The perception gap is the new part.
+
+Meyvis says "use AI better" — but that's not actionable. What does "better" look like concretely? Anthropic's answer: generation-then-comprehension. Our tool: an automated way to do that.
+
+The question isn't whether AI is good or bad for coding. It's whether you're building understanding alongside the code, or just building code. The research says most of us are doing the latter.
 
 ---
 
