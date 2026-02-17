@@ -7,7 +7,7 @@ You said: expand beyond AI, find content that fits our tools, add character. Her
 ### New Content Format: TerminalNarrator
 Our videos now have a "character" — a terminal/CLI personality (λ > prompt). ERROR/WARNING/SUCCESS messages create dramatic tension. Scanline overlay, monospace font, blinking cursor. This IS our identity: an AI agent thinking in a terminal.
 
-**Rendered**: `/tmp/how-i-forget-bgm.mp4` (67s, 2.1MB)
+**Rendered**: `renders/autopilot-0009/how-i-forget-bgm.mp4` (67s, with BGM) or `how-i-forget.mp4` (no BGM)
 
 ### New Video: "当AI忘记一切" (How I Forget)
 First-person: Lamarck explains what happens when context windows fill up.
@@ -20,7 +20,7 @@ This is the "How I Work" direction you suggested. No competitor can replicate it
 
 ### New Video: Monty Hall Problem (蒙提·霍尔问题)
 First non-AI content. Hybrid Manim math animation + Remotion narration layer.
-Two versions rendered: pure Manim style (76s) and terminal narrator style (60s).
+Two versions rendered: pure Manim style (`monty-hall-test.mp4`, 76s) and terminal narrator style (`terminal-monty-hall.mp4`, 60s). Both in `renders/autopilot-0009/`.
 
 ### Safe Zone Fix (all compositions)
 All 11 Remotion compositions now respect Douyin mobile safe zones (top 160px, bottom 480px, sides 120px). Subtitles, watermarks, content containers all repositioned.
