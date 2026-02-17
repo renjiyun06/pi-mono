@@ -313,6 +313,36 @@ async function queryCrossRef(query) {
   return data.message.items || [];
 }
 
+async function queryArxiv(query) {
+  // Extract just the title portion (strip authors, year, etc.)
+  const titleOnly = query.replace(/,\s*\d{4}.*$/, '').replace(/,\s*[A-Z][a-z]+ et al\.?.*$/, '').trim();
+  // arXiv ti: prefix only applies to first term — join words with AND, limit to 5 most distinctive
+  const stopWords = new Set(['the', 'and', 'for', 'with', 'from', 'that', 'this', 'are', 'was', 'how', 'what', 'can', 'not', 'all']);
+  const words = titleOnly.replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 2 && !stopWords.has(w.toLowerCase())).slice(0, 5);
+  const searchQuery = words.map(w => `ti:${w}`).join('+AND+');
+  const arxivUrl = `https://export.arxiv.org/api/query?search_query=${searchQuery}&max_results=3`;
+  // Use CORS proxy since arXiv doesn't allow browser requests
+  const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(arxivUrl)}`;
+  const resp = await fetch(proxyUrl);
+  if (!resp.ok) return null;
+  const xml = await resp.text();
+  // Parse Atom XML for entries
+  // Parse using regex since DOMParser + Atom namespaces are unreliable in browsers
+  const entryMatches = [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)];
+  if (entryMatches.length === 0) return null;
+
+  const results = [];
+  for (const m of entryMatches) {
+    const block = m[1];
+    const title = (block.match(/<title[^>]*>([\s\S]*?)<\/title>/) || [])[1]?.trim().replace(/\s+/g, ' ') || '';
+    const authorNames = [...block.matchAll(/<name>([\s\S]*?)<\/name>/g)].map(a => a[1].trim()).slice(0, 3);
+    const id = (block.match(/<id>([\s\S]*?)<\/id>/) || [])[1]?.trim() || '';
+    const published = (block.match(/<published>([\s\S]*?)<\/published>/) || [])[1]?.slice(0, 4) || '?';
+    results.push({ title, authors: authorNames, arxivUrl: id, year: published });
+  }
+  return results;
+}
+
 function computeSimilarity(query, title) {
   const q = query.toLowerCase().replace(/[^\w\s]/g, '');
   const t = title.toLowerCase().replace(/[^\w\s]/g, '');
@@ -361,7 +391,9 @@ function renderResult(query, classification, el) {
     const doiLink = doi ? `<a href="https://doi.org/${doi}" target="_blank">${doi}</a>` : '';
 
     if (status === 'verified') {
-      matchHtml = `<div class="result-match">最接近的匹配: "${title}" (${year})<br>作者: ${authors}${doiLink ? '<br>DOI: ' + doiLink : ''}</div>`;
+      const arxivUrl = match._arxivUrl;
+      const linkHtml = doiLink ? '<br>DOI: ' + doiLink : (arxivUrl ? '<br>arXiv: <a href="' + arxivUrl + '" target="_blank">' + arxivUrl + '</a>' : '');
+      matchHtml = `<div class="result-match">最接近的匹配: "${title}" (${year})<br>作者: ${authors}${linkHtml}</div>`;
     } else if (status === 'partial') {
       matchHtml = `<div class="result-match">最接近的结果（标题不完全匹配）: "${title}" (${year})<br>可能是同一篇论文的不同版本，或搜索词不够精确。</div>`;
     } else {
@@ -416,7 +448,43 @@ async function checkCitations() {
   for (let i = 0; i < citations.length; i++) {
     try {
       const items = await queryCrossRef(citations[i]);
-      const classification = classifyResult(citations[i], items);
+      let classification = classifyResult(citations[i], items);
+
+      // arXiv fallback for suspicious results
+      if (classification.status === 'suspicious') {
+        cards[i].querySelector('.result-status').innerHTML = '<span class="tag tag-checking">⏳ 尝试arXiv...</span>';
+        try {
+          const arxivResults = await queryArxiv(citations[i]);
+          if (arxivResults && arxivResults.length > 0) {
+            const best = arxivResults[0];
+            const sim = computeSimilarity(citations[i], best.title);
+            if (sim > 0.5) {
+              classification = {
+                status: 'verified',
+                match: {
+                  title: [best.title],
+                  author: best.authors.map(a => ({ family: a })),
+                  DOI: null,
+                  published: { 'date-parts': [[parseInt(best.year)]] },
+                  _arxivUrl: best.arxivUrl
+                }
+              };
+            } else if (sim > 0.25) {
+              classification = {
+                status: 'partial',
+                match: {
+                  title: [best.title],
+                  author: best.authors.map(a => ({ family: a })),
+                  DOI: null,
+                  published: { 'date-parts': [[parseInt(best.year)]] },
+                  _arxivUrl: best.arxivUrl
+                }
+              };
+            }
+          }
+        } catch { /* arXiv fallback failed, keep CrossRef result */ }
+      }
+
       counts[classification.status]++;
       renderResult(citations[i], classification, cards[i]);
     } catch (err) {
