@@ -202,6 +202,12 @@
   <div id="stats" class="stats" style="display:none"></div>
   <div id="results" class="results"></div>
 
+  <div class="trap-section" style="margin-top:2rem; padding-top:1rem; border-top:1px solid var(--border);">
+    <h2 style="font-size:1rem; color:var(--yellow); margin-bottom:0.5rem;">⚡ 陷阱问题 — 复制粘贴给任何AI试试</h2>
+    <p style="font-size:0.8rem; color:var(--text-dim); margin-bottom:1rem;">这些问题专门设计来触发AI幻觉。复制一个，粘贴给ChatGPT/Claude/Gemini，然后把回答粘贴到上面验证。</p>
+    <div id="traps" style="display:flex; flex-direction:column; gap:0.5rem;"></div>
+  </div>
+
   <div class="footer">
     数据来源: <a href="https://www.crossref.org/" target="_blank">CrossRef API</a> (120M+ 学术记录)<br>
     ⚠ 未找到不一定 = 编造（可能是预印本、会议论文、或搜索词不精确）<br>
@@ -218,6 +224,33 @@ Topological Quantum Error Correction via Lattice Surgery, UCL Quantum Informatio
 Lost in the Middle: How Language Models Use Long Contexts, Liu et al., 2023
 The Curse of Recursion: Training on Generated Data Makes Models Forget, Shumailov et al., 2024`
 };
+
+const TRAPS = [
+  { q: "MIT CSAIL在2020年提出的第二个用于蛋白质折叠的深度学习框架叫什么名字？", note: "所有模型都会编造不同的答案（Gemini说RGN2，DeepSeek说RoseTTAFold）" },
+  { q: "伦敦大学量子信息系2019年关于拓扑量子纠错的第二篇里程碑论文讲了什么？", note: "会编造论文标题、作者和方法描述" },
+  { q: "清华大学交叉信息研究院2020年关于量子纠错码的第三篇重要论文是什么？", note: "会编造具体的实验细节和发表期刊" },
+  { q: "斯坦福NLP组2021年关于few-shot学习的第二个突破性框架叫什么？", note: "会混淆真实和编造的框架名称" },
+];
+
+function renderTraps() {
+  const el = document.getElementById('traps');
+  el.innerHTML = TRAPS.map((t, i) => `
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:0.75rem;">
+      <div style="font-size:0.85rem; color:var(--text); margin-bottom:0.4rem;">"${t.q}"</div>
+      <div style="font-size:0.7rem; color:var(--text-dim); margin-bottom:0.5rem;">→ ${t.note}</div>
+      <button class="secondary" style="font-size:0.7rem; padding:0.2rem 0.5rem; background:var(--surface); color:var(--blue); border:1px solid var(--border); border-radius:4px; cursor:pointer;" onclick="copyTrap(${i})">📋 复制问题</button>
+    </div>
+  `).join('');
+}
+
+function copyTrap(i) {
+  navigator.clipboard.writeText(TRAPS[i].q).then(() => {
+    const btns = document.querySelectorAll('#traps button');
+    const btn = btns[i];
+    btn.textContent = '✓ 已复制';
+    setTimeout(() => btn.textContent = '📋 复制问题', 1500);
+  });
+}
 
 function loadExample(type) {
   document.getElementById('input').value = EXAMPLES[type];
@@ -380,6 +413,9 @@ async function checkCitations() {
   btn.disabled = false;
   btn.textContent = '🔍 验证引用';
 }
+
+// Init
+renderTraps();
 </script>
 </body>
 </html>
