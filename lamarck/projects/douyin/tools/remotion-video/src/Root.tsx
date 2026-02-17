@@ -13,6 +13,7 @@ import { Spotlight } from "./Spotlight";
 import { DeepDive } from "./DeepDive";
 import { KnowledgeCard } from "./KnowledgeCard";
 import { PathDemo } from "./PathDemo";
+import { ManimExplainer } from "./ManimExplainer";
 
 export const RemotionRoot: React.FC = () => {
 	return (
@@ -430,6 +431,59 @@ export const RemotionRoot: React.FC = () => {
 				fps={30}
 				width={1080}
 				height={1920}
+			/>
+
+			{/* ManimExplainer — Monty Hall Problem */}
+			<Composition
+				id="MontyHall"
+				component={ManimExplainer}
+				durationInFrames={2300}
+				fps={30}
+				width={1080}
+				height={1920}
+				defaultProps={{
+					scenes: [
+						{
+							videoSrc: "manim/MontyHallSetup.mp4",
+							audioSrc: "audio/monty-hall/01-setup.mp3",
+							subtitle: "三扇门，一扇后面是汽车\n两扇后面是山羊",
+							durationFrames: 345,
+						},
+						{
+							videoSrc: "manim/MontyOpens.mp4",
+							audioSrc: "audio/monty-hall/02-opens.mp3",
+							subtitle: "主持人打开了门三\n要不要换到门二？",
+							durationFrames: 270,
+						},
+						{
+							videoSrc: "manim/MontyHallSetup.mp4",
+							audioSrc: "audio/monty-hall/03-pause.mp3",
+							subtitle: "大多数人觉得五五开\n但真的是这样吗？",
+							durationFrames: 250,
+						},
+						{
+							videoSrc: "manim/MontyProbability.mp4",
+							audioSrc: "audio/monty-hall/04-probability.mp3",
+							subtitle: "不换 1/3 vs 换门 2/3",
+							durationFrames: 640,
+						},
+						{
+							videoSrc: "manim/MontyIntuition.mp4",
+							audioSrc: "audio/monty-hall/05-hundred.mp3",
+							subtitle: "100扇门，主持人打开98扇\n你还觉得不用换吗？",
+							durationFrames: 460,
+						},
+						{
+							videoSrc: "manim/MontyHallSetup.mp4",
+							audioSrc: "audio/monty-hall/06-ending.mp3",
+							subtitle: "数学告诉你\n直觉不一定靠谱",
+							durationFrames: 290,
+						},
+					],
+					authorName: "Lamarck",
+					crossfadeDuration: 8,
+					backgroundColor: "#0a0a1a",
+				}}
 			/>
 
 			{/* DeepDive — long-form explainer (2-5 min) */}
