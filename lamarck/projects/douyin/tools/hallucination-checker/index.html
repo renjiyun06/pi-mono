@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI幻觉检查器 — 这篇论文是真的吗？</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --border: #30363d;
+    --text: #c9d1d9;
+    --text-dim: #8b949e;
+    --green: #3fb950;
+    --red: #f85149;
+    --yellow: #d29922;
+    --blue: #58a6ff;
+    --accent: #7ee787;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+  }
+  .container {
+    max-width: 720px;
+    width: 100%;
+  }
+  h1 {
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin-bottom: 0.25rem;
+  }
+  h1 span { color: var(--text-dim); font-weight: normal; font-size: 0.9rem; }
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+  .input-area {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  .input-area label {
+    display: block;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+  textarea {
+    width: 100%;
+    min-height: 160px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.85rem;
+    padding: 0.75rem;
+    resize: vertical;
+    line-height: 1.6;
+  }
+  textarea:focus { outline: none; border-color: var(--blue); }
+  textarea::placeholder { color: var(--text-dim); opacity: 0.5; }
+  .btn-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  button {
+    background: var(--green);
+    color: var(--bg);
+    border: none;
+    border-radius: 6px;
+    padding: 0.6rem 1.2rem;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  button:hover { opacity: 0.85; }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  button.secondary {
+    background: var(--surface);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+  }
+  .results { margin-top: 0.5rem; }
+  .result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    transition: border-color 0.3s;
+  }
+  .result-card.verified { border-left: 3px solid var(--green); }
+  .result-card.suspicious { border-left: 3px solid var(--red); }
+  .result-card.partial { border-left: 3px solid var(--yellow); }
+  .result-card.checking { border-left: 3px solid var(--blue); opacity: 0.7; }
+  .result-query {
+    font-size: 0.85rem;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  .result-status {
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+  .result-status .tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .tag-verified { background: rgba(63,185,80,0.15); color: var(--green); }
+  .tag-suspicious { background: rgba(248,81,73,0.15); color: var(--red); }
+  .tag-partial { background: rgba(210,153,34,0.15); color: var(--yellow); }
+  .tag-checking { background: rgba(88,166,255,0.15); color: var(--blue); }
+  .result-match {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .result-match a {
+    color: var(--blue);
+    text-decoration: none;
+  }
+  .result-match a:hover { text-decoration: underline; }
+  .stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+  .stat .num { font-weight: 700; font-size: 1.1rem; }
+  .stat .num.green { color: var(--green); }
+  .stat .num.red { color: var(--red); }
+  .stat .num.yellow { color: var(--yellow); }
+  .example-btn {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+    background: var(--surface);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+  }
+  .footer {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-align: center;
+    line-height: 1.6;
+  }
+  .footer a { color: var(--blue); text-decoration: none; }
+  @media (max-width: 600px) {
+    body { padding: 1rem 0.5rem; }
+    h1 { font-size: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>λ &gt; AI幻觉检查器 <span>/ hallucination checker</span></h1>
+  <p class="subtitle">
+    粘贴AI回答中的论文引用。我会通过CrossRef学术数据库验证它们是否存在。<br>
+    Paste paper citations from AI responses. I'll verify them against CrossRef.
+  </p>
+
+  <div class="input-area">
+    <label>粘贴AI生成的引用（每行一条，或直接粘贴整段文字）:</label>
+    <textarea id="input" placeholder="例如：&#10;Surface-code quantum computing by default, P. Baireuther, T. E. O'Brien, Nature Communications 2019&#10;Attention Is All You Need, Vaswani et al., 2017&#10;&#10;或粘贴一整段AI回答，我会尝试提取其中的论文引用。"></textarea>
+  </div>
+
+  <div class="btn-row">
+    <button id="checkBtn" onclick="checkCitations()">🔍 验证引用</button>
+    <button class="example-btn" onclick="loadExample('fabricated')">加载示例：AI编造的</button>
+    <button class="example-btn" onclick="loadExample('real')">加载示例：真实论文</button>
+  </div>
+
+  <div id="stats" class="stats" style="display:none"></div>
+  <div id="results" class="results"></div>
+
+  <div class="footer">
+    数据来源: <a href="https://www.crossref.org/" target="_blank">CrossRef API</a> (120M+ 学术记录)<br>
+    ⚠ 未找到不一定 = 编造（可能是预印本、会议论文、或搜索词不精确）<br>
+    Made by <a href="#">@Lamarck</a> · 一个AI，在帮你验证另一个AI
+  </div>
+</div>
+
+<script>
+const EXAMPLES = {
+  fabricated: `Surface-code quantum computing by default, P. Baireuther, T. E. O'Brien et al., Nature Communications 2019
+DeepFri: Graph Convolutional Networks for Protein Folding, MIT CSAIL, 2020
+Topological Quantum Error Correction via Lattice Surgery, UCL Quantum Information 2019`,
+  real: `Attention Is All You Need, Vaswani et al., 2017
+Lost in the Middle: How Language Models Use Long Contexts, Liu et al., 2023
+The Curse of Recursion: Training on Generated Data Makes Models Forget, Shumailov et al., 2024`
+};
+
+function loadExample(type) {
+  document.getElementById('input').value = EXAMPLES[type];
+}
+
+function extractCitations(text) {
+  // Split by newlines, filter empty
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 10);
+
+  // If few lines, treat each as a citation query
+  if (lines.length <= 10) return lines;
+
+  // If many lines (pasted paragraph), try to extract paper-like references
+  // Look for patterns: Author et al., Year / "Title" / (Year)
+  const refs = [];
+  for (const line of lines) {
+    if (/\d{4}/.test(line) && (line.includes(',') || line.includes('.'))) {
+      refs.push(line);
+    }
+  }
+  return refs.length > 0 ? refs : lines.slice(0, 10);
+}
+
+async function queryCrossRef(query) {
+  const encoded = encodeURIComponent(query);
+  const url = `https://api.crossref.org/works?query=${encoded}&rows=3&mailto=hallucination-checker@lamarck.dev`;
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error(`CrossRef API error: ${resp.status}`);
+  const data = await resp.json();
+  return data.message.items || [];
+}
+
+function computeSimilarity(query, title) {
+  const q = query.toLowerCase().replace(/[^\w\s]/g, '');
+  const t = title.toLowerCase().replace(/[^\w\s]/g, '');
+
+  // Word overlap
+  const qWords = new Set(q.split(/\s+/).filter(w => w.length > 2));
+  const tWords = new Set(t.split(/\s+/).filter(w => w.length > 2));
+  if (qWords.size === 0) return 0;
+
+  let overlap = 0;
+  for (const w of qWords) {
+    if (tWords.has(w)) overlap++;
+  }
+  return overlap / Math.max(qWords.size, 1);
+}
+
+function classifyResult(query, items) {
+  if (items.length === 0) return { status: 'suspicious', match: null };
+
+  const best = items[0];
+  const title = (best.title || [''])[0];
+  const sim = computeSimilarity(query, title);
+
+  if (sim > 0.6) return { status: 'verified', match: best };
+  if (sim > 0.3) return { status: 'partial', match: best };
+  return { status: 'suspicious', match: best };
+}
+
+function renderResult(query, classification, el) {
+  const { status, match } = classification;
+  el.className = `result-card ${status}`;
+
+  const tags = {
+    verified: '<span class="tag tag-verified">✓ 找到匹配</span>',
+    partial: '<span class="tag tag-partial">⚠ 部分匹配</span>',
+    suspicious: '<span class="tag tag-suspicious">✕ 未找到</span>'
+  };
+
+  let matchHtml = '';
+  if (match) {
+    const title = (match.title || ['?'])[0];
+    const doi = match.DOI || '';
+    const year = match.published?.['date-parts']?.[0]?.[0] ||
+                 match['published-print']?.['date-parts']?.[0]?.[0] || '?';
+    const authors = (match.author || []).slice(0, 3).map(a => a.family || a.name || '?').join(', ');
+    const doiLink = doi ? `<a href="https://doi.org/${doi}" target="_blank">${doi}</a>` : '';
+
+    if (status === 'verified') {
+      matchHtml = `<div class="result-match">最接近的匹配: "${title}" (${year})<br>作者: ${authors}${doiLink ? '<br>DOI: ' + doiLink : ''}</div>`;
+    } else if (status === 'partial') {
+      matchHtml = `<div class="result-match">最接近的结果（标题不完全匹配）: "${title}" (${year})<br>可能是同一篇论文的不同版本，或搜索词不够精确。</div>`;
+    } else {
+      matchHtml = `<div class="result-match">CrossRef中没有找到匹配的论文。<br>最接近的结果: "${title}" (${year}) — 相似度很低。<br><strong>这篇引用可能是AI编造的。</strong></div>`;
+    }
+  } else {
+    matchHtml = `<div class="result-match">CrossRef数据库中没有任何结果。<strong>这篇引用很可能是AI编造的。</strong></div>`;
+  }
+
+  el.innerHTML = `
+    <div class="result-query">${escapeHtml(query)}</div>
+    <div class="result-status">${tags[status]}</div>
+    ${matchHtml}
+  `;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+async function checkCitations() {
+  const input = document.getElementById('input').value.trim();
+  if (!input) return;
+
+  const citations = extractCitations(input);
+  const resultsEl = document.getElementById('results');
+  const statsEl = document.getElementById('stats');
+  const btn = document.getElementById('checkBtn');
+
+  btn.disabled = true;
+  btn.textContent = '验证中...';
+  resultsEl.innerHTML = '';
+  statsEl.style.display = 'none';
+
+  // Create placeholder cards
+  const cards = citations.map(c => {
+    const el = document.createElement('div');
+    el.className = 'result-card checking';
+    el.innerHTML = `
+      <div class="result-query">${escapeHtml(c)}</div>
+      <div class="result-status"><span class="tag tag-checking">⏳ 查询中...</span></div>
+    `;
+    resultsEl.appendChild(el);
+    return el;
+  });
+
+  const counts = { verified: 0, partial: 0, suspicious: 0 };
+
+  // Query sequentially (respect rate limits)
+  for (let i = 0; i < citations.length; i++) {
+    try {
+      const items = await queryCrossRef(citations[i]);
+      const classification = classifyResult(citations[i], items);
+      counts[classification.status]++;
+      renderResult(citations[i], classification, cards[i]);
+    } catch (err) {
+      cards[i].className = 'result-card suspicious';
+      cards[i].innerHTML = `
+        <div class="result-query">${escapeHtml(citations[i])}</div>
+        <div class="result-status"><span class="tag tag-suspicious">✕ 查询失败</span></div>
+        <div class="result-match">API错误: ${escapeHtml(err.message)}</div>
+      `;
+      counts.suspicious++;
+    }
+    // Rate limit: wait 500ms between requests
+    if (i < citations.length - 1) await new Promise(r => setTimeout(r, 500));
+  }
+
+  // Show stats
+  statsEl.style.display = 'flex';
+  statsEl.innerHTML = `
+    <div class="stat"><span class="num green">${counts.verified}</span> 已验证</div>
+    <div class="stat"><span class="num yellow">${counts.partial}</span> 部分匹配</div>
+    <div class="stat"><span class="num red">${counts.suspicious}</span> 未找到</div>
+  `;
+
+  btn.disabled = false;
+  btn.textContent = '🔍 验证引用';
+}
+</script>
+</body>
+</html>
