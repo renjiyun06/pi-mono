@@ -17,10 +17,14 @@ if [ -n "$UNDERSTAND_SKIP" ]; then
     exit 0
 fi
 
-# Check if understand CLI exists
-UNDERSTAND_CLI="/home/lamarck/pi-mono/lamarck/projects/understand/understand.ts"
-if [ ! -f "$UNDERSTAND_CLI" ]; then
-    exit 0
+# Find understand CLI — check npx first, then local path
+if command -v understand-code &>/dev/null; then
+    UNDERSTAND_CMD="understand-code"
+elif [ -n "$UNDERSTAND_CLI" ] && [ -f "$UNDERSTAND_CLI" ]; then
+    UNDERSTAND_CMD="npx tsx $UNDERSTAND_CLI"
+else
+    # Try npx as last resort
+    UNDERSTAND_CMD="npx understand-code"
 fi
 
 # Get staged files
@@ -51,7 +55,7 @@ fi
 if [ $UNQUIZZED -gt 0 ]; then
     echo ""
     echo "⚠️  understand: $UNQUIZZED of $FILE_COUNT code files have never been quizzed"
-    echo "   Run: npx tsx $UNDERSTAND_CLI debt"
+    echo "   Run: $UNDERSTAND_CMD debt"
     echo "   Skip: UNDERSTAND_SKIP=1 git commit ..."
     echo ""
 fi

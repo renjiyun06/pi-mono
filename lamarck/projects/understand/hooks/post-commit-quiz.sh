@@ -28,15 +28,15 @@ echo "━━━ understand: ${CHANGED_LINES} lines changed ━━━"
 echo ""
 
 # Check if understand CLI is available
-if command -v understand &> /dev/null; then
-    understand --git-diff --dry-run
-elif [ -f "$(git rev-parse --show-toplevel)/node_modules/.bin/understand" ]; then
-    "$(git rev-parse --show-toplevel)/node_modules/.bin/understand" --git-diff --dry-run
+if command -v understand-code &> /dev/null; then
+    understand-code --git-diff --dry-run
+elif [ -f "$(git rev-parse --show-toplevel)/node_modules/.bin/understand-code" ]; then
+    "$(git rev-parse --show-toplevel)/node_modules/.bin/understand-code" --git-diff --dry-run
 else
     echo "understand not installed. Run: npm install -g understand-code"
     echo "Or review changes manually: git diff HEAD~1"
 fi
 
 echo ""
-echo "Run 'understand --git-diff' to take the quiz."
+echo "Run 'understand-code --git-diff' to take the quiz."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
