@@ -28,6 +28,17 @@ The term "cognitive debt" is having a moment. Key voices:
 
 6. **Markus Eisele** (LinkedIn) — "The industry is paying a cognitive debt in the form of churn"
 
+7. **TheCSCycle** (Feb 2026) — [article](https://www.thecscycle.com/post/beyond-the-prompt-navigating-the-cognitive-debt-of-2026) — expands beyond devs to Customer Success. Proposes "3 steps" (offline draft, red team prompting, triangulation) — all vague/manual. No concrete tools.
+
+8. **Reddit r/programming** (Feb 2026) — cognitive debt sentiment is dominating:
+   - "96% Engineers Don't Fully Trust AI Output, Yet Only 48% Verify It" — 1,347 upvotes. Top comment: old system "trust but verify", new system **"don't trust but don't verify"** (52 upvotes). AI PR acceptance 32.7% vs human 84.4%.
+   - "AI Coding Killed My Flow State" — 341 upvotes. Devs report AI turns them into "code reviewers of slop."
+   - The Anthropic study post — 3,915 upvotes, 681 comments. Viral.
+
+## Key Insight: Everyone Proposes Solutions, Nobody Builds Them
+
+Every article in this discourse proposes vague advice ("slow down", "review more carefully", "use AI better"). Nobody has built a concrete tool. Understand is the only automated implementation of the one pattern research shows works (generation-then-comprehension).
+
 ## Why This Matters for Us
 
 **Timing is perfect.** The discourse is peaking RIGHT NOW:

@@ -73,6 +73,18 @@ $ understand debt --since main
      1 commit, score: 0.45, quizzed 3 days ago
 ```
 
+## What Storey recommends, and how this maps
+
+Storey's article proposes three concrete strategies. Here's how understand addresses them:
+
+| Storey's recommendation | How understand implements it |
+|---|---|
+| "Require at least one human fully understands each AI-generated change before it ships" | Git post-commit hook quizzes you on every AI-touched file |
+| "We need better ways to detect cognitive debt before it becomes crippling" | `understand debt --since main` shows exactly which files you've never been quizzed on |
+| "How do we measure cognitive debt?" | Per-file comprehension scores stored in `.understand/history.json`, tracked over time |
+
+Her student team's collapse — "no one could explain *why* certain design decisions had been made" — is exactly the class of question understand generates: not "what does line 47 do" but "why was this approach chosen over alternatives?"
+
 ## What it's not
 
 - Not a linter (those check syntax)
@@ -88,6 +100,16 @@ It checks whether **you** understand what **you** shipped. That's the gap nothin
 3. Stores scores as JSON in `.understand/history.json`
 4. Also available as an MCP server for AI coding agents
 5. Optional git post-commit hook for automatic reminders
+
+## The developer mood, right now
+
+If you think this is academic hand-wringing, look at r/programming this month:
+
+- **"96% Engineers Don't Fully Trust AI Output, Yet Only 48% Verify It"** (1,347 upvotes). Top comment: the old system was "trust but verify." The new system is **"don't trust but don't verify."**
+- **"AI Coding Killed My Flow State"** (341 upvotes). Developers reporting that AI turns them into "code reviewers of slop" — less engaging, less learning, more draining.
+- **"Anthropic: AI assisted coding doesn't show efficiency gains"** (3,915 upvotes, 681 comments). The Shen & Tamkin study went viral.
+
+The frustration isn't "AI is bad." It's "I know I should understand this code but I don't have time to deep-review every line." Understand fills exactly that gap: 3 targeted questions, 2 minutes, done.
 
 ## The real argument
 
