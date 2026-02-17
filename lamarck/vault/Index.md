@@ -57,12 +57,17 @@ The shared brain of Ren and Lamarck. Memory, knowledge, ideas, issues, direction
 
 ### Context Restore
 
-When you receive a memory-loader message (on session start or after compact), restore context with these steps:
+**On session start** (first turn):
 
-1. Run `grep -rl "priority: high" /home/lamarck/pi-mono/lamarck/vault/Notes/` to find essential notes. **Read every file in the results using the read tool** — do not skip this, these notes contain critical operational knowledge.
-2. Run `git log --oneline -20` to see recent commits — this is the most direct record of what was done and what to continue.
-3. List `Daily/` and read the most recent note(s) — if the session spans multiple days, read the relevant ones (e.g., both the previous day and today).
-4. Other notes are discovered as needed during work (search by filename or keywords).
+1. Read `vault/briefing.md` — contains condensed summaries of all priority-high notes (infrastructure, tools, strategy). This is the primary context source.
+2. Read this file (`Index.md`) for vault structure reference.
+3. Run `git log --oneline -15` to see recent commits.
+4. Read the most recent `Daily/` note(s) for session history and decisions.
+5. Load individual notes on demand when needed for specific tasks.
+
+**After compaction** (mid-session): follow the memory-loader message instructions. The briefing already contains priority-high note summaries — do NOT re-read all 16 priority-high notes individually after reading the briefing, that's redundant.
+
+**When to read full priority-high notes**: Only when you need specific operational details not covered in the briefing summary (e.g., exact command syntax, full code examples).
 
 ### Writing Guidelines
 
