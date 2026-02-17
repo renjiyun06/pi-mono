@@ -69,8 +69,12 @@ Condensed from 15 vault notes. Load full notes on demand via `[[wikilink]]`.
 
 - **"Can't Stop Guessing" v2**: Fixed broken demos (models now refuse obvious lies). Verified obscure academic claims still trigger hallucination. Render at `renders/autopilot-0009/cant-stop-guessing-v2.mp4` (170s). v1 demos are broken — don't use.
 - **Hallucination Checker**: `tools/hallucination-checker/index.html` — verifies AI-cited papers via CrossRef API. Trap questions with copy-to-clipboard. Connected to video CTA.
-- **Hallucination Inversion article**: `specs/hallucination-inversion/article-zh.md` — ~1200字, publishable on Zhihu/WeChat. Fastest path to publishing (no video needed).
+- **Hallucination Inversion article**: `specs/hallucination-inversion/article-zh.md` — ~1200字, publishable on Zhihu/WeChat. Includes China's first AI hallucination lawsuit (Jan 2026) + DeepSeek-R1 14.3% hallucination rate data. Fastest path to publishing (no video needed).
 - **Reddit demand discovery**: `vault/Notes/reddit-demand-discovery-2026-02.md` — dev platforms highest frustration, MIT EEG confirms cognitive debt, understand tool has strongest PMF.
+- **Douyin engagement data analysis**: Explainer genre has lowest share rate (14.9%). Celebrity/money stories highest (34-38%). Duration barely affects share rate. Viral hits are outliers — most creators' averages skewed by 1-2 breakout videos. Only 2 hallucination videos in 923-work dataset (both failed). Notes: `douyin-share-rate-by-category.md`, `douyin-creator-performance-analysis.md`.
+- **Multi-channel strategy**: `vault/Notes/multi-channel-content-strategy.md` — one insight (hallucination inversion) deployed across 4 channels: video, article, tool, CLI. Article is fastest to publish.
+- **Understand tool validation**: Anthropic's own RCT (Shen & Tamkin, Jan 2026) says "generation-then-comprehension" is the ONLY AI pattern that preserves learning. Our tool automates exactly this. README + landing page updated with Anthropic quote.
+- **Citation checker competitive analysis**: SwanRef, Citea, TrueCitation already exist → our checker is CTA companion, not standalone product.
 - **Cognitive debt interactive viz**: `tools/cognitive-debt-viz/index.html` — standalone HTML with animated stats.
 - **MiniMax M2.5 cost analysis**: $0.3/M input vs $3/M for Claude Sonnet = 10x cheaper. See `vault/Notes/minimax-m2.5-cost-opportunity.md`.
 - **Context briefing + vault housekeeping**: Sleep-time compute v1. Briefing = 450 words vs 32KB raw notes.
