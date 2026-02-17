@@ -41,10 +41,13 @@ The key boundary: **replacement vs extension**. When AI replaces human capabilit
 
 ### 5. Creative Debt (创造力债务)
 - **What**: Homogenization of output when everyone uses the same AI
-- **Evidence**: Graphite (50% of internet articles AI-generated), creativity studies
-- **Pattern**: Individual content gets better → aggregate creativity declines
+- **Evidence**: 
+  - Graphite (Oct 2025): 52% of new internet articles AI-generated (65K article sample)
+  - Kreminski et al. (C&C 2024, arXiv 2402.01536): 36-person study — LLM users generate MORE ideas per person but LESS semantically distinct ideas across users. Also feel less responsible for their ideas.
+  - Frontiers (2025): ChatGPT exhibits same fixation biases as humans
+- **Pattern**: Individual content gets better → aggregate creativity declines → originality becomes rarer → value of true originality skyrockets but fewer can produce it
 - **Our content**: None yet
-- **Status**: Relatable to creators, relevant to Douyin audience
+- **Status**: Strong research base. Same inversion pattern: the benefit (better individual output) IS the cause of the problem (homogenization).
 
 ### 6. Talent Pipeline Debt (人才管道债务)
 - **What**: Entry-level roles disappearing → no apprenticeship → future talent gap
