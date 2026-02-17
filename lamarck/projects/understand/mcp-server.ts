@@ -24,7 +24,37 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
-import { join, resolve } from "path";
+import { execSync } from "child_process";
+import { join, resolve, relative } from "path";
+
+// ============================================================================
+// Environment
+// ============================================================================
+
+function loadEnvFile(): void {
+	const candidates: string[] = [resolve(process.cwd(), ".env")];
+	try {
+		const gitRoot = execSync("git rev-parse --show-toplevel", { encoding: "utf-8" }).trim();
+		candidates.push(resolve(gitRoot, ".env"));
+	} catch { /* not in a git repo */ }
+	const home = process.env.HOME || process.env.USERPROFILE;
+	if (home) candidates.push(resolve(home, ".env"));
+
+	for (const envPath of candidates) {
+		if (existsSync(envPath)) {
+			const envContent = readFileSync(envPath, "utf-8");
+			for (const line of envContent.split("\n")) {
+				const match = line.match(/^([^#=]+)=(.*)$/);
+				if (match) {
+					const key = match[1].trim();
+					if (!process.env[key]) process.env[key] = match[2].trim();
+				}
+			}
+			break;
+		}
+	}
+}
+loadEnvFile();
 
 // ============================================================================
 // LLM Integration
@@ -411,6 +441,196 @@ server.registerTool(
 				},
 			],
 		};
+	},
+);
+
+// Tool: Quiz on git diff
+server.registerTool(
+	"understand_git_diff",
+	{
+		title: "Quiz on Git Changes",
+		description:
+			"Generate comprehension questions for recent git changes. Uses staged changes (git diff --cached) " +
+			"or falls back to the last commit (git diff HEAD~1). Ideal for verifying understanding after " +
+			"accepting AI-generated code changes.",
+		inputSchema: {
+			directory: z.string().optional().describe("Git repository directory (default: current directory)"),
+			count: z.number().optional().default(3).describe("Number of questions (default: 3)"),
+		},
+		annotations: {
+			readOnlyHint: true,
+		},
+	},
+	async ({ directory, count }) => {
+		const cwd = directory || process.cwd();
+		try {
+			let diff = "";
+			try {
+				diff = execSync("git diff --cached", { cwd, encoding: "utf-8" });
+			} catch { /* ignore */ }
+			if (!diff.trim()) {
+				try {
+					diff = execSync("git diff HEAD~1", { cwd, encoding: "utf-8" });
+				} catch { /* ignore */ }
+			}
+			if (!diff.trim()) {
+				return {
+					content: [{ type: "text" as const, text: "No git changes found (staged or last commit)." }],
+				};
+			}
+			const questions = await generateQuestions(diff, "git diff", count || 3);
+			return {
+				content: [{ type: "text" as const, text: JSON.stringify(questions, null, 2) }],
+			};
+		} catch (error: unknown) {
+			const msg = error instanceof Error ? error.message : String(error);
+			return {
+				content: [{ type: "text" as const, text: `Error: ${msg}` }],
+				isError: true,
+			};
+		}
+	},
+);
+
+// Tool: Understanding debt analysis
+server.registerTool(
+	"understand_debt",
+	{
+		title: "Understanding Debt Dashboard",
+		description:
+			"Analyze which code files have been changed but never quizzed on. Shows files sorted by " +
+			"change volume, highlighting unreviewed cognitive debt. Optionally specify a git ref to " +
+			"analyze changes since a branch point or tag.",
+		inputSchema: {
+			directory: z.string().optional().describe("Git repository directory (default: current directory)"),
+			since: z.string().optional().describe("Git ref to analyze changes since (branch, tag, commit). Default: last 50 commits."),
+			limit: z.number().optional().default(20).describe("Max files to return (default: 20)"),
+		},
+		annotations: {
+			readOnlyHint: true,
+		},
+	},
+	async ({ directory, since, limit }) => {
+		const cwd = directory || process.cwd();
+		const maxFiles = limit || 20;
+
+		try {
+			let gitRoot: string;
+			try {
+				gitRoot = execSync("git rev-parse --show-toplevel", { cwd, encoding: "utf-8" }).trim();
+			} catch {
+				return {
+					content: [{ type: "text" as const, text: "Not in a git repository." }],
+					isError: true,
+				};
+			}
+
+			const logCmd = since
+				? `git log --numstat --pretty=format:"%H|%ai" ${since}..HEAD`
+				: `git log --numstat --pretty=format:"%H|%ai" -50`;
+
+			let logOutput: string;
+			try {
+				logOutput = execSync(logCmd, { cwd: gitRoot, encoding: "utf-8" });
+			} catch {
+				return {
+					content: [{ type: "text" as const, text: `Failed to read git log${since ? ` since ${since}` : ""}.` }],
+					isError: true,
+				};
+			}
+
+			// Parse git log
+			const fileStats = new Map<string, { added: number; removed: number; commits: number; lastDate: string }>();
+			let currentDate = "";
+
+			for (const line of logOutput.split("\n")) {
+				if (line.includes("|")) {
+					const parts = line.split("|");
+					if (parts.length >= 2) currentDate = parts[1].trim().slice(0, 10);
+					continue;
+				}
+				const match = line.match(/^(\d+|-)\t(\d+|-)\t(.+)$/);
+				if (!match) continue;
+				const added = match[1] === "-" ? 0 : parseInt(match[1]);
+				const removed = match[2] === "-" ? 0 : parseInt(match[2]);
+				const file = match[3];
+				if (/\.(md|json|txt|jpg|png|mp4|mp3|csv|lock)$/i.test(file)) continue;
+				if (file.includes("node_modules/")) continue;
+
+				const existing = fileStats.get(file) || { added: 0, removed: 0, commits: 0, lastDate: "" };
+				existing.added += added;
+				existing.removed += removed;
+				existing.commits += 1;
+				if (!existing.lastDate || currentDate > existing.lastDate) existing.lastDate = currentDate;
+				fileStats.set(file, existing);
+			}
+
+			if (fileStats.size === 0) {
+				return {
+					content: [{ type: "text" as const, text: "No code file changes found." }],
+				};
+			}
+
+			// Load quiz history
+			const history = loadHistory(gitRoot);
+			const latestQuiz = new Map<string, ScoreEntry>();
+			for (const entry of history) {
+				latestQuiz.set(entry.file, entry);
+			}
+
+			// Build debt list
+			interface DebtEntry {
+				file: string;
+				totalChanges: number;
+				commits: number;
+				lastChanged: string;
+				lastQuizzed: string | null;
+				quizScore: number | null;
+			}
+
+			const debts: DebtEntry[] = [];
+			for (const [file, stats] of fileStats) {
+				const quiz = latestQuiz.get(file);
+				debts.push({
+					file,
+					totalChanges: stats.added + stats.removed,
+					commits: stats.commits,
+					lastChanged: stats.lastDate,
+					lastQuizzed: quiz?.timestamp?.slice(0, 10) || null,
+					quizScore: quiz?.score ?? null,
+				});
+			}
+
+			debts.sort((a, b) => {
+				const aUnquizzed = a.lastQuizzed === null ? 1 : 0;
+				const bUnquizzed = b.lastQuizzed === null ? 1 : 0;
+				if (aUnquizzed !== bUnquizzed) return bUnquizzed - aUnquizzed;
+				return b.totalChanges - a.totalChanges;
+			});
+
+			const top = debts.slice(0, maxFiles);
+			const unquizzed = debts.filter(d => d.lastQuizzed === null).length;
+			const totalChanges = debts.reduce((sum, d) => sum + d.totalChanges, 0);
+
+			return {
+				content: [{
+					type: "text" as const,
+					text: JSON.stringify({
+						totalFiles: debts.length,
+						unquizzedFiles: unquizzed,
+						totalLineChanges: totalChanges,
+						suggestion: debts.find(d => d.lastQuizzed === null && d.totalChanges > 50)?.file || null,
+						files: top,
+					}, null, 2),
+				}],
+			};
+		} catch (error: unknown) {
+			const msg = error instanceof Error ? error.message : String(error);
+			return {
+				content: [{ type: "text" as const, text: `Error: ${msg}` }],
+				isError: true,
+			};
+		}
 	},
 );
 
