@@ -499,7 +499,6 @@ export class ExtensionRunner {
 			getContextUsage: () => this.getContextUsageFn(),
 			compact: (options) => this.compactFn(options),
 			getSystemPrompt: () => this.getSystemPromptFn(),
-			reload: () => this.reloadHandler(),
 		};
 	}
 
