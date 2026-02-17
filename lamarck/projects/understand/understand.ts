@@ -10,6 +10,8 @@
  *   npx tsx understand.ts <file>                   Quiz on a code file
  *   npx tsx understand.ts --git-diff               Quiz on staged git changes
  *   npx tsx understand.ts <file> --dry-run         Show questions only (no quiz)
+ *   npx tsx understand.ts <file> --count 5         Generate 5 questions instead of default 3
+ *   npx tsx understand.ts <file> --format markdown  Output questions as markdown (for CI/PR comments)
  *   npx tsx understand.ts summary                  Show understanding scores
  *   npx tsx understand.ts summary --below <N>      Show files scoring below N%
  *   npx tsx understand.ts debt                     Show files with understanding debt (unreviewed AI changes)
@@ -99,13 +101,13 @@ interface Question {
 	key_concepts: string[];
 }
 
-async function generateQuestions(code: string, filename: string): Promise<Question[]> {
+async function generateQuestions(code: string, filename: string, count: number = 3): Promise<Question[]> {
 	const systemPrompt = `You are a code comprehension quiz generator. You MUST respond with ONLY a JSON array. No explanations, no markdown, no text before or after the JSON. Your entire response must be parseable by JSON.parse().
 
 Output format (respond with ONLY this, nothing else):
 [{"question": "...", "hint": "...", "key_concepts": ["..."]}]`;
 
-	const userPrompt = `Generate exactly 3 questions that test whether a developer truly understands THIS SPECIFIC code — not general software engineering principles.
+	const userPrompt = `Generate exactly ${count} questions that test whether a developer truly understands THIS SPECIFIC code — not general software engineering principles.
 
 CRITICAL: Questions must be answerable ONLY by someone who understands this particular file.
 
@@ -543,22 +545,41 @@ async function main() {
 	} else {
 		console.log("understand — anti-cognitive-debt code comprehension tool\n");
 		console.log("Usage:");
-		console.log("  understand <file>              Quiz on a code file");
-		console.log("  understand <file> --dry-run    Show questions only (no quiz)");
-		console.log("  understand --git-diff          Quiz on recent git changes");
-		console.log("  understand summary             Show understanding scores");
-		console.log("  understand summary --below 60  Show files scoring below 60%");
-		console.log("  understand debt                Show understanding debt dashboard");
-		console.log("  understand debt --since main   Show debt since branch point");
+		console.log("  understand <file>                  Quiz on a code file");
+		console.log("  understand <file> --dry-run        Show questions only (no quiz)");
+		console.log("  understand <file> --count 5        Generate 5 questions (default: 3)");
+		console.log("  understand <file> --format markdown Output as markdown (for CI/PR)");
+		console.log("  understand --git-diff              Quiz on recent git changes");
+		console.log("  understand summary                 Show understanding scores");
+		console.log("  understand summary --below 60      Show files scoring below 60%");
+		console.log("  understand debt                    Show understanding debt dashboard");
+		console.log("  understand debt --since main       Show debt since branch point");
 		process.exit(0);
 	}
 
 	const dryRun = args.includes("--dry-run");
+	const formatMarkdown = args.includes("--format") && args[args.indexOf("--format") + 1] === "markdown";
+	const countIdx = args.indexOf("--count");
+	const questionCount = countIdx >= 0 && args[countIdx + 1] ? parseInt(args[countIdx + 1]) : 3;
 
-	console.log(`\n📖 understand — testing your comprehension of: ${filename}\n`);
-	console.log("Generating questions...\n");
+	if (!formatMarkdown) {
+		console.log(`\n📖 understand — testing your comprehension of: ${filename}\n`);
+		console.log("Generating questions...\n");
+	}
 
-	const questions = await generateQuestions(code, filename);
+	const questions = await generateQuestions(code, filename, questionCount);
+
+	if (formatMarkdown) {
+		// Markdown output for CI/PR comments
+		for (let i = 0; i < questions.length; i++) {
+			const q = questions[i];
+			console.log(`### Question ${i + 1}/${questions.length}\n`);
+			console.log(`${q.question}\n`);
+			console.log(`<details><summary>💡 Hint</summary>\n\n${q.hint}\n\n</details>\n`);
+			console.log(`**Key concepts:** ${q.key_concepts.join(", ")}\n`);
+		}
+		process.exit(0);
+	}
 
 	if (dryRun) {
 		for (let i = 0; i < questions.length; i++) {

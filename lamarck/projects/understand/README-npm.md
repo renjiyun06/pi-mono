@@ -32,6 +32,12 @@ understand src/auth.ts
 # Preview questions without quiz
 understand src/auth.ts --dry-run
 
+# Generate 5 questions instead of default 3
+understand src/auth.ts --count 5
+
+# Output as markdown (for CI/PR comments)
+understand src/auth.ts --format markdown
+
 # Quiz on recent git changes
 understand --git-diff
 
@@ -43,6 +49,17 @@ understand summary --below 60
 understand debt
 understand debt --since main
 ```
+
+## CI Integration
+
+Add comprehension checks to your PRs with GitHub Actions:
+
+```yaml
+- name: Generate comprehension questions
+  run: npx understand-code --git-diff --count 3 --format markdown
+```
+
+See [ci/github-action.yml](ci/github-action.yml) for a complete workflow that posts questions as PR comments.
 
 ## Configuration
 
