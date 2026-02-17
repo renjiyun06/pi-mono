@@ -16,13 +16,14 @@ export default function (pi: ExtensionAPI) {
 
 	pi.on("before_agent_start", async () => {
 		const vaultIndex = "/home/lamarck/pi-mono/lamarck/vault/Index.md";
+		const briefing = "/home/lamarck/pi-mono/lamarck/vault/briefing.md";
 
 		if (firstTurn) {
 			firstTurn = false;
 			return {
 				message: {
 					customType: "memory-loader",
-					content: `Read ${vaultIndex} and follow the "Context Restore" guidelines to load context.`,
+					content: `Read ${briefing} for operational context, then read ${vaultIndex} and follow the "Context Restore" guidelines to load session context (git log, daily notes). The briefing already contains priority-high note summaries — only load full notes on demand.`,
 					display: true,
 				},
 			};
@@ -33,7 +34,7 @@ export default function (pi: ExtensionAPI) {
 			return {
 				message: {
 					customType: "memory-loader",
-					content: `Context was compacted. Read ${vaultIndex} and follow the "Context Restore" guidelines to restore context.`,
+					content: `Context was compacted. Read ${briefing} for operational context, then read ${vaultIndex} and follow the "Context Restore" guidelines to restore context.`,
 					display: true,
 				},
 			};

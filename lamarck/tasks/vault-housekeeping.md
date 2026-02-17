@@ -1,6 +1,6 @@
 ---
 description: "Sleep-time compute v1: Review vault notes for staleness, missing cross-links, and priority flag accuracy. Produces a housekeeping report."
-enabled: true
+enabled: false
 model: anthropic/claude-sonnet-4-5
 ---
 
