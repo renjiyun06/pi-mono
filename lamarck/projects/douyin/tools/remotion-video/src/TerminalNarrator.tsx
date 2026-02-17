@@ -366,6 +366,77 @@ const BigNumber: React.FC<{
 	);
 };
 
+/**
+ * Animated progress bar — fills from startPercent to endPercent over the scene duration.
+ * Used for context_usage visualization, loading indicators, etc.
+ */
+const ProgressBar: React.FC<{
+	/** Starting fill percentage (0-100) */
+	startPercent?: number;
+	/** Ending fill percentage (0-100) */
+	endPercent?: number;
+	/** Label shown after the bar */
+	label?: string;
+	color?: string;
+	warningThreshold?: number;
+	dangerThreshold?: number;
+	startFrame?: number;
+	/** Total frames for the animation */
+	animationFrames?: number;
+}> = ({
+	startPercent = 0,
+	endPercent = 100,
+	label,
+	color = COLORS.green,
+	warningThreshold = 75,
+	dangerThreshold = 90,
+	startFrame = 0,
+	animationFrames = 60,
+}) => {
+	const frame = useCurrentFrame();
+	const elapsed = Math.max(0, frame - startFrame);
+
+	const progress = interpolate(
+		elapsed,
+		[0, animationFrames],
+		[startPercent, endPercent],
+		{ extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+	);
+
+	const barColor =
+		progress >= dangerThreshold
+			? COLORS.red
+			: progress >= warningThreshold
+				? COLORS.amber
+				: color;
+
+	const barWidth = 20; // number of block characters
+	const filled = Math.round((progress / 100) * barWidth);
+	const empty = barWidth - filled;
+	const barText = "█".repeat(filled) + "░".repeat(empty);
+
+	const opacity = interpolate(elapsed, [0, 8], [0, 1], {
+		extrapolateRight: "clamp",
+	});
+
+	return (
+		<div
+			style={{
+				fontFamily: MONO_FONT,
+				fontSize: 26,
+				lineHeight: 1.6,
+				opacity,
+				marginBottom: 4,
+			}}
+		>
+			<span style={{ color: barColor }}>{barText}</span>
+			<span style={{ color: COLORS.dimText, marginLeft: 12 }}>
+				{Math.round(progress)}%{label ? ` ${label}` : ""}
+			</span>
+		</div>
+	);
+};
+
 // --- Scene System ---
 
 /**
@@ -377,12 +448,18 @@ type TerminalSceneType =
 			type: "prompt";
 			/** Lines of terminal interaction */
 			lines: Array<{
-				kind: "prompt" | "output" | "error" | "warning" | "info" | "success";
+				kind: "prompt" | "output" | "error" | "warning" | "info" | "success" | "progress";
 				text: string;
 				/** Delay in frames before this line appears */
 				delay?: number;
 				/** Typing speed override: 0=instant, 1=fast, 2=normal, 4=slow/dramatic */
 				speed?: number;
+				/** For "progress" kind: start percentage */
+				progressStart?: number;
+				/** For "progress" kind: end percentage */
+				progressEnd?: number;
+				/** For "progress" kind: animation duration in frames */
+				progressFrames?: number;
 			}>;
 	  }
 	| {
@@ -503,6 +580,17 @@ const SceneContent: React.FC<{
 										key={i}
 										text={line.text}
 										startFrame={delay}
+									/>
+								);
+							case "progress":
+								return (
+									<ProgressBar
+										key={i}
+										startPercent={line.progressStart ?? 0}
+										endPercent={line.progressEnd ?? 100}
+										label={line.text || undefined}
+										startFrame={delay}
+										animationFrames={line.progressFrames ?? 60}
 									/>
 								);
 						}

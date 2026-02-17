@@ -3,6 +3,7 @@ dist/
 *.mp4
 *.mp3
 !tools/remotion-video/bgm/*.mp3
+!tools/remotion-video/public/audio/**/*.mp3
 content/previews/
 __pycache__/
 tools/media/
