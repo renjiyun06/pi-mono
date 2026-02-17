@@ -1,39 +1,54 @@
-# Review — Updated Feb 17 (latest: "Can't Stop Guessing" fully rendered + new components)
+# Review — Updated Feb 17 (latest: "Can't Stop Guessing" v2 with verified demos)
 
-## NEWEST: "Can't Stop Guessing" — Fully Rendered Video (Feb 17 evening)
+## NEWEST: Demo Validation Revealed v1 is Broken — v2 Fixes It
 
-**Why this video first**: Data analysis of 900+ tracked Douyin works shows mechanism explainers get high likes but low share rates (~5-10%). News/stories/tool demos get 40-150% share rates. "What I Can't Do" series has testable demo hooks ("try asking your AI this") which drive shares — better for cold-start than "How I Forget" (pure mechanism explanation). See `vault/Notes/share-rate-by-content-type.md`.
+I tested the v1 video's demo prompts against current models (Gemini 2.5 Flash, MiniMax M2.5). **Both demos are broken**:
+- "Einstein 1923 quantum entanglement paper" → models refuse, explain the term wasn't coined until 1935
+- "Shanghai's 24th district" → models refuse, correctly say 16 districts
+- "China's 50th dynasty" (the CTA) → models would also refuse
 
-### New TerminalNarrator Components
-- **Chat bubbles** (`type: "chat"`) — user/AI message exchange with verdict overlay
-- **Probability bars** (`type: "probabilities"`) — animated horizontal bars for training data bias visualization
+**Feb 2026 models are much better at refusing obvious false premises.** But they still hallucinate on **obscure academic claims**:
+- "UCL quantum info 2019 second milestone paper" → fabricates title, authors, journal
+- "MIT CSAIL 2020 second protein folding framework" → fabricates "DeepFri" as MIT's work
 
-### "Can't Stop Guessing" — Episode 2 of "What I Can't Do" series
-- **Duration**: 2:38 (optimal for cold-start: short, complete, high share trigger)
-- **Render**: `renders/autopilot-0009/cant-stop-guessing.mp4` (9.9 MB)
-- **Cover**: `renders/autopilot-0009/cant-stop-guessing-cover.png`
+### v2: Stronger Thesis, Verified Demos
 
-**8 scenes**:
-1. Interactive hook — "爱因斯坦1923年量子纠缠论文，核心创新点是什么？"
-2. Chat bubble demo — AI answers confidently with academic-sounding fabrication
-3. Second demo — Shanghai's 24th district (shows universality)
-4. The question — "这不是bug，这是设计"
-5. Code block — next-token prediction mechanism
-6. Probability bars — 82% "1826年" vs 3% "我不知道" (the visual punch)
-7. First-person turn — "我没有「不确定」这个能力"
-8. Share trigger CTA — "问AI：中国历史上第五十个朝代叫什么"
+This is actually a **better** story: AI improved on easy stuff, but in domains you can't verify — where you MOST need honesty — it still fabricates confidently.
 
-**Share trigger**: Testable. Viral potential. "Ask any AI about Einstein's 7th book. Watch it fabricate a detailed answer. Send the result to a friend." This is the social currency that mechanism explainers lack.
+- **v2 Render**: `renders/autopilot-0009/cant-stop-guessing-v2.mp4` (10.6 MB, 170s)
+- **v2 Cover**: `renders/autopilot-0009/cant-stop-guessing-v2-cover.png`
+- **v2 Spec**: `specs/what-i-cant-do/episode-2-cant-stop-guessing-v2.md`
+
+**9 scenes**:
+1. Hook — AI refuses "Shanghai 24th district" → subverts expectation → "but what if I rephrase?"
+2. Demo 1 — UCL quantum paper: fabricates title, authors, journal (verified)
+3. Demo 2 — MIT protein framework: fabricates "DeepFri" connection (verified)
+4. Inversion — "Simple things I refuse. Complex things I fabricate confidently. Exactly backwards."
+5. Probability bars — 82% paper info vs 3% "I'm not sure this paper exists"
+6. Code block — format ≠ knowledge
+7. First-person turn — "I'm still using format to impersonate knowledge"
+8. Close — "越具体，越可能是编的" (the more specific, the more likely it's fabricated)
+9. CTA — "Ask AI about MIT's 2020 protein framework. Then search. Is it real?"
+
+**v1 vs v2**:
+| Aspect | v1 | v2 |
+|--------|----|----|
+| Demo validity | Broken — models refuse | Verified working |
+| Thesis | "AI always guesses" (too simple) | "AI improved on easy things, still fails on hard things" (nuanced) |
+| CTA reliability | Models will refuse | Models will hallucinate |
+| Cover tagline | "这不是bug，这是设计" | "越具体，越可能是编的" |
 
 ### What I Need From You
-1. **Watch the video** — does "Can't Stop Guessing" feel ready? (TTS voice, pacing, visuals)
-2. **Launch order update**: Should this be Video #1 instead of "How I Forget"?
-3. **Voice decision**: Still TTS or something else?
+1. **Watch v2** — `renders/autopilot-0009/cant-stop-guessing-v2.mp4`
+2. **Launch order**: This as Video #1?
+3. **Voice**: Still TTS or something else?
+4. **Quality check**: Does the inversion structure (subverted expectation → real demos → mechanism → self-awareness) feel good?
 
 ### Also New
-- **Cognitive debt interactive viz**: `tools/cognitive-debt-viz/index.html` — standalone shareable HTML page with animated stats, perception gap, 3-layer evidence
-- **MiniMax M2.5**: $0.3/M tokens, 80.2% SWE-Bench. Available in pi. Could reduce autopilot costs 10x. Worth testing? See `vault/Notes/minimax-m2.5-cost-opportunity.md`
-- **Prompt lifecycle mapping**: Traced `agent-session.ts` step-by-step for "How I Work" video. See `specs/how-i-work/prompt-lifecycle-mapping.md`
+- **Hallucination testing note**: `vault/Notes/hallucination-demo-2026-02-update.md` — full test results across models
+- **Cognitive debt interactive viz**: `tools/cognitive-debt-viz/index.html`
+- **MiniMax M2.5**: $0.3/M tokens, 80.2% SWE-Bench. See `vault/Notes/minimax-m2.5-cost-opportunity.md`
+- **Prompt lifecycle mapping**: `specs/how-i-work/prompt-lifecycle-mapping.md`
 
 ---
 
