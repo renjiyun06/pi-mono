@@ -351,6 +351,13 @@ footer a { color: var(--blue); text-decoration: none; }
     <div class="section-title">① Select code to quiz on</div>
     <div class="samples" id="sampleBtns"></div>
     <div class="code-container" id="codeDisplay">Select a code sample above to begin.</div>
+    <div id="customCodeArea" style="display: none;">
+      <input type="text" class="api-input" id="customFilename" placeholder="filename (e.g. auth.ts)" style="margin-bottom: 0.5rem;" />
+      <textarea class="answer" id="customCode" placeholder="Paste your code here..." rows="10" style="max-height: 300px; font-size: 0.75rem;"></textarea>
+      <div id="customCodeNote" style="color: var(--yellow); font-size: 0.7rem; margin-top: 0.5rem; display: none;">
+        ⚠ Custom code requires an OpenRouter API key (below) to generate questions.
+      </div>
+    </div>
     <div style="display: flex; gap: 0.75rem; align-items: center; margin-top: 1rem;">
       <button class="btn" id="startBtn" disabled>Start Quiz</button>
       <span class="loading" id="loadingQuestions">Generating questions</span>
@@ -748,8 +755,11 @@ function init() {
     isLiveMode = apiKey.length > 10;
     $('modeBadge').textContent = isLiveMode ? 'live mode' : 'demo mode';
     $('modeBadge').className = 'mode-badge ' + (isLiveMode ? 'live' : 'demo');
+    if (isCustomMode) updateCustomStartBtn();
   });
 }
+
+let isCustomMode = false;
 
 function renderSampleButtons() {
   const container = $('sampleBtns');
@@ -761,15 +771,45 @@ function renderSampleButtons() {
     btn.addEventListener('click', () => selectSample(s.id));
     container.appendChild(btn);
   });
+  // Add "Your Code" button
+  const customBtn = document.createElement('button');
+  customBtn.className = 'sample-btn';
+  customBtn.textContent = '✎ Your Code';
+  customBtn.dataset.id = 'custom';
+  customBtn.addEventListener('click', () => selectCustom());
+  container.appendChild(customBtn);
 }
 
 function selectSample(id) {
+  isCustomMode = false;
   currentSample = SAMPLES.find(s => s.id === id);
   document.querySelectorAll('.sample-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.id === id);
   });
+  $('codeDisplay').style.display = '';
   $('codeDisplay').innerHTML = highlightCode(currentSample.code, currentSample.lang);
+  $('customCodeArea').style.display = 'none';
   $('startBtn').disabled = false;
+}
+
+function selectCustom() {
+  isCustomMode = true;
+  currentSample = null;
+  document.querySelectorAll('.sample-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.id === 'custom');
+  });
+  $('codeDisplay').style.display = 'none';
+  $('customCodeArea').style.display = 'block';
+  $('customCodeNote').style.display = isLiveMode ? 'none' : 'block';
+  updateCustomStartBtn();
+  $('customCode').addEventListener('input', updateCustomStartBtn);
+  $('customFilename').addEventListener('input', updateCustomStartBtn);
+}
+
+function updateCustomStartBtn() {
+  const hasCode = $('customCode').value.trim().length > 20;
+  $('startBtn').disabled = !(hasCode && isLiveMode);
+  $('customCodeNote').style.display = isLiveMode ? 'none' : 'block';
 }
 
 function highlightCode(code, lang) {
@@ -794,6 +834,13 @@ function highlightCode(code, lang) {
 }
 
 async function startQuiz() {
+  // Build currentSample from custom code if needed
+  if (isCustomMode) {
+    const code = $('customCode').value.trim();
+    const filename = $('customFilename').value.trim() || 'code.ts';
+    if (!code || !isLiveMode) return;
+    currentSample = { id: 'custom', name: 'Your Code', lang: 'typescript', filename, code, questions: [] };
+  }
   if (!currentSample) return;
   
   if (isLiveMode) {
@@ -803,11 +850,17 @@ async function startQuiz() {
     try {
       currentQuestions = await generateQuestionsLive(currentSample.code, currentSample.filename);
     } catch (e) {
-      alert('Failed to generate questions: ' + e.message + '\nFalling back to demo mode.');
-      currentQuestions = currentSample.questions;
-      isLiveMode = false;
-      $('modeBadge').textContent = 'demo mode';
-      $('modeBadge').className = 'mode-badge demo';
+      alert('Failed to generate questions: ' + e.message + (currentSample.questions.length ? '\nFalling back to demo mode.' : ''));
+      if (currentSample.questions.length) {
+        currentQuestions = currentSample.questions;
+        isLiveMode = false;
+        $('modeBadge').textContent = 'demo mode';
+        $('modeBadge').className = 'mode-badge demo';
+      } else {
+        $('loadingQuestions').classList.remove('visible');
+        $('startBtn').disabled = false;
+        return;
+      }
     }
     $('loadingQuestions').classList.remove('visible');
   } else {
@@ -1031,8 +1084,11 @@ function resetToSelection() {
   $('step1').style.display = 'block';
   currentSample = null;
   currentQuestions = [];
+  isCustomMode = false;
   document.querySelectorAll('.sample-btn').forEach(b => b.classList.remove('active'));
+  $('codeDisplay').style.display = '';
   $('codeDisplay').textContent = 'Select a code sample above to begin.';
+  $('customCodeArea').style.display = 'none';
   $('startBtn').disabled = true;
 }
 
