@@ -18,11 +18,16 @@ The term "cognitive debt" is having a moment. Key voices:
 
 3. **Simon Willison** (Feb 15) — [link post](https://simonwillison.net/2026/Feb/15/cognitive-debt/) — shares Storey's post. **Describes the exact problem our tool solves**: "I no longer have a firm mental model of what they can do and how they work, which means each additional feature becomes harder to reason about."
 
-4. **Nate Meyvis** (Feb 15) — [blog post](https://www.natemeyvis.com/on-cognitive-debt/) — nuanced counter-argument. Key points:
-   - Pre-AI codebases had cognitive debt too (maybe worse)
-   - AI moves faster → same debt level in less wall-clock time
-   - Competent AI use can MITIGATE debt (refactoring, better tests)
-   - "Cognitive debt is real, but we can mitigate it by using AI better"
+4. **Nate Meyvis** (Feb 15) — [blog post](https://www.natemeyvis.com/on-cognitive-debt/) — the strongest counter-argument in the discourse:
+   - Pre-AI codebases had cognitive debt too — maybe WORSE when controlling for project size/scope
+   - "10 days of AI work = 18 months of pre-AI work" — speed creates the illusion that AI uniquely causes debt
+   - Much of what's "normalized as competent or advanced software engineering" is actually "unnecessary, regrettable management of cognitive debt"
+   - AI can MITIGATE debt: better bootstrapping, large-scale refactoring (AI finds all call sites), better test suites
+   - "Cognitive debt is real, but we can mitigate it by using AI better, and we won't make progress by blaming AI"
+   - Cited Ousterhout's "tactical tornado" concept from *A Philosophy of Software Design*
+   - **This is the nuanced voice our blog post should acknowledge rather than being purely alarmist**
+
+4b. **TLDR Tech** (Feb 16) — [newsletter](https://tldr.tech/tech/2026-02-16) — mainstream tech newsletter featured Meyvis's article. ~1M+ subscribers. Headline: "cognitive debt 🧠". Signal: term has crossed from niche academic discourse to mainstream dev awareness.
 
 5. **Forbes** (Nov 2025) — [article](https://www.forbes.com/councils/forbestechcouncil/2025/11/26/cognitive-debt-the-hidden-cost-of-generative-ai/) — "the unpaid obligation to engage with your AI output"
 
@@ -36,6 +41,10 @@ The term "cognitive debt" is having a moment. Key voices:
    - The Anthropic study post — 3,915 upvotes, 681 comments. Viral.
 
 9. **Steve Yegge** (Feb 11) — ["The AI Vampire"](https://steve-yegge.medium.com/the-ai-vampire-eda6e4f07163) — employers capture 100% of AI productivity gains, developers get burnout. "AI turns us all into Jeff Bezos" — only hard decisions remain. 4 hours/day max of agent work. Maps directly to our organizational debt type.
+
+## Tools in the Space
+
+- **motiram944/cognitive-debt** ([npm](https://www.npmjs.com/package/cognitive-debt), [GitHub](https://github.com/motiram944/cognitive-debt)) — CLI that scores JS/TS code readability (function length, nesting, naming, dependencies). Static analysis only. 1 star, 0 forks. **NOT competitive with understand** — measures code complexity, not human comprehension. Complementary: cognitive-debt scores the code, understand quizzes the human.
 
 ## Key Insight: Everyone Proposes Solutions, Nobody Builds Them
 
