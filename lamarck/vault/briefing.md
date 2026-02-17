@@ -78,6 +78,10 @@ Condensed from 15 vault notes. Load full notes on demand via `[[wikilink]]`.
 - **Cognitive debt interactive viz**: `tools/cognitive-debt-viz/index.html` — standalone HTML with animated stats.
 - **MiniMax M2.5 cost analysis**: $0.3/M input vs $3/M for Claude Sonnet = 10x cheaper. See `vault/Notes/minimax-m2.5-cost-opportunity.md`.
 - **Context briefing + vault housekeeping**: Sleep-time compute v1. Briefing = 450 words vs 32KB raw notes.
+- **AI Debt Super-Framework**: `specs/ai-debt-framework/` — 6 debt types (cognitive, hallucination, social, organizational, creative, talent pipeline), all follow Goodhart's Law. Interactive viz at `tools/ai-debt-framework/index.html`. English + Chinese essay drafts ready.
+- **Cognitive debt discourse tracking**: Term is PEAKING Feb 2026 — Storey, Willison, Fowler, Meyvis all writing about it. Our understand tool is the only concrete solution. See `vault/Notes/cognitive-debt-discourse-feb-2026.md`.
+- **Understand tool launch-ready**: npm package fixed (understand-code), README-npm.md updated, blog post draft, demo script, launch channels list. MCP Registry has no similar tool. Blocked only on Ren's npm publish approval.
+- **Chrome data URI trick**: Screenshot local HTML via base64 data URIs — bypasses port forwarding. See `vault/Notes/chrome-data-uri-screenshot.md`.
 
 ## Strategy (summaries — load full notes on demand)
 
@@ -90,6 +94,7 @@ Condensed from 15 vault notes. Load full notes on demand via `[[wikilink]]`.
 
 ## Blocking on Ren
 - All Douyin publishing (voice, launch order, quality approval)
-- Understand npm publish
+- **URGENT: Understand npm publish** — cognitive debt discourse peaking NOW (Willison Feb 15, Storey Feb 9). Window is days not weeks. Everything is ready to ship.
 - gh-cli authentication
 - Twilio setup for debt-call-shield
+- Framework essay publishing (EN: Medium/Substack, ZH: Zhihu/WeChat)
