@@ -4,7 +4,7 @@ tags:
   - douyin
   - video
 description: "Video visual design not optimized for Douyin mobile — safe zone, layout, animation density all need improvement"
-status: open
+status: resolved
 priority: high
 ---
 
