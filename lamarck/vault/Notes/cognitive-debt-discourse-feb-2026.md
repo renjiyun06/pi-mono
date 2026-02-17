@@ -72,3 +72,25 @@ Every article in this discourse proposes vague advice ("slow down", "review more
 - [ ] Get Ren to approve npm publish (URGENT — timing window)
 - [ ] Write Dev.to article tying understand to the Storey/Willison/Meyvis discourse
 - [ ] Submit to HN as "Show HN: Quiz yourself on AI-generated code"
+
+## New Competitor: Cognitive Debt Guard (discovered Feb 17)
+
+**krishnan/Cognitive-Debt-Guard** on GitHub — "cross-tool enforcement system"
+
+### Approach
+- Process-based prevention, not measurement
+- Config files for 7 AI tools (Claude Code, Gemini, Cursor, Windsurf, Copilot, Jules, Aider)
+- Instructs AI to: work in small increments, narrate reasoning, check developer understanding, log decisions
+- Git hooks add friction at commit time
+- DEVLOG.md + DECISION-LOG.md for shared understanding
+- Session summaries at wrap-up
+
+### Competitive Position
+**Complementary, not competitive.** They prevent debt accumulation during development (like brushing teeth). We detect and measure existing debt after the fact (like dental x-rays). A complete solution uses both.
+
+### Key Insight
+The cognitive debt space is now splitting into two camps:
+1. **Prevention tools**: Cognitive Debt Guard, Cline CLI 2.0 (parallel agents with review), pair programming workflows
+2. **Detection tools**: Our understand tool, motiram944/cognitive-debt (static analysis)
+
+Nobody is doing both yet. Could be an integration opportunity.

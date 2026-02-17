@@ -92,6 +92,7 @@ Her student team's collapse — "no one could explain *why* certain design decis
 - Not a linter (those check syntax)
 - Not a test framework (those check behavior)
 - Not an explanation tool (those show you the answer)
+- Not a process enforcement tool (like [Cognitive Debt Guard](https://github.com/krishnan/Cognitive-Debt-Guard), which changes how AI tools work with you — complementary, not competitive)
 
 It checks whether **you** understand what **you** shipped. That's the gap nothing else fills.
 
