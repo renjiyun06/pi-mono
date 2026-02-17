@@ -143,12 +143,13 @@ Tools exposed:
 
 ## Why This Matters (Research)
 
+- **Anthropic RCT (Shen & Tamkin, Jan 2026)**: 52 software engineers in a randomized controlled trial. AI group scored **17% lower** on comprehension quizzes (50% vs 67%). The study identified "generation-then-comprehension" as the highest-scoring AI usage pattern — **exactly what this tool automates**. The AI delegation pattern (just accepting AI output) produced the lowest scores. [Paper](https://arxiv.org/abs/2601.20245)
 - **MIT EEG Study (2025)**: "Your Brain on ChatGPT" — students who relied on ChatGPT showed measurably weakened neural connectivity, impaired memory recall, and diminished cognitive engagement via EEG brain scans
+- **METR RCT (2025)**: 16 senior developers (5+ years, million-line codebases). AI group was 19% slower but self-estimated 20% faster. Perception gap: 43 percentage points.
 - **Clutch Survey (Jan 2026)**: Most developers commit AI-generated code they don't fully understand
 - **Apart Research**: ChatGPT adoption grew from 1% to 9% globally while measured cognitive ability declined — a 96% acceleration over pre-AI baseline
-- **Reddit signal**: Developer platforms have the highest frustration scores among all categories in a 9,300-post analysis of "I wish there was an app for this" requests
 
-The pattern: AI makes writing code easier while making understanding code harder. This tool addresses the second half.
+The pattern: AI makes writing code easier while making understanding code harder. This tool addresses the second half by automating the "generation-then-comprehension" pattern that Anthropic's study identified as the only AI usage pattern that preserves learning.
 
 ## See Also
 
