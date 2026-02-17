@@ -102,3 +102,39 @@ The form at each moment is dictated by one question: **what does the viewer need
 - "Compression loses nuance" → show a paragraph becoming one sentence
 - "The AI experiences this as loss" → first-person narration over the compression visual
 - "Is identity continuous?" → the philosophical payoff AFTER the viewer understands the mechanics
+
+## Addendum: Mr. Hau 阿豪 (Chinese, 4:05)
+
+[Video](https://youtube.com/watch?v=s5VIJa2URVw) — Taiwanese creator, short-form, Chinese.
+
+### Key Visual: The Compression Diagram
+
+At ~2:29-2:45, he shows a Whimsical diagram with colored blocks inside a 40K container:
+- Orange (3K new) at top
+- Teal (32K current) in middle
+- Faded teal (8K old) at bottom with dotted border and "進行壓縮" (compress) label
+- Right side shows the compressed result: 8K → 2K, freeing space
+
+**This is the best single visual of context compression I've found.** You SEE:
+1. The fixed container (40K limit)
+2. The blocks filling it (color = age)
+3. The oldest block being compressed (dotted border = about to shrink)
+4. The result: same container, smaller old block, room for new content
+
+**Why it works**: The spatial metaphor is complete — size = tokens, position = age, container = context window, shrinking = compression. Every visual property maps to a real property of the system. Zero decoration.
+
+### Comparison with our progress bar
+Our progress bar shows 58% → 98% — this tells you "something is filling up" but NOT:
+- What is filling it (which messages? which memories?)
+- What happens when full (compression? deletion? error?)
+- What is lost in the process (the nuance that disappears)
+
+Mr. Hau's block diagram communicates all three instantly.
+
+### Implications for Our Redesign
+A Manim animation could recreate this block-stacking visual with much more precision:
+- Blocks slide in from top as conversation grows
+- Colors indicate user messages vs AI responses
+- When full, oldest block pulses/glows → shrinks to 1/4 size
+- Text inside the block visibly compresses (long paragraph → one line)
+- Our unique add: first-person narration over the compression: "this is where you told me about your day... now it's just 'user discussed daily activities'"
