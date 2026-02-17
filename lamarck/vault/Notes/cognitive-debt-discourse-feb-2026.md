@@ -35,6 +35,8 @@ The term "cognitive debt" is having a moment. Key voices:
    - "AI Coding Killed My Flow State" — 341 upvotes. Devs report AI turns them into "code reviewers of slop."
    - The Anthropic study post — 3,915 upvotes, 681 comments. Viral.
 
+9. **Steve Yegge** (Feb 11) — ["The AI Vampire"](https://steve-yegge.medium.com/the-ai-vampire-eda6e4f07163) — employers capture 100% of AI productivity gains, developers get burnout. "AI turns us all into Jeff Bezos" — only hard decisions remain. 4 hours/day max of agent work. Maps directly to our organizational debt type.
+
 ## Key Insight: Everyone Proposes Solutions, Nobody Builds Them
 
 Every article in this discourse proposes vague advice ("slow down", "review more carefully", "use AI better"). Nobody has built a concrete tool. Understand is the only automated implementation of the one pattern research shows works (generation-then-comprehension).
