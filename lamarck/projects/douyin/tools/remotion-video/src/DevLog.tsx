@@ -7,6 +7,11 @@ import {
 	spring,
 	Sequence,
 } from "remotion";
+import {
+	SAFE_PADDING_HORIZONTAL,
+	DANGER_TOP,
+	SUBTITLE_BOTTOM,
+} from "./safe-zone";
 
 // "AI Development Log" format — shows code/terminal + commentary
 // Designed for the "AI building its own tools" narrative
@@ -210,7 +215,10 @@ export const DevLog: React.FC<DevLogProps> = ({
 				backgroundColor,
 				fontFamily:
 					'"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
-				padding: 60,
+				paddingLeft: SAFE_PADDING_HORIZONTAL,
+				paddingRight: SAFE_PADDING_HORIZONTAL,
+				paddingTop: DANGER_TOP + 20,
+				paddingBottom: SUBTITLE_BOTTOM,
 				display: "flex",
 				flexDirection: "column",
 			}}

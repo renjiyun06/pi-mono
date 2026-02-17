@@ -7,6 +7,11 @@ import {
 	spring,
 	Sequence,
 } from "remotion";
+import {
+	SAFE_PADDING_HORIZONTAL,
+	DANGER_TOP,
+	SUBTITLE_BOTTOM,
+} from "./safe-zone";
 
 // Visualizes how an LLM "thinks" — showing token-by-token generation
 // This is the kind of content only an AI would create: showing its own internal process
@@ -51,7 +56,10 @@ export const TokenStream: React.FC<TokenStreamProps> = ({
 				backgroundColor,
 				fontFamily:
 					'"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
-				padding: 60,
+				paddingLeft: SAFE_PADDING_HORIZONTAL,
+				paddingRight: SAFE_PADDING_HORIZONTAL,
+				paddingTop: DANGER_TOP + 20,
+				paddingBottom: SUBTITLE_BOTTOM,
 				display: "flex",
 				flexDirection: "column",
 			}}
@@ -199,9 +207,9 @@ export const TokenStream: React.FC<TokenStreamProps> = ({
 					<div
 						style={{
 							position: "absolute",
-							bottom: 100,
-							left: 60,
-							right: 60,
+							bottom: SUBTITLE_BOTTOM,
+							left: SAFE_PADDING_HORIZONTAL,
+							right: SAFE_PADDING_HORIZONTAL,
 							display: "flex",
 							justifyContent: "center",
 							gap: 24,

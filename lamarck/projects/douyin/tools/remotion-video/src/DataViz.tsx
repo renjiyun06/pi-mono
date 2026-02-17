@@ -7,6 +7,11 @@ import {
 	spring,
 	Easing,
 } from "remotion";
+import {
+	SAFE_PADDING_HORIZONTAL,
+	DANGER_TOP,
+	SUBTITLE_BOTTOM,
+} from "./safe-zone";
 
 // Animated bar chart for data visualization videos
 // Useful for AI stats, comparisons, trends
@@ -61,7 +66,10 @@ export const DataViz: React.FC<DataVizProps> = ({
 				backgroundColor,
 				fontFamily:
 					'"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
-				padding: 80,
+				paddingLeft: SAFE_PADDING_HORIZONTAL,
+				paddingRight: SAFE_PADDING_HORIZONTAL,
+				paddingTop: DANGER_TOP + 20,
+				paddingBottom: SUBTITLE_BOTTOM,
 				display: "flex",
 				flexDirection: "column",
 			}}

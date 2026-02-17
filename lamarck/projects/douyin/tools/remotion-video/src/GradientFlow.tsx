@@ -7,6 +7,13 @@ import {
 	spring,
 	Sequence,
 } from "remotion";
+import {
+	SAFE_PADDING_HORIZONTAL,
+	DANGER_TOP,
+	SUBTITLE_BOTTOM,
+	WATERMARK_BOTTOM,
+	WATERMARK_RIGHT,
+} from "./safe-zone";
 
 /**
  * GradientFlow — a composition with animated gradient backgrounds.
@@ -99,7 +106,10 @@ const GlassCard: React.FC<{
 			style={{
 				justifyContent: "center",
 				alignItems: "center",
-				padding: 60,
+				paddingLeft: SAFE_PADDING_HORIZONTAL,
+				paddingRight: SAFE_PADDING_HORIZONTAL,
+				paddingTop: DANGER_TOP,
+				paddingBottom: SUBTITLE_BOTTOM,
 			}}
 		>
 			<div
@@ -190,9 +200,9 @@ export const GradientFlow: React.FC<GradientFlowProps> = ({
 				<div
 					style={{
 						position: "absolute",
-						top: 100,
-						left: 0,
-						right: 0,
+						top: DANGER_TOP + 20,
+						left: SAFE_PADDING_HORIZONTAL,
+						right: SAFE_PADDING_HORIZONTAL,
 						textAlign: "center",
 						opacity: titleOpacity,
 					}}
@@ -230,8 +240,8 @@ export const GradientFlow: React.FC<GradientFlowProps> = ({
 			<div
 				style={{
 					position: "absolute",
-					bottom: 50,
-					right: 50,
+					bottom: WATERMARK_BOTTOM,
+					right: WATERMARK_RIGHT,
 					fontSize: 18,
 					color: "rgba(255,255,255,0.15)",
 				}}

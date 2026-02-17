@@ -7,6 +7,13 @@ import {
 	spring,
 	Easing,
 } from "remotion";
+import {
+	SAFE_PADDING_HORIZONTAL,
+	DANGER_TOP,
+	SUBTITLE_BOTTOM,
+	WATERMARK_BOTTOM,
+	WATERMARK_RIGHT,
+} from "./safe-zone";
 
 /**
  * KnowledgeCard — an animated single-screen knowledge summary.
@@ -95,7 +102,10 @@ export const KnowledgeCard: React.FC<KnowledgeCardProps> = ({
 			style={{
 				backgroundColor,
 				fontFamily: FONT,
-				padding: "80px 60px",
+				paddingLeft: SAFE_PADDING_HORIZONTAL,
+				paddingRight: SAFE_PADDING_HORIZONTAL,
+				paddingTop: DANGER_TOP + 20,
+				paddingBottom: SUBTITLE_BOTTOM,
 				display: "flex",
 				flexDirection: "column",
 			}}
@@ -299,8 +309,8 @@ export const KnowledgeCard: React.FC<KnowledgeCardProps> = ({
 			<div
 				style={{
 					position: "absolute",
-					bottom: 40,
-					right: 50,
+					bottom: WATERMARK_BOTTOM,
+					right: WATERMARK_RIGHT,
 					fontSize: 16,
 					color: "rgba(255,255,255,0.1)",
 					letterSpacing: 2,

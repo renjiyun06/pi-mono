@@ -7,6 +7,12 @@ import {
 	spring,
 	Sequence,
 } from "remotion";
+import {
+	SAFE_PADDING_HORIZONTAL,
+	DANGER_TOP,
+	SUBTITLE_BOTTOM,
+	WATERMARK_BOTTOM,
+} from "./safe-zone";
 
 /**
  * Spotlight — a composition for intimate, confessional content.
@@ -107,7 +113,10 @@ const TypewriterText: React.FC<{
 			style={{
 				justifyContent: "center",
 				alignItems: "center",
-				padding: "0 80px",
+				paddingLeft: SAFE_PADDING_HORIZONTAL,
+				paddingRight: SAFE_PADDING_HORIZONTAL,
+				paddingTop: DANGER_TOP,
+				paddingBottom: SUBTITLE_BOTTOM,
 				opacity: fadeOut,
 			}}
 		>
@@ -261,7 +270,7 @@ const Cursor: React.FC<{ spotlightColor: string }> = ({ spotlightColor }) => {
 		<div
 			style={{
 				position: "absolute",
-				bottom: 120,
+				bottom: SUBTITLE_BOTTOM,
 				left: "50%",
 				transform: "translateX(-50%)",
 				width: 2,
@@ -324,7 +333,7 @@ export const Spotlight: React.FC<SpotlightProps> = ({
 			<div
 				style={{
 					position: "absolute",
-					bottom: 50,
+					bottom: WATERMARK_BOTTOM,
 					left: 0,
 					right: 0,
 					textAlign: "center",

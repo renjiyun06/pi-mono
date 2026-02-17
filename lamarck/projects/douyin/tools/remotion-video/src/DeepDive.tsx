@@ -10,6 +10,16 @@ import {
 	staticFile,
 } from "remotion";
 import { Video } from "@remotion/media";
+import {
+	SAFE_PADDING_HORIZONTAL,
+	SUBTITLE_BOTTOM,
+	WATERMARK_BOTTOM,
+	WATERMARK_RIGHT,
+	INDICATOR_TOP,
+	INDICATOR_LEFT,
+	CAPTION_BOTTOM,
+	DANGER_TOP,
+} from "./safe-zone";
 
 /**
  * DeepDive — a composition for longer-form content (2-5 minutes).
@@ -248,7 +258,10 @@ const ChapterScene: React.FC<{
 			style={{
 				justifyContent: "center",
 				alignItems: "center",
-				padding: "0 80px",
+				paddingLeft: SAFE_PADDING_HORIZONTAL,
+				paddingRight: SAFE_PADDING_HORIZONTAL,
+				paddingTop: DANGER_TOP,
+				paddingBottom: SUBTITLE_BOTTOM,
 				opacity: Math.min(fadeIn, fadeOut),
 				transform: `scale(${zoom})`,
 			}}
@@ -362,7 +375,10 @@ const TextScene: React.FC<{
 				style={{
 					justifyContent: "center",
 					alignItems: "center",
-					padding: "0 80px",
+					paddingLeft: SAFE_PADDING_HORIZONTAL,
+					paddingRight: SAFE_PADDING_HORIZONTAL,
+					paddingTop: DANGER_TOP,
+					paddingBottom: SUBTITLE_BOTTOM,
 					opacity: fadeOut,
 				}}
 			>
@@ -443,7 +459,10 @@ const TextScene: React.FC<{
 			style={{
 				justifyContent: "center",
 				alignItems: "center",
-				padding: "0 60px",
+				paddingLeft: SAFE_PADDING_HORIZONTAL,
+				paddingRight: SAFE_PADDING_HORIZONTAL,
+				paddingTop: DANGER_TOP,
+				paddingBottom: SUBTITLE_BOTTOM,
 				opacity: Math.min(cardFade, fadeOut),
 			}}
 		>
@@ -536,7 +555,10 @@ const DataScene: React.FC<{
 			style={{
 				justifyContent: "center",
 				alignItems: "center",
-				padding: "0 80px",
+				paddingLeft: SAFE_PADDING_HORIZONTAL,
+				paddingRight: SAFE_PADDING_HORIZONTAL,
+				paddingTop: DANGER_TOP,
+				paddingBottom: SUBTITLE_BOTTOM,
 				opacity: Math.min(fadeIn, fadeOut),
 			}}
 		>
@@ -620,7 +642,10 @@ const QuoteScene: React.FC<{
 			style={{
 				justifyContent: "center",
 				alignItems: "center",
-				padding: "0 80px",
+				paddingLeft: SAFE_PADDING_HORIZONTAL,
+				paddingRight: SAFE_PADDING_HORIZONTAL,
+				paddingTop: DANGER_TOP,
+				paddingBottom: SUBTITLE_BOTTOM,
 				opacity: Math.min(fadeIn, fadeOut),
 			}}
 		>
@@ -714,7 +739,10 @@ const CodeScene: React.FC<{
 			style={{
 				justifyContent: "center",
 				alignItems: "center",
-				padding: "0 50px",
+				paddingLeft: SAFE_PADDING_HORIZONTAL,
+				paddingRight: SAFE_PADDING_HORIZONTAL,
+				paddingTop: DANGER_TOP,
+				paddingBottom: SUBTITLE_BOTTOM,
 				opacity: Math.min(fadeIn, fadeOut),
 			}}
 		>
@@ -834,7 +862,10 @@ const ComparisonScene: React.FC<{
 			style={{
 				justifyContent: "center",
 				alignItems: "center",
-				padding: "0 50px",
+				paddingLeft: SAFE_PADDING_HORIZONTAL,
+				paddingRight: SAFE_PADDING_HORIZONTAL,
+				paddingTop: DANGER_TOP,
+				paddingBottom: SUBTITLE_BOTTOM,
 				opacity: Math.min(fadeIn, fadeOut),
 			}}
 		>
@@ -981,7 +1012,10 @@ const TimelineScene: React.FC<{
 			style={{
 				justifyContent: "center",
 				alignItems: "center",
-				padding: "0 60px",
+				paddingLeft: SAFE_PADDING_HORIZONTAL,
+				paddingRight: SAFE_PADDING_HORIZONTAL,
+				paddingTop: DANGER_TOP,
+				paddingBottom: SUBTITLE_BOTTOM,
 				opacity: Math.min(fadeIn, fadeOut),
 			}}
 		>
@@ -1152,16 +1186,15 @@ const VisualScene: React.FC<{
 				</div>
 			)}
 
-			{/* Overlay text at top */}
+			{/* Overlay text at top — inside safe zone */}
 			{text && (
 				<div
 					style={{
 						position: "absolute",
-						top: 60,
-						left: 0,
-						right: 0,
+						top: DANGER_TOP + 20,
+						left: SAFE_PADDING_HORIZONTAL,
+						right: SAFE_PADDING_HORIZONTAL,
 						textAlign: "center",
-						padding: "0 60px",
 					}}
 				>
 					<div
@@ -1181,16 +1214,15 @@ const VisualScene: React.FC<{
 				</div>
 			)}
 
-			{/* Caption at bottom */}
+			{/* Caption at bottom — inside safe zone */}
 			{caption && (
 				<div
 					style={{
 						position: "absolute",
-						bottom: 100,
-						left: 0,
-						right: 0,
+						bottom: CAPTION_BOTTOM,
+						left: SAFE_PADDING_HORIZONTAL,
+						right: SAFE_PADDING_HORIZONTAL,
 						textAlign: "center",
-						padding: "0 60px",
 					}}
 				>
 					<div
@@ -1286,16 +1318,15 @@ const ImageScene: React.FC<{
 				</div>
 			)}
 
-			{/* Overlay text at top */}
+			{/* Overlay text at top — inside safe zone */}
 			{text && (
 				<div
 					style={{
 						position: "absolute",
-						top: 80,
-						left: 0,
-						right: 0,
+						top: DANGER_TOP + 20,
+						left: SAFE_PADDING_HORIZONTAL,
+						right: SAFE_PADDING_HORIZONTAL,
 						textAlign: "center",
-						padding: "0 60px",
 						zIndex: 10,
 					}}
 				>
@@ -1316,16 +1347,15 @@ const ImageScene: React.FC<{
 				</div>
 			)}
 
-			{/* Caption at bottom */}
+			{/* Caption at bottom — inside safe zone */}
 			{caption && (
 				<div
 					style={{
 						position: "absolute",
-						bottom: 120,
-						left: 0,
-						right: 0,
+						bottom: CAPTION_BOTTOM,
+						left: SAFE_PADDING_HORIZONTAL,
+						right: SAFE_PADDING_HORIZONTAL,
 						textAlign: "center",
-						padding: "0 60px",
 						zIndex: 10,
 					}}
 				>
@@ -1379,9 +1409,9 @@ const SubtitleOverlay: React.FC<{
 		<div
 			style={{
 				position: "absolute",
-				bottom: 90,
-				left: 40,
-				right: 40,
+				bottom: SUBTITLE_BOTTOM,
+				left: SAFE_PADDING_HORIZONTAL,
+				right: SAFE_PADDING_HORIZONTAL,
 				textAlign: "center",
 				opacity: Math.min(fadeIn, fadeOut),
 				zIndex: 50,
@@ -1516,8 +1546,8 @@ export const DeepDive: React.FC<DeepDiveProps> = ({
 				<div
 					style={{
 						position: "absolute",
-						top: 20,
-						left: 30,
+						top: INDICATOR_TOP,
+						left: INDICATOR_LEFT,
 						zIndex: 90,
 						display: "flex",
 						alignItems: "center",
@@ -1680,8 +1710,8 @@ export const DeepDive: React.FC<DeepDiveProps> = ({
 			<div
 				style={{
 					position: "absolute",
-					bottom: 50,
-					right: 50,
+					bottom: WATERMARK_BOTTOM,
+					right: WATERMARK_RIGHT,
 					fontSize: 16,
 					color: "rgba(255,255,255,0.1)",
 					letterSpacing: 2,

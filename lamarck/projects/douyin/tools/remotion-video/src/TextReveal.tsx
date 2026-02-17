@@ -6,6 +6,11 @@ import {
 	useVideoConfig,
 	spring,
 } from "remotion";
+import {
+	SAFE_PADDING_HORIZONTAL,
+	DANGER_TOP,
+	SUBTITLE_BOTTOM,
+} from "./safe-zone";
 
 // Animated text reveal — good for quotes, insights, one-liners
 // The text fades in word by word with a highlight effect
@@ -39,7 +44,10 @@ export const TextReveal: React.FC<TextRevealProps> = ({
 				backgroundColor,
 				fontFamily:
 					'"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
-				padding: 80,
+				paddingLeft: SAFE_PADDING_HORIZONTAL,
+				paddingRight: SAFE_PADDING_HORIZONTAL,
+				paddingTop: DANGER_TOP,
+				paddingBottom: SUBTITLE_BOTTOM,
 				display: "flex",
 				flexDirection: "column",
 				justifyContent: "center",

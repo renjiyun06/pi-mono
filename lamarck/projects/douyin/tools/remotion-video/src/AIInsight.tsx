@@ -10,6 +10,13 @@ import {
 	staticFile,
 	Img,
 } from "remotion";
+import {
+	SAFE_PADDING_HORIZONTAL,
+	DANGER_TOP,
+	SUBTITLE_BOTTOM,
+	WATERMARK_BOTTOM,
+	WATERMARK_RIGHT,
+} from "./safe-zone";
 
 // A complete short-form video composition for Douyin
 // Sections: Hook → Context → Insight → Takeaway
@@ -89,7 +96,10 @@ const SectionDisplay: React.FC<{
 			style={{
 				justifyContent: "center",
 				alignItems: "center",
-				padding: 60,
+				paddingLeft: SAFE_PADDING_HORIZONTAL,
+				paddingRight: SAFE_PADDING_HORIZONTAL,
+				paddingTop: DANGER_TOP,
+				paddingBottom: SUBTITLE_BOTTOM,
 			}}
 		>
 			<div
@@ -176,8 +186,8 @@ export const AIInsight: React.FC<AIInsightProps> = ({
 			<div
 				style={{
 					position: "absolute",
-					bottom: 80,
-					right: 60,
+					bottom: WATERMARK_BOTTOM,
+					right: WATERMARK_RIGHT,
 					fontSize: 20,
 					color: "#444",
 					opacity: interpolate(frame, [30, 45], [0, 1], {

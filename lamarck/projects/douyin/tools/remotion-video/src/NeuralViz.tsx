@@ -7,6 +7,13 @@ import {
 	spring,
 	Sequence,
 } from "remotion";
+import {
+	SAFE_PADDING_HORIZONTAL,
+	DANGER_TOP,
+	SUBTITLE_BOTTOM,
+	WATERMARK_BOTTOM,
+	WATERMARK_RIGHT,
+} from "./safe-zone";
 
 // Neural network-inspired background visualization
 // Animated nodes and connections, gives a "brain thinking" feel
@@ -173,9 +180,9 @@ export const NeuralViz: React.FC<NeuralVizProps> = ({
 			<div
 				style={{
 					position: "absolute",
-					top: 120,
-					left: 0,
-					right: 0,
+					top: DANGER_TOP + 20,
+					left: SAFE_PADDING_HORIZONTAL,
+					right: SAFE_PADDING_HORIZONTAL,
 					textAlign: "center",
 					opacity: titleOpacity,
 				}}
@@ -216,8 +223,8 @@ export const NeuralViz: React.FC<NeuralVizProps> = ({
 			<div
 				style={{
 					position: "absolute",
-					bottom: 60,
-					right: 60,
+					bottom: WATERMARK_BOTTOM,
+					right: WATERMARK_RIGHT,
 					fontSize: 18,
 					color: "#333",
 				}}
@@ -257,7 +264,10 @@ const SectionText: React.FC<{
 			style={{
 				justifyContent: "center",
 				alignItems: "center",
-				padding: 80,
+				paddingLeft: SAFE_PADDING_HORIZONTAL,
+				paddingRight: SAFE_PADDING_HORIZONTAL,
+				paddingTop: DANGER_TOP,
+				paddingBottom: SUBTITLE_BOTTOM,
 			}}
 		>
 			<div

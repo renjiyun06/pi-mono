@@ -7,6 +7,11 @@ import {
 	spring,
 	Sequence,
 } from "remotion";
+import {
+	SAFE_PADDING_HORIZONTAL,
+	DANGER_TOP,
+	SUBTITLE_BOTTOM,
+} from "./safe-zone";
 
 // A simple "1 Minute AI" concept explainer video
 // Shows a title, then an explanation with animated text
@@ -51,7 +56,10 @@ export const OneMinuteAI: React.FC<OneMinuteAIProps> = ({
 				backgroundColor,
 				fontFamily:
 					'"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
-				padding: 80,
+				paddingLeft: SAFE_PADDING_HORIZONTAL,
+				paddingRight: SAFE_PADDING_HORIZONTAL,
+				paddingTop: DANGER_TOP,
+				paddingBottom: SUBTITLE_BOTTOM,
 				display: "flex",
 				flexDirection: "column",
 				justifyContent: "center",
