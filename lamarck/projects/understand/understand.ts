@@ -23,21 +23,44 @@ import { execSync } from "child_process";
 import { createInterface } from "readline";
 import { resolve, basename, relative } from "path";
 
-// Load .env from repo root
-const envPath = resolve("/home/lamarck/pi-mono/.env");
-if (existsSync(envPath)) {
-	const envContent = readFileSync(envPath, "utf-8");
-	for (const line of envContent.split("\n")) {
-		const match = line.match(/^([^#=]+)=(.*)$/);
-		if (match) process.env[match[1].trim()] = match[2].trim();
+// Load .env from current directory, git root, or home directory
+function loadEnvFile(): void {
+	const candidates: string[] = [
+		resolve(process.cwd(), ".env"),
+	];
+	try {
+		const gitRoot = execSync("git rev-parse --show-toplevel", { encoding: "utf-8" }).trim();
+		candidates.push(resolve(gitRoot, ".env"));
+	} catch { /* not in a git repo */ }
+	const home = process.env.HOME || process.env.USERPROFILE;
+	if (home) candidates.push(resolve(home, ".env"));
+
+	for (const envPath of candidates) {
+		if (existsSync(envPath)) {
+			const envContent = readFileSync(envPath, "utf-8");
+			for (const line of envContent.split("\n")) {
+				const match = line.match(/^([^#=]+)=(.*)$/);
+				if (match) {
+					const key = match[1].trim();
+					// Don't override existing env vars
+					if (!process.env[key]) {
+						process.env[key] = match[2].trim();
+					}
+				}
+			}
+			break; // use first .env found
+		}
 	}
 }
+loadEnvFile();
 
 const API_KEY = process.env.OPENROUTER_API_KEY;
 if (!API_KEY) {
-	console.error("Error: OPENROUTER_API_KEY not set");
+	console.error("Error: OPENROUTER_API_KEY not set.");
+	console.error("Set it in your environment, or create a .env file in your project root.");
 	process.exit(1);
 }
+const MODEL = process.env.UNDERSTAND_MODEL || "anthropic/claude-sonnet-4";
 
 // --- LLM Call ---
 
@@ -54,7 +77,7 @@ async function llm(messages: Message[]): Promise<string> {
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({
-			model: "anthropic/claude-sonnet-4",
+			model: MODEL,
 			messages,
 			temperature: 0.3,
 			max_tokens: 2000,

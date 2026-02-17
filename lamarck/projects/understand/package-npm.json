@@ -1,5 +1,5 @@
 {
-  "name": "understand-mcp",
+  "name": "understand-code",
   "version": "0.1.0",
   "description": "MCP server that quizzes developers on code comprehension. Anti-cognitive-debt tool.",
   "keywords": [
@@ -15,9 +15,11 @@
   "license": "MIT",
   "type": "module",
   "bin": {
+    "understand": "./understand.ts",
     "understand-mcp": "./mcp-server.ts"
   },
   "files": [
+    "understand.ts",
     "mcp-server.ts",
     "README.md"
   ],

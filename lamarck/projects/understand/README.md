@@ -71,10 +71,36 @@ $ understand debt --since main
 3. Your answers are evaluated against key concepts the LLM identified
 4. Scores are stored in `.understand/history.json` in your repo
 
+## Installation
+
+```bash
+# Run directly (no install)
+npx understand-code src/auth.ts
+
+# Or install globally
+npm install -g understand-code
+understand src/auth.ts
+```
+
+## Configuration
+
+### Required
+- `OPENROUTER_API_KEY` — Get one at [openrouter.ai](https://openrouter.ai/keys)
+
+### Optional
+- `UNDERSTAND_MODEL` — LLM model to use (default: `anthropic/claude-sonnet-4`)
+
+Set via environment variable or `.env` file in your project root, git root, or home directory:
+
+```bash
+# .env
+OPENROUTER_API_KEY=sk-or-...
+UNDERSTAND_MODEL=google/gemini-2.0-flash-001  # cheaper alternative
+```
+
 ## Requirements
 
 - Node.js 18+
-- `OPENROUTER_API_KEY` environment variable (or `.env` file)
 
 ## Philosophy
 
