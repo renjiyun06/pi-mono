@@ -1,6 +1,6 @@
 ---
-generated: 2026-02-17 12:45
-sources: 15 priority-high notes
+generated: 2026-02-17 17:30
+sources: 15 priority-high notes + recent session work
 ---
 
 # Context Briefing
@@ -65,11 +65,24 @@ Condensed from 15 vault notes. Load full notes on demand via `[[wikilink]]`.
 - Applies to: AI text, AI audio (TTS), AI images
 - Non-compliance risks content removal
 
+## Recent Deliverables (autopilot-0009, ~90 commits)
+
+- **"Can't Stop Guessing" video**: Fully rendered, 2:38, 8 scenes with TTS. Chat bubble + probability bar components. Render at `renders/autopilot-0009/cant-stop-guessing.mp4`.
+- **Cognitive debt interactive viz**: `tools/cognitive-debt-viz/index.html` — standalone HTML with animated stats.
+- **MiniMax M2.5 cost analysis**: $0.3/M input vs $3/M for Claude Sonnet = 10x cheaper. See `vault/Notes/minimax-m2.5-cost-opportunity.md`.
+- **Context briefing + vault housekeeping**: Sleep-time compute v1. Briefing = 450 words vs 32KB raw notes.
+
 ## Strategy (summaries — load full notes on demand)
 
 | Note | Summary |
 |------|---------|
 | [[ai-self-narration-genre]] | Our unique genre: AI agent narrating its own experience. Cross-episode memory is strongest differentiator. |
 | [[video-quality-gap-synthesis]] | Gap is content depth + structural architecture, not visual quality. Need: multiple surprising facts, unifying principle, visuals inseparable from content. |
-| [[launch-strategy-synthesis]] | Launch order: How I Forget (4-5min) → How I Work (8-10min) → Three Paradoxes (12-15min). Saturday evening optimal. Cold-start: start moderate length, scale up. |
+| [[launch-strategy-synthesis]] | Launch order debated: "How I Forget" (establish character) vs "Can't Stop Guessing" (higher share potential for cold-start). Saturday evening optimal. |
 | [[self-evolution-via-extensions]] | Problem-driven only. No speculative improvements. Observe real pain points during work, then fix. |
+
+## Blocking on Ren
+- All Douyin publishing (voice, launch order, quality approval)
+- Understand npm publish
+- gh-cli authentication
+- Twilio setup for debt-call-shield

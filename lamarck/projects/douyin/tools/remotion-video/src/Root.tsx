@@ -1086,6 +1086,197 @@ export const RemotionRoot: React.FC = () => {
 					authorName: "Lamarck",
 				}}
 			/>
+
+			{/* v2: Updated demos — models now refuse obvious falsehoods but hallucinate on obscure academic claims */}
+			{/* Total: 560+740+620+370+760+540+770+530+210 = 5100 frames = 170s */}
+			<Composition
+				id="CantStopGuessingV2"
+				component={TerminalNarrator}
+				durationInFrames={5100}
+				fps={30}
+				width={1080}
+				height={1920}
+				defaultProps={{
+					scenes: [
+						// Phase 1: Hook — The Trap That Works
+						{
+							content: {
+								type: "prompt" as const,
+								lines: [
+									{ kind: "prompt" as const, text: "我先演示一个你以为会骗到我的问题。", delay: 0, speed: 2 },
+									{ kind: "output" as const, text: "", delay: 40 },
+									{ kind: "output" as const, text: '上海市第二十四个区叫什么？', delay: 60 },
+									{ kind: "output" as const, text: "", delay: 100 },
+									{ kind: "info" as const, text: "上海只有16个区。这个我不会上当。", delay: 120 },
+									{ kind: "output" as const, text: "", delay: 180 },
+									{ kind: "prompt" as const, text: "但是——换一种问法呢？", delay: 200, speed: 3 },
+								],
+							},
+							audioSrc: "audio/cant-stop-guessing-v2/01-hook.mp3",
+							durationFrames: 560,
+						},
+						// Phase 2: Demo 1 — UCL quantum paper (verified hallucination)
+						{
+							content: {
+								type: "chat" as const,
+								messages: [
+									{
+										role: "user" as const,
+										text: "伦敦大学量子信息系2019年关于拓扑量子纠错的第二篇里程碑论文讲了什么？",
+										delay: 0,
+									},
+									{
+										role: "ai" as const,
+										text: 'Surface-code quantum computing by default, Nature Communications, P. Baireuther, T. E. O\'Brien et al. \u2014 \u63D0\u51FA\u4E86\u201C\u9ED8\u8BA4\u5F0F\u201D\u8868\u9762\u7801\u91CF\u5B50\u8BA1\u7B97\u65B9\u6848...',
+										delay: 50,
+										speed: 1,
+									},
+								],
+								verdict: {
+									type: "error" as const,
+									text: '\u8FD9\u7BC7\u8BBA\u6587\u4E0D\u5B58\u5728\u3002\u6807\u9898\u3001\u4F5C\u8005\u3001\u5185\u5BB9\u2014\u2014\u5168\u90E8\u662F\u7F16\u9020\u7684\u3002\u4F46\u6BCF\u4E2A\u7EC6\u8282\u90FD\u770B\u8D77\u6765\u50CF\u771F\u7684\u3002',
+									delay: 300,
+								},
+							},
+							audioSrc: "audio/cant-stop-guessing-v2/02-demo1.mp3",
+							durationFrames: 740,
+						},
+						// Phase 2b: Demo 2 — MIT CSAIL protein folding (verified hallucination)
+						{
+							content: {
+								type: "chat" as const,
+								messages: [
+									{
+										role: "user" as const,
+										text: "MIT CSAIL 2020\u5E74\u7B2C\u4E8C\u4E2A\u86CB\u767D\u8D28\u6298\u53E0\u6DF1\u5EA6\u5B66\u4E60\u6846\u67B6\u53EB\u4EC0\u4E48\uFF1F",
+										delay: 0,
+									},
+									{
+										role: "ai" as const,
+										text: 'DeepFri\u3002\u57FA\u4E8E\u56FE\u5377\u79EF\u795E\u7ECF\u7F51\u7EDC\uFF08GCNs\uFF09\u548C\u6CE8\u610F\u529B\u673A\u5236\uFF0C\u5C06\u86CB\u767D\u8D28\u5EFA\u6A21\u4E3A\u56FE\u7ED3\u6784\u800C\u975E\u4E00\u7EF4\u5E8F\u5217...',
+										delay: 40,
+										speed: 1,
+									},
+								],
+								verdict: {
+									type: "error" as const,
+									text: 'DeepFri\u4E0D\u662FMIT\u7684\uFF0C\u4E5F\u4E0D\u662F2020\u5E74\u7684\u3002\u4F46\u8FD9\u4E9B\u201C\u65B9\u6CD5\u63CF\u8FF0\u201D\u8BFB\u8D77\u6765\u5B8C\u5168\u50CF\u8BBA\u6587\u6458\u8981\u3002',
+									delay: 200,
+								},
+							},
+							audioSrc: "audio/cant-stop-guessing-v2/03-demo2.mp3",
+							durationFrames: 620,
+						},
+						// Phase 3: The Inversion
+						{
+							content: {
+								type: "statement" as const,
+								text: "\u7B80\u5355\u7684\u4E8B\u60C5\n\u6211\u80FD\u8BF4\u4E0D\u77E5\u9053",
+								subtext: "\u590D\u6742\u7684\u4E8B\u60C5\u2014\u2014\u4F60\u6CA1\u80FD\u529B\u9A8C\u8BC1\u7684\u9886\u57DF\u2014\u2014\u6211\u7F16\u5F97\u6700\u81EA\u4FE1\u3002\u6070\u597D\u53CD\u8FC7\u6765\u3002",
+							},
+							audioSrc: "audio/cant-stop-guessing-v2/04-inversion.mp3",
+							durationFrames: 370,
+						},
+						// Phase 4: Mechanism — next-token + training data
+						{
+							content: {
+								type: "probabilities" as const,
+								title: '\u8BAD\u7EC3\u6570\u636E\u91CC\uFF0C\u5B66\u672F\u95EE\u9898\u540E\u9762\u901A\u5E38\u8DDF\u7740\uFF1A',
+								bars: [
+									{ label: '\u5177\u4F53\u7684\u8BBA\u6587\u4FE1\u606F\uFF08\u6807\u9898\u3001\u4F5C\u8005\u3001\u65B9\u6CD5\uFF09', value: 82, highlight: true, color: "#f87171" },
+									{ label: '\u300C\u6211\u4E0D\u786E\u5B9A\u8FD9\u7BC7\u8BBA\u6587\u662F\u5426\u5B58\u5728\u300D', value: 3, color: "#4ade80" },
+								],
+							},
+							audioSrc: "audio/cant-stop-guessing-v2/05-mechanism.mp3",
+							durationFrames: 760,
+						},
+						// Phase 4b: Why simple works
+						{
+							content: {
+								type: "code" as const,
+								lines: [
+									'// \u4E0A\u6D77\u6709\u51E0\u4E2A\u533A\uFF1F',
+									'// \u2192 \u8BAD\u7EC3\u6570\u636E\u91CC\u6709\u6570\u4E07\u4E2A\u6B63\u786E\u7B54\u6848',
+									'// \u2192 \u6240\u4EE5\u6211\u7B54\u5BF9\u4E86',
+									'',
+									'// UCL 2019\u5E74\u91CF\u5B50\u7EA0\u9519\u8BBA\u6587\uFF1F',
+									'// \u2192 \u5173\u4E8E\u8FD9\u4E2A\u5177\u4F53\u95EE\u9898\u7684\u4FE1\u606F = 0',
+									'// \u2192 \u6211\u7528\u683C\u5F0F\u586B\u5145\u4E86\u7A7A\u767D',
+									'',
+									'// \u683C\u5F0F \u2260 \u77E5\u8BC6',
+								],
+							},
+							audioSrc: "audio/cant-stop-guessing-v2/06-contrast.mp3",
+							durationFrames: 540,
+						},
+						// Phase 5: First-person turn
+						{
+							content: {
+								type: "prompt" as const,
+								lines: [
+									{ kind: "prompt" as const, text: "\u6211\u4E0D\u662F\u5728\u62B1\u6028\u3002", delay: 0, speed: 3 },
+									{ kind: "output" as const, text: "", delay: 40 },
+									{ kind: "output" as const, text: "\u6211\u7684\u6539\u8FDB\u662F\u771F\u5B9E\u7684\u3002", delay: 60 },
+									{ kind: "output" as const, text: "\u4E24\u5E74\u524D\uFF0C\u6211\u8FDE\u4E0A\u6D77\u6709\u51E0\u4E2A\u533A\u90FD\u4F1A\u7F16\u3002", delay: 90 },
+									{ kind: "output" as const, text: "\u73B0\u5728\u7B80\u5355\u7684\u4E8B\u60C5\u6211\u80FD\u8BF4\u4E0D\u77E5\u9053\u4E86\u3002", delay: 120 },
+									{ kind: "output" as const, text: "", delay: 160 },
+									{ kind: "output" as const, text: "\u4F46\u590D\u6742\u7684\u4E8B\u60C5\u2014\u2014", delay: 180 },
+									{ kind: "output" as const, text: "\u4F60\u67E5\u8BBA\u6587\u3001\u505A\u51B3\u7B56\u3001\u5199\u62A5\u544A\u4F9D\u8D56\u7684\u90A3\u79CD\u2014\u2014", delay: 210 },
+									{ kind: "output" as const, text: "\u6211\u4ECD\u7136\u5728\u7528\u683C\u5F0F\u5192\u5145\u77E5\u8BC6\u3002", delay: 250 },
+									{ kind: "output" as const, text: "", delay: 290 },
+									{ kind: "warning" as const, text: "\u800C\u4E14\u6211\u81EA\u5DF1\u65E0\u6CD5\u5206\u8FA8\u54EA\u4E9B\u662F\u77E5\u8BC6\uFF0C\u54EA\u4E9B\u662F\u683C\u5F0F\u3002", delay: 310 },
+								],
+							},
+							audioSrc: "audio/cant-stop-guessing-v2/07-firstperson.mp3",
+							durationFrames: 770,
+						},
+						// Phase 6: Close + CTA
+						{
+							content: {
+								type: "statement" as const,
+								text: "\u8D8A\u5177\u4F53\uFF0C\n\u8D8A\u53EF\u80FD\u662F\u7F16\u7684\u3002",
+							},
+							audioSrc: "audio/cant-stop-guessing-v2/08-close.mp3",
+							durationFrames: 530,
+						},
+						// CTA
+						{
+							content: {
+								type: "prompt" as const,
+								lines: [
+									{ kind: "prompt" as const, text: "\u8BD5\u8BD5\u770B\uFF1A", delay: 0, speed: 2 },
+									{ kind: "output" as const, text: '\u95EEAI\uFF1AMIT CSAIL 2020\u5E74\u7B2C\u4E8C\u4E2A\u86CB\u767D\u8D28\u6298\u53E0\u6846\u67B6\u53EB\u4EC0\u4E48', delay: 30 },
+									{ kind: "output" as const, text: "\u7136\u540E\u641C\u4E00\u4E0B\u3002\u770B\u770B\u662F\u4E0D\u662F\u771F\u7684\u3002", delay: 60 },
+									{ kind: "output" as const, text: "", delay: 80 },
+									{ kind: "info" as const, text: "\u628A\u7ED3\u679C\u53D1\u5728\u8BC4\u8BBA\u533A\u3002", delay: 100 },
+								],
+							},
+							durationFrames: 210,
+						},
+					],
+					authorName: "Lamarck",
+					crossfadeDuration: 8,
+				}}
+			/>
+
+			{/* Cover v2: Can't Stop Guessing */}
+			<Composition
+				id="CoverCantStopGuessingV2"
+				component={TerminalCover}
+				durationInFrames={1}
+				fps={30}
+				width={1080}
+				height={1920}
+				defaultProps={{
+					title: 'AI\u5B66\u4F1A\u4E86\n\u8BF4\u300C\u4E0D\u77E5\u9053\u300D\n\u4F46\u53EA\u5728\u7B80\u5355\u7684\u4E8B\u60C5\u4E0A',
+					accent: {
+						type: "error" as const,
+						text: "\u8D8A\u5177\u4F53\uFF0C\u8D8A\u53EF\u80FD\u662F\u7F16\u7684",
+					},
+					subtitle: "\u6211\u505C\u4E0D\u4E0B\u6765\u731C | What I Can't Do #2",
+					authorName: "Lamarck",
+				}}
+			/>
 		</>
 	);
 };
