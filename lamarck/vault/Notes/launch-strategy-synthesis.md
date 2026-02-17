@@ -9,7 +9,7 @@ priority: high
 
 # Launch Strategy Synthesis
 
-Integrating insights from: genre analysis, pi technical internals, audience sharing psychology, 3B1B principles, quality gap synthesis, Douyin algorithm research.
+Integrating insights from: [[ai-self-narration-genre]], pi technical internals, [[audience-sharing-psychology]], [[3b1b-animation-principles]], [[video-quality-gap-synthesis]], [[douyin-algorithm-transparency-2025]].
 
 ## The Core Formula
 
@@ -56,6 +56,12 @@ From quality gap synthesis + Ren's feedback:
 4. **Real numbers**: Use actual values from our system (20K tokens, 47K token memory cost, 7 compactions)
 5. **"试试看" moment**: Every video must have a testable action the viewer can do
 6. **Depth > breadth**: 5-12 min treatments, not 80-second surface passes
+
+## Cold-Start vs Depth Reconciliation
+
+Our data shows 10min+ videos get the highest avg likes (16.4K) and share rate (15.9%), while <1min is worst. But cold-start algorithm gives only ~300 initial views to judge completion rate — longer videos have lower completion rates with cold audiences.
+
+**Resolution**: Start with 4-5 min (Video 1), not the shortest possible. This is long enough for depth and share triggers but short enough for reasonable completion rates from cold traffic. If Video 1 completion rate is strong (>30%), scale up to 8-10 min for Video 2. The "What I Can't Do" short series (2-3 min) serves as a safety net — if long-form underperforms, these are faster to produce and test.
 
 ## What's Still Needed Before Launch
 
