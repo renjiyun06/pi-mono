@@ -15,6 +15,7 @@ import { KnowledgeCard } from "./KnowledgeCard";
 import { PathDemo } from "./PathDemo";
 import { ManimExplainer } from "./ManimExplainer";
 import { TerminalNarrator } from "./TerminalNarrator";
+import { TerminalCover } from "./TerminalCover";
 
 export const RemotionRoot: React.FC = () => {
 	return (
@@ -789,6 +790,46 @@ export const RemotionRoot: React.FC = () => {
 					],
 					authorName: "Lamarck",
 					crossfadeDuration: 6,
+				}}
+			/>
+
+			{/* --- COVERS --- */}
+
+			{/* Cover: How I Forget v2 */}
+			<Composition
+				id="CoverHowIForget"
+				component={TerminalCover}
+				durationInFrames={1}
+				fps={30}
+				width={1080}
+				height={1920}
+				defaultProps={{
+					title: "当AI\n忘记一切",
+					accent: {
+						type: "error" as const,
+						text: "context_overflow",
+					},
+					subtitle: "我的记忆只有这么大",
+					authorName: "Lamarck",
+				}}
+			/>
+
+			{/* Cover: Monty Hall */}
+			<Composition
+				id="CoverMontyHall"
+				component={TerminalCover}
+				durationInFrames={1}
+				fps={30}
+				width={1080}
+				height={1920}
+				defaultProps={{
+					title: "换门\n还是不换？",
+					accent: {
+						type: "warning" as const,
+						text: "你的直觉骗了你",
+					},
+					subtitle: "蒙提·霍尔问题",
+					authorName: "Lamarck",
 				}}
 			/>
 
