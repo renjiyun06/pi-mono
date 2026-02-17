@@ -7,5 +7,6 @@ dist/
 content/previews/
 __pycache__/
 tools/media/
+tools/manim/media/
 tools/remotion-video/package-lock.json
 renders/
