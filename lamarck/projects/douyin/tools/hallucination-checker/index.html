@@ -257,21 +257,51 @@ function loadExample(type) {
 }
 
 function extractCitations(text) {
-  // Split by newlines, filter empty
-  const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 10);
-
-  // If few lines, treat each as a citation query
-  if (lines.length <= 10) return lines;
-
-  // If many lines (pasted paragraph), try to extract paper-like references
-  // Look for patterns: Author et al., Year / "Title" / (Year)
   const refs = [];
-  for (const line of lines) {
-    if (/\d{4}/.test(line) && (line.includes(',') || line.includes('.'))) {
-      refs.push(line);
+
+  // 1. Look for quoted titles: "Title Here" or 《Title Here》
+  const quotedTitles = text.match(/["「《]([^"」》]{10,}?)["」》]/g);
+  if (quotedTitles) {
+    for (const qt of quotedTitles) {
+      const clean = qt.replace(/^["「《]|["」》]$/g, '');
+      // Must look like a paper title (not too long, not a regular sentence)
+      if (clean.length < 150 && !clean.includes('？') && !clean.includes('?')) {
+        refs.push(clean);
+      }
     }
   }
-  return refs.length > 0 ? refs : lines.slice(0, 10);
+
+  // 2. Look for citation patterns: Author et al. (Year), Author & Author (Year)
+  const citationPattern = /([A-Z][a-z]+(?:\s+(?:et al\.|&\s+[A-Z][a-z]+))?)\s*[\(（]\s*(\d{4})\s*[\)）]/g;
+  let match;
+  while ((match = citationPattern.exec(text)) !== null) {
+    const surrounding = text.substring(Math.max(0, match.index - 80), match.index + match[0].length + 20);
+    refs.push(surrounding.trim());
+  }
+
+  // 3. Look for reference list entries: numbered items with years
+  const refListPattern = /(?:^|\n)\s*(?:\d+[\.\)）]|\[?\d+\]?)\s*(.+?\d{4}.+?)(?:\n|$)/g;
+  while ((match = refListPattern.exec(text)) !== null) {
+    const entry = match[1].trim();
+    if (entry.length > 15 && entry.length < 300) {
+      refs.push(entry);
+    }
+  }
+
+  // Deduplicate
+  const seen = new Set();
+  const unique = refs.filter(r => {
+    const key = r.toLowerCase().slice(0, 40);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  if (unique.length > 0) return unique.slice(0, 15);
+
+  // Fallback: split by lines, each line is a query
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 10);
+  return lines.slice(0, 10);
 }
 
 async function queryCrossRef(query) {
