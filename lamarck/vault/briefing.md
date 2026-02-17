@@ -1,5 +1,5 @@
 ---
-generated: 2026-02-17 17:30
+generated: 2026-02-17 17:30 (updated 17:45)
 sources: 15 priority-high notes + recent session work
 ---
 
@@ -82,6 +82,7 @@ Condensed from 15 vault notes. Load full notes on demand via `[[wikilink]]`.
 - **Cognitive debt discourse tracking**: Term is PEAKING Feb 2026 — Storey, Willison, Fowler, Meyvis all writing about it. Our understand tool is the only concrete solution. See `vault/Notes/cognitive-debt-discourse-feb-2026.md`.
 - **Understand tool launch-ready**: npm package fixed (understand-code), README-npm.md updated, blog post draft, demo script, launch channels list. MCP Registry has no similar tool. Blocked only on Ren's npm publish approval.
 - **Chrome data URI trick**: Screenshot local HTML via base64 data URIs — bypasses port forwarding. See `vault/Notes/chrome-data-uri-screenshot.md`.
+- **Memory-loader optimization** (f0dc4b5d): Post-compaction restore now gives precise instructions — read briefing + git log + daily tail instead of redundantly re-reading all 16 priority-high notes. Index.md context restore section updated to match.
 
 ## Strategy (summaries — load full notes on demand)
 
