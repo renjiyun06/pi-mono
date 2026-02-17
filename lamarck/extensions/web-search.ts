@@ -16,6 +16,7 @@ import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { Type } from "@sinclair/typebox";
 import { execFileSync } from "node:child_process";
 
+
 interface DdgsResult {
 	title: string;
 	href: string;
