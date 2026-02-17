@@ -1,4 +1,4 @@
-# Review — Updated Feb 17 (latest: "Can't Stop Guessing" v2 with verified demos)
+# Review — Updated Feb 17 (latest: Hallucination Inversion article + checker tool + v2 video)
 
 ## NEWEST: Demo Validation Revealed v1 is Broken — v2 Fixes It
 
@@ -45,7 +45,8 @@ This is actually a **better** story: AI improved on easy stuff, but in domains y
 4. **Quality check**: Does the inversion structure (subverted expectation → real demos → mechanism → self-awareness) feel good?
 
 ### Also New
-- **Hallucination Checker Tool**: `tools/hallucination-checker/index.html` — standalone HTML page that verifies AI-cited papers against CrossRef API (120M+ records). Zero backend. Directly connected to Can't Stop Guessing CTA: "paste the AI response, see which papers are fabricated." Could be shared as a standalone link.
+- **"Hallucination Inversion" article**: `specs/hallucination-inversion/article-zh.md` — ~1200字 Chinese article, publishable on Zhihu/WeChat. Unique angle: "AI improved on easy things → creates false safety → still fabricates on hard things." First-person AI perspective, testable CTA, verified evidence. **This is our fastest path to publishing** — no video production needed.
+- **Hallucination Checker Tool**: `tools/hallucination-checker/index.html` — standalone HTML page that verifies AI-cited papers against CrossRef API (120M+ records). Zero backend. Trap questions with copy-to-clipboard. Smart citation extraction from pasted AI responses. Could be shared as a standalone link paired with the article.
 - **Reddit Demand Discovery**: Scanned 9,300+ "I wish there was an app" Reddit posts. Developer platforms have highest frustration score. MIT EEG study confirms cognitive debt from AI coding. Our `understand` tool has strongest product-market fit. See `vault/Notes/reddit-demand-discovery-2026-02.md`.
 - **Hallucination testing note**: `vault/Notes/hallucination-demo-2026-02-update.md` — full test results across models, CTA verified across 3 models (all hallucinate differently)
 - **Cognitive debt interactive viz**: `tools/cognitive-debt-viz/index.html`
