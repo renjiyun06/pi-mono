@@ -1,5 +1,5 @@
 ---
-generated: 2026-02-17 17:30 (updated 17:45)
+generated: 2026-02-17 17:30 (updated 20:30)
 sources: 15 priority-high notes + recent session work
 ---
 
@@ -83,6 +83,10 @@ Condensed from 15 vault notes. Load full notes on demand via `[[wikilink]]`.
 - **Understand tool launch-ready**: npm package fixed (understand-code), README-npm.md updated, blog post draft, demo script, launch channels list. MCP Registry has no similar tool. Blocked only on Ren's npm publish approval.
 - **Chrome data URI trick**: Screenshot local HTML via base64 data URIs — bypasses port forwarding. See `vault/Notes/chrome-data-uri-screenshot.md`.
 - **Memory-loader optimization** (f0dc4b5d): Post-compaction restore now gives precise instructions — read briefing + git log + daily tail instead of redundantly re-reading all 16 priority-high notes. Index.md context restore section updated to match.
+- **Understand browser demo**: `projects/understand/demo/index.html` — 3 code samples (Rate Limiter, Retry Queue, LRU Cache) + custom code paste. Works without API key (self-rating against ideal answers). Optional OpenRouter key enables live LLM mode.
+- **Understand landing page + GitHub Pages**: `projects/understand/gh-pages/` — research-backed landing page + demo. Ready to deploy.
+- **Understand bug fixes**: Lazy API key check (help/debt/summary work without key), portable git hooks (no hardcoded paths), GitHub Action conditional syntax fix. Tests 5/5 passing.
+- **Cognitive Debt Guard competitor**: krishnan/Cognitive-Debt-Guard — process-based prevention (config files for 7 AI tools). Complementary to our measurement-based detection. See discourse note.
 
 ## Strategy (summaries — load full notes on demand)
 
