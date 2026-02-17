@@ -59,3 +59,5 @@ Free. Open source. Uses your own LLM API key (OpenRouter).
 - [ ] r/programming, r/ExperiencedDevs
 - [ ] Dev.to article
 - [ ] Chinese tech communities (V2EX, Zhihu)
+- [ ] MCP Registry (registry.modelcontextprotocol.io) — no similar tool exists there
+- [ ] Anthropic Discord / Community — our tool validates THEIR research
