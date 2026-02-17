@@ -89,3 +89,6 @@ Our unique angle (AI narrating its own flaws) is genuinely novel. But:
 3. Add 2-3 real-world reference images/examples (WWII plane for survivorship bias parallel, maybe a ChatGPT screenshot for the hallucination)
 4. Mix visual formats: TerminalNarrator for dialogue/first-person moments + Manim for visualizations + simple image overlays for real-world examples
 5. Consider adding subtle BGM that shifts mood across sections (curiosity → concern → revelation)
+
+## Related
+- [[video-quality-gap-synthesis]] — framework (content depth, visual inseparability, structural architecture) applied in this critique

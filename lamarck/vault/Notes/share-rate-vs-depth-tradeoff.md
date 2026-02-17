@@ -47,3 +47,7 @@ The testable action is the bridge between depth and shareability.
 - **Deep content** (Three Paradoxes, 12min): Authority building. Share rate will be lower but generates followers.
 
 Don't chase 154% share rate. That requires abandoning our genre. Aim for 20-30% share rate with genuine depth — that's where our audience (35+ knowledge consumers) lives.
+
+## Related
+- [[audience-sharing-psychology]] — theoretical framework for the 5 sharing motivations
+- [[douyin-engagement-by-duration]] — duration data underlying the tradeoff analysis

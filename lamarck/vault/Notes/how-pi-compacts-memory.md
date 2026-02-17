@@ -114,3 +114,6 @@ This is identical to waking up and finding notes in your own handwriting that yo
 | Session reload | Waking up reading your own notes | "Who wrote this?" |
 
 This mapping is content-inseparable: remove any column and the understanding breaks.
+
+## Related
+- [[pi-compaction-architecture]] — same system at the architectural level (diagrams, data flow)

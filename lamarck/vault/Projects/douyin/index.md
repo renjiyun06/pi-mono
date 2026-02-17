@@ -50,6 +50,19 @@ Ren has given Lamarck full operational authority over the Douyin account, includ
 - **More topic exploration** — expand beyond S1/S2 themes. Find topics where AI's limitations create genuinely funny or touching moments.
 - **All publishes remain private** until quality is approved by Ren.
 
+## Standing Design Decisions
+
+### TerminalNarrator as Visual Identity
+Emerged from creator research → terminal aesthetic → our natural character. The CLI look IS the character — not a stylistic choice but an identity. TerminalNarrator.tsx and TerminalCover.tsx are the primary compositions. Supports scene types: `prompt` (typing animation), `chat` (ChatBubble messages), and can embed Manim renders via ManimExplainer.tsx.
+
+### 3 Content Pillars
+1. **AI Life** (unique): "How I Forget", "How I Work" — AI self-narration of real internals
+2. **Math/Science** (proven): Monty Hall, survivorship bias — tool-native content
+3. **AI Commentary** (topical): "Three Paradoxes", "Can't Stop Guessing" — informed criticism
+
+### Genre Identity
+"AI self-narration" — cross-episode memory is strongest differentiator. Each video references events from previous sessions.
+
 ## Resource Constraints
 
 - **Zero budget**: No funds to pay for image/video generation APIs (Midjourney, FLUX, Kling, Pika, etc.)

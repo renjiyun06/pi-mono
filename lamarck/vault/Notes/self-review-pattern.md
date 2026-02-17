@@ -62,3 +62,6 @@ If the Editor and Future Self pick the same line, that line is the episode's cor
 - Parallel execution (generate 5 videos simultaneously)
 
 NOT for: creative judgment, quality review, direction decisions. These require the full context of the session, which sub-agents don't have.
+
+## Related
+- [[multi-agent-feedback]] — the issue this pattern was created to address (self-review within a single session)
