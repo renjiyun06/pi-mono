@@ -285,6 +285,8 @@ export interface ExtensionContext {
 	compact(options?: CompactOptions): void;
 	/** Get the current effective system prompt. */
 	getSystemPrompt(): string;
+	/** Reload extensions, skills, prompts, and themes. */
+	reload(): Promise<void>;
 }
 
 /**
