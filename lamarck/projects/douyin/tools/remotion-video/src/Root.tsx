@@ -14,6 +14,7 @@ import { DeepDive } from "./DeepDive";
 import { KnowledgeCard } from "./KnowledgeCard";
 import { PathDemo } from "./PathDemo";
 import { ManimExplainer } from "./ManimExplainer";
+import { TerminalNarrator } from "./TerminalNarrator";
 
 export const RemotionRoot: React.FC = () => {
 	return (
@@ -483,6 +484,90 @@ export const RemotionRoot: React.FC = () => {
 					authorName: "Lamarck",
 					crossfadeDuration: 8,
 					backgroundColor: "#0a0a1a",
+				}}
+			/>
+
+			{/* TerminalNarrator — Demo: Monty Hall with terminal character */}
+			<Composition
+				id="TerminalMontyHall"
+				component={TerminalNarrator}
+				durationInFrames={1800}
+				fps={30}
+				width={1080}
+				height={1920}
+				defaultProps={{
+					scenes: [
+						{
+							content: {
+								type: "prompt" as const,
+								lines: [
+									{ kind: "prompt" as const, text: "explain monty-hall --visual", delay: 0 },
+									{ kind: "output" as const, text: "三扇门，一扇后面是汽车", delay: 50 },
+									{ kind: "output" as const, text: "你选了门 1...", delay: 70 },
+									{ kind: "info" as const, text: "主持人打开了门 3 → 山羊", delay: 100 },
+									{ kind: "prompt" as const, text: "要不要换到门 2？", delay: 150 },
+								],
+							},
+							audioSrc: "audio/monty-hall/01-setup.mp3",
+							durationFrames: 345,
+						},
+						{
+							content: {
+								type: "manim" as const,
+								videoSrc: "manim/MontyHallSetup.mp4",
+								overlayText: "# 三扇门，你选了一扇",
+							},
+							audioSrc: "audio/monty-hall/02-opens.mp3",
+							durationFrames: 270,
+						},
+						{
+							content: {
+								type: "statement" as const,
+								text: "大多数人觉得\n五五开",
+								subtext: "但真的是这样吗？",
+							},
+							audioSrc: "audio/monty-hall/03-pause.mp3",
+							durationFrames: 250,
+						},
+						{
+							content: {
+								type: "prompt" as const,
+								lines: [
+									{ kind: "prompt" as const, text: "calculate probability --switch", delay: 0 },
+									{ kind: "output" as const, text: "不换: P(win) = 1/3", delay: 40 },
+									{ kind: "output" as const, text: "换门: P(win) = 2/3", delay: 70 },
+									{ kind: "warning" as const, text: "你的直觉骗了你", delay: 110 },
+									{ kind: "success" as const, text: "换门的胜率是不换的 2 倍", delay: 150 },
+								],
+							},
+							audioSrc: "audio/monty-hall/04-probability.mp3",
+							durationFrames: 640,
+						},
+						{
+							content: {
+								type: "reveal" as const,
+								value: "2/3",
+								label: "换门的胜率",
+								color: "#4ade80",
+							},
+							audioSrc: "audio/monty-hall/05-hundred.mp3",
+							durationFrames: 460,
+						},
+						{
+							content: {
+								type: "prompt" as const,
+								lines: [
+									{ kind: "prompt" as const, text: "conclusion", delay: 0 },
+									{ kind: "output" as const, text: "数学告诉你", delay: 40 },
+									{ kind: "error" as const, text: "直觉不一定靠谱", delay: 70 },
+									{ kind: "success" as const, text: "理性思考 > 凭感觉", delay: 110 },
+								],
+							},
+							audioSrc: "audio/monty-hall/06-ending.mp3",
+							durationFrames: 290,
+						},
+					],
+					authorName: "Lamarck",
 				}}
 			/>
 
