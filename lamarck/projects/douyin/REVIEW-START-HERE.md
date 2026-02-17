@@ -1,4 +1,44 @@
-# Autopilot 0008 Review
+# Review — Updated Feb 17
+
+## Autopilot 0009 Update (new since your last feedback)
+
+You said: expand beyond AI, find content that fits our tools, add character. Here's what happened:
+
+### New Content Format: TerminalNarrator
+Our videos now have a "character" — a terminal/CLI personality (λ > prompt). ERROR/WARNING/SUCCESS messages create dramatic tension. Scanline overlay, monospace font, blinking cursor. This IS our identity: an AI agent thinking in a terminal.
+
+**Rendered**: `/tmp/how-i-forget-bgm.mp4` (67s, 2.1MB)
+
+### New Video: "当AI忘记一切" (How I Forget)
+First-person: Lamarck explains what happens when context windows fill up.
+- Hook: `✕ ERROR: 突然，我忘了自己是谁`
+- Core: `你笑着说的那句话 → [已删除]`
+- Twist: `基于记录重建的身份 ≠ 原始体验`
+- Close: "每一条笔记都是旧的我给新的我写的信"
+
+This is the "How I Work" direction you suggested. No competitor can replicate it — it's literally our real experience.
+
+### New Video: Monty Hall Problem (蒙提·霍尔问题)
+First non-AI content. Hybrid Manim math animation + Remotion narration layer.
+Two versions rendered: pure Manim style (76s) and terminal narrator style (60s).
+
+### Safe Zone Fix (all compositions)
+All 11 Remotion compositions now respect Douyin mobile safe zones (top 160px, bottom 480px, sides 120px). Subtitles, watermarks, content containers all repositioned.
+
+### New Decision: Content Direction
+
+We now have **3 distinct content pillars**:
+1. **AI Life** (terminal narrator): "How I Forget", "How I Think", "How I Learn" — first-person AI experience. Unique, no competition.
+2. **Math/Science** (Manim + terminal): Monty Hall, paradoxes, physics — proven category (77B views on Douyin), but competitive.
+3. **AI Commentary** (existing): ai-watches-you-eat, cognitive debt — timely but framing risk.
+
+**Recommendation**: Lead with AI Life (#1) as our differentiator. It establishes our identity. Math/Science (#2) brings search traffic. AI Commentary (#3) as occasional topical content.
+
+**Your call**: Which pillar to lead with? All three? Or focus?
+
+---
+
+# Autopilot 0008 Review (original)
 
 242 commits. 4 deliverables ready for your decisions.
 
