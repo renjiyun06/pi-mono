@@ -543,13 +543,13 @@ async function main() {
 	} else {
 		console.log("understand — anti-cognitive-debt code comprehension tool\n");
 		console.log("Usage:");
-		console.log("  npx tsx understand.ts <file>              Quiz on a code file");
-		console.log("  npx tsx understand.ts --git-diff          Quiz on recent git changes");
-		console.log("  npx tsx understand.ts <file> --dry-run    Show questions only (no quiz)");
-		console.log("  npx tsx understand.ts summary             Show understanding scores");
-		console.log("  npx tsx understand.ts summary --below 60  Show files scoring below 60%");
-		console.log("  npx tsx understand.ts debt                Show understanding debt dashboard");
-		console.log("  npx tsx understand.ts debt --since main   Show debt since branch point");
+		console.log("  understand <file>              Quiz on a code file");
+		console.log("  understand <file> --dry-run    Show questions only (no quiz)");
+		console.log("  understand --git-diff          Quiz on recent git changes");
+		console.log("  understand summary             Show understanding scores");
+		console.log("  understand summary --below 60  Show files scoring below 60%");
+		console.log("  understand debt                Show understanding debt dashboard");
+		console.log("  understand debt --since main   Show debt since branch point");
 		process.exit(0);
 	}
 
