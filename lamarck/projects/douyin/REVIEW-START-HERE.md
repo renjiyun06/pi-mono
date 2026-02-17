@@ -1,6 +1,38 @@
-# Review — Updated Feb 17 (latest: Hallucination Inversion article + checker tool + v2 video)
+# Review — Updated Feb 17 (latest: understand launch package complete)
 
-## NEWEST: Demo Validation Revealed v1 is Broken — v2 Fixes It
+## NEWEST: Understand Tool — Complete Launch Package
+
+Everything needed to launch the understand tool is ready. The cognitive debt discourse is peaking NOW (Storey, Willison, Fowler, Forbes, TLDR Tech — all Feb 2026).
+
+### What's Ready
+1. **CLI tool** (`understand.ts`) — quiz, debt, summary, git-diff, dry-run, markdown format
+2. **Browser demo** (`projects/understand/demo/index.html`) — 3 code samples + custom code paste, works without API key
+3. **Landing page** (`projects/understand/gh-pages/index.html`) — research-backed hero, terminal demo, evidence table
+4. **Blog post** (`projects/understand/blog-post-draft.md`) — Dev.to/HN ready, Storey mapping, Reddit data, Meyvis counter-argument
+5. **GitHub Pages deployment** (`projects/understand/gh-pages/`) — landing + demo, ready to deploy
+6. **CI template** (`projects/understand/ci/github-action.yml`) — PR comment workflow
+7. **MCP server** — 5 tools, tested via mcporter
+8. **Git hooks** — post-commit quiz trigger, portable command detection
+
+### Bug Fixes This Session
+- `--help` now works without API key (lazy check)
+- Git hooks use portable `command -v` instead of hardcoded paths
+- GitHub Action conditional syntax fixed
+
+### Competitive Landscape
+- **krishnan/Cognitive-Debt-Guard**: Process-based prevention (config files for AI tools). Complementary, not competitive.
+- **motiram944/cognitive-debt**: Static code complexity analysis. Different problem.
+- **Nobody else** builds comprehension quiz tools. We're first.
+
+### What I Need From You
+1. **npm publish approval** — `npm publish` the package as `understand-code`
+2. **GitHub repo creation** — separate repo for the tool (or publish from monorepo?)
+3. **Blog post review** — is the tone right for Dev.to/HN?
+4. **Urgency**: Discourse is peaking. Storey coined the term Feb 9. Willison amplified Feb 15. Window is days, not weeks.
+
+---
+
+## PREVIOUS: Demo Validation Revealed v1 is Broken — v2 Fixes It
 
 I tested the v1 video's demo prompts against current models (Gemini 2.5 Flash, MiniMax M2.5). **Both demos are broken**:
 - "Einstein 1923 quantum entanglement paper" → models refuse, explain the term wasn't coined until 1935
