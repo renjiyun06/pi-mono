@@ -84,11 +84,13 @@ const Cursor: React.FC<{ color?: string }> = ({
 };
 
 /**
- * Typewriter effect — reveals text character by character
+ * Typewriter effect — reveals text character by character.
+ * speed=0 means instant (all text appears at once).
+ * speed=1 is fast, speed=4 is slow/dramatic.
  */
 const TypeWriter: React.FC<{
 	text: string;
-	/** Frames per character */
+	/** Frames per character. 0 = instant. */
 	speed?: number;
 	color?: string;
 	fontSize?: number;
@@ -104,7 +106,12 @@ const TypeWriter: React.FC<{
 }) => {
 	const frame = useCurrentFrame();
 	const elapsed = Math.max(0, frame - startFrame);
-	const charsToShow = Math.min(Math.floor(elapsed / speed), text.length);
+
+	// speed=0 means instant reveal
+	const charsToShow =
+		speed === 0
+			? text.length
+			: Math.min(Math.floor(elapsed / speed), text.length);
 	const isTyping = charsToShow < text.length;
 
 	return (
@@ -374,6 +381,8 @@ type TerminalSceneType =
 				text: string;
 				/** Delay in frames before this line appears */
 				delay?: number;
+				/** Typing speed override: 0=instant, 1=fast, 2=normal, 4=slow/dramatic */
+				speed?: number;
 			}>;
 	  }
 	| {
@@ -439,7 +448,8 @@ const SceneContent: React.FC<{
 				>
 					{content.lines.map((line, i) => {
 						const delay = line.delay ?? accDelay;
-						accDelay = delay + (line.kind === "prompt" ? 60 : 20);
+						const lineSpeed = line.speed ?? 2;
+						accDelay = delay + (line.kind === "prompt" ? (lineSpeed === 0 ? 10 : Math.max(10, Math.ceil(line.text.length * lineSpeed) + 10)) : 20);
 
 						switch (line.kind) {
 							case "prompt":
@@ -448,6 +458,7 @@ const SceneContent: React.FC<{
 										key={i}
 										text={line.text}
 										startFrame={delay}
+										speed={lineSpeed}
 									/>
 								);
 							case "error":
