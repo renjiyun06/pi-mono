@@ -1346,7 +1346,10 @@ const ImageScene: React.FC<{
 	);
 };
 
-// Subtitle overlay — narration text at bottom, Douyin-style
+// Subtitle overlay — narration text at bottom, Douyin-style karaoke highlight
+// Characters progressively light up from dim to bright as TTS speaks them.
+// Timing is approximate: evenly distributed across the scene duration minus
+// fade margins. Close enough that viewers won't notice ±50ms error.
 const SubtitleOverlay: React.FC<{
 	text: string;
 	durationFrames: number;
@@ -1364,6 +1367,13 @@ const SubtitleOverlay: React.FC<{
 		[1, 0],
 		{ extrapolateLeft: "clamp", extrapolateRight: "clamp" },
 	);
+
+	// Karaoke progress: characters light up over the speech portion of the scene.
+	// Speech starts after fade-in (frame 8) and ends before fade-out.
+	const speechStart = 8;
+	const speechEnd = Math.max(speechStart + 1, durationFrames - 12);
+	const chars = [...text]; // proper unicode split
+	const framesPerChar = chars.length > 0 ? (speechEnd - speechStart) / chars.length : 1;
 
 	return (
 		<div
@@ -1385,18 +1395,34 @@ const SubtitleOverlay: React.FC<{
 					background: "rgba(0,0,0,0.5)",
 				}}
 			>
-				<span
-					style={{
-						fontSize: 26,
-						fontWeight: 500,
-						color: "rgba(255,255,255,0.85)",
-						lineHeight: 1.6,
-						fontFamily: '"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
-						textShadow: "0 1px 4px rgba(0,0,0,0.6)",
-					}}
-				>
-					{text}
-				</span>
+				{chars.map((char, i) => {
+					const charFrame = speechStart + i * framesPerChar;
+					// Each character transitions from dim (0.35) to bright (1.0) over ~4 frames
+					const brightness = interpolate(
+						frame,
+						[charFrame, charFrame + 4],
+						[0.35, 1],
+						{ extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+					);
+					return (
+						<span
+							key={`${i}-${char}`}
+							style={{
+								fontSize: 26,
+								fontWeight: 500,
+								color: `rgba(255,255,255,${brightness})`,
+								lineHeight: 1.6,
+								fontFamily: '"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
+								textShadow: brightness > 0.7
+									? `0 0 8px ${accentColor}40, 0 1px 4px rgba(0,0,0,0.6)`
+									: "0 1px 4px rgba(0,0,0,0.6)",
+								transition: "none",
+							}}
+						>
+							{char}
+						</span>
+					);
+				})}
 			</div>
 		</div>
 	);
