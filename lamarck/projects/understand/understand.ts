@@ -56,11 +56,14 @@ function loadEnvFile(): void {
 }
 loadEnvFile();
 
-const API_KEY = process.env.OPENROUTER_API_KEY;
-if (!API_KEY) {
-	console.error("Error: OPENROUTER_API_KEY not set.");
-	console.error("Set it in your environment, or create a .env file in your project root.");
-	process.exit(1);
+function getApiKey(): string {
+	const key = process.env.OPENROUTER_API_KEY;
+	if (!key) {
+		console.error("Error: OPENROUTER_API_KEY not set.");
+		console.error("Set it in your environment, or create a .env file in your project root.");
+		process.exit(1);
+	}
+	return key;
 }
 const MODEL = process.env.UNDERSTAND_MODEL || "anthropic/claude-sonnet-4";
 
@@ -75,7 +78,7 @@ async function llm(messages: Message[]): Promise<string> {
 	const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
 		method: "POST",
 		headers: {
-			Authorization: `Bearer ${API_KEY}`,
+			Authorization: `Bearer ${getApiKey()}`,
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({

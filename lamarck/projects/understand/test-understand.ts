@@ -6,10 +6,12 @@
 
 import { execSync } from "child_process";
 import { existsSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "fs";
-import { resolve } from "path";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
 
-const CLI = resolve(import.meta.dirname, "understand.ts");
-const TEST_DIR = resolve(import.meta.dirname, ".test-tmp");
+const __dirname = typeof import.meta.dirname === "string" ? import.meta.dirname : dirname(fileURLToPath(import.meta.url));
+const CLI = resolve(__dirname, "understand.ts");
+const TEST_DIR = resolve(__dirname, ".test-tmp");
 
 let passed = 0;
 let failed = 0;
