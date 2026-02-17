@@ -70,6 +70,28 @@ The key boundary: **replacement vs extension**. When AI replaces human capabilit
 - "Every type of AI debt follows the same pattern" — unifying piece
 - This is the intellectual differentiator: nobody else has connected ALL six
 
+## The Meta-Insight: The Improvement IS the Danger
+
+All six types share a deeper pattern beyond "benefit → cost → compound → crisis":
+
+**The benefit itself is what creates the danger.** Not a side effect. Not an unrelated cost. The improvement directly causes the problem.
+
+| Type | The Improvement | How It Creates Danger |
+|------|----------------|----------------------|
+| Cognitive | AI writes code faster | Less reading → skill atrophy |
+| Hallucination | AI refuses obvious lies | False safety → harder-to-detect failures |
+| Social | AI companions reduce loneliness | Frictionless validation → social skill atrophy |
+| Organizational | Each agent adds measurable value | Total system becomes unobservable |
+| Creative | Individual output improves | Collective output homogenizes |
+| Talent Pipeline | Senior devs more productive | Junior roles eliminated → future talent gap |
+
+This is Goodhart's Law applied to AI adoption: when you optimize for a metric (speed, safety, companionship, agent count, output quality, productivity), the metric improves but the underlying capability degrades.
+
+**Nobody else has connected all six.** Individual types are being covered by Storey (cognitive), De Freitas (social), Kreminski (creative), etc. The PATTERN is our unique contribution.
+
 ## Why This Framework Matters
 
-Every individual insight (cognitive debt, hallucination, social debt) is being covered by other people. But the PATTERN — that all six follow the same mechanism (replacement → invisible cost → compounding → crisis) — is our unique contribution. The framework is worth more than any individual type.
+The framework is more powerful than any individual type because:
+1. It predicts new debt types (any AI benefit that replaces rather than extends human capability will follow the same pattern)
+2. It provides a diagnostic: "Is this AI replacing or extending a human capability?"
+3. It unifies otherwise unrelated research streams into one coherent thesis
