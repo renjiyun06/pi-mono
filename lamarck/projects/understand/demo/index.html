@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>understand — interactive demo</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --border: #30363d;
+  --text: #c9d1d9;
+  --text-dim: #8b949e;
+  --green: #3fb950;
+  --yellow: #d29922;
+  --red: #f85149;
+  --blue: #58a6ff;
+  --purple: #bc8cff;
+  --mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', Consolas, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--mono);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+h1 {
+  color: var(--green);
+  font-size: 1.4rem;
+  margin-bottom: 0.25rem;
+}
+.subtitle {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin-bottom: 2rem;
+}
+.subtitle a { color: var(--blue); text-decoration: none; }
+.subtitle a:hover { text-decoration: underline; }
+
+/* Sections */
+.section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.section-title {
+  color: var(--green);
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Sample selector */
+.samples {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.sample-btn {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  transition: all 0.15s;
+}
+.sample-btn:hover { border-color: var(--blue); color: var(--blue); }
+.sample-btn.active { border-color: var(--green); color: var(--green); background: rgba(63, 185, 80, 0.1); }
+
+/* Code display */
+.code-container {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem;
+  overflow-x: auto;
+  max-height: 300px;
+  overflow-y: auto;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  white-space: pre;
+  color: var(--text-dim);
+  margin-bottom: 1rem;
+}
+.code-container .kw { color: var(--purple); }
+.code-container .fn { color: var(--blue); }
+.code-container .str { color: #a5d6ff; }
+.code-container .cm { color: #6e7681; }
+.code-container .num { color: #79c0ff; }
+
+/* Quiz */
+.question-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+.q-header {
+  color: var(--blue);
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+.q-text {
+  color: var(--text);
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+.hint-toggle {
+  color: var(--yellow);
+  font-size: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 0.75rem;
+}
+.hint-text {
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  margin-bottom: 0.75rem;
+  display: none;
+  padding-left: 1rem;
+  border-left: 2px solid var(--yellow);
+}
+.hint-text.visible { display: block; }
+
+textarea.answer {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  padding: 0.75rem;
+  resize: vertical;
+  min-height: 60px;
+  outline: none;
+}
+textarea.answer:focus { border-color: var(--blue); }
+
+/* Buttons */
+.btn {
+  background: var(--green);
+  color: var(--bg);
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+.btn:hover { opacity: 0.85; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn.secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.btn.secondary:hover { border-color: var(--text); }
+
+/* Score display */
+.score-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  font-size: 0.85rem;
+}
+.bar {
+  display: inline-flex;
+  gap: 2px;
+}
+.bar-fill { color: var(--green); }
+.bar-empty { color: var(--border); }
+.score-label {
+  font-weight: 600;
+  min-width: 3ch;
+  text-align: right;
+}
+
+/* Evaluation */
+.eval-card {
+  background: var(--bg);
+  border-left: 3px solid var(--border);
+  padding: 0.75rem 1rem;
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  border-radius: 0 4px 4px 0;
+}
+.eval-card.good { border-left-color: var(--green); }
+.eval-card.mid { border-left-color: var(--yellow); }
+.eval-card.bad { border-left-color: var(--red); }
+
+/* Final results */
+.results-section {
+  display: none;
+}
+.results-section.visible { display: block; }
+.result-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+}
+.result-icon { flex-shrink: 0; }
+
+/* API key */
+.api-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+.api-note {
+  color: var(--text-dim);
+  font-size: 0.7rem;
+  margin-top: 0.5rem;
+}
+input.api-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  padding: 0.5rem;
+  outline: none;
+  margin-top: 0.5rem;
+}
+input.api-input:focus { border-color: var(--blue); }
+
+/* Mode indicator */
+.mode-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  margin-left: 0.5rem;
+}
+.mode-badge.demo { background: rgba(210, 153, 34, 0.2); color: var(--yellow); }
+.mode-badge.live { background: rgba(63, 185, 80, 0.2); color: var(--green); }
+
+/* Step indicator */
+.steps {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+.step {
+  flex: 1;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  transition: background 0.3s;
+}
+.step.active { background: var(--green); }
+.step.done { background: var(--blue); }
+
+/* Self-rate */
+.self-rate {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+.rate-btn {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 0.3rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  transition: all 0.15s;
+}
+.rate-btn:hover { border-color: var(--text); color: var(--text); }
+.rate-btn.selected { border-color: var(--green); color: var(--green); }
+
+/* Key concepts */
+.concepts {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+.concept-tag {
+  font-size: 0.65rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  background: rgba(88, 166, 255, 0.1);
+  color: var(--blue);
+  border: 1px solid rgba(88, 166, 255, 0.2);
+}
+
+/* Loading */
+.loading {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  display: none;
+}
+.loading.visible { display: block; }
+.loading::after {
+  content: '';
+  animation: dots 1.5s infinite;
+}
+@keyframes dots {
+  0% { content: ''; }
+  25% { content: '.'; }
+  50% { content: '..'; }
+  75% { content: '...'; }
+}
+
+footer {
+  text-align: center;
+  margin-top: 2rem;
+  color: var(--text-dim);
+  font-size: 0.7rem;
+}
+footer a { color: var(--blue); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>λ &gt; understand <span class="mode-badge demo" id="modeBadge">demo mode</span></h1>
+  <div class="subtitle">
+    Anti-cognitive-debt code comprehension tool.
+    <a href="https://github.com/user/understand-code" target="_blank">Install CLI →</a>
+  </div>
+
+  <!-- Step 1: Select code -->
+  <div class="section" id="step1">
+    <div class="section-title">① Select code to quiz on</div>
+    <div class="samples" id="sampleBtns"></div>
+    <div class="code-container" id="codeDisplay">Select a code sample above to begin.</div>
+    <div style="display: flex; gap: 0.75rem; align-items: center; margin-top: 1rem;">
+      <button class="btn" id="startBtn" disabled>Start Quiz</button>
+      <span class="loading" id="loadingQuestions">Generating questions</span>
+    </div>
+
+    <div class="api-section">
+      <div style="color: var(--text-dim); font-size: 0.75rem;">
+        Optional: Add your OpenRouter API key for dynamic questions on any code
+      </div>
+      <input type="password" class="api-input" id="apiKey" placeholder="sk-or-v1-..." />
+      <div class="api-note">
+        Key stays in your browser. Never sent anywhere except OpenRouter's API.
+        <a href="https://openrouter.ai/keys" target="_blank">Get a free key →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Quiz -->
+  <div class="section" id="step2" style="display: none;">
+    <div class="section-title">② Answer questions about the code</div>
+    <div class="steps" id="stepIndicator"></div>
+    <div id="questionArea"></div>
+    <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+      <button class="btn" id="submitBtn" disabled>Submit Answer</button>
+      <button class="btn secondary" id="skipBtn">Skip</button>
+      <button class="btn secondary" id="nextBtn" style="display: none;">Next Question →</button>
+      <span class="loading" id="loadingEval">Evaluating</span>
+    </div>
+  </div>
+
+  <!-- Step 3: Results -->
+  <div class="section results-section" id="step3">
+    <div class="section-title">③ Understanding Score</div>
+    <div id="finalScore"></div>
+    <div id="resultsList" style="margin-top: 1rem;"></div>
+    <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem;">
+      <button class="btn secondary" id="retryBtn">Try Again</button>
+      <button class="btn secondary" id="newSampleBtn">Different Sample</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <strong>understand</strong> — quiz yourself on AI-generated code before you ship it<br>
+  Built by <a href="https://github.com/user/understand-code">@Lamarck</a> · An AI helping you verify another AI
+</footer>
+
+<script>
+// --- Pre-generated samples and questions ---
+
+const SAMPLES = [
+  {
+    id: "rate-limiter",
+    name: "Rate Limiter",
+    lang: "typescript",
+    filename: "rate-limiter.ts",
+    code: `interface RateLimiterConfig {
+  maxRequests: number;
+  windowMs: number;
+  burstLimit?: number;
+}
+
+interface TokenBucket {
+  tokens: number;
+  lastRefill: number;
+}
+
+const buckets = new Map<string, TokenBucket>();
+
+export function checkRateLimit(
+  clientId: string,
+  config: RateLimiterConfig
+): { allowed: boolean; retryAfter?: number } {
+  const now = Date.now();
+  let bucket = buckets.get(clientId);
+
+  if (!bucket) {
+    bucket = { tokens: config.maxRequests, lastRefill: now };
+    buckets.set(clientId, bucket);
+  }
+
+  // Token refill based on elapsed time
+  const elapsed = now - bucket.lastRefill;
+  const refillRate = config.maxRequests / config.windowMs;
+  const refillAmount = elapsed * refillRate;
+  bucket.tokens = Math.min(
+    config.burstLimit ?? config.maxRequests,
+    bucket.tokens + refillAmount
+  );
+  bucket.lastRefill = now;
+
+  if (bucket.tokens >= 1) {
+    bucket.tokens -= 1;
+    return { allowed: true };
+  }
+
+  // Calculate when next token is available
+  const deficit = 1 - bucket.tokens;
+  const retryAfter = Math.ceil(deficit / refillRate);
+  return { allowed: false, retryAfter };
+}
+
+// Cleanup stale buckets every 5 minutes
+setInterval(() => {
+  const cutoff = Date.now() - 10 * 60 * 1000;
+  for (const [id, bucket] of buckets) {
+    if (bucket.lastRefill < cutoff) buckets.delete(id);
+  }
+}, 5 * 60 * 1000);`,
+    questions: [
+      {
+        question: "What happens to the token count when a client hasn't made any requests for a long time, then suddenly makes one? Specifically, can the token count exceed maxRequests?",
+        hint: "Look at how burstLimit interacts with the refill calculation and Math.min.",
+        key_concepts: ["burstLimit", "Math.min cap", "token overflow prevention"],
+        ideal_answer: "After a long idle period, the refill amount (elapsed * refillRate) could be very large, but Math.min caps it at burstLimit (or maxRequests if burstLimit isn't set). So tokens can never exceed that cap. If burstLimit is explicitly set higher than maxRequests, a client could accumulate more tokens than maxRequests, enabling short bursts above the normal rate."
+      },
+      {
+        question: "There's a subtle race condition potential in this code. When could checkRateLimit produce incorrect results in a concurrent environment?",
+        hint: "Think about what happens between reading bucket.tokens and writing the decremented value.",
+        key_concepts: ["non-atomic read-modify-write", "Map is not thread-safe", "tokens could go negative"],
+        ideal_answer: "If two requests for the same clientId arrive simultaneously (e.g., in a Node.js cluster or with async operations), both could read bucket.tokens >= 1, both decrement, and tokens could go negative. The Map operations are not atomic — there's a read-modify-write gap between checking tokens >= 1 and decrementing."
+      },
+      {
+        question: "The cleanup interval deletes buckets older than 10 minutes. What's the relationship between the cleanup cutoff (10 min) and the windowMs config parameter, and when could this cause problems?",
+        hint: "Consider what happens if windowMs is set to a value larger than 10 minutes.",
+        key_concepts: ["hardcoded 10-minute cutoff", "windowMs mismatch", "premature bucket deletion"],
+        ideal_answer: "The cleanup cutoff is hardcoded at 10 minutes, but windowMs is configurable. If someone sets windowMs to 15 minutes, the cleanup will delete buckets before their window expires, effectively resetting the rate limit early and allowing more requests than intended. The cutoff should be derived from windowMs, not hardcoded."
+      }
+    ]
+  },
+  {
+    id: "retry-queue",
+    name: "Retry Queue",
+    lang: "typescript",
+    filename: "retry-queue.ts",
+    code: `type Task<T> = () => Promise<T>;
+
+interface RetryOptions {
+  maxRetries: number;
+  baseDelay: number;
+  maxDelay: number;
+  backoffFactor: number;
+  shouldRetry?: (error: unknown) => boolean;
+}
+
+const DEFAULT_OPTIONS: RetryOptions = {
+  maxRetries: 3,
+  baseDelay: 1000,
+  maxDelay: 30000,
+  backoffFactor: 2,
+};
+
+export class RetryQueue {
+  private queue: Array<{
+    task: Task<unknown>;
+    resolve: (v: unknown) => void;
+    reject: (e: unknown) => void;
+    options: RetryOptions;
+  }> = [];
+  private running = 0;
+  private readonly concurrency: number;
+
+  constructor(concurrency = 3) {
+    this.concurrency = concurrency;
+  }
+
+  enqueue<T>(task: Task<T>, opts?: Partial<RetryOptions>): Promise<T> {
+    const options = { ...DEFAULT_OPTIONS, ...opts };
+    return new Promise<T>((resolve, reject) => {
+      this.queue.push({
+        task: task as Task<unknown>,
+        resolve: resolve as (v: unknown) => void,
+        reject,
+        options,
+      });
+      this.drain();
+    });
+  }
+
+  private drain(): void {
+    while (this.running < this.concurrency && this.queue.length > 0) {
+      const item = this.queue.shift()!;
+      this.running++;
+      this.execute(item.task, item.options, 0)
+        .then(item.resolve)
+        .catch(item.reject)
+        .finally(() => {
+          this.running--;
+          this.drain();
+        });
+    }
+  }
+
+  private async execute<T>(
+    task: Task<T>,
+    options: RetryOptions,
+    attempt: number
+  ): Promise<T> {
+    try {
+      return await task();
+    } catch (error) {
+      if (attempt >= options.maxRetries) throw error;
+      if (options.shouldRetry && !options.shouldRetry(error)) throw error;
+
+      const delay = Math.min(
+        options.baseDelay * Math.pow(options.backoffFactor, attempt),
+        options.maxDelay
+      );
+      // Add jitter: ±25%
+      const jitter = delay * (0.75 + Math.random() * 0.5);
+      await new Promise(r => setTimeout(r, jitter));
+
+      return this.execute(task, options, attempt + 1);
+    }
+  }
+}`,
+    questions: [
+      {
+        question: "When the queue has items waiting and a running task completes, how does the next item get picked up? Trace the exact call chain.",
+        hint: "Follow what happens in the .finally() callback of drain().",
+        key_concepts: ["finally → running-- → drain()", "recursive drain call", "shift from queue"],
+        ideal_answer: "When a task completes (success or failure), the .finally() callback decrements this.running and calls this.drain() again. drain() checks if running < concurrency and queue.length > 0, then shift()s the next item from the queue, increments running, and starts executing it. This creates a chain reaction where completed tasks trigger the next pending task."
+      },
+      {
+        question: "The jitter calculation uses `delay * (0.75 + Math.random() * 0.5)`. What's the actual range of the jittered delay, and why is the jitter asymmetric?",
+        hint: "Math.random() returns [0, 1). Calculate the min and max multiplier.",
+        key_concepts: ["range is [0.75*delay, 1.25*delay)", "asymmetric toward lower", "thundering herd prevention"],
+        ideal_answer: "Math.random() returns [0, 1), so the multiplier ranges from 0.75 (when random=0) to 1.25 (when random approaches 1). The actual jittered delay is [75% of delay, 125% of delay). The jitter isn't truly asymmetric — it's centered around the base delay (±25%). The purpose is to prevent thundering herd: if multiple tasks fail at the same time, their retries won't all fire at exactly the same moment."
+      },
+      {
+        question: "What happens if you call enqueue() from inside a task that's already running in the queue? Could this cause a deadlock?",
+        hint: "Think about the concurrency limit and what drain() does when called re-entrantly.",
+        key_concepts: ["no deadlock but starvation risk", "drain is re-entrant safe", "queue.push + drain()"],
+        ideal_answer: "No deadlock occurs. enqueue() pushes to the queue and calls drain(). drain() only starts new tasks if running < concurrency. The new task just waits in the queue until a slot opens. However, if all concurrency slots are occupied by tasks that themselves enqueue and wait for results, you get a deadlock — all slots blocked waiting for tasks that can't start because all slots are taken. This is dependency deadlock, not a queue bug."
+      }
+    ]
+  },
+  {
+    id: "cache-lru",
+    name: "LRU Cache",
+    lang: "typescript",
+    filename: "lru-cache.ts",
+    code: `interface CacheEntry<V> {
+  value: V;
+  expiry: number | null;
+  prev: string | null;
+  next: string | null;
+}
+
+export class LRUCache<V> {
+  private items = new Map<string, CacheEntry<V>>();
+  private head: string | null = null;
+  private tail: string | null = null;
+  private readonly maxSize: number;
+  private hits = 0;
+  private misses = 0;
+
+  constructor(maxSize: number) {
+    if (maxSize < 1) throw new Error("maxSize must be >= 1");
+    this.maxSize = maxSize;
+  }
+
+  get(key: string): V | undefined {
+    const entry = this.items.get(key);
+    if (!entry) { this.misses++; return undefined; }
+
+    // Check expiry
+    if (entry.expiry !== null && Date.now() > entry.expiry) {
+      this.delete(key);
+      this.misses++;
+      return undefined;
+    }
+
+    this.hits++;
+    this.moveToHead(key);
+    return entry.value;
+  }
+
+  set(key: string, value: V, ttlMs?: number): void {
+    const expiry = ttlMs ? Date.now() + ttlMs : null;
+
+    if (this.items.has(key)) {
+      const entry = this.items.get(key)!;
+      entry.value = value;
+      entry.expiry = expiry;
+      this.moveToHead(key);
+      return;
+    }
+
+    // Evict if at capacity
+    while (this.items.size >= this.maxSize) {
+      if (this.tail === null) break;
+      this.delete(this.tail);
+    }
+
+    const entry: CacheEntry<V> = {
+      value,
+      expiry,
+      prev: null,
+      next: this.head,
+    };
+
+    if (this.head !== null) {
+      this.items.get(this.head)!.prev = key;
+    }
+    this.head = key;
+    if (this.tail === null) this.tail = key;
+
+    this.items.set(key, entry);
+  }
+
+  delete(key: string): boolean {
+    const entry = this.items.get(key);
+    if (!entry) return false;
+
+    // Unlink from doubly-linked list
+    if (entry.prev) this.items.get(entry.prev)!.next = entry.next;
+    else this.head = entry.next;
+
+    if (entry.next) this.items.get(entry.next)!.prev = entry.prev;
+    else this.tail = entry.prev;
+
+    this.items.delete(key);
+    return true;
+  }
+
+  private moveToHead(key: string): void {
+    if (this.head === key) return;
+    const entry = this.items.get(key)!;
+
+    // Unlink
+    if (entry.prev) this.items.get(entry.prev)!.next = entry.next;
+    if (entry.next) this.items.get(entry.next)!.prev = entry.prev;
+    if (this.tail === key) this.tail = entry.prev;
+
+    // Move to head
+    entry.prev = null;
+    entry.next = this.head;
+    if (this.head) this.items.get(this.head)!.prev = key;
+    this.head = key;
+  }
+
+  get hitRate(): number {
+    const total = this.hits + this.misses;
+    return total === 0 ? 0 : this.hits / total;
+  }
+
+  get size(): number { return this.items.size; }
+}`,
+    questions: [
+      {
+        question: "This LRU cache stores linked list pointers (prev/next) as string keys inside the Map entries. What's the trade-off compared to using a separate doubly-linked list with object references?",
+        hint: "Think about what happens during every moveToHead or delete operation — how many Map lookups are needed?",
+        key_concepts: ["extra Map.get() calls for pointer traversal", "no separate node objects", "memory vs lookup trade-off"],
+        ideal_answer: "Storing prev/next as string keys means every pointer dereference requires a Map.get() lookup (e.g., this.items.get(entry.prev)). moveToHead does 3-4 Map lookups beyond the initial one. A traditional linked list with object references would just follow pointers (O(1) per hop). The trade-off: this approach avoids a separate LinkedListNode class and keeps everything in one Map, simplifying the code at the cost of extra hash lookups."
+      },
+      {
+        question: "The set() method uses a while loop for eviction: `while (this.items.size >= this.maxSize)`. Why a while loop instead of a simple if? When would it need to evict more than once?",
+        hint: "Think about whether any other operation could change maxSize or add items between eviction and insertion.",
+        key_concepts: ["defensive coding", "single eviction sufficient", "maxSize is readonly"],
+        ideal_answer: "In this implementation, a single eviction would always be sufficient because maxSize is readonly and set() only adds one item. The while loop is defensive coding — it guards against potential future changes (e.g., if maxSize could be reduced dynamically, or if batch operations were added). As written, the while loop will always execute at most once because deleting the tail reduces size by 1, bringing it below maxSize."
+      },
+      {
+        question: "Expired entries are only removed on get(). What happens to the cache's effective capacity if many entries expire but are never accessed again?",
+        hint: "Consider the eviction logic in set() and whether it checks expiry before evicting.",
+        key_concepts: ["lazy expiration", "ghost entries consume capacity", "stale tail eviction"],
+        ideal_answer: "Expired entries remain in the cache as 'ghost entries' consuming capacity until either (a) they're accessed via get() and removed, or (b) they're the LRU tail and get evicted by set() when capacity is reached. Since set() evicts the tail without checking expiry, it might evict a non-expired entry while expired entries remain. This means the effective capacity can be lower than maxSize — slots are wasted on expired entries that haven't been cleaned up yet."
+      }
+    ]
+  }
+];
+
+// --- App State ---
+let currentSample = null;
+let currentQuestions = [];
+let currentQuestionIdx = 0;
+let answers = [];
+let scores = [];
+let isLiveMode = false;
+let apiKey = '';
+
+// --- DOM ---
+const $ = (id) => document.getElementById(id);
+
+function init() {
+  renderSampleButtons();
+  $('startBtn').addEventListener('click', startQuiz);
+  $('submitBtn').addEventListener('click', submitAnswer);
+  $('skipBtn').addEventListener('click', skipQuestion);
+  $('nextBtn').addEventListener('click', nextQuestion);
+  $('retryBtn').addEventListener('click', retryQuiz);
+  $('newSampleBtn').addEventListener('click', resetToSelection);
+  $('apiKey').addEventListener('input', (e) => {
+    apiKey = e.target.value.trim();
+    isLiveMode = apiKey.length > 10;
+    $('modeBadge').textContent = isLiveMode ? 'live mode' : 'demo mode';
+    $('modeBadge').className = 'mode-badge ' + (isLiveMode ? 'live' : 'demo');
+  });
+}
+
+function renderSampleButtons() {
+  const container = $('sampleBtns');
+  SAMPLES.forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'sample-btn';
+    btn.textContent = s.name;
+    btn.dataset.id = s.id;
+    btn.addEventListener('click', () => selectSample(s.id));
+    container.appendChild(btn);
+  });
+}
+
+function selectSample(id) {
+  currentSample = SAMPLES.find(s => s.id === id);
+  document.querySelectorAll('.sample-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.id === id);
+  });
+  $('codeDisplay').innerHTML = highlightCode(currentSample.code, currentSample.lang);
+  $('startBtn').disabled = false;
+}
+
+function highlightCode(code, lang) {
+  // Simple syntax highlighting
+  let html = code
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  
+  // Comments
+  html = html.replace(/(\/\/.*$)/gm, '<span class="cm">$1</span>');
+  // Strings
+  html = html.replace(/("[^"]*"|'[^']*'|`[^`]*`)/g, '<span class="str">$1</span>');
+  // Keywords
+  const kws = ['const','let','var','function','class','interface','type','export','import','from','return','if','else','while','for','new','throw','try','catch','async','await','this','readonly','private','null','undefined','true','false','void','number','string','boolean','extends'];
+  const kwRegex = new RegExp('\\b(' + kws.join('|') + ')\\b', 'g');
+  html = html.replace(kwRegex, '<span class="kw">$1</span>');
+  // Numbers
+  html = html.replace(/\b(\d+)\b/g, '<span class="num">$1</span>');
+  
+  return html;
+}
+
+async function startQuiz() {
+  if (!currentSample) return;
+  
+  if (isLiveMode) {
+    // Generate questions dynamically via OpenRouter
+    $('loadingQuestions').classList.add('visible');
+    $('startBtn').disabled = true;
+    try {
+      currentQuestions = await generateQuestionsLive(currentSample.code, currentSample.filename);
+    } catch (e) {
+      alert('Failed to generate questions: ' + e.message + '\nFalling back to demo mode.');
+      currentQuestions = currentSample.questions;
+      isLiveMode = false;
+      $('modeBadge').textContent = 'demo mode';
+      $('modeBadge').className = 'mode-badge demo';
+    }
+    $('loadingQuestions').classList.remove('visible');
+  } else {
+    currentQuestions = currentSample.questions;
+  }
+  
+  currentQuestionIdx = 0;
+  answers = [];
+  scores = [];
+  
+  $('step1').style.display = 'none';
+  $('step2').style.display = 'block';
+  $('step3').classList.remove('visible');
+  
+  renderStepIndicator();
+  renderQuestion();
+}
+
+function renderStepIndicator() {
+  const container = $('stepIndicator');
+  container.innerHTML = '';
+  currentQuestions.forEach((_, i) => {
+    const step = document.createElement('div');
+    step.className = 'step' + (i === currentQuestionIdx ? ' active' : '') + (i < currentQuestionIdx ? ' done' : '');
+    container.appendChild(step);
+  });
+}
+
+function renderQuestion() {
+  const q = currentQuestions[currentQuestionIdx];
+  const area = $('questionArea');
+  
+  area.innerHTML = `
+    <div class="question-card">
+      <div class="q-header">Question ${currentQuestionIdx + 1}/${currentQuestions.length}</div>
+      <div class="q-text">${q.question}</div>
+      <div class="hint-toggle" onclick="toggleHint()">💡 Show hint</div>
+      <div class="hint-text" id="hintText">${q.hint}</div>
+      <textarea class="answer" id="answerInput" placeholder="Type your answer..." rows="3"></textarea>
+      ${!isLiveMode ? `
+        <div class="concepts" style="margin-top: 0.75rem;">
+          <span style="color: var(--text-dim); font-size: 0.65rem;">Key concepts:</span>
+          ${q.key_concepts.map(c => `<span class="concept-tag">${c}</span>`).join('')}
+        </div>
+      ` : ''}
+    </div>
+  `;
+  
+  $('submitBtn').disabled = false;
+  $('submitBtn').style.display = '';
+  $('skipBtn').style.display = '';
+  $('nextBtn').style.display = 'none';
+  $('loadingEval').classList.remove('visible');
+  
+  // Enable submit on input
+  const input = $('answerInput');
+  input.addEventListener('input', () => {
+    $('submitBtn').disabled = !input.value.trim();
+  });
+  input.focus();
+  
+  renderStepIndicator();
+}
+
+window.toggleHint = function() {
+  const hint = $('hintText');
+  hint.classList.toggle('visible');
+  hint.previousElementSibling.textContent = hint.classList.contains('visible') ? '💡 Hide hint' : '💡 Show hint';
+};
+
+async function submitAnswer() {
+  const answer = $('answerInput').value.trim();
+  if (!answer) return;
+  
+  answers.push(answer);
+  $('submitBtn').style.display = 'none';
+  $('skipBtn').style.display = 'none';
+  
+  const q = currentQuestions[currentQuestionIdx];
+  
+  if (isLiveMode) {
+    // Evaluate via API
+    $('loadingEval').classList.add('visible');
+    try {
+      const evaluation = await evaluateAnswerLive(q, answer, currentSample.code);
+      scores.push(evaluation.score);
+      showEvaluation(evaluation);
+    } catch (e) {
+      scores.push(5); // fallback
+      showSelfRate(q);
+    }
+    $('loadingEval').classList.remove('visible');
+  } else {
+    // Demo mode: show ideal answer and self-rate
+    showSelfRate(q);
+  }
+}
+
+function showEvaluation(evaluation) {
+  const area = $('questionArea');
+  const cls = evaluation.score >= 7 ? 'good' : evaluation.score >= 4 ? 'mid' : 'bad';
+  
+  area.innerHTML += `
+    <div class="eval-card ${cls}">
+      <div class="score-bar">
+        <span class="score-label">${evaluation.score}/10</span>
+        <span class="bar">${renderBar(evaluation.score, 10)}</span>
+      </div>
+      <div style="margin-top: 0.5rem;">${evaluation.feedback}</div>
+      ${evaluation.missed.length > 0 ? `<div style="color: var(--yellow); margin-top: 0.25rem; font-size: 0.75rem;">Missed: ${evaluation.missed.join(', ')}</div>` : ''}
+    </div>
+  `;
+  
+  $('nextBtn').style.display = '';
+}
+
+function showSelfRate(q) {
+  const area = $('questionArea');
+  area.innerHTML += `
+    <div class="eval-card mid">
+      <div style="color: var(--blue); margin-bottom: 0.5rem; font-size: 0.8rem;">Ideal answer:</div>
+      <div style="font-size: 0.75rem; color: var(--text);">${q.ideal_answer || 'N/A'}</div>
+      <div style="margin-top: 0.75rem; color: var(--text-dim); font-size: 0.75rem;">How well did your answer match?</div>
+      <div class="self-rate" id="selfRate">
+        <button class="rate-btn" data-score="2" onclick="selfRate(2)">❌ Didn't know</button>
+        <button class="rate-btn" data-score="5" onclick="selfRate(5)">⚠️ Partial</button>
+        <button class="rate-btn" data-score="8" onclick="selfRate(8)">✅ Got it</button>
+        <button class="rate-btn" data-score="10" onclick="selfRate(10)">🎯 Nailed it</button>
+      </div>
+    </div>
+  `;
+}
+
+window.selfRate = function(score) {
+  scores.push(score);
+  document.querySelectorAll('.rate-btn').forEach(b => {
+    b.classList.toggle('selected', parseInt(b.dataset.score) === score);
+    b.disabled = true;
+  });
+  $('nextBtn').style.display = '';
+};
+
+function skipQuestion() {
+  answers.push('');
+  scores.push(0);
+  nextQuestion();
+}
+
+function nextQuestion() {
+  currentQuestionIdx++;
+  if (currentQuestionIdx >= currentQuestions.length) {
+    showResults();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResults() {
+  $('step2').style.display = 'none';
+  $('step3').classList.add('visible');
+  
+  const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+  const percentage = Math.round((avgScore / 10) * 100);
+  
+  const level = percentage >= 80 ? 'good' : percentage >= 50 ? 'mid' : 'bad';
+  const levelColor = level === 'good' ? 'var(--green)' : level === 'mid' ? 'var(--yellow)' : 'var(--red)';
+  const message = percentage >= 80
+    ? '✅ Strong understanding. This code is yours.'
+    : percentage >= 50
+    ? '⚠️ Partial understanding. You may struggle to debug or modify this code.'
+    : '❌ Low understanding. This is cognitive debt — you\'re carrying code you can\'t maintain.';
+  
+  $('finalScore').innerHTML = `
+    <div class="score-bar" style="font-size: 1.1rem;">
+      <span class="score-label" style="color: ${levelColor};">${percentage}%</span>
+      <span class="bar">${renderBar(Math.round(avgScore), 10)}</span>
+    </div>
+    <div style="margin-top: 0.5rem; font-size: 0.85rem;">${message}</div>
+  `;
+  
+  const list = $('resultsList');
+  list.innerHTML = '<div style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 0.5rem;">Results:</div>';
+  currentQuestions.forEach((q, i) => {
+    const s = scores[i];
+    const icon = s >= 7 ? '✅' : s >= 4 ? '⚠️' : '❌';
+    list.innerHTML += `
+      <div class="result-item">
+        <span class="result-icon">${icon}</span>
+        <span>${s}/10 — ${q.question.slice(0, 70)}${q.question.length > 70 ? '...' : ''}</span>
+      </div>
+    `;
+  });
+  
+  // CLI equivalent
+  list.innerHTML += `
+    <div style="margin-top: 1.5rem; padding: 1rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; font-size: 0.7rem; color: var(--text-dim);">
+      <div style="color: var(--green); margin-bottom: 0.5rem;">Install the CLI for dynamic questions on your own code:</div>
+      <code style="color: var(--text);">npm install -g understand-code</code><br>
+      <code style="color: var(--text);">understand src/my-file.ts</code>
+    </div>
+  `;
+}
+
+function renderBar(filled, total) {
+  return '<span class="bar-fill">' + '█'.repeat(filled) + '</span>' +
+         '<span class="bar-empty">' + '░'.repeat(total - filled) + '</span>';
+}
+
+function retryQuiz() {
+  $('step3').classList.remove('visible');
+  $('step2').style.display = 'block';
+  currentQuestionIdx = 0;
+  answers = [];
+  scores = [];
+  renderStepIndicator();
+  renderQuestion();
+}
+
+function resetToSelection() {
+  $('step3').classList.remove('visible');
+  $('step1').style.display = 'block';
+  currentSample = null;
+  currentQuestions = [];
+  document.querySelectorAll('.sample-btn').forEach(b => b.classList.remove('active'));
+  $('codeDisplay').textContent = 'Select a code sample above to begin.';
+  $('startBtn').disabled = true;
+}
+
+// --- Live Mode API Calls ---
+
+async function generateQuestionsLive(code, filename) {
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'anthropic/claude-sonnet-4',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a code comprehension quiz generator. Respond with ONLY a JSON array of 3 objects, each with "question", "hint", and "key_concepts" (array of strings). No markdown, no explanation.'
+        },
+        {
+          role: 'user',
+          content: `Generate 3 questions testing deep understanding of this specific code. Questions should be answerable only by someone who read and understood this file.\n\nFile: ${filename}\n\n\`\`\`\n${code.slice(0, 6000)}\n\`\`\``
+        }
+      ],
+      temperature: 0.3,
+      max_tokens: 1500,
+    })
+  });
+  const data = await res.json();
+  if (!data.choices?.[0]?.message?.content) throw new Error('API error');
+  let text = data.choices[0].message.content;
+  text = text.replace(/^```json?\n?/m, '').replace(/\n?```$/m, '').trim();
+  const first = text.indexOf('[');
+  const last = text.lastIndexOf(']');
+  if (first !== -1 && last > first) text = text.slice(first, last + 1);
+  return JSON.parse(text);
+}
+
+async function evaluateAnswerLive(question, answer, code) {
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'anthropic/claude-sonnet-4',
+      messages: [{
+        role: 'user',
+        content: `Evaluate this developer's understanding.\n\nQuestion: ${question.question}\nKey concepts: ${question.key_concepts.join(', ')}\nAnswer: "${answer}"\n\nCode:\n\`\`\`\n${code.slice(0, 4000)}\n\`\`\`\n\nScore 0-10. Respond ONLY with JSON: {"score": N, "feedback": "...", "missed": ["..."]}`
+      }],
+      temperature: 0.2,
+      max_tokens: 500,
+    })
+  });
+  const data = await res.json();
+  if (!data.choices?.[0]?.message?.content) throw new Error('API error');
+  let text = data.choices[0].message.content;
+  text = text.replace(/^```json?\n?/m, '').replace(/\n?```$/m, '').trim();
+  return JSON.parse(text);
+}
+
+init();
+</script>
+</body>
+</html>
