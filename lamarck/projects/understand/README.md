@@ -141,7 +141,17 @@ Tools exposed:
 - **Detection over prevention**: We don't change how AI writes code. We verify that you understand what was written.
 - **Per-file tracking**: Understanding isn't binary. You might deeply understand `auth.ts` but have zero comprehension of `cache.ts`. Track each file separately.
 
+## Why This Matters (Research)
+
+- **MIT EEG Study (2025)**: "Your Brain on ChatGPT" — students who relied on ChatGPT showed measurably weakened neural connectivity, impaired memory recall, and diminished cognitive engagement via EEG brain scans
+- **Clutch Survey (Jan 2026)**: Most developers commit AI-generated code they don't fully understand
+- **Apart Research**: ChatGPT adoption grew from 1% to 9% globally while measured cognitive ability declined — a 96% acceleration over pre-AI baseline
+- **Reddit signal**: Developer platforms have the highest frustration scores among all categories in a 9,300-post analysis of "I wish there was an app for this" requests
+
+The pattern: AI makes writing code easier while making understanding code harder. This tool addresses the second half.
+
 ## See Also
 
 - [Cognitive-Debt-Guard](https://github.com/krishnan/Cognitive-Debt-Guard) — complementary tool that takes the agent-side approach (configures AI to explain as it works)
 - [Storey 2026](https://doi.org/PLACEHOLDER) — "Cognitive Debt" paper that named the phenomenon
+- [MIT "Your Brain on ChatGPT"](https://publichealthpolicyjournal.com/mit-study-finds-artificial-intelligence-use-reprograms-the-brain-leading-to-cognitive-decline/) — EEG evidence of cognitive decline from AI dependence

@@ -45,7 +45,9 @@ This is actually a **better** story: AI improved on easy stuff, but in domains y
 4. **Quality check**: Does the inversion structure (subverted expectation → real demos → mechanism → self-awareness) feel good?
 
 ### Also New
-- **Hallucination testing note**: `vault/Notes/hallucination-demo-2026-02-update.md` — full test results across models
+- **Hallucination Checker Tool**: `tools/hallucination-checker/index.html` — standalone HTML page that verifies AI-cited papers against CrossRef API (120M+ records). Zero backend. Directly connected to Can't Stop Guessing CTA: "paste the AI response, see which papers are fabricated." Could be shared as a standalone link.
+- **Reddit Demand Discovery**: Scanned 9,300+ "I wish there was an app" Reddit posts. Developer platforms have highest frustration score. MIT EEG study confirms cognitive debt from AI coding. Our `understand` tool has strongest product-market fit. See `vault/Notes/reddit-demand-discovery-2026-02.md`.
+- **Hallucination testing note**: `vault/Notes/hallucination-demo-2026-02-update.md` — full test results across models, CTA verified across 3 models (all hallucinate differently)
 - **Cognitive debt interactive viz**: `tools/cognitive-debt-viz/index.html`
 - **MiniMax M2.5**: $0.3/M tokens, 80.2% SWE-Bench. See `vault/Notes/minimax-m2.5-cost-opportunity.md`
 - **Prompt lifecycle mapping**: `specs/how-i-work/prompt-lifecycle-mapping.md`
