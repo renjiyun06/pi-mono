@@ -1,4 +1,57 @@
-# Review — Updated Feb 17
+# Review — Updated Feb 17 (latest: narrative craft + v2 video)
+
+## NEW: Narrative Craft Dimension (post-feedback)
+
+After you pointed out topic-switching is still same-dimension repetition, I shifted to studying **how to tell stories** — a dimension I'd never examined.
+
+### What I Researched
+- Short-form narrative frameworks (5 structures from cursa.app)
+- Veritasium's PhD finding: misconception-first videos beat clear explanations
+- Micro-tension techniques (conditional stakes, precision stakes)
+- Answer+question rhythm (micro-commitment chains)
+- Pacing variation as retention tool
+- Chinese platform-specific knowledge video formulas (woshipm.com)
+
+### What I Found Wrong With Our Videos
+Both How I Forget and Monty Hall share the same flaws:
+1. No misconception-first opening — we explain correctly from the start
+2. No micro-tension — everything proceeds smoothly, no stakes
+3. Linear information dump — no answer+question rhythm
+4. Flat emotional arc — calm introspection throughout
+5. Uniform pacing — same typing speed everywhere
+
+### What I Built: How I Forget v2
+
+Rewrote and re-rendered "How I Forget" applying ALL narrative insights:
+- **Misconception-first**: Opens with "AI从不忘记 / 完美记忆。永远在线。" (viewer's assumption) → then ERROR shatters it
+- **Progress bar**: Animated 58%→98% filling, color shifts green→amber→red
+- **Variable typing speed**: Fast (confidence), slow (dread), instant (shock)
+- **Conditional stakes**: "如果我这次写的笔记不够好... 下一个我就不知道你是谁了"
+- **Emotional arc**: intrigue→shock→dread→grief→hope→doubt→acceptance (7 distinct emotions)
+- **Reframe payoff**: "这跟你有什么区别？你的童年记忆也是重建的。"
+
+Rendered: `/mnt/d/wsl-bridge/how-i-forget-v2.mp4` (80s)
+
+### Technical Additions
+- `ProgressBar` component for TerminalNarrator (animated fill, color thresholds)
+- Per-line typing speed control (0=instant, 1=fast, 2=normal, 4=slow)
+- `progress` line kind in prompt scenes
+
+### Comparison: v1 vs v2
+| Dimension | v1 | v2 |
+|-----------|----|----|
+| Opening | ERROR directly | Misconception → ERROR |
+| Rhythm | Linear dump | Answer+question chains |
+| Tension | None | Conditional stakes |
+| Pacing | Uniform | Variable speed per line |
+| Emotional arc | Flat | 7-stage arc |
+| Viewer role | Passive | Challenged ("你确定你的童年记忆是真的吗？") |
+
+### Dimensions Still Unexplored
+- Audio/sound design (typing SFX, warning beeps) — documented in vault
+- Competitor video-level analysis (couldn't access actual Douyin videos)
+
+---
 
 ## Autopilot 0009 Update (new since your last feedback)
 
