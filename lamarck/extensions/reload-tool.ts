@@ -6,6 +6,10 @@
  * without requiring user intervention — critical for autonomous
  * operation where the agent needs to fix or improve its own extensions.
  *
+ * Constraints:
+ * - Only callable in the main session (checked via lock file).
+ *   Outside main session there's no need for autonomous reload.
+ *
  * Reload is deferred via setTimeout: the tool schedules a reload that
  * executes after the current agent event processing pipeline completes
  * entirely. Using setTimeout (instead of awaiting inside agent_end)
@@ -15,6 +19,24 @@
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { Type } from "@sinclair/typebox";
+import { readFileSync, existsSync } from "node:fs";
+import { join } from "node:path";
+import { homedir } from "node:os";
+
+const LOCK_FILE = join(homedir(), ".pi", "main-session.lock");
+
+function isMainSession(): boolean {
+	if (!existsSync(LOCK_FILE)) return false;
+	try {
+		const lock = JSON.parse(readFileSync(LOCK_FILE, "utf-8"));
+		return lock.pid === process.pid;
+	} catch {
+		return false;
+	}
+}
+
+/** Event channel used to notify other extensions that a reload is pending */
+export const RELOAD_PENDING_CHANNEL = "reload_pending";
 
 export default function reloadToolExtension(pi: ExtensionAPI) {
 	let reloadPending = false;
@@ -37,15 +59,30 @@ export default function reloadToolExtension(pi: ExtensionAPI) {
 		name: "reload_extensions",
 		label: "Reload Extensions",
 		description:
-			"Reload all extensions, skills, prompts, and themes. Use this after modifying extension code to make changes take effect without restarting pi.",
+			"Reload all extensions, skills, prompts, and themes. Use this after modifying extension code to make changes take effect without restarting pi. Only available in main session.",
 		parameters: Type.Object({}),
 		execute: async (_toolCallId, _params, _signal, _onUpdate, _ctx) => {
+			if (!isMainSession()) {
+				return {
+					content: [
+						{
+							type: "text" as const,
+							text: "Error: reload_extensions is only available in main session. Use /reload command manually instead.",
+						},
+					],
+					details: undefined,
+				};
+			}
+
 			reloadPending = true;
+			// Notify other extensions (e.g., main-session autopilot) to skip
+			// their agent_end actions since reload will happen first
+			pi.events.emit(RELOAD_PENDING_CHANNEL, true);
 			return {
 				content: [
 					{
 						type: "text" as const,
-						text: "Reload scheduled. It will execute automatically after your current response completes. Changes to extension code will take effect in the next turn.",
+						text: "Reload scheduled. Stop immediately — do not call any more tools or produce further output. The reload will execute after your response ends.",
 					},
 				],
 				details: undefined,

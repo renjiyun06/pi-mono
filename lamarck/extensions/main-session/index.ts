@@ -17,7 +17,9 @@ import { Type } from "@sinclair/typebox";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { execSync } from "node:child_process";
-import { acquireLock, releaseLock, isMainSession, hasActiveMainSession, readLock } from "./lock.js";
+
+const RELOAD_MARKER = `/tmp/pi-reload-${process.pid}`;
+import { acquireLock, releaseLock, isMainSession, hasActiveMainSession, readLock, updateLockAutopilot } from "./lock.js";
 import { ChannelManager } from "./channels/index.js";
 
 // ============================================================================
@@ -341,6 +343,12 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 	// Autopilot state: when enabled, agent automatically continues after each response
 	let autopilotEnabled = false;
 	let autopilotCompacting = false; // Prevent sending "继续" while compacting
+	let reloadPending = false; // Set by reload-tool via EventBus, skip autopilot continuation
+
+	// Listen for reload_pending signal from reload-tool
+	pi.events.on("reload_pending", () => {
+		reloadPending = true;
+	});
 
 	/** Build the autopilot continuation message */
 	function buildAutopilotMessage(): string {
@@ -620,25 +628,30 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 		return { success: true, message: `QQ: ${qqStatus}, Scheduler: started` };
 	}
 
-	/** Stop the main session */
-	function stopMainSession(): void {
-		// Stop autopilot
-		autopilotEnabled = false;
-		autopilotCompacting = false;
-
-		// Stop task scheduler
+	/**
+	 * Clean up in-memory state without releasing lock.
+	 * Used during reload: lock persists so session_start can restore.
+	 * On real process exit, stale lock is detected by isProcessAlive().
+	 */
+	function cleanupMainSessionState(): void {
 		stopScheduler();
-
-		// Disable task tool
 		setTaskToolEnabled(false);
 
 		if (channelManager) {
 			channelManager.stop();
 			channelManager = null;
 		}
-		releaseLock();
 		currentExternalUser = null;
 		isExternalMessage = false;
+	}
+
+	/** Fully stop the main session including lock release */
+	function stopMainSession(): void {
+		autopilotEnabled = false;
+		autopilotCompacting = false;
+		updateLockAutopilot(false);
+		cleanupMainSessionState();
+		releaseLock();
 	}
 
 	/** Get status info */
@@ -933,6 +946,10 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 	pi.on("agent_end", async (event, ctx) => {
 		isExternalMessage = false;
 
+		// If reload is pending, skip autopilot continuation — reload will happen
+		// via setTimeout, and session_start will send a restore message afterwards.
+		if (reloadPending) return;
+
 		// Autopilot: automatically continue after each response (main session only)
 		if (autopilotEnabled && !autopilotCompacting && isMainSession()) {
 			const usage = ctx.getContextUsage();
@@ -970,17 +987,52 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 		}
 	});
 
-	// Clean up on shutdown
+	// Clean up on shutdown.
+	// Write reload marker so session_start can distinguish reload from real exit.
+	// The marker is written unconditionally because we can't tell here whether
+	// this shutdown is from reload or real exit. session_start checks and cleans it.
+	// On real exit, the marker file is harmless — it becomes stale (PID won't match
+	// on next startup, or process is dead).
 	pi.on("session_shutdown", async () => {
-		if (isMainSession()) {
-			stopMainSession();
-		}
+		if (!isMainSession()) return;
+
+		// Write marker before cleanup so session_start knows to restore
+		fs.writeFileSync(RELOAD_MARKER, "");
+		cleanupMainSessionState();
 	});
 
-	// Disable tools by default on session start
-	pi.on("session_start", async () => {
-		setQqToolEnabled(false);
-		setTaskToolEnabled(false);
+	// On session start: restore state if reload marker exists and lock matches our PID
+	pi.on("session_start", async (_event, ctx) => {
+		const isReload = fs.existsSync(RELOAD_MARKER);
+		if (isReload) {
+			try { fs.unlinkSync(RELOAD_MARKER); } catch {}
+		}
+
+		const lock = readLock();
+		if (isReload && lock && lock.pid === process.pid) {
+			// Reload while main session — restore subsystems
+			savedCtx = ctx;
+
+			channelManager = createChannelManager();
+			channelManager.start();
+			startScheduler();
+			setTaskToolEnabled(true);
+
+			if (lock.autopilot) {
+				autopilotEnabled = true;
+			}
+
+			// Send a message to drive the agent after reload
+			pi.sendUserMessage(
+				lock.autopilot
+					? "[Autopilot] Extensions reloaded. Main session and autopilot state restored. Continue."
+					: "[Main Session] Extensions reloaded. Main session state restored.",
+			);
+		} else {
+			// Fresh start or not main session — disable tools
+			setQqToolEnabled(false);
+			setTaskToolEnabled(false);
+		}
 	});
 
 	// Register /send_qq_message command to toggle the tool
@@ -1034,6 +1086,7 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 
 			if (subcommand === "on") {
 				autopilotEnabled = true;
+				updateLockAutopilot(true);
 				savedCtx = ctx;
 				ctx.ui.notify("Autopilot enabled. Agent will automatically continue after each response.", "success");
 				// Immediately send first message to start the loop
@@ -1043,6 +1096,7 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 
 			if (subcommand === "off") {
 				autopilotEnabled = false;
+				updateLockAutopilot(false);
 				ctx.ui.notify("Autopilot disabled.", "info");
 				return;
 			}

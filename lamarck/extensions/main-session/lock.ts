@@ -13,6 +13,7 @@ export interface LockInfo {
 	pid: number;
 	sessionId: string;
 	startedAt: string;
+	autopilot?: boolean;
 }
 
 const PI_DIR = join(homedir(), ".pi");
@@ -107,6 +108,18 @@ export function acquireLock(sessionId: string): AcquireResult {
 
 	writeFileSync(LOCK_FILE, JSON.stringify(newLock, null, 2));
 	return { success: true };
+}
+
+/** Update autopilot state in the lock file (only if we own it) */
+export function updateLockAutopilot(autopilot: boolean): boolean {
+	const lock = readLock();
+	if (!lock || lock.pid !== process.pid) {
+		return false;
+	}
+
+	lock.autopilot = autopilot;
+	writeFileSync(LOCK_FILE, JSON.stringify(lock, null, 2));
+	return true;
 }
 
 /** Release the lock (only if we own it) */
