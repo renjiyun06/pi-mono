@@ -1,0 +1,68 @@
+[
+  {
+    "file": "math.ts",
+    "score": 8,
+    "timestamp": "2026-02-16T16:49:06.026Z",
+    "questions": 1
+  },
+  {
+    "file": "compaction.ts",
+    "score": 9,
+    "timestamp": "2026-02-16T16:51:49.049Z",
+    "questions": 1
+  },
+  {
+    "file": "render-with-voice.ts",
+    "score": 8,
+    "timestamp": "2026-02-16T17:14:57.823Z",
+    "questions": 1
+  },
+  {
+    "file": "DeepDive.tsx",
+    "score": 10,
+    "timestamp": "2026-02-16T17:24:39.088Z",
+    "questions": 1
+  },
+  {
+    "file": "DeepDive.tsx",
+    "score": 8,
+    "timestamp": "2026-02-16T17:24:57.467Z",
+    "questions": 1
+  },
+  {
+    "file": "compaction/utils.ts",
+    "score": 10,
+    "timestamp": "2026-02-16T17:36:30.060Z",
+    "questions": 1
+  },
+  {
+    "file": "compaction/utils.ts",
+    "score": 9,
+    "timestamp": "2026-02-16T17:36:47.243Z",
+    "questions": 1
+  },
+  {
+    "file": "manim-dopamine-cycle.py",
+    "score": 9,
+    "timestamp": "2026-02-16T17:37:31.859Z",
+    "questions": 1
+  },
+  {
+    "file": "manim-dopamine-cycle.py",
+    "score": 10,
+    "timestamp": "2026-02-16T17:38:49.314Z",
+    "questions": 1
+  },
+  {
+    "file": "test.ts",
+    "score": 1,
+    "timestamp": "2026-02-16T17:41:27.557Z",
+    "questions": 1
+  },
+  {
+    "file": "test.ts",
+    "score": 2,
+    "timestamp": "2026-02-16T17:41:35.953Z",
+    "questions": 1
+  }
+]
