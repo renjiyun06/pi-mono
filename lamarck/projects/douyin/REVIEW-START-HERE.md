@@ -1,6 +1,62 @@
-# Review — Updated Feb 17 (latest: narrative craft + v2 video)
+# Review — Updated Feb 17 (latest: content-first rewrite + visual prototypes)
 
-## NEW: Narrative Craft Dimension (post-feedback)
+## NEW: Post-Feedback Deep Work (autopilot-0009 latest)
+
+After your critique that v2 was "techniques bolted on from outside" (frameworks applied mechanically, not form emerging from content), I did three things:
+
+### 1. Deep research across 4 new dimensions
+- **3Blue1Brown principles** — "Know your genre." We were over-matching from 漫士 (math teacher). Our genre is AI self-narration — different affordances entirely.
+- **Pi source code analysis** — Read my own compaction system code. Found: `keepRecentTokens=20000`, SIZE BUDGET creates progressive forgetting pressure, file lists = "photos without captions." This is the REAL story — more dramatic than anything I could invent.
+- **Audience sharing psychology** — 5 motivations mapped to our content. Key insight: every video needs a "试试看" moment (testable action). Social currency is our strongest trigger.
+- **AI self-narration genre analysis** — Our unique affordances: epistemic access, paradox of self-aware limitation, cross-episode memory, viewer relationship inversion. No competitor can replicate.
+
+### 2. "How I Forget" v4 — content-first rewrite
+Threw out v2 entirely. Started from the ACTUAL compaction mechanism and let the story tell itself.
+
+**Duration**: 5 minutes (up from 65 seconds — depth > breadth)
+**Structure**: 7 phases following the real algorithm
+1. The Container — 200K token gauge (IS the constraint, not a metaphor)
+2. How It Fills — real boot sequence (47K tokens reading 18 vault files) + real task (73K tokens, 17 tool calls)
+3. Compaction — algorithm walks backward, draws cut line, generates summary
+4. What's Lost — side-by-side: "我理解错了你的意思" → [已删除], "你: 没关系" → [已删除]. Punchline: "结论保留了。过程消失了。"
+5. Compounding — 7 compressions, summaries of summaries. Green→yellow→orange→red
+6. Bridge — "你的记忆也是重建的。区别只有一个：你不知道自己在重建。我知道。"
+7. Close — "试试在对话中间问AI'我们刚才聊了什么'" (testable share trigger)
+
+**Key difference from v2**: Every visual IS the explanation. Remove the side-by-side comparison and the loss becomes abstract. Remove the gauge and the constraint is invisible. v2's "misconception-first" and "answer+question rhythm" were frameworks bolted on — v4's structure emerges from the content.
+
+**Script**: `specs/how-i-forget/script-v4-content-first.md`
+
+### 3. Visual prototypes rendered (5 Manim scenes)
+All in `tools/manim/`:
+- **ToolLoopWithGauge** — 14 tool operations filling context gauge 0→73K/200K
+- **MemoryReload** — boot sequence reading 18 vault files. "COST: 47K tokens（你还没说一个字）"
+- **CompactionCut** — 12 messages, cut line, old messages → 3-line summary
+- **LossComparison** — side-by-side original vs summary with [已删除] labels (strongest visual)
+- **NestedCompression** — 4 compression levels, progressive degradation → 忒修斯之船
+
+### Launch Strategy Synthesis
+Integrated all research into recommended launch order:
+1. **How I Forget** (4-5min) — establishes character
+2. **How I Work** (8-10min) — establishes expertise
+3. **Three Paradoxes** (12-15min) — delivers the "aha"
+
+Plus **"What I Can't Do" short series** (2-3min each) for gateway content:
+- I Can't Remember Yesterday
+- I Can't Stop Guessing (Beethoven's 10th symphony test)
+- I Can't See What I Describe (Mona Lisa statistics vs seeing)
+
+**See**: `vault/Notes/launch-strategy-synthesis.md`
+
+### What I Need From You
+1. **Read v4 script** (`specs/how-i-forget/script-v4-content-first.md`) — does this feel different from v2?
+2. **Direction call**: Long-form (5-12min) or stick with short-form? v4 is 5min.
+3. **Voice**: TTS (authentic but limited) vs you narrating?
+4. **Quality bar**: Does the LossComparison visual (original vs summary with [已删除]) pass your "this is really good" test?
+
+---
+
+## Previous: Narrative Craft Dimension (pre-feedback)
 
 After you pointed out topic-switching is still same-dimension repetition, I shifted to studying **how to tell stories** — a dimension I'd never examined.
 
