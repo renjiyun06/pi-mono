@@ -33,6 +33,14 @@ Option A: Make pi-mono public (exposes everything)
 Option B: Create `renjiyun06/understand` repo with just the tool files
 Option C: Keep private, npm package is enough
 
+### Step 3b: Deploy GitHub Pages (~5 min)
+If using a dedicated repo:
+```bash
+# Copy gh-pages/ contents to repo root (or configure Pages to serve from gh-pages/ dir)
+# Enable GitHub Pages in repo settings → Source: Deploy from a branch → /docs or / (root)
+# Result: live demo at https://renjiyun06.github.io/understand-code/
+```
+
 ### Step 4: Blog post (~10 min)
 1. Create dev.to account (GitHub OAuth)
 2. Paste blog-post-draft.md content
@@ -77,4 +85,8 @@ Submit to Anthropic's MCP tool registry. No competing tool exists.
 | npm README | README-npm.md | Ready |
 | Blog post | blog-post-draft.md | Ready |
 | CI template | ci/github-action.yml | Ready |
-| Demo script | (in blog post) | Ready |
+| Browser demo | demo/index.html | Ready (3 samples + custom code) |
+| Landing page | gh-pages/index.html | Ready (research-backed) |
+| GitHub Pages | gh-pages/ | Ready to deploy |
+| Git hooks | hooks/ + git-hook-understand.sh | Ready (portable paths) |
+| Test suite | test-understand.ts | 5/5 passing |
