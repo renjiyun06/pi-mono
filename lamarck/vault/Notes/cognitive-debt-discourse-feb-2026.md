@@ -68,8 +68,23 @@ Every article in this discourse proposes vague advice ("slow down", "review more
 - "Anthropic's RCT shows a 17% comprehension drop"
 - "We built a tool that quizzes you on AI-generated code before you ship it"
 
+10. **Ross Duggan** (Feb 15, posted to HN Feb 18) — ["Cognitive debt in AI coding"](https://duggan.ie/posts/cognitive-debt-in-ai-coding) — references Willison directly. Key insight: Claude Code's MEMORY.md is an attempt to solve persistent comprehension. "Coding is not software engineering, and software projects are not startups." Also ties cognitive debt to burnout ("It can be quite disheartening to realise that customers won't just appear out of thin air").
+
+11. **HN discourse still active Feb 18** — Multiple new submissions:
+    - duggan.ie article (just posted)
+    - "Generative and Agentic AI Shift Concern from Technical Debt to Cognitive Debt" (Storey/Willison)
+    - Comments: "vibe coded a web app... over time velocity exponentially slowed due to exactly this cognitive debt. Ground up rewrite manually = way faster progress"
+    - Two failure modes identified: (1) "black box" problem — accept without understanding, (2) "context fragmentation" — constant switching between reviewing AI output
+
+## Discourse Timeline
+- Feb 9: Storey coins/popularizes
+- Feb 13: Fowler responds
+- Feb 15: Willison, Meyvis, Yegge ("AI Vampire")
+- Feb 16: TLDR Tech mainstream coverage
+- **Feb 18: Still active on HN, new articles. Window STILL OPEN.**
+
 ## Action Items
-- [ ] Get Ren to approve npm publish (URGENT — timing window)
+- [ ] Get Ren to approve npm publish (URGENT — window is still open but won't last)
 - [ ] Write Dev.to article tying understand to the Storey/Willison/Meyvis discourse
 - [ ] Submit to HN as "Show HN: Quiz yourself on AI-generated code"
 
