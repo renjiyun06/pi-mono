@@ -103,12 +103,14 @@ rollback() {
     log "Rolling back to $good_ref..."
     cd "$PI_DIR"
 
-    # Create a rollback commit instead of hard reset (preserves history)
     # Only revert packages/ — leave lamarck/ changes intact
     git checkout "$good_ref" -- packages/
     
     if rebuild; then
-        log "Rollback successful"
+        # Commit the rollback so git state is clean
+        git add packages/
+        git commit -m "rollback: revert packages/ to $good_ref (supervisor auto-rollback after $MAX_CRASHES crashes)" || true
+        log "Rollback successful, committed revert"
         set_crash_count 0
     else
         log "ERROR: Rollback rebuild also failed. Manual intervention needed."
