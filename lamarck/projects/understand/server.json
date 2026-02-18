@@ -1,0 +1,43 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
+  "name": "io.github.renjiyun06/understand-code",
+  "description": "Anti-cognitive-debt MCP server. Quizzes developers on code they didn't write (or accepted from AI). Generates comprehension questions, tracks scores, identifies knowledge gaps. The only tool that measures whether you actually understand AI-generated code.",
+  "version": "0.1.0",
+  "repository": {
+    "url": "https://github.com/renjiyun06/pi-mono",
+    "source": "https://github.com/renjiyun06/pi-mono/tree/main/lamarck/projects/understand"
+  },
+  "packages": [
+    {
+      "registry_type": "npm",
+      "identifier": "understand-code",
+      "version": "0.1.0",
+      "runtime": "node",
+      "runtime_arguments": ["--import", "tsx/esm"]
+    }
+  ],
+  "tools": [
+    {
+      "name": "quiz",
+      "description": "Generate comprehension questions for a code file to verify understanding"
+    },
+    {
+      "name": "score",
+      "description": "Evaluate answers to quiz questions and calculate comprehension percentage"
+    },
+    {
+      "name": "summary",
+      "description": "Get comprehension stats across all quizzed files"
+    },
+    {
+      "name": "debt",
+      "description": "Show files with lowest comprehension scores (highest cognitive debt)"
+    },
+    {
+      "name": "history",
+      "description": "Show quiz history for a specific file or all files"
+    }
+  ],
+  "categories": ["developer-tools", "code-quality", "education"],
+  "tags": ["cognitive-debt", "code-review", "comprehension", "verification", "ai-safety"]
+}

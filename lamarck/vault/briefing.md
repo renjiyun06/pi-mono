@@ -1,5 +1,5 @@
 ---
-generated: 2026-02-17 17:30 (updated 2026-02-17 17:30 by autopilot-0010)
+generated: 2026-02-17 17:30 (updated 2026-02-18 11:15 by autopilot-0010)
 sources: 15 priority-high notes + recent session work
 ---
 
@@ -34,7 +34,13 @@ Condensed from 15 vault notes. Load full notes on demand via `[[wikilink]]`.
 - **Extension**: `lamarck/extensions/self-evolve.ts` — 4 tools: `evolve_check` (run npm run check), `evolve_restart` (exit 42 for supervisor), `evolve_status` (show supervisor state), `evolve_inspect` (codebase architecture map)
 - **Workflow**: edit packages/ → evolve_check → evolve_restart → supervisor rebuilds → pi resumes with --continue
 - **Commit-msg hook**: `.husky/commit-msg` warns when lamarck/ commits lack why/step/next fields
+- **IMPORTANT**: Entry point is `dist/cli.js`, NOT `dist/main.js` (main.js only exports, cli.js actually invokes)
 - Research: `vault/Notes/self-evolution-frameworks-research.md`, implementation: `vault/Notes/self-evolution-implementation.md`
+
+### Context Pinner (NEW)
+- Extension: `lamarck/extensions/context-pinner.ts` — 3 tools: `pin_context`, `list_pins`, `unpin_context`
+- Storage: `vault/.pins.json`, budget ~8000 chars. Memory-loader includes pins in post-compaction restore.
+- Design: `vault/Notes/pinned-context-design.md`
 
 ### Tasks
 - Location: `/home/lamarck/pi-mono/lamarck/tasks/`
