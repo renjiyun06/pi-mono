@@ -36,11 +36,16 @@ packages/coding-agent/binaries/
 todo.md
 lamarck/tasks/logs/
 
-# Lamarck data (videos, db, transcripts)
+# Lamarck data (videos, db, transcripts, frames)
 lamarck/data/videos/
 lamarck/data/transcripts/
+lamarck/data/frames/
 lamarck/data/*.db
 lamarck/data/*.db-*
 !lamarck/data/schema.sql
 lamarck/tmp/
 lamarck/tasks/.sessions/
+
+# Douyin generated assets (TTS audio, render scripts)
+lamarck/projects/douyin/tools/remotion-video/public/audio/
+lamarck/projects/douyin/specs/**/tts/
