@@ -103,6 +103,7 @@ Integrated into supervisor: rebuild now runs build check → smoke test → save
 - [x] Supervisor script written and executable
 - [x] Extension written and symlinked
 - [x] Smoke test integrated into supervisor
-- [ ] Test supervisor in tmux session
+- [x] **Fixed critical bug**: both supervisor and smoke test used `dist/main.js` (exports only) instead of `dist/cli.js` (actual entry point). Smoke test now passes (804 chars response).
+- [ ] Test supervisor in tmux session (full loop)
 - [ ] Verify end-to-end: modify → check → restart → resume
 - [ ] Add to autopilot startup procedure
