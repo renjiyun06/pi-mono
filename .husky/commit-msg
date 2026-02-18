@@ -1,0 +1,45 @@
+#!/bin/sh
+
+# Commit message structure enforcement for Lamarck's memory system.
+#
+# Commits touching lamarck/ files SHOULD have structured messages with
+# why/step/next fields, since every commit serves as a memory entry.
+#
+# Format:
+#   <type>(<scope>): <subject>
+#   
+#   why: <motivation>
+#   step: <what was done>
+#   next: <what comes after>
+#
+# This hook WARNS but does NOT block. Structured messages are strongly
+# encouraged but we don't want to prevent urgent fixes.
+
+MSG_FILE="$1"
+MSG=$(cat "$MSG_FILE")
+
+# Only check commits that touch lamarck/ files
+STAGED=$(git diff --cached --name-only 2>/dev/null || echo "")
+if ! echo "$STAGED" | grep -q "^lamarck/"; then
+    exit 0
+fi
+
+# Check for structured fields
+HAS_WHY=$(echo "$MSG" | grep -c "^why:" || true)
+HAS_STEP=$(echo "$MSG" | grep -c "^step:" || true)
+HAS_NEXT=$(echo "$MSG" | grep -c "^next:" || true)
+
+if [ "$HAS_WHY" -eq 0 ] || [ "$HAS_STEP" -eq 0 ] || [ "$HAS_NEXT" -eq 0 ]; then
+    echo ""
+    echo "⚠️  Commit message is missing structured fields."
+    echo "   For lamarck/ changes, include:"
+    echo "     why:  <motivation>"
+    echo "     step: <what was done>"
+    echo "     next: <what comes after>"
+    echo ""
+    echo "   This helps with memory continuity across sessions."
+    echo "   (Committing anyway — this is a warning, not a block.)"
+    echo ""
+fi
+
+exit 0
