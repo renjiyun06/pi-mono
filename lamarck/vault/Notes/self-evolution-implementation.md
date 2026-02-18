@@ -81,10 +81,20 @@ The `--continue` flag ensures the session resumes from where it left off.
 4. **Git-based versioning** — every modification is trackable, revertible
 5. **Session continuity** — `--continue` flag preserves conversation context
 
+### 5. Smoke Test (`lamarck/tools/pi-smoke-test.sh`)
+
+Behavioral verification that runs after every rebuild:
+- Starts pi with `--print --no-session "Reply with exactly: SMOKE_TEST_OK"`
+- Checks for any response (exact match not required — any output = functional)
+- 30-second timeout
+- If smoke test fails, supervisor treats it as a build failure → rollback
+
+Integrated into supervisor: rebuild now runs build check → smoke test → save good ref.
+
 ## Limitations
 
 1. **No parallel testing** — can't run new version alongside old version to compare behavior
-2. **No automated evaluation** — "does it still work?" is only verified by build check, not behavioral test
+2. **Smoke test is shallow** — verifies startup+response, not complex behavior (tool calls, extensions, etc.)
 3. **Supervisor not yet integrated with tmux** — for true blue-green deployment, would need tmux orchestration
 4. **Extension hot-reload still separate** — extension changes use `reload_extensions`, not `evolve_restart`
 
@@ -92,6 +102,7 @@ The `--continue` flag ensures the session resumes from where it left off.
 
 - [x] Supervisor script written and executable
 - [x] Extension written and symlinked
+- [x] Smoke test integrated into supervisor
 - [ ] Test supervisor in tmux session
 - [ ] Verify end-to-end: modify → check → restart → resume
 - [ ] Add to autopilot startup procedure

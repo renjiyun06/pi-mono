@@ -24,6 +24,7 @@ set -euo pipefail
 
 PI_DIR="${PI_DIR:-/home/lamarck/pi-mono}"
 SUPERVISOR_DIR="$PI_DIR/.pi-supervisor"
+SMOKE_TEST="$PI_DIR/lamarck/tools/pi-smoke-test.sh"
 MAX_CRASHES=3
 REBUILD_TIMEOUT=120  # seconds
 
@@ -71,7 +72,19 @@ rebuild() {
     log "Rebuilding pi..."
     cd "$PI_DIR"
     if timeout "$REBUILD_TIMEOUT" npm run check 2>&1 | tee -a "$LOG_FILE"; then
-        log "Rebuild succeeded"
+        log "Build succeeded"
+        # Run smoke test if available
+        if [ -x "$SMOKE_TEST" ]; then
+            log "Running smoke test..."
+            if "$SMOKE_TEST" 2>&1 | tee -a "$LOG_FILE"; then
+                log "Smoke test passed"
+                return 0
+            else
+                log "Smoke test FAILED (build OK but pi doesn't start properly)"
+                return 1
+            fi
+        fi
+        log "Rebuild succeeded (no smoke test)"
         return 0
     else
         log "Rebuild FAILED"
