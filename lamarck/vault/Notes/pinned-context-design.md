@@ -88,4 +88,11 @@ If we reserve 2,000 tokens for pinned content out of `reserveTokens`, that's ~8,
 
 ## Status
 
-Analysis complete. Implementation would be a new extension (`context-pinner.ts`). No core changes needed — Option A is viable with current extension API. Blocked on: real need during actual work (per soul.md: problem-driven only).
+**Implemented** as a hybrid of Option A and D:
+- Extension: `lamarck/extensions/context-pinner.ts` — 3 tools (pin/list/unpin)
+- Storage: `lamarck/vault/.pins.json` (file-based, not compaction interception)
+- Integration: `memory-loader.ts` reads pins and includes in post-compaction restore message
+- Budget: 8000 chars max, FIFO eviction of oldest pins
+- No core changes needed — purely extension + file-based
+
+The approach avoids the complexity of intercepting compaction (which requires model + API key access from extension context). Instead, pinned content is injected into the restore message after compaction, alongside the briefing and vault index instructions.
