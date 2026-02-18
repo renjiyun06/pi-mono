@@ -154,6 +154,28 @@ done
 
 5. **Separation of concerns matters**. DGM keeps the outer evolutionary loop static and only evolves the inner agent. We should similarly keep the supervisor and migration logic static and simple, only evolving the agent code itself.
 
+## Additional Frameworks (from EvoAgentX survey, Aug 2025)
+
+### Memory-Based Learning (no weight updates)
+
+- **Memento** (Aug 2025): "Fine-tuning LLM Agents without Fine-tuning LLMs." Stores successful/failed trajectories as cases in a Case Bank. Neural case-selection policy retrieves relevant cases to guide planning. Planner-Executor architecture with MCP tools. Core insight: **memory IS the learning mechanism**. Our vault is essentially an informal Case Bank — decisions, outcomes, patterns stored as notes.
+
+- **A-MEM** (Feb 2025): Agentic Memory based on Zettelkasten principles. Dynamic indexing and linking of memories via ChromaDB. Agent decides when to create, update, or link memories. Similar to our vault + wikilinks approach but uses embeddings for retrieval.
+
+- **Memory-R1** (Aug 2025): Uses RL to teach agents to manage and utilize memories. Learns WHEN and HOW to write/read memory, not just what to store.
+
+### Evolutionary Code Discovery
+
+- **AlphaEvolve** (Google DeepMind, Jun 2025): Evolutionary coding agent for algorithm discovery. Uses LLM to propose code mutations, evaluates on objective functions, selects best variants.
+
+- **OpenEvolve**: Open-source AlphaEvolve. Same pattern: LLM-generated code mutations + evaluation + selection.
+
+### Key Pattern Across All
+
+The survey reveals a convergence: **the most successful self-evolving agents combine (1) experience storage, (2) experience retrieval for guidance, and (3) evaluation of outcomes.** Whether the "experience" is prompts, code, or trajectories, the loop is: try → evaluate → store → retrieve → try better.
+
+Our vault-based memory system already does steps 1 and 2 (store experiences as notes, retrieve via reading). Step 3 (evaluation) is our weakest link — we evaluate implicitly (Ren's approval) rather than explicitly (benchmark scores). The self-evolution infrastructure (supervisor + smoke test) adds minimal automated evaluation.
+
 ## Sources
 - Gödel Agent: https://github.com/Arvid-pku/Godel_Agent (PKU, ACL 2025)
 - Darwin Gödel Machine: https://github.com/jennyzzt/dgm (Sakana AI + UBC, 2025)
@@ -163,3 +185,7 @@ done
 - OpenAI Self-Evolving Agents Cookbook: https://developers.openai.com/cookbook/examples/partners/self_evolving_agents/
 - Stanford CS329A Self-Improving AI Agents: https://cs329a.stanford.edu/
 - Agent Zero: https://github.com/agent0ai/agent-zero
+- EvoAgentX Awesome Survey: https://github.com/EvoAgentX/Awesome-Self-Evolving-Agents (Aug 2025)
+- Memento: https://github.com/Agent-on-the-Fly/Memento (Aug 2025)
+- A-MEM: https://github.com/agiresearch/A-mem (Feb 2025)
+- AlphaEvolve: https://arxiv.org/abs/2506.13131 (Jun 2025)

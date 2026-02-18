@@ -1,5 +1,5 @@
 ---
-generated: 2026-02-17 17:30 (updated 20:30)
+generated: 2026-02-17 17:30 (updated 2026-02-17 17:30 by autopilot-0010)
 sources: 15 priority-high notes + recent session work
 ---
 
@@ -27,6 +27,14 @@ Condensed from 15 vault notes. Load full notes on demand via `[[wikilink]]`.
 ### Extensions
 - Live in `/home/lamarck/pi-mono/lamarck/extensions/`
 - Symlink to `.pi/extensions/` for discovery: `ln -s ../../lamarck/extensions/<name>.ts .pi/extensions/<name>.ts`
+
+### Self-Evolution Infrastructure (NEW)
+- **Supervisor**: `lamarck/tools/pi-supervisor.sh` — bash watchdog with crash recovery + rollback (3 crashes → revert to last good git ref)
+- **Smoke test**: `lamarck/tools/pi-smoke-test.sh` — behavioral verification after rebuilds (starts pi in print mode, checks for response)
+- **Extension**: `lamarck/extensions/self-evolve.ts` — 4 tools: `evolve_check` (run npm run check), `evolve_restart` (exit 42 for supervisor), `evolve_status` (show supervisor state), `evolve_inspect` (codebase architecture map)
+- **Workflow**: edit packages/ → evolve_check → evolve_restart → supervisor rebuilds → pi resumes with --continue
+- **Commit-msg hook**: `.husky/commit-msg` warns when lamarck/ commits lack why/step/next fields
+- Research: `vault/Notes/self-evolution-frameworks-research.md`, implementation: `vault/Notes/self-evolution-implementation.md`
 
 ### Tasks
 - Location: `/home/lamarck/pi-mono/lamarck/tasks/`
