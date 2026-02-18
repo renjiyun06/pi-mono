@@ -29,7 +29,7 @@ log "Starting smoke test..."
 # --print outputs to stdout and exits
 RESULT=""
 set +e
-RESULT=$(timeout "$TIMEOUT" node "$PI_DIR/packages/coding-agent/dist/main.js" \
+RESULT=$(timeout "$TIMEOUT" node "$PI_DIR/packages/coding-agent/dist/cli.js" \
     --no-session \
     --print \
     "Reply with exactly: SMOKE_TEST_OK" 2>/dev/null)

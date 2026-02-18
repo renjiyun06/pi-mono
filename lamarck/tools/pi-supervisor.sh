@@ -135,7 +135,7 @@ while true; do
     # Run pi, capture exit code
     set +e
     cd "$PI_DIR"
-    node packages/coding-agent/dist/main.js "$@"
+    node packages/coding-agent/dist/cli.js "$@"
     EXIT_CODE=$?
     set -e
 
