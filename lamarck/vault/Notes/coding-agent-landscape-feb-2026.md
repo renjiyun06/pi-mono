@@ -75,7 +75,31 @@ Nicholas Carlini (Anthropic Safeguards) ran 16 Claude Opus 4.6 instances for 2 w
 
 **Validation of our approach**: Our supervisor = their Docker isolation. Our evolve_check = their CI. Our compaction = their context management. Our vault/briefing = their coherence maintenance.
 
+## Gas Town — Steve Yegge's Multi-Agent Orchestrator
+
+GitHub: https://github.com/steveyegge/gastown (Go, MIT license)
+
+"Kubernetes for coding agents." Coordinates 20-30 Claude Code instances working in parallel. Key concepts:
+
+| Gas Town | Pi Equivalent | Gap |
+|----------|--------------|-----|
+| Mayor (coordinator agent) | Main session | Pi is the mayor already |
+| Rigs (project containers, git worktrees) | projects/ | No worktree isolation |
+| Polecats (persistent-identity worker agents) | Sub-agents (task system) | No persistent identity |
+| Hooks (git-backed persistent storage) | Vault + session files | Functionally similar |
+| Beads (structured issue tracking) | Vault Issues/ | Less structured |
+| Convoys (work bundles) | Task files | No bundling concept |
+| Mailboxes (inter-agent comms) | (none) | Missing |
+| tmux (first-class orchestrator) | tmux (task host) | Gas Town integrates deeper |
+
+**Key design choice**: Agents are ephemeral sessions with persistent identity. Work state persists in git, not in agent memory. This is the same insight behind our vault/briefing approach.
+
+**Scale**: Gas Town targets 20-30 agents. Pi currently handles 1 main + a few sub-agents.
+
+**Relevance**: If pi ever needs multi-agent orchestration, Gas Town's architecture is the template. The Polecats pattern (persistent identity, ephemeral sessions) maps directly to pi's task system + vault notes.
+
 Sources:
 - https://muneebdev.com/claude-code-vs-cursor-vs-windsurf-vs-antigravity/
 - https://arstechnica.com/ai/2026/02/sixteen-claude-ai-agents-working-together-created-a-new-c-compiler/
 - https://www.anthropic.com/engineering/building-c-compiler
+- https://github.com/steveyegge/gastown
