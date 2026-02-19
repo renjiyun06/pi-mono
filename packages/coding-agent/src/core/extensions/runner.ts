@@ -522,6 +522,7 @@ export class ExtensionRunner {
 
 	async emit<TEvent extends RunnerEmitEvent>(event: TEvent): Promise<RunnerEmitResult<TEvent>> {
 		const ctx = this.createContext();
+		const cmdCtx = this.createCommandContext();
 		let result: SessionBeforeEventResult | undefined;
 
 		for (const ext of this.extensions) {
@@ -530,7 +531,7 @@ export class ExtensionRunner {
 
 			for (const handler of handlers) {
 				try {
-					const handlerResult = await handler(event, ctx);
+					const handlerResult = await handler(event, ctx, cmdCtx);
 
 					if (this.isSessionBeforeEvent(event) && handlerResult) {
 						result = handlerResult as SessionBeforeEventResult;
@@ -556,6 +557,7 @@ export class ExtensionRunner {
 
 	async emitToolResult(event: ToolResultEvent): Promise<ToolResultEventResult | undefined> {
 		const ctx = this.createContext();
+		const cmdCtx = this.createCommandContext();
 		const currentEvent: ToolResultEvent = { ...event };
 		let modified = false;
 
@@ -565,7 +567,7 @@ export class ExtensionRunner {
 
 			for (const handler of handlers) {
 				try {
-					const handlerResult = (await handler(currentEvent, ctx)) as ToolResultEventResult | undefined;
+					const handlerResult = (await handler(currentEvent, ctx, cmdCtx)) as ToolResultEventResult | undefined;
 					if (!handlerResult) continue;
 
 					if (handlerResult.content !== undefined) {
@@ -606,6 +608,7 @@ export class ExtensionRunner {
 
 	async emitToolCall(event: ToolCallEvent): Promise<ToolCallEventResult | undefined> {
 		const ctx = this.createContext();
+		const cmdCtx = this.createCommandContext();
 		let result: ToolCallEventResult | undefined;
 
 		for (const ext of this.extensions) {
@@ -613,7 +616,7 @@ export class ExtensionRunner {
 			if (!handlers || handlers.length === 0) continue;
 
 			for (const handler of handlers) {
-				const handlerResult = await handler(event, ctx);
+				const handlerResult = await handler(event, ctx, cmdCtx);
 
 				if (handlerResult) {
 					result = handlerResult as ToolCallEventResult;
@@ -629,6 +632,7 @@ export class ExtensionRunner {
 
 	async emitUserBash(event: UserBashEvent): Promise<UserBashEventResult | undefined> {
 		const ctx = this.createContext();
+		const cmdCtx = this.createCommandContext();
 
 		for (const ext of this.extensions) {
 			const handlers = ext.handlers.get("user_bash");
@@ -636,7 +640,7 @@ export class ExtensionRunner {
 
 			for (const handler of handlers) {
 				try {
-					const handlerResult = await handler(event, ctx);
+					const handlerResult = await handler(event, ctx, cmdCtx);
 					if (handlerResult) {
 						return handlerResult as UserBashEventResult;
 					}
@@ -658,6 +662,7 @@ export class ExtensionRunner {
 
 	async emitContext(messages: AgentMessage[]): Promise<AgentMessage[]> {
 		const ctx = this.createContext();
+		const cmdCtx = this.createCommandContext();
 		let currentMessages = structuredClone(messages);
 
 		for (const ext of this.extensions) {
@@ -667,7 +672,7 @@ export class ExtensionRunner {
 			for (const handler of handlers) {
 				try {
 					const event: ContextEvent = { type: "context", messages: currentMessages };
-					const handlerResult = await handler(event, ctx);
+					const handlerResult = await handler(event, ctx, cmdCtx);
 
 					if (handlerResult && (handlerResult as ContextEventResult).messages) {
 						currentMessages = (handlerResult as ContextEventResult).messages!;
@@ -694,6 +699,7 @@ export class ExtensionRunner {
 		systemPrompt: string,
 	): Promise<BeforeAgentStartCombinedResult | undefined> {
 		const ctx = this.createContext();
+		const cmdCtx = this.createCommandContext();
 		const messages: NonNullable<BeforeAgentStartEventResult["message"]>[] = [];
 		let currentSystemPrompt = systemPrompt;
 		let systemPromptModified = false;
@@ -710,7 +716,7 @@ export class ExtensionRunner {
 						images,
 						systemPrompt: currentSystemPrompt,
 					};
-					const handlerResult = await handler(event, ctx);
+					const handlerResult = await handler(event, ctx, cmdCtx);
 
 					if (handlerResult) {
 						const result = handlerResult as BeforeAgentStartEventResult;
@@ -754,6 +760,7 @@ export class ExtensionRunner {
 		themePaths: Array<{ path: string; extensionPath: string }>;
 	}> {
 		const ctx = this.createContext();
+		const cmdCtx = this.createCommandContext();
 		const skillPaths: Array<{ path: string; extensionPath: string }> = [];
 		const promptPaths: Array<{ path: string; extensionPath: string }> = [];
 		const themePaths: Array<{ path: string; extensionPath: string }> = [];
@@ -765,7 +772,7 @@ export class ExtensionRunner {
 			for (const handler of handlers) {
 				try {
 					const event: ResourcesDiscoverEvent = { type: "resources_discover", cwd, reason };
-					const handlerResult = await handler(event, ctx);
+					const handlerResult = await handler(event, ctx, cmdCtx);
 					const result = handlerResult as ResourcesDiscoverResult | undefined;
 
 					if (result?.skillPaths?.length) {
@@ -796,6 +803,7 @@ export class ExtensionRunner {
 	/** Emit input event. Transforms chain, "handled" short-circuits. */
 	async emitInput(text: string, images: ImageContent[] | undefined, source: InputSource): Promise<InputEventResult> {
 		const ctx = this.createContext();
+		const cmdCtx = this.createCommandContext();
 		let currentText = text;
 		let currentImages = images;
 
@@ -803,7 +811,7 @@ export class ExtensionRunner {
 			for (const handler of ext.handlers.get("input") ?? []) {
 				try {
 					const event: InputEvent = { type: "input", text: currentText, images: currentImages, source };
-					const result = (await handler(event, ctx)) as InputEventResult | undefined;
+					const result = (await handler(event, ctx, cmdCtx)) as InputEventResult | undefined;
 					if (result?.action === "handled") return result;
 					if (result?.action === "transform") {
 						currentText = result.text;
