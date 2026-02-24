@@ -299,6 +299,8 @@ export interface ExtensionCommandContext extends ExtensionContext {
 	newSession(options?: {
 		parentSession?: string;
 		setup?: (sessionManager: SessionManager) => Promise<void>;
+		/** If true, keep the current chat display instead of clearing it. */
+		preserveUI?: boolean;
 	}): Promise<{ cancelled: boolean }>;
 
 	/** Fork from a specific entry, creating a new session file. */
@@ -1297,6 +1299,7 @@ export interface ExtensionCommandContextActions {
 	newSession: (options?: {
 		parentSession?: string;
 		setup?: (sessionManager: SessionManager) => Promise<void>;
+		preserveUI?: boolean;
 	}) => Promise<{ cancelled: boolean }>;
 	fork: (entryId: string) => Promise<{ cancelled: boolean }>;
 	navigateTree: (

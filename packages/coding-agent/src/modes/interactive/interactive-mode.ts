@@ -1020,16 +1020,18 @@ export class InteractiveMode {
 						return { cancelled: true };
 					}
 
-					// Clear UI state
-					this.chatContainer.clear();
-					this.pendingMessagesContainer.clear();
-					this.compactionQueuedMessages = [];
-					this.streamingComponent = undefined;
-					this.streamingMessage = undefined;
-					this.pendingTools.clear();
+					if (!options?.preserveUI) {
+						// Clear UI state
+						this.chatContainer.clear();
+						this.pendingMessagesContainer.clear();
+						this.compactionQueuedMessages = [];
+						this.streamingComponent = undefined;
+						this.streamingMessage = undefined;
+						this.pendingTools.clear();
 
-					// Render any messages added via setup, or show empty session
-					this.renderInitialMessages();
+						// Render any messages added via setup, or show empty session
+						this.renderInitialMessages();
+					}
 					this.ui.requestRender();
 
 					return { cancelled: false };

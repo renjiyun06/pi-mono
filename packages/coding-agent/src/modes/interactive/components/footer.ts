@@ -1,4 +1,4 @@
-import { type Component, truncateToWidth, visibleWidth } from "@mariozechner/pi-tui";
+import { type Component, visibleWidth } from "@mariozechner/pi-tui";
 import type { AgentSession } from "../../../core/agent-session.js";
 import type { ReadonlyFooterDataProvider } from "../../../core/footer-data-provider.js";
 import { theme } from "../theme/theme.js";
@@ -104,15 +104,30 @@ export class FooterComponent implements Component {
 			pwd = `${pwd} • ${sessionName}`;
 		}
 
-		// Truncate path if too long to fit width
-		if (pwd.length > width) {
-			const half = Math.floor(width / 2) - 2;
+		// Build the first line: pwd on the left, extension statuses on the right
+		const extensionStatuses = this.footerData.getExtensionStatuses();
+		let firstLineRight = "";
+		if (extensionStatuses.size > 0) {
+			const sortedStatuses = Array.from(extensionStatuses.entries())
+				.sort(([a], [b]) => a.localeCompare(b))
+				.map(([, text]) => sanitizeStatusText(text));
+			firstLineRight = sortedStatuses.join(" ");
+		}
+
+		const firstLineRightWidth = visibleWidth(firstLineRight);
+		const firstLinePadding = 2;
+
+		// Truncate path if too long to fit width (accounting for right side)
+		const maxPwdWidth = firstLineRightWidth > 0 ? width - firstLineRightWidth - firstLinePadding : width;
+
+		if (pwd.length > maxPwdWidth) {
+			const half = Math.floor(maxPwdWidth / 2) - 2;
 			if (half > 1) {
 				const start = pwd.slice(0, half);
 				const end = pwd.slice(-(half - 1));
 				pwd = `${start}...${end}`;
 			} else {
-				pwd = pwd.slice(0, Math.max(1, width));
+				pwd = pwd.slice(0, Math.max(1, maxPwdWidth));
 			}
 		}
 
@@ -213,18 +228,17 @@ export class FooterComponent implements Component {
 		const remainder = statsLine.slice(statsLeft.length); // padding + rightSide
 		const dimRemainder = theme.fg("dim", remainder);
 
-		const lines = [theme.fg("dim", pwd), dimStatsLeft + dimRemainder];
-
-		// Add extension statuses on a single line, sorted by key alphabetically
-		const extensionStatuses = this.footerData.getExtensionStatuses();
-		if (extensionStatuses.size > 0) {
-			const sortedStatuses = Array.from(extensionStatuses.entries())
-				.sort(([a], [b]) => a.localeCompare(b))
-				.map(([, text]) => sanitizeStatusText(text));
-			const statusLine = sortedStatuses.join(" ");
-			// Truncate to terminal width with dim ellipsis for consistency with footer style
-			lines.push(truncateToWidth(statusLine, width, theme.fg("dim", "...")));
+		// Build first line with pwd left-aligned and extension statuses right-aligned
+		let firstLine: string;
+		const pwdWidth = visibleWidth(pwd);
+		if (firstLineRightWidth > 0 && pwdWidth + firstLinePadding + firstLineRightWidth <= width) {
+			const padding = " ".repeat(width - pwdWidth - firstLineRightWidth);
+			firstLine = theme.fg("dim", pwd) + padding + theme.fg("dim", firstLineRight);
+		} else {
+			firstLine = theme.fg("dim", pwd);
 		}
+
+		const lines = [firstLine, dimStatsLeft + dimRemainder];
 
 		return lines;
 	}

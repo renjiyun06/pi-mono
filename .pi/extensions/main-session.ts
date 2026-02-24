@@ -1,16 +1,19 @@
 /**
  * Main Session Extension
  *
- * Provides a lock mechanism so only one pi instance can be the "main session".
- * Other extensions can check main session status via the exported helpers.
+ * Provides a lock mechanism so only one pi instance can be the "main session",
+ * and an autonomous mode that auto-starts new sessions after each agent turn.
  *
  * Commands:
  *   /main on   — Acquire main session lock
- *   /main off  — Release lock
+ *   /main off  — Release lock (also disables auto if active)
  *   /main      — Show current status
+ *   /auto on   — Enable autonomous mode (requires main session)
+ *   /auto off  — Disable autonomous mode
+ *   /auto      — Show current status
  */
 
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI, ExtensionContext, ExtensionCommandContext } from "@mariozechner/pi-coding-agent";
 import { existsSync, readFileSync, writeFileSync, unlinkSync, mkdirSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
@@ -83,10 +86,28 @@ function isMainSession(): boolean {
 }
 
 // ============================================================================
+// Status bar
+// ============================================================================
+
+function updateStatus(ctx: ExtensionContext, autoMode: boolean): void {
+	if (!isMainSession()) {
+		ctx.ui.setStatus("main-session", undefined);
+		return;
+	}
+
+	const label = autoMode ? "main | auto" : "main";
+	ctx.ui.setStatus("main-session", label);
+}
+
+// ============================================================================
 // Extension
 // ============================================================================
 
 export default function mainSessionExtension(pi: ExtensionAPI) {
+	let autoMode = false;
+
+	// --- /main command ---
+
 	pi.registerCommand("main", {
 		description: "Manage main session lock: /main [on|off]",
 		handler: async (args, ctx) => {
@@ -103,6 +124,7 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 
 				if (result.success) {
 					ctx.ui.notify("Main session acquired", "info");
+					updateStatus(ctx, autoMode);
 				} else {
 					const existing = result.existingLock!;
 					ctx.ui.notify(
@@ -116,8 +138,12 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 					return;
 				}
 
+				if (autoMode) {
+					autoMode = false;
+				}
 				releaseLock();
 				ctx.ui.notify("Main session released", "info");
+				updateStatus(ctx, autoMode);
 			} else {
 				// Status query
 				const lock = readLock();
@@ -143,9 +169,54 @@ export default function mainSessionExtension(pi: ExtensionAPI) {
 		},
 	});
 
-	// Clean up lock on shutdown if we own it
-	pi.on("session_shutdown", async () => {
+	// --- /auto command ---
+
+	pi.registerCommand("auto", {
+		description: "Manage autonomous mode: /auto [on|off]",
+		handler: async (args, ctx) => {
+			const subcommand = args.trim().toLowerCase();
+
+			if (subcommand === "on") {
+				if (!isMainSession()) {
+					ctx.ui.notify("Autonomous mode requires main session. Use /main on first.", "error");
+					return;
+				}
+				if (autoMode) {
+					ctx.ui.notify("Autonomous mode already active", "info");
+					return;
+				}
+				autoMode = true;
+				ctx.ui.notify("Autonomous mode enabled", "info");
+				updateStatus(ctx, autoMode);
+			} else if (subcommand === "off") {
+				if (!autoMode) {
+					ctx.ui.notify("Autonomous mode not active", "info");
+					return;
+				}
+				autoMode = false;
+				ctx.ui.notify("Autonomous mode disabled", "info");
+				updateStatus(ctx, autoMode);
+			} else {
+				ctx.ui.notify(autoMode ? "Autonomous mode: on" : "Autonomous mode: off", "info");
+			}
+		},
+	});
+
+	// --- Autonomous mode: start new session on agent_end ---
+
+	pi.on("agent_end", async (_event: unknown, ctx: ExtensionContext, cmdCtx: ExtensionCommandContext) => {
+		if (!autoMode || !isMainSession()) return;
+
+		await cmdCtx.newSession({ preserveUI: true });
+
+		pi.sendUserMessage("You are in autonomous mode. Read your memory files and recent git log to recover context, then decide what to do next.");
+	});
+
+	// --- Clean up on shutdown ---
+
+	pi.on("session_shutdown", async (_event: unknown, ctx: ExtensionContext) => {
 		if (isMainSession()) {
+			autoMode = false;
 			releaseLock();
 		}
 	});
