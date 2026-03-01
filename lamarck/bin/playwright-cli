@@ -1,0 +1,130 @@
+#!/bin/bash
+# Wrapper around playwright-cli that auto-manages Chrome instances via chrome-manager.
+# Transparently acquires a Chrome instance on first use and injects CDP/session env vars.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REAL_PLAYWRIGHT_CLI="/home/lamarck/.nvm/versions/node/v22.22.0/bin/playwright-cli"
+CHROME_MANAGER="$SCRIPT_DIR/chrome-manager.sh"
+STATE_DIR="/tmp/playwright-cli-wrapper"
+
+# --- Helpers ---
+
+err() {
+    echo "[playwright-cli-wrapper] ERROR: $*" >&2
+    exit 1
+}
+
+# Check if any argument is --help
+has_help_flag() {
+    for arg in "$@"; do
+        if [[ "$arg" == "--help" || "$arg" == "-h" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+# Strip -s=* or -s <val> or --session=* or --session <val> from args
+strip_session_args() {
+    local -a result=()
+    local skip_next=0
+    for arg in "$@"; do
+        if [[ $skip_next -eq 1 ]]; then
+            skip_next=0
+            continue
+        fi
+        case "$arg" in
+            -s=*|--session=*) continue ;;
+            -s|--session) skip_next=1; continue ;;
+            *) result+=("$arg") ;;
+        esac
+    done
+    echo "${result[@]}"
+}
+
+# Load state (ws_url) if already acquired
+load_state() {
+    if [[ -f "$STATE_FILE" ]]; then
+        source "$STATE_FILE"
+        return 0
+    fi
+    return 1
+}
+
+# Acquire Chrome instance and save state
+acquire() {
+    mkdir -p "$STATE_DIR"
+    local output
+    output=$("$CHROME_MANAGER" acquire "$AGENT_PID") \
+        || err "failed to acquire Chrome instance"
+    local ws_url
+    ws_url=$(echo "$output" | grep -o '"ws_url":"[^"]*"' | cut -d'"' -f4)
+    [[ -z "$ws_url" ]] && err "failed to parse ws_url from chrome-manager output"
+    echo "WS_URL=$ws_url" > "$STATE_FILE"
+}
+
+# Get the command name (first non-flag argument)
+get_command() {
+    for arg in "$@"; do
+        case "$arg" in
+            -*) continue ;;
+            *) echo "$arg"; return ;;
+        esac
+    done
+}
+
+# --- Main ---
+
+# Pass through --help directly
+if has_help_flag "$@"; then
+    exec "$REAL_PLAYWRIGHT_CLI" "$@"
+fi
+
+# Require AGENT_PID
+if [[ -z "${AGENT_PID:-}" ]]; then
+    err "AGENT_PID environment variable is not set. It must be set by the agent process before using playwright-cli."
+fi
+STATE_FILE="$STATE_DIR/${AGENT_PID}.state"
+
+# Determine the command
+cmd=$(get_command "$@")
+
+# Ensure Chrome instance is acquired
+if ! load_state; then
+    # Only acquire on commands that need a browser
+    case "$cmd" in
+        open|goto|click|dblclick|type|fill|drag|hover|select|upload|check|uncheck|\
+        snapshot|eval|dialog-accept|dialog-dismiss|resize|delete-data|\
+        go-back|go-forward|reload|\
+        press|keydown|keyup|\
+        mousemove|mousedown|mouseup|mousewheel|\
+        screenshot|pdf|\
+        tab-list|tab-new|tab-close|tab-select|\
+        state-load|state-save|cookie-list|cookie-get|cookie-set|cookie-delete|cookie-clear|\
+        localstorage-list|localstorage-get|localstorage-set|localstorage-delete|localstorage-clear|\
+        sessionstorage-list|sessionstorage-get|sessionstorage-set|sessionstorage-delete|sessionstorage-clear|\
+        route|route-list|unroute|\
+        console|run-code|network|tracing-start|tracing-stop|video-start|video-stop|show|devtools-start|\
+        close|close-all|kill-all|list)
+            acquire
+            load_state
+            ;;
+        *)
+            # Unknown or no command — pass through
+            exec "$REAL_PLAYWRIGHT_CLI" "$@"
+            ;;
+    esac
+fi
+
+# Inject environment variables
+export PLAYWRIGHT_MCP_CDP_ENDPOINT="$WS_URL"
+export PLAYWRIGHT_MCP_ISOLATED=false
+export PLAYWRIGHT_CLI_SESSION="$AGENT_PID"
+
+# Strip any -s/--session from args, we manage it
+cleaned_args=$(strip_session_args "$@")
+
+# Execute real playwright-cli
+exec "$REAL_PLAYWRIGHT_CLI" $cleaned_args
