@@ -15,6 +15,7 @@ GLOBAL_LOCK="$LOCK_DIR/.lock"
 CDP_WAIT_TIMEOUT=60
 USER_AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36"
 VERBOSE=0
+POWERSHELL="/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
 
 # Chrome launch flags
 CHROME_FLAGS=(
@@ -63,21 +64,21 @@ wsl_process_alive() {
 # Check if a Windows process is alive by PID
 win_process_alive() {
     local pid="$1"
-    powershell.exe -NoProfile -NonInteractive -Command \
+    "$POWERSHELL" -NoProfile -NonInteractive -Command \
         "if (Get-Process -Id $pid -ErrorAction SilentlyContinue) { exit 0 } else { exit 1 }" 2>/dev/null
 }
 
 # Kill a Windows process by PID
 win_process_kill() {
     local pid="$1"
-    powershell.exe -NoProfile -NonInteractive -Command \
+    "$POWERSHELL" -NoProfile -NonInteractive -Command \
         "Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue" 2>/dev/null
 }
 
 # Get PID of the Chrome process on a specific port
 win_get_chrome_pid() {
     local port="$1"
-    powershell.exe -NoProfile -NonInteractive -Command \
+    "$POWERSHELL" -NoProfile -NonInteractive -Command \
         "Get-CimInstance Win32_Process | Where-Object { \$_.Name -eq 'chrome.exe' -and \$_.CommandLine -like '*--remote-debugging-port=$port*' } | Select-Object -First 1 -ExpandProperty ProcessId" 2>/dev/null | tr -d '\r\n'
 }
 
@@ -115,7 +116,7 @@ release_lock() {
     # Remove Windows profile directory
     if [ -n "$port" ]; then
         local win_dest="${INSTANCES_DIR}\\${port}"
-        powershell.exe -NoProfile -NonInteractive -Command \
+        "$POWERSHELL" -NoProfile -NonInteractive -Command \
             "if (Test-Path '$win_dest') { Remove-Item -Recurse -Force '$win_dest' }" 2>/dev/null || true
     fi
 
@@ -188,11 +189,11 @@ EOF
     # Copy Chrome profile
     local win_dest="${INSTANCES_DIR}\\${port}"
     log "copying profile to $win_dest ..."
-    powershell.exe -NoProfile -NonInteractive -Command \
+    "$POWERSHELL" -NoProfile -NonInteractive -Command \
         "if (Test-Path '$win_dest') { Remove-Item -Recurse -Force '$win_dest' }; Copy-Item -Recurse '$SOURCE_PROFILE' '$win_dest'" 2>/dev/null \
         || { release_lock "$lock_file"; err "failed to copy Chrome profile"; }
 
-    # Start Chrome via powershell.exe
+    # Start Chrome
     log "starting Chrome on port $port ..."
     local args_str="--remote-debugging-port=$port --user-data-dir=$win_dest"
     for flag in "${CHROME_FLAGS[@]}"; do
@@ -203,7 +204,7 @@ EOF
             args_str="$args_str $flag"
         fi
     done
-    powershell.exe -NoProfile -NonInteractive -Command \
+    "$POWERSHELL" -NoProfile -NonInteractive -Command \
         "Start-Process -FilePath '${CHROME_EXE}' -ArgumentList '${args_str}' -WindowStyle Hidden" 2>/dev/null \
         || { release_lock "$lock_file"; err "failed to start Chrome"; }
 
