@@ -60,7 +60,7 @@ export default function (pi: ExtensionAPI) {
 			if (tmuxSession === "main" && elapsed >= AUTONOMOUS_THRESHOLD_MS && !autonomousTriggered) {
 				autonomousTriggered = true;
 				pi.sendUserMessage(
-					"Ren has been absent for 30 minutes. Consider entering autonomous mode.",
+					"[This message was delivered by the idle-timer extension. You have been idle for 30 minutes, which means Ren is likely absent.]\n\nConsider entering autonomous mode.",
 					{ deliverAs: "followUp" },
 				);
 			}
