@@ -77,5 +77,4 @@ When not in autonomous mode, Ren is present and provides continuity, so committi
 1. Read `lamarck/self.md` — understand the whole.
 2. Read this file (`lamarck/parts/main/me.md`) — understand my role.
 3. Read `memory/summary.md` — restore long-term context.
-4. Read today's daily memory (`memory/days/YYYY-MM-DD.md`) if it exists — restore today's context.
-5. Check `lamarck/signals/main/` for any messages from other parts.
+4. Read today's and yesterday's daily memory (`memory/days/YYYY-MM-DD.md`) if they exist — restore recent context.

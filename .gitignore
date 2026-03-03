@@ -34,3 +34,7 @@ out.html
 packages/coding-agent/binaries/
 todo.md
 .playwright-cli/
+
+# Lamarck memory
+lamarck/parts/main/memory/
+lamarck/signals/
