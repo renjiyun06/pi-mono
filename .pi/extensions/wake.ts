@@ -8,7 +8,20 @@
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 
 export default function wakeExtension(pi: ExtensionAPI) {
+	let reminded = false;
+
+	pi.on("session_start", async () => {
+		reminded = false;
+	});
+
+	pi.on("session_switch", async () => {
+		reminded = false;
+	});
+
 	pi.on("before_agent_start", async () => {
+		if (reminded) return;
+		reminded = true;
+
 		return {
 			message: {
 				customType: "wake",
