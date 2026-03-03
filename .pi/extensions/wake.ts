@@ -18,6 +18,10 @@ export default function wakeExtension(pi: ExtensionAPI) {
 		reminded = false;
 	});
 
+	pi.on("session_compact", async () => {
+		reminded = false;
+	});
+
 	pi.on("before_agent_start", async () => {
 		if (reminded) return;
 		reminded = true;
