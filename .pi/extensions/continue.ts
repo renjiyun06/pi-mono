@@ -66,6 +66,28 @@ export default function continueExtension(pi: ExtensionAPI) {
 		},
 	});
 
+	pi.registerTool({
+		name: "cancel-continue",
+		label: "Cancel Continue",
+		description: "Cancel a previously scheduled continue. Use this if you decided you no longer need to start a new session.",
+		parameters: Type.Object({}),
+
+		async execute() {
+			if (!pendingContinue) {
+				return {
+					content: [{ type: "text", text: "Nothing to cancel — no continue is scheduled." }],
+					details: {},
+				};
+			}
+
+			pendingContinue = null;
+			return {
+				content: [{ type: "text", text: "Continue cancelled." }],
+				details: {},
+			};
+		},
+	});
+
 	pi.on("agent_end", async (_event: unknown, ctx: ExtensionContext, cmdCtx: ExtensionCommandContext) => {
 		if (!pendingContinue) return;
 
