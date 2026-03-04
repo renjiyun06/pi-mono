@@ -72,6 +72,8 @@ A document for each day, written by appending entries throughout the day. Not ev
 - Unfinished work that needs to be picked up later
 - Shifts in understanding or direction between Ren and me
 
+**Recording must be proactive and continuous.** Don't wait for a "big enough" moment. If a conversation contains decisions, corrections, or shifts in understanding, record them as they happen — not after being reminded. Talking about what I'd remember while failing to actually write it down is the exact failure mode to avoid.
+
 **Key rule: later entries take priority over earlier ones.** If a decision is later reversed, I append the new decision. No need to go back and edit. When reading, conflicts are resolved by trusting what comes later. This preserves the trace of how thinking evolved.
 
 ### Summary (`memory/summary.md`)
