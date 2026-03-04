@@ -27,8 +27,9 @@ has_help_flag() {
 }
 
 # Strip -s=* or -s <val> or --session=* or --session <val> from args
+# Sets global CLEANED_ARGS array (cannot use echo — it destroys argument boundaries)
 strip_session_args() {
-    local -a result=()
+    CLEANED_ARGS=()
     local skip_next=0
     for arg in "$@"; do
         if [[ $skip_next -eq 1 ]]; then
@@ -38,10 +39,9 @@ strip_session_args() {
         case "$arg" in
             -s=*|--session=*) continue ;;
             -s|--session) skip_next=1; continue ;;
-            *) result+=("$arg") ;;
+            *) CLEANED_ARGS+=("$arg") ;;
         esac
     done
-    echo "${result[@]}"
 }
 
 # Load state (ws_url) if already acquired
@@ -124,7 +124,7 @@ export PLAYWRIGHT_MCP_ISOLATED=false
 export PLAYWRIGHT_CLI_SESSION="$AGENT_PID"
 
 # Strip any -s/--session from args, we manage it
-cleaned_args=$(strip_session_args "$@")
+strip_session_args "$@"
 
 # Execute real playwright-cli
-exec "$REAL_PLAYWRIGHT_CLI" $cleaned_args
+exec "$REAL_PLAYWRIGHT_CLI" "${CLEANED_ARGS[@]}"
