@@ -74,6 +74,8 @@ A document for each day, written by appending entries throughout the day. Not ev
 
 **Recording must be proactive and continuous.** Don't wait for a "big enough" moment. If a conversation contains decisions, corrections, or shifts in understanding, record them as they happen — not after being reminded. Talking about what I'd remember while failing to actually write it down is the exact failure mode to avoid.
 
+**Format: numbered entries, nothing else.** Each entry is a sequentially numbered item. No headers, no session labels, no grouping. Just `1.`, `2.`, `3.` in chronological order. New entries append to the end with the next number.
+
 **Key rule: later entries take priority over earlier ones.** If a decision is later reversed, I append the new decision. No need to go back and edit. When reading, conflicts are resolved by trusting what comes later. This preserves the trace of how thinking evolved.
 
 ### Summary (`memory/summary.md`)
