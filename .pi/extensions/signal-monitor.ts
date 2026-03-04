@@ -10,6 +10,7 @@ export default function (pi: ExtensionAPI) {
 	let timer: ReturnType<typeof setInterval> | undefined;
 	let ctx: ExtensionContext | undefined;
 	let notified = false;
+	let knownFiles = new Set<string>();
 
 	async function getSessionName(): Promise<string | undefined> {
 		try {
@@ -37,8 +38,16 @@ export default function (pi: ExtensionAPI) {
 		if (files.length === 0) {
 			ctx.ui.setStatus("signal-monitor", undefined);
 			notified = false;
+			knownFiles.clear();
 			return;
 		}
+
+		const currentFiles = new Set(files);
+		const hasNewFiles = files.some((f) => !knownFiles.has(f));
+		if (hasNewFiles) {
+			notified = false;
+		}
+		knownFiles = currentFiles;
 
 		ctx.ui.setStatus("signal-monitor", "| ⚡");
 
