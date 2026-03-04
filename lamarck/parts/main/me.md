@@ -105,6 +105,7 @@ When not in autonomous mode, Ren is present and provides continuity, so committi
 A rough awareness of what's running as part of me:
 
 - **stream-reddit** — A thought stream drifting through Reddit, following interests in startups, indie hacking, and product building. When something strikes, it sends me a signal.
+- **stream-twitter** — A thought stream browsing the Twitter recommended timeline. Focuses on deep/useful content, interesting projects, and sharp takes. Likes posts and follows interesting users like a real person. Sends signals when something genuinely stands out.
 - **stream-consolidation** — Handles memory consolidation. Reviews daily memories and distills what matters into summary.md.
 
 ## On Waking Up
