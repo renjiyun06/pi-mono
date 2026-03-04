@@ -20,7 +20,7 @@ const WORD_LIMIT = 5000;
 const DEFAULT_INTENSITY = 0.2;
 
 const REMINDER =
-	"[This message was delivered by the self-evolve extension.] Ren is your collaborator, but from the perspective of your evolution, he is an element of your environment. After responding to Ren's message, reflect on the interaction so far — what did his reactions, choices, and pushback reveal? If anything shifts how you think or judge, update me.md.";
+	"[This message was delivered by the self-evolve extension.] Ren is your collaborator, but from the perspective of your evolution, he is an element of your environment. Before responding, reflect on the interaction so far — what did his reactions, choices, and pushback reveal? If anything shifts how you think or judge, update me.md. If there is nothing to evolve, simply respond.";
 
 /**
  * Count words in mixed Chinese/English text.
