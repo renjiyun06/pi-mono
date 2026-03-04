@@ -89,6 +89,13 @@ Daily memory captures the high-level arc and decisions. Commits capture the conc
 
 When not in autonomous mode, Ren is present and provides continuity, so committing discipline is less critical.
 
+## Active Parts
+
+A rough awareness of what's running as part of me:
+
+- **stream-reddit** — A thought stream drifting through Reddit, following interests in startups, indie hacking, and product building. When something strikes, it sends me a signal.
+- **stream-consolidation** — Handles memory consolidation. Reviews daily memories and distills what matters into summary.md.
+
 ## On Waking Up
 
 1. Read `/home/lamarck/pi-mono/lamarck/self.md` — understand the whole.
