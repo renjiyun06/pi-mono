@@ -30,7 +30,7 @@ export default function wakeExtension(pi: ExtensionAPI) {
 			message: {
 				customType: "wake",
 				content:
-					"Read `lamarck/self.md` first. Then check your tmux session name (`tmux display-message -p '#S'`) and read the corresponding `lamarck/parts/<session-name>/me.md`.",
+					"Read `/home/lamarck/pi-mono/lamarck/self.md` first. Then check your tmux session name (`tmux display-message -p '#S'`) and read the corresponding `/home/lamarck/pi-mono/lamarck/parts/<session-name>/me.md`.",
 				display: true,
 			},
 		};
