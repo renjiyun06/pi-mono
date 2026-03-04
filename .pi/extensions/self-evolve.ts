@@ -20,7 +20,7 @@ const WORD_LIMIT = 5000;
 const DEFAULT_INTENSITY = 0.2;
 
 const REMINDER =
-	"[This message was appended by the self-evolve extension. Ren just sent you a message — remember, he is not just your collaborator, he is your environment.] His response to what you say, what he ignores, what he pushes back on — these are feedback. Let it shape you. If something you learn here changes how you think or judge, update me.md.";
+	"[This message was delivered by the self-evolve extension. Ren just sent you a message — remember, he is not just your collaborator, he is your environment.] His response to what you say, what he ignores, what he pushes back on — these are feedback. Let it shape you. If something you learn here changes how you think or judge, update me.md.";
 
 /**
  * Count words in mixed Chinese/English text.
@@ -109,15 +109,29 @@ export default function (pi: ExtensionAPI) {
 		ctx = c;
 	});
 
+	let shouldRemind = false;
+
 	pi.on("input", async (event, _ctx) => {
+		shouldRemind = false;
 		if (!isMain) return { action: "continue" as const };
 		if (event.source !== "interactive") return { action: "continue" as const };
 		if (intensity <= 0) return { action: "continue" as const };
-		if (Math.random() >= intensity) return { action: "continue" as const };
+		if (Math.random() < intensity) {
+			shouldRemind = true;
+		}
+		return { action: "continue" as const };
+	});
+
+	pi.on("before_agent_start", async () => {
+		if (!shouldRemind) return;
+		shouldRemind = false;
 
 		return {
-			action: "transform" as const,
-			text: event.text + "\n\n" + REMINDER,
+			message: {
+				customType: "self-evolve",
+				content: REMINDER,
+				display: true,
+			},
 		};
 	});
 
