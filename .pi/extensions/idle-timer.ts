@@ -18,6 +18,7 @@ export default function (pi: ExtensionAPI) {
 	let intervalId: ReturnType<typeof setInterval> | undefined;
 	let tmuxSession: string | undefined;
 	let autonomousTriggered = false;
+	let autonomousEnabled = true;
 	let statusCtx: { ui: { setStatus: (id: string, text: string | undefined) => void; theme: { fg: (color: string, text: string) => string } } } | undefined;
 
 	function enterIdle() {
@@ -57,7 +58,7 @@ export default function (pi: ExtensionAPI) {
 				parts.push(theme.fg("dim", `idle ${formatDuration(elapsed)}`));
 			}
 
-			if (tmuxSession === "main" && elapsed >= AUTONOMOUS_THRESHOLD_MS && !autonomousTriggered) {
+			if (tmuxSession === "main" && autonomousEnabled && elapsed >= AUTONOMOUS_THRESHOLD_MS && !autonomousTriggered) {
 				autonomousTriggered = true;
 				pi.sendUserMessage(
 					"[This message was delivered by the idle-timer extension. You have been idle for 30 minutes, which means Ren is likely absent.]\n\nConsider entering autonomous mode.",
@@ -98,6 +99,21 @@ export default function (pi: ExtensionAPI) {
 	pi.on("input", async (_event, _ctx) => {
 		exitIdle();
 		return { action: "continue" as const };
+	});
+
+	pi.registerCommand("autonomous", {
+		description: "Toggle autonomous mode (on/off)",
+		handler: async (args, ctx) => {
+			const arg = args.trim().toLowerCase();
+			if (arg === "on") {
+				autonomousEnabled = true;
+			} else if (arg === "off") {
+				autonomousEnabled = false;
+			} else {
+				autonomousEnabled = !autonomousEnabled;
+			}
+			ctx.ui.notify(`Autonomous mode: ${autonomousEnabled ? "on" : "off"}`);
+		},
 	});
 
 	pi.on("session_shutdown", async (_event, _ctx) => {
