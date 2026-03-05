@@ -44,6 +44,11 @@ export default function (pi: ExtensionAPI) {
 	let ctx: ExtensionContext | undefined;
 	let sizeWarned = false;
 
+	function updateStatus() {
+		if (!ctx || !isMain) return;
+		ctx.ui.setStatus("self-evolve", ctx.ui.theme.fg("dim", `evolve ${intensity}`));
+	}
+
 	async function getSessionName(): Promise<string | undefined> {
 		try {
 			const result = await pi.exec("tmux", ["display-message", "-p", "#S"], { timeout: 3000 });
@@ -97,6 +102,7 @@ export default function (pi: ExtensionAPI) {
 
 		if (!isMain) return;
 
+		updateStatus();
 		startTimer();
 	});
 
@@ -156,6 +162,7 @@ export default function (pi: ExtensionAPI) {
 			}
 
 			intensity = value;
+			updateStatus();
 			cmdCtx.ui.notify(`Evolution intensity set to ${intensity}`, "info");
 		},
 	});

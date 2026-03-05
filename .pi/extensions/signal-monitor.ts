@@ -49,7 +49,7 @@ export default function (pi: ExtensionAPI) {
 		}
 		knownFiles = currentFiles;
 
-		ctx.ui.setStatus("signal-monitor", "| ⚡");
+		ctx.ui.setStatus("signal-monitor", "⚡");
 
 		if (!notified && ctx.isIdle()) {
 			notified = true;

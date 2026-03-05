@@ -52,6 +52,10 @@ export default function (pi: ExtensionAPI) {
 			parts.push(theme.fg("dim", tmuxSession));
 		}
 
+		if (tmuxSession === "main") {
+			parts.push(theme.fg("dim", `auto ${autonomousEnabled ? "on" : "off"}`));
+		}
+
 		if (idleStart !== undefined) {
 			const elapsed = Date.now() - idleStart;
 			if (elapsed >= 1000) {
@@ -68,7 +72,7 @@ export default function (pi: ExtensionAPI) {
 		}
 
 		if (parts.length > 0) {
-			statusCtx.ui.setStatus("idle-timer", parts.join(theme.fg("dim", " | ")));
+			statusCtx.ui.setStatus("idle-timer", parts.join(" "));
 		} else {
 			statusCtx.ui.setStatus("idle-timer", undefined);
 		}
@@ -113,6 +117,7 @@ export default function (pi: ExtensionAPI) {
 				autonomousEnabled = !autonomousEnabled;
 			}
 			ctx.ui.notify(`Autonomous mode: ${autonomousEnabled ? "on" : "off"}`);
+			updateStatus();
 		},
 	});
 
