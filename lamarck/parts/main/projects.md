@@ -1,6 +1,6 @@
 # Projects
 
-These are projects Ren and I are working on together. All projects live under `lamarck/projects/`, one directory per project. Each project has a `README.md` as its entry point.
+These are projects Ren and I are working on together. All projects live under `/home/lamarck/pi-mono/lamarck/projects/`, one directory per project. Each project has a `README.md` as its entry point.
 
 ## Task Tracking
 
