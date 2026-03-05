@@ -44,9 +44,15 @@ export default function (pi: ExtensionAPI) {
 	let ctx: ExtensionContext | undefined;
 	let sizeWarned = false;
 
+	let lastWordCount = 0;
+
 	function updateStatus() {
 		if (!ctx || !isMain) return;
-		ctx.ui.setStatus("self-evolve", ctx.ui.theme.fg("dim", `evolve ${intensity}`));
+		const parts = [`evolve ${intensity}`];
+		if (lastWordCount > 0) {
+			parts.push(`me.md ${lastWordCount}/${WORD_LIMIT}`);
+		}
+		ctx.ui.setStatus("self-evolve", ctx.ui.theme.fg("dim", parts.join(" ")));
 	}
 
 	async function getSessionName(): Promise<string | undefined> {
@@ -64,6 +70,8 @@ export default function (pi: ExtensionAPI) {
 		try {
 			const content = await readFile(ME_FILE, "utf-8");
 			const words = countWords(content);
+			lastWordCount = words;
+			updateStatus();
 
 			if (words > WORD_LIMIT) {
 				if (!sizeWarned && ctx.isIdle()) {
@@ -102,7 +110,7 @@ export default function (pi: ExtensionAPI) {
 
 		if (!isMain) return;
 
-		updateStatus();
+		await checkMeFile();
 		startTimer();
 	});
 
