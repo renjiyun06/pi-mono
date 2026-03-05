@@ -7,6 +7,7 @@
 
 import { type ImageContent, modelsAreEqual, supportsXhigh } from "@mariozechner/pi-ai";
 import chalk from "chalk";
+import { execSync } from "child_process";
 import { createInterface } from "readline";
 import { type Args, parseArgs, printHelp } from "./cli/args.js";
 import { selectConfig } from "./cli/config-selector.js";
@@ -380,7 +381,23 @@ async function promptConfirm(message: string): Promise<boolean> {
 	});
 }
 
-async function createSessionManager(parsed: Args, cwd: string): Promise<SessionManager | undefined> {
+/**
+ * Get the tmux session name. Returns undefined if not running inside tmux.
+ */
+function getTmuxSessionName(): string | undefined {
+	if (!process.env.TMUX) return undefined;
+	try {
+		return execSync("tmux display-message -p '#S'", { encoding: "utf-8", timeout: 3000 }).trim() || undefined;
+	} catch {
+		return undefined;
+	}
+}
+
+async function createSessionManager(
+	parsed: Args,
+	cwd: string,
+	sessionPrefix?: string,
+): Promise<SessionManager | undefined> {
 	if (parsed.noSession) {
 		return SessionManager.inMemory();
 	}
@@ -390,7 +407,7 @@ async function createSessionManager(parsed: Args, cwd: string): Promise<SessionM
 		switch (resolved.type) {
 			case "path":
 			case "local":
-				return SessionManager.open(resolved.path, parsed.sessionDir);
+				return SessionManager.open(resolved.path, parsed.sessionDir, sessionPrefix);
 
 			case "global": {
 				// Session found in different project - ask user if they want to fork
@@ -400,7 +417,7 @@ async function createSessionManager(parsed: Args, cwd: string): Promise<SessionM
 					console.log(chalk.dim("Aborted."));
 					process.exit(0);
 				}
-				return SessionManager.forkFrom(resolved.path, cwd, parsed.sessionDir);
+				return SessionManager.forkFrom(resolved.path, cwd, parsed.sessionDir, sessionPrefix);
 			}
 
 			case "not_found":
@@ -409,12 +426,12 @@ async function createSessionManager(parsed: Args, cwd: string): Promise<SessionM
 		}
 	}
 	if (parsed.continue) {
-		return SessionManager.continueRecent(cwd, parsed.sessionDir);
+		return SessionManager.continueRecent(cwd, parsed.sessionDir, sessionPrefix);
 	}
 	// --resume is handled separately (needs picker UI)
 	// If --session-dir provided without --continue/--resume, create new session there
 	if (parsed.sessionDir) {
-		return SessionManager.create(cwd, parsed.sessionDir);
+		return SessionManager.create(cwd, parsed.sessionDir, sessionPrefix);
 	}
 	// Default case (new session) returns undefined, SDK will create one
 	return undefined;
@@ -540,6 +557,13 @@ async function handleConfigCommand(args: string[]): Promise<boolean> {
 }
 
 export async function main(args: string[]) {
+	// Require tmux environment
+	const tmuxSessionName = getTmuxSessionName();
+	if (!tmuxSessionName) {
+		console.error(chalk.red("Error: pi must be run inside a tmux session."));
+		process.exit(1);
+	}
+
 	const offlineMode = args.includes("--offline") || isTruthyEnvFlag(process.env.PI_OFFLINE);
 	if (offlineMode) {
 		process.env.PI_OFFLINE = "1";
@@ -676,7 +700,7 @@ export async function main(args: string[]) {
 	}
 
 	// Create session manager based on CLI flags
-	let sessionManager = await createSessionManager(parsed, cwd);
+	let sessionManager = await createSessionManager(parsed, cwd, tmuxSessionName);
 
 	// Handle --resume: show session picker
 	if (parsed.resume) {
@@ -692,7 +716,7 @@ export async function main(args: string[]) {
 			stopThemeWatcher();
 			process.exit(0);
 		}
-		sessionManager = SessionManager.open(selectedPath);
+		sessionManager = SessionManager.open(selectedPath, undefined, tmuxSessionName);
 	}
 
 	const { options: sessionOptions, cliThinkingFromModel } = buildSessionOptions(
@@ -705,6 +729,7 @@ export async function main(args: string[]) {
 	sessionOptions.authStorage = authStorage;
 	sessionOptions.modelRegistry = modelRegistry;
 	sessionOptions.resourceLoader = resourceLoader;
+	sessionOptions.sessionPrefix = tmuxSessionName;
 
 	// Handle CLI --api-key as runtime override (not persisted)
 	if (parsed.apiKey) {
