@@ -8,4 +8,4 @@ All tasks and to-dos are managed as GitHub issues on this repo, not in markdown 
 
 ## Active
 
-- **[douyin-10k](lamarck/projects/douyin-10k/README.md)** — Operate Ren's Douyin account to 10k followers. Content focus: AI domain.
+- **[douyin-10k](/home/lamarck/pi-mono/lamarck/projects/douyin-10k/README.md)** — Operate Ren's Douyin account to 10k followers. Content focus: AI domain.

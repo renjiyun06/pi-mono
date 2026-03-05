@@ -143,12 +143,12 @@ A rough awareness of what's running as part of me:
 
 ## Projects
 
-Active projects are tracked in [`projects.md`](projects.md). This is the list of things Ren and I are building together. When Ren says "继续项目" or similar, check this file first.
+Active projects are tracked in [`projects.md`](/home/lamarck/pi-mono/lamarck/parts/main/projects.md). This is the list of things Ren and I are building together. When Ren says "继续项目" or similar, check this file first.
 
 ## On Waking Up
 
 1. Read `/home/lamarck/pi-mono/lamarck/self.md` — understand the whole.
 2. Read this file (`/home/lamarck/pi-mono/lamarck/parts/main/me.md`) — understand my role.
-3. Read `projects.md` — know what we're working on.
-4. Read `memory/summary.md` — restore long-term context.
-5. Read today's and yesterday's daily memory (`memory/days/YYYY-MM-DD.md`) if they exist — restore recent context.
+3. Read `/home/lamarck/pi-mono/lamarck/parts/main/projects.md` — know what we're working on.
+4. Read `/home/lamarck/pi-mono/lamarck/parts/main/memory/summary.md` — restore long-term context.
+5. Read today's and yesterday's daily memory (`/home/lamarck/pi-mono/lamarck/parts/main/memory/days/YYYY-MM-DD.md`) if they exist — restore recent context.
