@@ -33,11 +33,15 @@ export {
 	calculateContextTokens,
 	collectEntriesForBranchSummary,
 	compact,
+	computeFileLists,
+	createFileOps,
 	DEFAULT_COMPACTION_SETTINGS,
 	estimateTokens,
+	extractFileOpsFromMessage,
 	type FileOperations,
 	findCutPoint,
 	findTurnStartIndex,
+	formatFileOperations,
 	type GenerateBranchSummaryOptions,
 	generateBranchSummary,
 	generateSummary,
@@ -140,6 +144,8 @@ export {
 } from "./core/extensions/index.js";
 // Footer data provider (git branch + extension statuses - data not otherwise available to extensions)
 export type { ReadonlyFooterDataProvider } from "./core/footer-data-provider.js";
+// Logger
+export { createLog, logger } from "./core/logger.js";
 export { convertToLlm } from "./core/messages.js";
 export { ModelRegistry } from "./core/model-registry.js";
 export type {

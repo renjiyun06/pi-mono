@@ -8,6 +8,10 @@
 import type { AgentMessage } from "@mariozechner/pi-agent-core";
 import type { AssistantMessage, Model, Usage } from "@mariozechner/pi-ai";
 import { completeSimple } from "@mariozechner/pi-ai";
+import { createLog } from "../logger.js";
+
+const log = createLog("compaction");
+
 import {
 	convertToLlm,
 	createBranchSummaryMessage,
@@ -587,6 +591,8 @@ export interface CompactionPreparation {
 	messagesToSummarize: AgentMessage[];
 	/** Messages that will be turned into turn prefix summary (if splitting) */
 	turnPrefixMessages: AgentMessage[];
+	/** Messages after the cut point that will be kept as-is */
+	keptMessages: AgentMessage[];
 	/** Whether this is a split turn (cut point in middle of turn) */
 	isSplitTurn: boolean;
 	tokensBefore: number;
@@ -651,6 +657,13 @@ export function prepareCompaction(
 		}
 	}
 
+	// Messages after the cut point (kept as-is by default compaction)
+	const keptMessages: AgentMessage[] = [];
+	for (let i = cutPoint.firstKeptEntryIndex; i < boundaryEnd; i++) {
+		const msg = getMessageFromEntry(pathEntries[i]);
+		if (msg) keptMessages.push(msg);
+	}
+
 	// Get previous summary for iterative update
 	let previousSummary: string | undefined;
 	if (prevCompactionIndex >= 0) {
@@ -668,10 +681,23 @@ export function prepareCompaction(
 		}
 	}
 
+	log.info(
+		{
+			messagesToSummarize: messagesToSummarize.length,
+			turnPrefixMessages: turnPrefixMessages.length,
+			keptMessages: keptMessages.length,
+			isSplitTurn: cutPoint.isSplitTurn,
+			tokensBefore,
+			hasPreviousSummary: !!previousSummary,
+		},
+		"Compaction prepared",
+	);
+
 	return {
 		firstKeptEntryId,
 		messagesToSummarize,
 		turnPrefixMessages,
+		keptMessages,
 		isSplitTurn: cutPoint.isSplitTurn,
 		tokensBefore,
 		previousSummary,
