@@ -15,4 +15,9 @@ import { main } from "./main.js";
 setGlobalDispatcher(new EnvHttpProxyAgent());
 setBedrockProviderModule(bedrockProviderModule);
 
+if (!process.env.TMUX) {
+	console.error("Error: pi must be run inside a tmux session.");
+	process.exit(1);
+}
+
 main(process.argv.slice(2));
