@@ -1,0 +1,2 @@
+- Name: Vale
+- Identifier: `main`, runs in tmux session `main`
