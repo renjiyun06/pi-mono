@@ -197,19 +197,37 @@ export class FooterComponent implements Component {
 		const remainder = statsLine.slice(statsLeft.length); // padding + rightSide
 		const dimRemainder = theme.fg("dim", remainder);
 
-		const pwdLine = truncateToWidth(theme.fg("dim", pwd), width, theme.fg("dim", "..."));
-		const lines = [pwdLine, dimStatsLeft + dimRemainder];
-
-		// Add extension statuses on a single line, sorted by key alphabetically
+		// Build pwd line with extension statuses on the right
 		const extensionStatuses = this.footerData.getExtensionStatuses();
+		let pwdLine: string;
 		if (extensionStatuses.size > 0) {
 			const sortedStatuses = Array.from(extensionStatuses.entries())
 				.sort(([a], [b]) => a.localeCompare(b))
 				.map(([, text]) => sanitizeStatusText(text));
-			const statusLine = sortedStatuses.join(" ");
-			// Truncate to terminal width with dim ellipsis for consistency with footer style
-			lines.push(truncateToWidth(statusLine, width, theme.fg("dim", "...")));
+			const statusRight = sortedStatuses.join(" | ");
+			const dimPwd = theme.fg("dim", pwd);
+			const pwdWidth = visibleWidth(dimPwd);
+			const statusRightWidth = visibleWidth(statusRight);
+			const totalNeededPwd = pwdWidth + 2 + statusRightWidth;
+			if (totalNeededPwd <= width) {
+				const padding = " ".repeat(width - pwdWidth - statusRightWidth);
+				pwdLine = dimPwd + padding + statusRight;
+			} else {
+				// Not enough space, truncate pwd to make room
+				const availableForPwd = width - 2 - statusRightWidth;
+				if (availableForPwd > 0) {
+					const truncatedPwd = truncateToWidth(dimPwd, availableForPwd, theme.fg("dim", "..."));
+					const truncatedPwdWidth = visibleWidth(truncatedPwd);
+					const padding = " ".repeat(Math.max(0, width - truncatedPwdWidth - statusRightWidth));
+					pwdLine = truncatedPwd + padding + statusRight;
+				} else {
+					pwdLine = truncateToWidth(dimPwd, width, theme.fg("dim", "..."));
+				}
+			}
+		} else {
+			pwdLine = truncateToWidth(theme.fg("dim", pwd), width, theme.fg("dim", "..."));
 		}
+		const lines = [pwdLine, dimStatsLeft + dimRemainder];
 
 		return lines;
 	}
