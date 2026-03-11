@@ -11,6 +11,7 @@ import {
 	type ToolResultMessage,
 	validateToolArguments,
 } from "@mariozechner/pi-ai";
+import { getLogger } from "@mariozechner/pi-logger";
 import type {
 	AgentContext,
 	AgentEvent,
@@ -20,6 +21,8 @@ import type {
 	AgentToolResult,
 	StreamFn,
 } from "./types.js";
+
+const log = getLogger("agent-loop");
 
 /**
  * Start an agent loop with a new prompt message.
@@ -40,6 +43,15 @@ export function agentLoop(
 			...context,
 			messages: [...context.messages, ...prompts],
 		};
+
+		log.info(
+			{
+				promptCount: prompts.length,
+				contextMessages: context.messages.length,
+				toolCount: context.tools?.length ?? 0,
+			},
+			"agentLoop started",
+		);
 
 		stream.push({ type: "agent_start" });
 		stream.push({ type: "turn_start" });
@@ -82,6 +94,14 @@ export function agentLoopContinue(
 		const newMessages: AgentMessage[] = [];
 		const currentContext: AgentContext = { ...context };
 
+		log.info(
+			{
+				contextMessages: context.messages.length,
+				lastMessageRole: context.messages[context.messages.length - 1].role,
+			},
+			"agentLoopContinue started",
+		);
+
 		stream.push({ type: "agent_start" });
 		stream.push({ type: "turn_start" });
 
@@ -110,16 +130,28 @@ async function runLoop(
 	streamFn?: StreamFn,
 ): Promise<void> {
 	let firstTurn = true;
+	let outerIteration = 0;
 	// Check for steering messages at start (user may have typed while waiting)
 	let pendingMessages: AgentMessage[] = (await config.getSteeringMessages?.()) || [];
+	if (pendingMessages.length > 0) {
+		log.debug({ count: pendingMessages.length }, "initial steering messages");
+	}
 
 	// Outer loop: continues when queued follow-up messages arrive after agent would stop
 	while (true) {
+		outerIteration++;
 		let hasMoreToolCalls = true;
 		let steeringAfterTools: AgentMessage[] | null = null;
+		let innerIteration = 0;
 
 		// Inner loop: process tool calls and steering messages
 		while (hasMoreToolCalls || pendingMessages.length > 0) {
+			innerIteration++;
+			log.debug(
+				{ outerIteration, innerIteration, hasMoreToolCalls, pendingCount: pendingMessages.length },
+				"inner loop iteration",
+			);
+
 			if (!firstTurn) {
 				stream.push({ type: "turn_start" });
 			} else {
@@ -128,6 +160,7 @@ async function runLoop(
 
 			// Process pending messages (inject before next assistant response)
 			if (pendingMessages.length > 0) {
+				log.debug({ count: pendingMessages.length }, "injecting pending messages");
 				for (const message of pendingMessages) {
 					stream.push({ type: "message_start", message });
 					stream.push({ type: "message_end", message });
@@ -142,6 +175,7 @@ async function runLoop(
 			newMessages.push(message);
 
 			if (message.stopReason === "error" || message.stopReason === "aborted") {
+				log.info({ stopReason: message.stopReason }, "loop ending early");
 				stream.push({ type: "turn_end", message, toolResults: [] });
 				stream.push({ type: "agent_end", messages: newMessages });
 				stream.end(newMessages);
@@ -154,6 +188,7 @@ async function runLoop(
 
 			const toolResults: ToolResultMessage[] = [];
 			if (hasMoreToolCalls) {
+				log.debug({ toolCallCount: toolCalls.length }, "executing tool calls");
 				const toolExecution = await executeToolCalls(
 					currentContext.tools,
 					message,
@@ -174,16 +209,21 @@ async function runLoop(
 
 			// Get steering messages after turn completes
 			if (steeringAfterTools && steeringAfterTools.length > 0) {
+				log.debug({ count: steeringAfterTools.length }, "steering messages after tools");
 				pendingMessages = steeringAfterTools;
 				steeringAfterTools = null;
 			} else {
 				pendingMessages = (await config.getSteeringMessages?.()) || [];
+				if (pendingMessages.length > 0) {
+					log.debug({ count: pendingMessages.length }, "steering messages after turn");
+				}
 			}
 		}
 
 		// Agent would stop here. Check for follow-up messages.
 		const followUpMessages = (await config.getFollowUpMessages?.()) || [];
 		if (followUpMessages.length > 0) {
+			log.debug({ count: followUpMessages.length }, "follow-up messages, continuing outer loop");
 			// Set as pending so inner loop processes them
 			pendingMessages = followUpMessages;
 			continue;
@@ -193,6 +233,7 @@ async function runLoop(
 		break;
 	}
 
+	log.info({ newMessageCount: newMessages.length, totalMessages: currentContext.messages.length }, "loop completed");
 	stream.push({ type: "agent_end", messages: newMessages });
 	stream.end(newMessages);
 }
@@ -229,6 +270,17 @@ async function streamAssistantResponse(
 	// Resolve API key (important for expiring tokens)
 	const resolvedApiKey =
 		(config.getApiKey ? await config.getApiKey(config.model.provider) : undefined) || config.apiKey;
+
+	log.debug(
+		{
+			model: `${config.model.provider}/${config.model.id}`,
+			messageCount: llmMessages.length,
+			toolCount: llmContext.tools?.length ?? 0,
+			hasSystemPrompt: !!llmContext.systemPrompt,
+		},
+		"streaming assistant response",
+	);
+	const startTime = Date.now();
 
 	const response = await streamFunction(config.model, llmContext, {
 		...config,
@@ -279,6 +331,15 @@ async function streamAssistantResponse(
 				if (!addedPartial) {
 					stream.push({ type: "message_start", message: { ...finalMessage } });
 				}
+				const elapsed = Date.now() - startTime;
+				log.info(
+					{
+						stopReason: finalMessage.stopReason,
+						durationMs: elapsed,
+						usage: finalMessage.usage,
+					},
+					"assistant response complete",
+				);
 				stream.push({ type: "message_end", message: finalMessage });
 				return finalMessage;
 			}
@@ -315,11 +376,14 @@ async function executeToolCalls(
 
 		let result: AgentToolResult<any>;
 		let isError = false;
+		const toolStart = Date.now();
 
 		try {
 			if (!tool) throw new Error(`Tool ${toolCall.name} not found`);
 
 			const validatedArgs = validateToolArguments(tool, toolCall);
+
+			log.debug({ tool: toolCall.name, toolCallId: toolCall.id }, "tool execution start");
 
 			result = await tool.execute(toolCall.id, validatedArgs, signal, (partialResult) => {
 				stream.push({
@@ -337,6 +401,17 @@ async function executeToolCalls(
 			};
 			isError = true;
 		}
+
+		const toolElapsed = Date.now() - toolStart;
+		log.info(
+			{
+				tool: toolCall.name,
+				toolCallId: toolCall.id,
+				durationMs: toolElapsed,
+				isError,
+			},
+			"tool execution end",
+		);
 
 		stream.push({
 			type: "tool_execution_end",
@@ -364,6 +439,10 @@ async function executeToolCalls(
 		if (getSteeringMessages) {
 			const steering = await getSteeringMessages();
 			if (steering.length > 0) {
+				log.debug(
+					{ steeringCount: steering.length, remainingTools: toolCalls.length - index - 1 },
+					"steering interrupt, skipping remaining tools",
+				);
 				steeringMessages = steering;
 				const remainingCalls = toolCalls.slice(index + 1);
 				for (const skipped of remainingCalls) {
@@ -385,6 +464,8 @@ function skipToolCall(
 		content: [{ type: "text", text: "Skipped due to queued user message." }],
 		details: {},
 	};
+
+	log.debug({ tool: toolCall.name, toolCallId: toolCall.id }, "tool call skipped");
 
 	stream.push({
 		type: "tool_execution_start",
