@@ -1,0 +1,26 @@
+{
+	"name": "@mariozechner/pi-logger",
+	"version": "0.57.1",
+	"description": "Shared logger for pi packages",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist",
+		"README.md"
+	],
+	"scripts": {
+		"clean": "shx rm -rf dist",
+		"build": "tsgo -p tsconfig.build.json",
+		"dev": "tsgo -p tsconfig.build.json --watch --preserveWatchOutput",
+		"prepublishOnly": "npm run clean && npm run build"
+	},
+	"dependencies": {
+		"pino": "^10.3.1"
+	},
+	"keywords": [
+		"logger",
+		"pino"
+	],
+	"license": "MIT"
+}
