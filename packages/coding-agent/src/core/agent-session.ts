@@ -718,6 +718,11 @@ export class AgentSession {
 		return this.sessionManager.getSessionName();
 	}
 
+	/** Current branch state (stack + pending return) */
+	get branchState(): BranchState {
+		return this._branchState;
+	}
+
 	/** Scoped models for cycling (from --models flag) */
 	get scopedModels(): ReadonlyArray<{ model: Model<any>; thinkingLevel?: ThinkingLevel }> {
 		return this._scopedModels;

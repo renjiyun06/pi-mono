@@ -197,7 +197,32 @@ export class FooterComponent implements Component {
 		const remainder = statsLine.slice(statsLeft.length); // padding + rightSide
 		const dimRemainder = theme.fg("dim", remainder);
 
-		const pwdLine = truncateToWidth(theme.fg("dim", pwd), width, theme.fg("dim", "..."));
+		// Build first line: pwd on left, branch indicator on right
+		const branchStack = this.session.branchState.stack;
+		const branchLabel =
+			branchStack.length > 0 ? `branch:${branchStack[branchStack.length - 1].title}` : "branch:main";
+		const dimBranchLabel = theme.fg("dim", branchLabel);
+		const branchLabelWidth = visibleWidth(branchLabel);
+		const pwdWidth = visibleWidth(pwd);
+		const minPwdBranchPadding = 2;
+
+		let pwdLine: string;
+		if (pwdWidth + minPwdBranchPadding + branchLabelWidth <= width) {
+			const padding = " ".repeat(width - pwdWidth - branchLabelWidth);
+			pwdLine = theme.fg("dim", pwd) + padding + dimBranchLabel;
+		} else {
+			// Not enough space — truncate pwd to make room for branch label
+			const availableForPwd = width - minPwdBranchPadding - branchLabelWidth;
+			if (availableForPwd > 0) {
+				const truncatedPwd = truncateToWidth(theme.fg("dim", pwd), availableForPwd, theme.fg("dim", "..."));
+				const truncatedPwdWidth = visibleWidth(truncatedPwd);
+				const padding = " ".repeat(Math.max(0, width - truncatedPwdWidth - branchLabelWidth));
+				pwdLine = truncatedPwd + padding + dimBranchLabel;
+			} else {
+				pwdLine = truncateToWidth(theme.fg("dim", pwd), width, theme.fg("dim", "..."));
+			}
+		}
+
 		const lines = [pwdLine, dimStatsLeft + dimRemainder];
 
 		// Add extension statuses on a single line, sorted by key alphabetically
