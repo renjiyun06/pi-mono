@@ -200,7 +200,7 @@ export class FooterComponent implements Component {
 		// Build first line: pwd on left, branch indicator on right
 		const branchStack = this.session.branchState.stack;
 		const branchLabel =
-			branchStack.length > 0 ? `branch:${branchStack[branchStack.length - 1].title}` : "branch:main";
+			branchStack.length > 0 ? `branch:[${branchStack[branchStack.length - 1].title}]` : "branch:[main]";
 		const dimBranchLabel = theme.fg("dim", branchLabel);
 		const branchLabelWidth = visibleWidth(branchLabel);
 		const pwdWidth = visibleWidth(pwd);
