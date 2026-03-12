@@ -9,6 +9,14 @@ export {
 	createBashTool,
 } from "./bash.js";
 export {
+	type BranchFrame,
+	type BranchState,
+	createBranchStatusTool,
+	createBranchTool,
+	createBranchTools,
+	createReturnTool,
+} from "./branch.js";
+export {
 	createEditTool,
 	type EditOperations,
 	type EditToolDetails,
@@ -95,7 +103,8 @@ export const allTools = {
 	ls: lsTool,
 };
 
-export type ToolName = keyof typeof allTools;
+export type BaseToolName = keyof typeof allTools;
+export type ToolName = BaseToolName | "branch" | "return" | "branch-status";
 
 export interface ToolsOptions {
 	/** Options for the read tool */
@@ -126,7 +135,7 @@ export function createReadOnlyTools(cwd: string, options?: ToolsOptions): Tool[]
 /**
  * Create all tools configured for a specific working directory.
  */
-export function createAllTools(cwd: string, options?: ToolsOptions): Record<ToolName, Tool> {
+export function createAllTools(cwd: string, options?: ToolsOptions): Record<BaseToolName, Tool> {
 	return {
 		read: createReadTool(cwd, options?.read),
 		bash: createBashTool(cwd, options?.bash),

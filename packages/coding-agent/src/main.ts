@@ -542,12 +542,16 @@ function buildSessionOptions(
 		// --no-tools: start with no built-in tools
 		// --tools can still add specific ones back
 		if (parsed.tools && parsed.tools.length > 0) {
-			options.tools = parsed.tools.map((name) => allTools[name]);
+			options.tools = parsed.tools
+				.filter((name) => name in allTools)
+				.map((name) => allTools[name as keyof typeof allTools]);
 		} else {
 			options.tools = [];
 		}
 	} else if (parsed.tools) {
-		options.tools = parsed.tools.map((name) => allTools[name]);
+		options.tools = parsed.tools
+			.filter((name) => name in allTools)
+			.map((name) => allTools[name as keyof typeof allTools]);
 	}
 
 	return { options, cliThinkingFromModel };

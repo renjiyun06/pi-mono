@@ -79,6 +79,7 @@ import type { SettingsManager } from "./settings-manager.js";
 import { BUILTIN_SLASH_COMMANDS, type SlashCommandInfo, type SlashCommandLocation } from "./slash-commands.js";
 import { buildSystemPrompt } from "./system-prompt.js";
 import type { BashOperations } from "./tools/bash.js";
+import { type BranchState, createBranchTools } from "./tools/branch.js";
 import { createAllTools } from "./tools/index.js";
 
 // ============================================================================
@@ -273,6 +274,7 @@ export class AgentSession {
 	private _toolPromptGuidelines: Map<string, string[]> = new Map();
 
 	// Base system prompt (without extension appends) - used to apply fresh appends each turn
+	private _branchState: BranchState = { stack: [], pendingReturn: null };
 	private _baseSystemPrompt = "";
 
 	constructor(config: AgentSessionConfig) {
@@ -2185,7 +2187,11 @@ export class AgentSession {
 					bash: { commandPrefix: shellCommandPrefix },
 				});
 
-		this._baseToolRegistry = new Map(Object.entries(baseTools).map(([name, tool]) => [name, tool as AgentTool]));
+		const branchTools = createBranchTools(this._branchState);
+		this._baseToolRegistry = new Map([
+			...Object.entries(baseTools).map(([name, tool]) => [name, tool as AgentTool] as const),
+			...Object.entries(branchTools).map(([name, tool]) => [name, tool as AgentTool] as const),
+		]);
 
 		const extensionsResult = this._resourceLoader.getExtensions();
 		if (options.flagValues) {
@@ -2216,7 +2222,7 @@ export class AgentSession {
 
 		const defaultActiveToolNames = this._baseToolsOverride
 			? Object.keys(this._baseToolsOverride)
-			: ["read", "bash", "edit", "write"];
+			: ["read", "bash", "edit", "write", "branch", "return", "branch-status"];
 		const baseActiveToolNames = options.activeToolNames ?? defaultActiveToolNames;
 		this._refreshToolRegistry({
 			activeToolNames: baseActiveToolNames,

@@ -1,0 +1,141 @@
+import type { AgentTool } from "@mariozechner/pi-agent-core";
+import { Type } from "@sinclair/typebox";
+
+/**
+ * A single frame in the branch stack, representing an active branch.
+ */
+export interface BranchFrame {
+	branchToolCallId: string;
+	title: string;
+	task: string;
+}
+
+/**
+ * Shared mutable state for branch tools.
+ * Created by AgentSession, captured by closure in all three tools.
+ */
+export interface BranchState {
+	stack: BranchFrame[];
+	pendingReturn: { result: string; toolCallId: string } | null;
+}
+
+const branchSchema = Type.Object({
+	title: Type.String({
+		description: "Short label for the branch. Keep it to a few words.",
+	}),
+	task: Type.String({
+		description:
+			"What to focus on. The branch inherits the full conversation history, " +
+			"so there is no need to re-explain background. Just state the concern: " +
+			'"check if the API paginates correctly", ' +
+			'"figure out why the test fails", ' +
+			'"decide between migration strategies".',
+	}),
+});
+
+const returnSchema = Type.Object({
+	result: Type.String({
+		description:
+			"The value to carry back to the calling context. Everything else from this branch " +
+			"is discarded. What you write here depends on what the branch was for: " +
+			'a finding ("API needs an offset parameter"), ' +
+			'a status ("fixed the bug, test passes"), ' +
+			"a detailed report, a decision, or just an acknowledgment. " +
+			"No required format — write whatever the calling context needs to continue.",
+	}),
+});
+
+/**
+ * Create the branch tool.
+ *
+ * Shifts attention to a specific concern by forking into a branch.
+ * The full conversation history is available in the branch.
+ * Call `return` when done to go back to the calling context.
+ */
+// TODO: rename _state back to state when execute is implemented
+export function createBranchTool(_state: BranchState): AgentTool<typeof branchSchema> {
+	return {
+		name: "branch",
+		label: "branch",
+		description:
+			"An attention mechanism: temporarily narrow your focus to a specific concern " +
+			"by forking into a branch. The branch inherits the full conversation history. " +
+			"This tool returns twice:\n" +
+			'- First return: "Entered branch". Do whatever is needed, ' +
+			"then call return() when done.\n" +
+			"- Second return: the result you passed to return(). The intermediate steps " +
+			"are gone — you already did the work, you just don't carry the details anymore.\n" +
+			"Branches can nest.",
+		parameters: branchSchema,
+		execute: async (_toolCallId, _params) => {
+			return {
+				content: [{ type: "text", text: "Branch tool is not yet implemented." }],
+				details: {},
+			};
+		},
+	};
+}
+
+/**
+ * Create the return tool.
+ *
+ * Proposes ending the current branch and returning a result to the calling context.
+ * Only works inside a branch (stack depth > 0).
+ */
+// TODO: rename _state back to state when execute is implemented
+export function createReturnTool(_state: BranchState): AgentTool<typeof returnSchema> {
+	return {
+		name: "return",
+		label: "return",
+		description:
+			"Propose ending the current branch and going back to the calling context. " +
+			"The result you provide is the only thing that carries over — " +
+			"all intermediate messages from this branch are discarded. " +
+			"There is no required format or length — write whatever the calling context " +
+			"needs to continue its work.",
+		parameters: returnSchema,
+		execute: async (_toolCallId, _params) => {
+			return {
+				content: [{ type: "text", text: "Return tool is not yet implemented." }],
+				details: {},
+			};
+		},
+	};
+}
+
+/**
+ * Create the branch-status tool.
+ *
+ * Read-only tool to check the current position in the branch structure.
+ * Useful for reorienting after a long sequence of work or after context compaction.
+ */
+// TODO: rename _state back to state when execute is implemented
+export function createBranchStatusTool(_state: BranchState): AgentTool {
+	return {
+		name: "branch-status",
+		label: "branch-status",
+		description:
+			"Check your current position in the branch structure. " +
+			"Returns the full branch stack: which branches are active, their titles and tasks, " +
+			"and which one you are currently in. Useful when you need to reorient yourself " +
+			"after a long sequence of work, or after context compaction.",
+		parameters: Type.Object({}),
+		execute: async (_toolCallId, _params) => {
+			return {
+				content: [{ type: "text", text: "Branch-status tool is not yet implemented." }],
+				details: {},
+			};
+		},
+	};
+}
+
+/**
+ * Create all branch-related tools sharing the same state.
+ */
+export function createBranchTools(state: BranchState): Record<string, AgentTool<any>> {
+	return {
+		branch: createBranchTool(state),
+		return: createReturnTool(state),
+		"branch-status": createBranchStatusTool(state),
+	};
+}
