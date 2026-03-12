@@ -385,15 +385,21 @@ async function executeToolCalls(
 
 			log.debug({ tool: toolCall.name, toolCallId: toolCall.id }, "tool execution start");
 
-			result = await tool.execute(toolCall.id, validatedArgs, signal, (partialResult) => {
-				stream.push({
-					type: "tool_execution_update",
-					toolCallId: toolCall.id,
-					toolName: toolCall.name,
-					args: toolCall.arguments,
-					partialResult,
-				});
-			});
+			result = await tool.execute(
+				toolCall.id,
+				validatedArgs,
+				signal,
+				(partialResult) => {
+					stream.push({
+						type: "tool_execution_update",
+						toolCallId: toolCall.id,
+						toolName: toolCall.name,
+						args: toolCall.arguments,
+						partialResult,
+					});
+				},
+				{ toolCalls, index },
+			);
 		} catch (e) {
 			result = {
 				content: [{ type: "text", text: e instanceof Error ? e.message : String(e) }],

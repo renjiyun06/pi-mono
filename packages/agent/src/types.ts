@@ -153,6 +153,17 @@ export interface AgentToolResult<T> {
 // Callback for streaming tool execution updates
 export type AgentToolUpdateCallback<T = any> = (partialResult: AgentToolResult<T>) => void;
 
+/**
+ * Context passed to a tool's execute function, describing its position
+ * within the current batch of tool calls from a single assistant message.
+ */
+export interface AgentToolExecutionContext {
+	/** All tool calls in the current assistant message, in order */
+	toolCalls: { id: string; name: string; arguments: any }[];
+	/** Index of the current tool call in the list */
+	index: number;
+}
+
 // AgentTool extends Tool but adds the execute function
 export interface AgentTool<TParameters extends TSchema = TSchema, TDetails = any> extends Tool<TParameters> {
 	// A human-readable label for the tool to be displayed in UI
@@ -162,6 +173,7 @@ export interface AgentTool<TParameters extends TSchema = TSchema, TDetails = any
 		params: Static<TParameters>,
 		signal?: AbortSignal,
 		onUpdate?: AgentToolUpdateCallback<TDetails>,
+		context?: AgentToolExecutionContext,
 	) => Promise<AgentToolResult<TDetails>>;
 }
 
