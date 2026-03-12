@@ -21,6 +21,7 @@ import type {
 	AgentToolResult,
 	StreamFn,
 } from "./types.js";
+import { SkipRemainingToolCallsError } from "./types.js";
 
 const log = getLogger("agent-loop");
 
@@ -366,6 +367,7 @@ async function executeToolCalls(
 	for (let index = 0; index < toolCalls.length; index++) {
 		const toolCall = toolCalls[index];
 		const tool = tools?.find((t) => t.name === toolCall.name);
+		let skipAfterThis: string | undefined;
 
 		stream.push({
 			type: "tool_execution_start",
@@ -406,6 +408,9 @@ async function executeToolCalls(
 				details: {},
 			};
 			isError = true;
+			if (e instanceof SkipRemainingToolCallsError) {
+				skipAfterThis = e.skipReason;
+			}
 		}
 
 		const toolElapsed = Date.now() - toolStart;
@@ -442,15 +447,16 @@ async function executeToolCalls(
 		stream.push({ type: "message_end", message: toolResultMessage });
 
 		// Check if tool requested skipping remaining calls
-		if (result.skipRemainingToolCalls) {
+		if (skipAfterThis) {
 			const remainingCalls = toolCalls.slice(index + 1);
 			if (remainingCalls.length > 0) {
+				const reason = `Skipped: preceding tool "${toolCall.name}" failed — ${skipAfterThis}`;
 				log.debug(
-					{ tool: toolCall.name, remainingTools: remainingCalls.length, reason: result.skipReason },
+					{ tool: toolCall.name, remainingTools: remainingCalls.length, reason },
 					"tool requested skip, skipping remaining tools",
 				);
 				for (const skipped of remainingCalls) {
-					results.push(skipToolCall(skipped, stream, result.skipReason));
+					results.push(skipToolCall(skipped, stream, reason));
 				}
 			}
 			break;

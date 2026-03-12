@@ -148,10 +148,19 @@ export interface AgentToolResult<T> {
 	content: (TextContent | ImageContent)[];
 	// Details to be displayed in a UI or logged
 	details: T;
-	/** If true, remaining tool calls in the current batch are skipped. */
-	skipRemainingToolCalls?: boolean;
-	/** Reason text used in the skipped tool results. Only meaningful when skipRemainingToolCalls is true. */
-	skipReason?: string;
+}
+
+/**
+ * Throw this from a tool's execute to both fail the current tool call
+ * and skip all remaining tool calls in the same batch.
+ * The skipped tools receive a toolResult with the skipReason.
+ */
+export class SkipRemainingToolCallsError extends Error {
+	skipReason: string;
+	constructor(message: string, skipReason?: string) {
+		super(message);
+		this.skipReason = skipReason ?? message;
+	}
 }
 
 // Callback for streaming tool execution updates
