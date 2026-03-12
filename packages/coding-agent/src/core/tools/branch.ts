@@ -1,4 +1,8 @@
-import type { AgentTool } from "@mariozechner/pi-agent-core";
+import {
+	type AgentTool,
+	type AgentToolExecutionContext,
+	SkipRemainingToolCallsError,
+} from "@mariozechner/pi-agent-core";
 import { Type } from "@sinclair/typebox";
 
 /**
@@ -46,14 +50,32 @@ const returnSchema = Type.Object({
 });
 
 /**
+ * Validate that the branch tool call is well-formed within its batch.
+ * Returns an error message if invalid, undefined if ok.
+ */
+function validateBranchCall(context?: AgentToolExecutionContext): string | undefined {
+	if (!context) return undefined;
+
+	const branchCount = context.toolCalls.filter((tc) => tc.name === "branch").length;
+	if (branchCount > 1) {
+		return "Multiple branch calls in one message. Only one branch call per message is allowed.";
+	}
+
+	if (context.index !== context.toolCalls.length - 1) {
+		return "Branch must be the last tool call in the message. Tool calls after branch would not belong to any context.";
+	}
+
+	return undefined;
+}
+
+/**
  * Create the branch tool.
  *
  * Shifts attention to a specific concern by forking into a branch.
  * The full conversation history is available in the branch.
  * Call `return` when done to go back to the calling context.
  */
-// TODO: rename _state back to state when execute is implemented
-export function createBranchTool(_state: BranchState): AgentTool<typeof branchSchema> {
+export function createBranchTool(state: BranchState): AgentTool<typeof branchSchema> {
 	return {
 		name: "branch",
 		label: "branch",
@@ -67,9 +89,20 @@ export function createBranchTool(_state: BranchState): AgentTool<typeof branchSc
 			"are gone — you already did the work, you just don't carry the details anymore.\n" +
 			"Branches can nest.",
 		parameters: branchSchema,
-		execute: async (_toolCallId, _params) => {
+		execute: async (toolCallId, params, _signal, _onUpdate, context) => {
+			const validationError = validateBranchCall(context);
+			if (validationError) {
+				throw new SkipRemainingToolCallsError(validationError);
+			}
+
+			state.stack.push({
+				branchToolCallId: toolCallId,
+				title: params.title,
+				task: params.task,
+			});
+
 			return {
-				content: [{ type: "text", text: "Branch tool is not yet implemented." }],
+				content: [{ type: "text", text: "Entered branch" }],
 				details: {},
 			};
 		},
