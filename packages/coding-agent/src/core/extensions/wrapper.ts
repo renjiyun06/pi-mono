@@ -2,7 +2,7 @@
  * Tool wrappers for extensions.
  */
 
-import type { AgentTool, AgentToolUpdateCallback } from "@mariozechner/pi-agent-core";
+import type { AgentTool, AgentToolExecutionContext, AgentToolUpdateCallback } from "@mariozechner/pi-agent-core";
 import type { ExtensionRunner } from "./runner.js";
 import type { RegisteredTool, ToolCallEventResult } from "./types.js";
 
@@ -17,8 +17,8 @@ export function wrapRegisteredTool(registeredTool: RegisteredTool, runner: Exten
 		label: definition.label,
 		description: definition.description,
 		parameters: definition.parameters,
-		execute: (toolCallId, params, signal, onUpdate) =>
-			definition.execute(toolCallId, params, signal, onUpdate, runner.createContext()),
+		execute: (toolCallId, params, signal, onUpdate, context) =>
+			definition.execute(toolCallId, params, signal, onUpdate, runner.createContext(), context),
 	};
 }
 
@@ -43,6 +43,7 @@ export function wrapToolWithExtensions<T>(tool: AgentTool<any, T>, runner: Exten
 			params: Record<string, unknown>,
 			signal?: AbortSignal,
 			onUpdate?: AgentToolUpdateCallback<T>,
+			context?: AgentToolExecutionContext,
 		) => {
 			// Emit tool_call event - extensions can block execution
 			if (runner.hasHandlers("tool_call")) {
@@ -68,7 +69,7 @@ export function wrapToolWithExtensions<T>(tool: AgentTool<any, T>, runner: Exten
 
 			// Execute the actual tool
 			try {
-				const result = await tool.execute(toolCallId, params, signal, onUpdate);
+				const result = await tool.execute(toolCallId, params, signal, onUpdate, context);
 
 				// Emit tool_result event - extensions can modify the result
 				if (runner.hasHandlers("tool_result")) {
