@@ -441,6 +441,21 @@ async function executeToolCalls(
 		stream.push({ type: "message_start", message: toolResultMessage });
 		stream.push({ type: "message_end", message: toolResultMessage });
 
+		// Check if tool requested skipping remaining calls
+		if (result.skipRemainingToolCalls) {
+			const remainingCalls = toolCalls.slice(index + 1);
+			if (remainingCalls.length > 0) {
+				log.debug(
+					{ tool: toolCall.name, remainingTools: remainingCalls.length, reason: result.skipReason },
+					"tool requested skip, skipping remaining tools",
+				);
+				for (const skipped of remainingCalls) {
+					results.push(skipToolCall(skipped, stream, result.skipReason));
+				}
+			}
+			break;
+		}
+
 		// Check for steering messages - skip remaining tools if user interrupted
 		if (getSteeringMessages) {
 			const steering = await getSteeringMessages();
@@ -465,9 +480,10 @@ async function executeToolCalls(
 function skipToolCall(
 	toolCall: Extract<AssistantMessage["content"][number], { type: "toolCall" }>,
 	stream: EventStream<AgentEvent, AgentMessage[]>,
+	reason = "Skipped due to queued user message.",
 ): ToolResultMessage {
 	const result: AgentToolResult<any> = {
-		content: [{ type: "text", text: "Skipped due to queued user message." }],
+		content: [{ type: "text", text: reason }],
 		details: {},
 	};
 

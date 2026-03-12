@@ -148,6 +148,10 @@ export interface AgentToolResult<T> {
 	content: (TextContent | ImageContent)[];
 	// Details to be displayed in a UI or logged
 	details: T;
+	/** If true, remaining tool calls in the current batch are skipped. */
+	skipRemainingToolCalls?: boolean;
+	/** Reason text used in the skipped tool results. Only meaningful when skipRemainingToolCalls is true. */
+	skipReason?: string;
 }
 
 // Callback for streaming tool execution updates
