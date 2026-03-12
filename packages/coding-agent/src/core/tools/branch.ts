@@ -143,7 +143,7 @@ export function createReturnTool(_state: BranchState): AgentTool<typeof returnSc
  * Useful for reorienting after a long sequence of work or after context compaction.
  */
 // TODO: rename _state back to state when execute is implemented
-export function createBranchStatusTool(_state: BranchState): AgentTool {
+export function createBranchStatusTool(state: BranchState): AgentTool {
 	return {
 		name: "branch-status",
 		label: "branch-status",
@@ -153,9 +153,21 @@ export function createBranchStatusTool(_state: BranchState): AgentTool {
 			"and which one you are currently in. Useful when you need to reorient yourself " +
 			"after a long sequence of work, or after context compaction.",
 		parameters: Type.Object({}),
-		execute: async (_toolCallId, _params) => {
+		execute: async () => {
+			let text: string;
+			if (state.stack.length === 0) {
+				text = "Not in a branch (top level).";
+			} else {
+				const lines = [`Branch stack (depth ${state.stack.length}):`];
+				for (let i = 0; i < state.stack.length; i++) {
+					const frame = state.stack[i];
+					const current = i === state.stack.length - 1 ? " (current)" : "";
+					lines.push(`  ${i + 1}. ${frame.title}${current} — ${frame.task}`);
+				}
+				text = lines.join("\n");
+			}
 			return {
-				content: [{ type: "text", text: "Branch-status tool is not yet implemented." }],
+				content: [{ type: "text", text }],
 				details: {},
 			};
 		},
