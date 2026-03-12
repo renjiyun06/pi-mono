@@ -23,6 +23,7 @@ import {
 	createCompactionSummaryMessage,
 	createCustomMessage,
 } from "./messages.js";
+import type { BranchFrame } from "./tools/branch.js";
 
 export const CURRENT_SESSION_VERSION = 3;
 
@@ -159,6 +160,7 @@ export interface SessionContext {
 	messages: AgentMessage[];
 	thinkingLevel: string;
 	model: { provider: string; modelId: string } | null;
+	branchStack: BranchFrame[];
 }
 
 export interface SessionInfo {
@@ -304,6 +306,52 @@ export function getLatestCompactionEntry(entries: SessionEntry[]): CompactionEnt
  * If leafId is provided, walks from that entry to root.
  * Handles compaction and branch summaries along the path.
  */
+/**
+ * Rebuild the branch stack from a root-to-leaf session path.
+ * Scans for branch tool results ("Entered branch") and matches them
+ * to the assistant message containing the corresponding tool call
+ * to extract title and task.
+ */
+export function rebuildBranchStack(path: SessionEntry[]): BranchFrame[] {
+	const stack: BranchFrame[] = [];
+
+	for (const entry of path) {
+		if (entry.type !== "message") continue;
+		const msg = entry.message;
+		if (msg.role !== "toolResult") continue;
+		if (msg.toolName !== "branch") continue;
+
+		// Check content is "Entered branch" (successful branch call)
+		const text = msg.content.find((c): c is TextContent => c.type === "text")?.text;
+		if (text !== "Entered branch") continue;
+
+		// Find the assistant message with the matching tool call
+		const toolCallId = msg.toolCallId;
+		let title = "unknown";
+		let task = "";
+
+		for (const candidate of path) {
+			if (candidate.type !== "message") continue;
+			const candidateMsg = candidate.message;
+			if (candidateMsg.role !== "assistant") continue;
+
+			const toolCall = candidateMsg.content.find(
+				(c): c is { type: "toolCall"; id: string; name: string; arguments: Record<string, any> } =>
+					c.type === "toolCall" && "id" in c && c.id === toolCallId,
+			);
+			if (toolCall) {
+				title = toolCall.arguments.title ?? "unknown";
+				task = toolCall.arguments.task ?? "";
+				break;
+			}
+		}
+
+		stack.push({ branchToolCallId: toolCallId, title, task });
+	}
+
+	return stack;
+}
+
 export function buildSessionContext(
 	entries: SessionEntry[],
 	leafId?: string | null,
@@ -321,7 +369,7 @@ export function buildSessionContext(
 	let leaf: SessionEntry | undefined;
 	if (leafId === null) {
 		// Explicitly null - return no messages (navigated to before first entry)
-		return { messages: [], thinkingLevel: "off", model: null };
+		return { messages: [], thinkingLevel: "off", model: null, branchStack: [] };
 	}
 	if (leafId) {
 		leaf = byId.get(leafId);
@@ -332,7 +380,7 @@ export function buildSessionContext(
 	}
 
 	if (!leaf) {
-		return { messages: [], thinkingLevel: "off", model: null };
+		return { messages: [], thinkingLevel: "off", model: null, branchStack: [] };
 	}
 
 	// Walk from leaf to root, collecting path
@@ -410,7 +458,7 @@ export function buildSessionContext(
 		}
 	}
 
-	return { messages, thinkingLevel, model };
+	return { messages, thinkingLevel, model, branchStack: rebuildBranchStack(path) };
 }
 
 /**

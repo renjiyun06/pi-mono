@@ -298,6 +298,9 @@ export class AgentSession {
 			activeToolNames: this._initialActiveToolNames,
 			includeAllExtensionTools: true,
 		});
+
+		// Restore branch state from session entries (for resumed sessions)
+		this._branchState.stack = this.sessionManager.buildSessionContext().branchStack;
 	}
 
 	/** Model registry for API key resolution and model discovery */
@@ -1274,6 +1277,7 @@ export class AgentSession {
 			// Sync agent state with session manager after setup
 			const sessionContext = this.sessionManager.buildSessionContext();
 			this.agent.replaceMessages(sessionContext.messages);
+			this._branchState.stack = sessionContext.branchStack;
 		}
 
 		this._reconnectToAgent();
@@ -1635,6 +1639,7 @@ export class AgentSession {
 			const newEntries = this.sessionManager.getEntries();
 			const sessionContext = this.sessionManager.buildSessionContext();
 			this.agent.replaceMessages(sessionContext.messages);
+			this._branchState.stack = sessionContext.branchStack;
 
 			// Get the saved compaction entry for the extension event
 			const savedCompactionEntry = newEntries.find((e) => e.type === "compaction" && e.summary === summary) as
@@ -1853,6 +1858,7 @@ export class AgentSession {
 			const newEntries = this.sessionManager.getEntries();
 			const sessionContext = this.sessionManager.buildSessionContext();
 			this.agent.replaceMessages(sessionContext.messages);
+			this._branchState.stack = sessionContext.branchStack;
 
 			// Get the saved compaction entry for the extension event
 			const savedCompactionEntry = newEntries.find((e) => e.type === "compaction" && e.summary === summary) as
@@ -2553,6 +2559,7 @@ export class AgentSession {
 		// Emit session event to custom tools
 
 		this.agent.replaceMessages(sessionContext.messages);
+		this._branchState.stack = sessionContext.branchStack;
 
 		// Restore model if saved
 		if (sessionContext.model) {
@@ -2653,6 +2660,7 @@ export class AgentSession {
 		if (!skipConversationRestore) {
 			this.agent.replaceMessages(sessionContext.messages);
 		}
+		this._branchState.stack = sessionContext.branchStack;
 
 		return { selectedText, cancelled: false };
 	}
@@ -2836,6 +2844,7 @@ export class AgentSession {
 		// Update agent state
 		const sessionContext = this.sessionManager.buildSessionContext();
 		this.agent.replaceMessages(sessionContext.messages);
+		this._branchState.stack = sessionContext.branchStack;
 
 		// Emit session_tree event
 		if (this._extensionRunner) {
