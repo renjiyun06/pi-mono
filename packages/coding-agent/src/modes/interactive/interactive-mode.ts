@@ -4062,7 +4062,7 @@ export class InteractiveMode {
 	}
 
 	private handleBranchStatusCommand(): void {
-		const { stack, pendingReturn } = this.session.branchState;
+		const { stack } = this.session.branchState;
 
 		let info: string;
 		if (stack.length === 0) {
@@ -4078,8 +4078,9 @@ export class InteractiveMode {
 				}
 				info += "\n";
 			}
-			if (pendingReturn) {
-				info += `\n${theme.fg("dim", "Pending return:")} ${pendingReturn.result}`;
+			const top = stack[stack.length - 1];
+			if (top.pendingReturn) {
+				info += `\n${theme.fg("dim", "Pending return:")} ${top.pendingReturn.result}`;
 			}
 		}
 

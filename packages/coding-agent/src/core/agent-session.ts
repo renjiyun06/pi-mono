@@ -277,7 +277,7 @@ export class AgentSession {
 	private _toolPromptGuidelines: Map<string, string[]> = new Map();
 
 	// Base system prompt (without extension appends) - used to apply fresh appends each turn
-	private _branchState: BranchState = { stack: [], pendingReturn: null };
+	private _branchState: BranchState = { stack: [] };
 	private _baseSystemPrompt = "";
 
 	constructor(config: AgentSessionConfig) {
@@ -305,10 +305,10 @@ export class AgentSession {
 		// Restore branch state from session entries (for resumed sessions)
 		const initialContext = this.sessionManager.buildSessionContext();
 		this._branchState.stack = initialContext.branchStack;
-		this._branchState.pendingReturn = initialContext.pendingReturn;
-		if (this._branchState.stack.length > 0 || this._branchState.pendingReturn) {
+		if (this._branchState.stack.length > 0) {
+			const top = this._branchState.stack[this._branchState.stack.length - 1];
 			log.info(
-				{ depth: this._branchState.stack.length, hasPendingReturn: !!this._branchState.pendingReturn },
+				{ depth: this._branchState.stack.length, hasPendingReturn: !!top.pendingReturn },
 				"restored branch state from session",
 			);
 		}
@@ -1289,7 +1289,6 @@ export class AgentSession {
 			const sessionContext = this.sessionManager.buildSessionContext();
 			this.agent.replaceMessages(sessionContext.messages);
 			this._branchState.stack = sessionContext.branchStack;
-			this._branchState.pendingReturn = sessionContext.pendingReturn;
 		}
 
 		this._reconnectToAgent();
@@ -1652,7 +1651,6 @@ export class AgentSession {
 			const sessionContext = this.sessionManager.buildSessionContext();
 			this.agent.replaceMessages(sessionContext.messages);
 			this._branchState.stack = sessionContext.branchStack;
-			this._branchState.pendingReturn = sessionContext.pendingReturn;
 
 			// Get the saved compaction entry for the extension event
 			const savedCompactionEntry = newEntries.find((e) => e.type === "compaction" && e.summary === summary) as
@@ -1872,7 +1870,6 @@ export class AgentSession {
 			const sessionContext = this.sessionManager.buildSessionContext();
 			this.agent.replaceMessages(sessionContext.messages);
 			this._branchState.stack = sessionContext.branchStack;
-			this._branchState.pendingReturn = sessionContext.pendingReturn;
 
 			// Get the saved compaction entry for the extension event
 			const savedCompactionEntry = newEntries.find((e) => e.type === "compaction" && e.summary === summary) as
@@ -2574,7 +2571,6 @@ export class AgentSession {
 
 		this.agent.replaceMessages(sessionContext.messages);
 		this._branchState.stack = sessionContext.branchStack;
-		this._branchState.pendingReturn = sessionContext.pendingReturn;
 
 		// Restore model if saved
 		if (sessionContext.model) {
@@ -2676,7 +2672,6 @@ export class AgentSession {
 			this.agent.replaceMessages(sessionContext.messages);
 		}
 		this._branchState.stack = sessionContext.branchStack;
-		this._branchState.pendingReturn = sessionContext.pendingReturn;
 
 		return { selectedText, cancelled: false };
 	}
@@ -2861,7 +2856,6 @@ export class AgentSession {
 		const sessionContext = this.sessionManager.buildSessionContext();
 		this.agent.replaceMessages(sessionContext.messages);
 		this._branchState.stack = sessionContext.branchStack;
-		this._branchState.pendingReturn = sessionContext.pendingReturn;
 
 		// Emit session_tree event
 		if (this._extensionRunner) {

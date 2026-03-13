@@ -15,6 +15,7 @@ export interface BranchFrame {
 	branchToolCallId: string;
 	title: string;
 	task: string;
+	pendingReturn: { result: string; toolCallId: string } | null;
 }
 
 /**
@@ -23,7 +24,6 @@ export interface BranchFrame {
  */
 export interface BranchState {
 	stack: BranchFrame[];
-	pendingReturn: { result: string; toolCallId: string } | null;
 }
 
 const branchSchema = Type.Object({
@@ -102,6 +102,7 @@ export function createBranchTool(state: BranchState): AgentTool<typeof branchSch
 				branchToolCallId: toolCallId,
 				title: params.title,
 				task: params.task,
+				pendingReturn: null,
 			});
 
 			return {
@@ -137,13 +138,14 @@ export function createReturnTool(state: BranchState): AgentTool<typeof returnSch
 					details: {},
 				};
 			}
-			if (state.pendingReturn) {
+			const currentFrame = state.stack[state.stack.length - 1];
+			if (currentFrame.pendingReturn) {
 				log.info(
-					{ previousToolCallId: state.pendingReturn.toolCallId, newToolCallId: toolCallId },
+					{ previousToolCallId: currentFrame.pendingReturn.toolCallId, newToolCallId: toolCallId },
 					"overwriting pending return",
 				);
 			}
-			state.pendingReturn = { result: params.result, toolCallId };
+			currentFrame.pendingReturn = { result: params.result, toolCallId };
 			return {
 				content: [{ type: "text", text: "Return proposed." }],
 				details: {},
