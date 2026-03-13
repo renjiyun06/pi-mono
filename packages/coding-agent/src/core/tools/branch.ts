@@ -3,7 +3,10 @@ import {
 	type AgentToolExecutionContext,
 	SkipRemainingToolCallsError,
 } from "@mariozechner/pi-agent-core";
+import { getLogger } from "@mariozechner/pi-logger";
 import { Type } from "@sinclair/typebox";
+
+const log = getLogger("branch");
 
 /**
  * A single frame in the branch stack, representing an active branch.
@@ -115,8 +118,7 @@ export function createBranchTool(state: BranchState): AgentTool<typeof branchSch
  * Proposes ending the current branch and returning a result to the calling context.
  * Only works inside a branch (stack depth > 0).
  */
-// TODO: rename _state back to state when execute is implemented
-export function createReturnTool(_state: BranchState): AgentTool<typeof returnSchema> {
+export function createReturnTool(state: BranchState): AgentTool<typeof returnSchema> {
 	return {
 		name: "return",
 		label: "return",
@@ -125,11 +127,25 @@ export function createReturnTool(_state: BranchState): AgentTool<typeof returnSc
 			"The result you provide is the only thing that carries over — " +
 			"all intermediate messages from this branch are discarded. " +
 			"There is no required format or length — write whatever the calling context " +
-			"needs to continue its work.",
+			"needs to continue its work. " +
+			"The actual return will only happen when the user or the system executes the confirm-return command.",
 		parameters: returnSchema,
-		execute: async (_toolCallId, _params) => {
+		execute: async (toolCallId, params) => {
+			if (state.stack.length === 0) {
+				return {
+					content: [{ type: "text", text: "Not in a branch. Nothing to return from." }],
+					details: {},
+				};
+			}
+			if (state.pendingReturn) {
+				log.info(
+					{ previousToolCallId: state.pendingReturn.toolCallId, newToolCallId: toolCallId },
+					"overwriting pending return",
+				);
+			}
+			state.pendingReturn = { result: params.result, toolCallId };
 			return {
-				content: [{ type: "text", text: "Return tool is not yet implemented." }],
+				content: [{ type: "text", text: "Return proposed." }],
 				details: {},
 			};
 		},
@@ -142,7 +158,6 @@ export function createReturnTool(_state: BranchState): AgentTool<typeof returnSc
  * Read-only tool to check the current position in the branch structure.
  * Useful for reorienting after a long sequence of work or after context compaction.
  */
-// TODO: rename _state back to state when execute is implemented
 export function createBranchStatusTool(state: BranchState): AgentTool {
 	return {
 		name: "branch-status",
