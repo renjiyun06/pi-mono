@@ -329,7 +329,7 @@ function findToolCallArguments(path: SessionEntry[], toolCallId: string): Record
 
 /**
  * Rebuild the branch state from a root-to-leaf session path.
- * Scans for branch tool results ("Entered branch") and return tool results ("Return proposed.")
+ * Scans for branch tool results ("[First return] Entered branch") and return tool results ("Return proposed.")
  * to reconstruct the branch stack and pending return.
  */
 export function rebuildBranchState(path: SessionEntry[]): {
@@ -344,7 +344,7 @@ export function rebuildBranchState(path: SessionEntry[]): {
 
 		const text = msg.content.find((c): c is TextContent => c.type === "text")?.text;
 
-		if (msg.toolName === "branch" && text === "Entered branch") {
+		if (msg.toolName === "branch" && text === "[First return] Entered branch") {
 			const args = findToolCallArguments(path, msg.toolCallId);
 			stack.push({
 				branchToolCallId: msg.toolCallId,

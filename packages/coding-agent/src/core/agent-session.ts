@@ -798,7 +798,7 @@ export class AgentSession {
 					resolvedToolCall: {
 						toolCallId: frame.branchToolCallId,
 						result: {
-							content: [{ type: "text", text: result }],
+							content: [{ type: "text", text: `[Second return] ${result}` }],
 							details: {},
 						},
 					},

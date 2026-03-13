@@ -106,7 +106,7 @@ export function createBranchTool(state: BranchState): AgentTool<typeof branchSch
 			});
 
 			return {
-				content: [{ type: "text", text: "Entered branch" }],
+				content: [{ type: "text", text: "[First return] Entered branch" }],
 				details: {},
 			};
 		},
