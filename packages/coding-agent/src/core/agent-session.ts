@@ -25,6 +25,7 @@ import type {
 } from "@mariozechner/pi-agent-core";
 import type { AssistantMessage, ImageContent, Message, Model, TextContent } from "@mariozechner/pi-ai";
 import { isContextOverflow, modelsAreEqual, resetApiProviders, supportsXhigh } from "@mariozechner/pi-ai";
+import { getLogger } from "@mariozechner/pi-logger";
 import { getDocsPath } from "../config.js";
 import { theme } from "../modes/interactive/theme/theme.js";
 import { stripFrontmatter } from "../utils/frontmatter.js";
@@ -81,6 +82,8 @@ import { buildSystemPrompt } from "./system-prompt.js";
 import type { BashOperations } from "./tools/bash.js";
 import { type BranchState, createBranchTools } from "./tools/branch.js";
 import { createAllTools } from "./tools/index.js";
+
+const log = getLogger("agent-session");
 
 // ============================================================================
 // Skill Block Parsing
@@ -300,7 +303,15 @@ export class AgentSession {
 		});
 
 		// Restore branch state from session entries (for resumed sessions)
-		this._branchState.stack = this.sessionManager.buildSessionContext().branchStack;
+		const initialContext = this.sessionManager.buildSessionContext();
+		this._branchState.stack = initialContext.branchStack;
+		this._branchState.pendingReturn = initialContext.pendingReturn;
+		if (this._branchState.stack.length > 0 || this._branchState.pendingReturn) {
+			log.info(
+				{ depth: this._branchState.stack.length, hasPendingReturn: !!this._branchState.pendingReturn },
+				"restored branch state from session",
+			);
+		}
 	}
 
 	/** Model registry for API key resolution and model discovery */
@@ -1278,6 +1289,7 @@ export class AgentSession {
 			const sessionContext = this.sessionManager.buildSessionContext();
 			this.agent.replaceMessages(sessionContext.messages);
 			this._branchState.stack = sessionContext.branchStack;
+			this._branchState.pendingReturn = sessionContext.pendingReturn;
 		}
 
 		this._reconnectToAgent();
@@ -1640,6 +1652,7 @@ export class AgentSession {
 			const sessionContext = this.sessionManager.buildSessionContext();
 			this.agent.replaceMessages(sessionContext.messages);
 			this._branchState.stack = sessionContext.branchStack;
+			this._branchState.pendingReturn = sessionContext.pendingReturn;
 
 			// Get the saved compaction entry for the extension event
 			const savedCompactionEntry = newEntries.find((e) => e.type === "compaction" && e.summary === summary) as
@@ -1859,6 +1872,7 @@ export class AgentSession {
 			const sessionContext = this.sessionManager.buildSessionContext();
 			this.agent.replaceMessages(sessionContext.messages);
 			this._branchState.stack = sessionContext.branchStack;
+			this._branchState.pendingReturn = sessionContext.pendingReturn;
 
 			// Get the saved compaction entry for the extension event
 			const savedCompactionEntry = newEntries.find((e) => e.type === "compaction" && e.summary === summary) as
@@ -2560,6 +2574,7 @@ export class AgentSession {
 
 		this.agent.replaceMessages(sessionContext.messages);
 		this._branchState.stack = sessionContext.branchStack;
+		this._branchState.pendingReturn = sessionContext.pendingReturn;
 
 		// Restore model if saved
 		if (sessionContext.model) {
@@ -2661,6 +2676,7 @@ export class AgentSession {
 			this.agent.replaceMessages(sessionContext.messages);
 		}
 		this._branchState.stack = sessionContext.branchStack;
+		this._branchState.pendingReturn = sessionContext.pendingReturn;
 
 		return { selectedText, cancelled: false };
 	}
@@ -2845,6 +2861,7 @@ export class AgentSession {
 		const sessionContext = this.sessionManager.buildSessionContext();
 		this.agent.replaceMessages(sessionContext.messages);
 		this._branchState.stack = sessionContext.branchStack;
+		this._branchState.pendingReturn = sessionContext.pendingReturn;
 
 		// Emit session_tree event
 		if (this._extensionRunner) {

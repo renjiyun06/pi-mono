@@ -161,6 +161,7 @@ export interface SessionContext {
 	thinkingLevel: string;
 	model: { provider: string; modelId: string } | null;
 	branchStack: BranchFrame[];
+	pendingReturn: { result: string; toolCallId: string } | null;
 }
 
 export interface SessionInfo {
@@ -307,49 +308,65 @@ export function getLatestCompactionEntry(entries: SessionEntry[]): CompactionEnt
  * Handles compaction and branch summaries along the path.
  */
 /**
- * Rebuild the branch stack from a root-to-leaf session path.
- * Scans for branch tool results ("Entered branch") and matches them
- * to the assistant message containing the corresponding tool call
- * to extract title and task.
+ * Find the assistant message ToolCall matching a given toolCallId in the path.
+ * Returns the arguments of the matching ToolCall, or undefined if not found.
  */
-export function rebuildBranchStack(path: SessionEntry[]): BranchFrame[] {
+function findToolCallArguments(path: SessionEntry[], toolCallId: string): Record<string, any> | undefined {
+	for (const candidate of path) {
+		if (candidate.type !== "message") continue;
+		const candidateMsg = candidate.message;
+		if (candidateMsg.role !== "assistant") continue;
+
+		const toolCall = candidateMsg.content.find(
+			(c): c is { type: "toolCall"; id: string; name: string; arguments: Record<string, any> } =>
+				c.type === "toolCall" && "id" in c && c.id === toolCallId,
+		);
+		if (toolCall) {
+			return toolCall.arguments;
+		}
+	}
+	return undefined;
+}
+
+/**
+ * Rebuild the branch state from a root-to-leaf session path.
+ * Scans for branch tool results ("Entered branch") and return tool results ("Return proposed.")
+ * to reconstruct the branch stack and pending return.
+ */
+export function rebuildBranchState(path: SessionEntry[]): {
+	stack: BranchFrame[];
+	pendingReturn: { result: string; toolCallId: string } | null;
+} {
 	const stack: BranchFrame[] = [];
+	let pendingReturn: { result: string; toolCallId: string } | null = null;
 
 	for (const entry of path) {
 		if (entry.type !== "message") continue;
 		const msg = entry.message;
 		if (msg.role !== "toolResult") continue;
-		if (msg.toolName !== "branch") continue;
 
-		// Check content is "Entered branch" (successful branch call)
 		const text = msg.content.find((c): c is TextContent => c.type === "text")?.text;
-		if (text !== "Entered branch") continue;
 
-		// Find the assistant message with the matching tool call
-		const toolCallId = msg.toolCallId;
-		let title = "unknown";
-		let task = "";
-
-		for (const candidate of path) {
-			if (candidate.type !== "message") continue;
-			const candidateMsg = candidate.message;
-			if (candidateMsg.role !== "assistant") continue;
-
-			const toolCall = candidateMsg.content.find(
-				(c): c is { type: "toolCall"; id: string; name: string; arguments: Record<string, any> } =>
-					c.type === "toolCall" && "id" in c && c.id === toolCallId,
-			);
-			if (toolCall) {
-				title = toolCall.arguments.title ?? "unknown";
-				task = toolCall.arguments.task ?? "";
-				break;
-			}
+		if (msg.toolName === "branch" && text === "Entered branch") {
+			// Entering a new branch level — clear any pending return from the parent level
+			const args = findToolCallArguments(path, msg.toolCallId);
+			stack.push({
+				branchToolCallId: msg.toolCallId,
+				title: args?.title ?? "unknown",
+				task: args?.task ?? "",
+			});
+			pendingReturn = null;
+		} else if (msg.toolName === "return" && text === "Return proposed.") {
+			// Record pending return — overwrites any previous one at this level
+			const args = findToolCallArguments(path, msg.toolCallId);
+			pendingReturn = {
+				result: args?.result ?? "",
+				toolCallId: msg.toolCallId,
+			};
 		}
-
-		stack.push({ branchToolCallId: toolCallId, title, task });
 	}
 
-	return stack;
+	return { stack, pendingReturn };
 }
 
 export function buildSessionContext(
@@ -369,7 +386,7 @@ export function buildSessionContext(
 	let leaf: SessionEntry | undefined;
 	if (leafId === null) {
 		// Explicitly null - return no messages (navigated to before first entry)
-		return { messages: [], thinkingLevel: "off", model: null, branchStack: [] };
+		return { messages: [], thinkingLevel: "off", model: null, branchStack: [], pendingReturn: null };
 	}
 	if (leafId) {
 		leaf = byId.get(leafId);
@@ -380,7 +397,7 @@ export function buildSessionContext(
 	}
 
 	if (!leaf) {
-		return { messages: [], thinkingLevel: "off", model: null, branchStack: [] };
+		return { messages: [], thinkingLevel: "off", model: null, branchStack: [], pendingReturn: null };
 	}
 
 	// Walk from leaf to root, collecting path
@@ -458,7 +475,8 @@ export function buildSessionContext(
 		}
 	}
 
-	return { messages, thinkingLevel, model, branchStack: rebuildBranchStack(path) };
+	const branchState = rebuildBranchState(path);
+	return { messages, thinkingLevel, model, branchStack: branchState.stack, pendingReturn: branchState.pendingReturn };
 }
 
 /**
