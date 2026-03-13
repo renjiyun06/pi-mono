@@ -2002,6 +2002,16 @@ export class InteractiveMode {
 				await this.handleClearCommand();
 				return;
 			}
+			if (text === "/confirm-return" || text.startsWith("/confirm-return ")) {
+				// TODO: implement confirm-return command
+				this.editor.setText("");
+				return;
+			}
+			if (text === "/branch-status") {
+				// TODO: implement branch-status command
+				this.editor.setText("");
+				return;
+			}
 			if (text === "/compact" || text.startsWith("/compact ")) {
 				const customInstructions = text.startsWith("/compact ") ? text.slice(9).trim() : undefined;
 				this.editor.setText("");

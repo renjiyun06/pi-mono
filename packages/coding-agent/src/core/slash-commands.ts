@@ -35,4 +35,6 @@ export const BUILTIN_SLASH_COMMANDS: ReadonlyArray<BuiltinSlashCommand> = [
 	{ name: "resume", description: "Resume a different session" },
 	{ name: "reload", description: "Reload extensions, skills, prompts, and themes" },
 	{ name: "quit", description: "Quit pi" },
+	{ name: "confirm-return", description: "Confirm branch return and exit to calling context" },
+	{ name: "branch-status", description: "Show current branch stack" },
 ];
