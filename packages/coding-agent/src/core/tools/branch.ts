@@ -142,7 +142,7 @@ export function createReturnTool(state: BranchState): AgentTool<typeof returnSch
 			}
 			currentFrame.pendingReturn = { result: params.result, toolCallId };
 			return {
-				content: [{ type: "text", text: "Return proposed. Awaiting confirmation — do not reply until confirmed." }],
+				content: [{ type: "text", text: "Return proposed. Wait for confirmation before continuing." }],
 				details: {},
 			};
 		},
