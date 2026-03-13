@@ -2008,8 +2008,8 @@ export class InteractiveMode {
 				return;
 			}
 			if (text === "/branch-status") {
-				// TODO: implement branch-status command
 				this.editor.setText("");
+				this.handleBranchStatusCommand();
 				return;
 			}
 			if (text === "/compact" || text.startsWith("/compact ")) {
@@ -4054,6 +4054,33 @@ export class InteractiveMode {
 		if (stats.cost > 0) {
 			info += `\n${theme.bold("Cost")}\n`;
 			info += `${theme.fg("dim", "Total:")} ${stats.cost.toFixed(4)}`;
+		}
+
+		this.chatContainer.addChild(new Spacer(1));
+		this.chatContainer.addChild(new Text(info, 1, 0));
+		this.ui.requestRender();
+	}
+
+	private handleBranchStatusCommand(): void {
+		const { stack, pendingReturn } = this.session.branchState;
+
+		let info: string;
+		if (stack.length === 0) {
+			info = "Not in a branch.";
+		} else {
+			info = `${theme.bold("Branch Stack")} (depth: ${stack.length})\n\n`;
+			for (let i = 0; i < stack.length; i++) {
+				const frame = stack[i];
+				const prefix = i === stack.length - 1 ? "→" : " ";
+				info += `${prefix} ${theme.fg("dim", `[${i + 1}]`)} ${theme.bold(frame.title)}`;
+				if (frame.task) {
+					info += ` — ${frame.task}`;
+				}
+				info += "\n";
+			}
+			if (pendingReturn) {
+				info += `\n${theme.fg("dim", "Pending return:")} ${pendingReturn.result}`;
+			}
 		}
 
 		this.chatContainer.addChild(new Spacer(1));
