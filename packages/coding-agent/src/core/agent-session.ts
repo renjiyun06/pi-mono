@@ -737,6 +737,78 @@ export class AgentSession {
 		return this._branchState;
 	}
 
+	/**
+	 * Confirm a branch return. Uses the pending return result from the current frame.
+	 * Returns an error message if not in a branch or no pending return.
+	 */
+	confirmReturn(): string | undefined {
+		if (this._branchState.stack.length === 0) {
+			return "Not in a branch.";
+		}
+		const frame = this._branchState.stack[this._branchState.stack.length - 1];
+		if (!frame.pendingReturn) {
+			return "No pending return. The agent has not proposed a return yet.";
+		}
+
+		const result = frame.pendingReturn.result;
+
+		// Record the return in session file
+		this.sessionManager.appendCustomEntry("confirm-return", {
+			branchToolCallId: frame.branchToolCallId,
+			result,
+		});
+
+		// Derive branch point: find the "Entered branch" toolResult entry
+		const branchEntry = this.sessionManager
+			.getEntries()
+			.find(
+				(e) =>
+					e.type === "message" &&
+					e.message.role === "toolResult" &&
+					e.message.toolCallId === frame.branchToolCallId,
+			);
+		if (!branchEntry) {
+			return "Cannot find branch entry in session.";
+		}
+		const branchPointId = branchEntry.parentId;
+		if (!branchPointId) {
+			return "Branch entry has no parent.";
+		}
+
+		// Switch session tree back to branch point
+		this.sessionManager.branch(branchPointId);
+
+		// Rebuild messages from calling context
+		const sessionContext = this.sessionManager.buildSessionContext();
+		this.agent.replaceMessages(sessionContext.messages);
+		this._branchState.stack = sessionContext.branchStack;
+
+		// Clean up state
+		this._lastAssistantMessage = undefined;
+		if (this._retryResolve) {
+			this._retryResolve();
+			this._retryResolve = undefined;
+		}
+		this._retryPromise = undefined;
+
+		// Resume with branch result
+		setTimeout(() => {
+			this.agent
+				.continue({
+					resolvedToolCall: {
+						toolCallId: frame.branchToolCallId,
+						result: {
+							content: [{ type: "text", text: result }],
+							details: {},
+						},
+					},
+				})
+				.catch(() => {});
+		}, 0);
+
+		return undefined;
+	}
+
 	/** Scoped models for cycling (from --models flag) */
 	get scopedModels(): ReadonlyArray<{ model: Model<any>; thinkingLevel?: ThinkingLevel }> {
 		return this._scopedModels;

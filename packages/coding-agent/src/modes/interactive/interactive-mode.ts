@@ -2002,9 +2002,12 @@ export class InteractiveMode {
 				await this.handleClearCommand();
 				return;
 			}
-			if (text === "/confirm-return" || text.startsWith("/confirm-return ")) {
-				// TODO: implement confirm-return command
+			if (text === "/confirm-return") {
 				this.editor.setText("");
+				const error = this.session.confirmReturn();
+				if (error) {
+					this.showStatus(error);
+				}
 				return;
 			}
 			if (text === "/branch-status") {
