@@ -2006,7 +2006,9 @@ export class InteractiveMode {
 				this.editor.setText("");
 				const error = this.session.confirmReturn();
 				if (error) {
-					this.showStatus(error);
+					this.statusContainer.clear();
+					this.statusContainer.addChild(new Text(error, 1, 0));
+					this.ui.requestRender();
 				}
 				return;
 			}
@@ -4071,11 +4073,11 @@ export class InteractiveMode {
 		if (stack.length === 0) {
 			info = "Not in a branch.";
 		} else {
-			info = `${theme.bold("Branch Stack")} (depth: ${stack.length})\n\n`;
+			info = `Branch Stack (depth: ${stack.length})\n\n`;
 			for (let i = 0; i < stack.length; i++) {
 				const frame = stack[i];
 				const prefix = i === stack.length - 1 ? "→" : " ";
-				info += `${prefix} ${theme.fg("dim", `[${i + 1}]`)} ${theme.bold(frame.title)}`;
+				info += `${prefix} [${i + 1}] ${frame.title}`;
 				if (frame.task) {
 					info += ` — ${frame.task}`;
 				}
@@ -4083,12 +4085,13 @@ export class InteractiveMode {
 			}
 			const top = stack[stack.length - 1];
 			if (top.pendingReturn) {
-				info += `\n${theme.fg("dim", "Pending return:")} ${top.pendingReturn.result}`;
+				info += `\nPending return: ${top.pendingReturn.result}`;
 			}
 		}
 
-		this.chatContainer.addChild(new Spacer(1));
-		this.chatContainer.addChild(new Text(info, 1, 0));
+		this.statusContainer.clear();
+		this.statusContainer.addChild(new Spacer(1));
+		this.statusContainer.addChild(new Text(info, 1, 0));
 		this.ui.requestRender();
 	}
 
