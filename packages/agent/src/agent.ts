@@ -14,7 +14,7 @@ import {
 	type ThinkingBudgets,
 	type Transport,
 } from "@mariozechner/pi-ai";
-import { agentLoop, agentLoopContinue } from "./agent-loop.js";
+import { agentLoop, agentLoopContinue, type ResolvedToolCall } from "./agent-loop.js";
 import type {
 	AgentContext,
 	AgentEvent,
@@ -375,9 +375,13 @@ export class Agent {
 	}
 
 	/**
-	 * Continue from current context (used for retries and resuming queued messages).
+	 * Continue from current context (used for retries, resuming queued messages, and branch returns).
+	 *
+	 * When `resolvedToolCall` is provided, the result is injected into the event pipeline
+	 * before the loop starts. Used for branch returns where the tool result was produced
+	 * outside the current loop.
 	 */
-	async continue() {
+	async continue(options?: { resolvedToolCall?: ResolvedToolCall }) {
 		if (this._state.isStreaming) {
 			throw new Error("Agent is already processing. Wait for completion before continuing.");
 		}
@@ -386,6 +390,12 @@ export class Agent {
 		if (messages.length === 0) {
 			throw new Error("No messages to continue from");
 		}
+
+		if (options?.resolvedToolCall) {
+			await this._runLoop(undefined, { resolvedToolCall: options.resolvedToolCall });
+			return;
+		}
+
 		if (messages[messages.length - 1].role === "assistant") {
 			const queuedSteering = this.dequeueSteeringMessages();
 			if (queuedSteering.length > 0) {
@@ -410,7 +420,10 @@ export class Agent {
 	 * If messages are provided, starts a new conversation turn with those messages.
 	 * Otherwise, continues from existing context.
 	 */
-	private async _runLoop(messages?: AgentMessage[], options?: { skipInitialSteeringPoll?: boolean }) {
+	private async _runLoop(
+		messages?: AgentMessage[],
+		options?: { skipInitialSteeringPoll?: boolean; resolvedToolCall?: ResolvedToolCall },
+	) {
 		const model = this._state.model;
 		if (!model) throw new Error("No model configured");
 
@@ -459,7 +472,7 @@ export class Agent {
 		try {
 			const stream = messages
 				? agentLoop(messages, context, config, this.abortController.signal, this.streamFn)
-				: agentLoopContinue(context, config, this.abortController.signal, this.streamFn);
+				: agentLoopContinue(context, config, this.abortController.signal, this.streamFn, options?.resolvedToolCall);
 
 			for await (const event of stream) {
 				// Update internal state based on events

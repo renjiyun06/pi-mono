@@ -68,25 +68,62 @@ export function agentLoop(
 }
 
 /**
+ * A pre-resolved tool result to inject before the loop starts.
+ * Must match the last toolCall in the most recent assistant message.
+ */
+export interface ResolvedToolCall {
+	toolCallId: string;
+	result: AgentToolResult<any>;
+}
+
+/**
  * Continue an agent loop from the current context without adding a new message.
  * Used for retries - context already has user message or tool results.
  *
  * **Important:** The last message in context must convert to a `user` or `toolResult` message
  * via `convertToLlm`. If it doesn't, the LLM provider will reject the request.
  * This cannot be validated here since `convertToLlm` is only called once per turn.
+ *
+ * When `resolvedToolCall` is provided, the result is injected into the event pipeline
+ * before the loop starts. The toolCallId must match the last toolCall in the most recent
+ * assistant message. This is used for branch returns where the tool result was produced
+ * outside the current loop.
  */
 export function agentLoopContinue(
 	context: AgentContext,
 	config: AgentLoopConfig,
 	signal?: AbortSignal,
 	streamFn?: StreamFn,
+	resolvedToolCall?: ResolvedToolCall,
 ): EventStream<AgentEvent, AgentMessage[]> {
 	if (context.messages.length === 0) {
 		throw new Error("Cannot continue: no messages in context");
 	}
 
-	if (context.messages[context.messages.length - 1].role === "assistant") {
+	const lastMessage = context.messages[context.messages.length - 1];
+
+	if (lastMessage.role === "assistant" && !resolvedToolCall) {
 		throw new Error("Cannot continue from message role: assistant");
+	}
+
+	if (resolvedToolCall) {
+		// Validate: last assistant message's last toolCall must match the resolvedToolCall
+		const lastAssistant = [...context.messages].reverse().find((m) => m.role === "assistant") as
+			| AssistantMessage
+			| undefined;
+		if (!lastAssistant) {
+			throw new Error("Cannot inject resolved tool call: no assistant message found");
+		}
+		const toolCalls = lastAssistant.content.filter((c) => c.type === "toolCall");
+		if (toolCalls.length === 0) {
+			throw new Error("Cannot inject resolved tool call: assistant message has no tool calls");
+		}
+		const lastToolCall = toolCalls[toolCalls.length - 1];
+		if (lastToolCall.id !== resolvedToolCall.toolCallId) {
+			throw new Error(
+				`Resolved tool call ID mismatch: expected "${lastToolCall.id}", got "${resolvedToolCall.toolCallId}"`,
+			);
+		}
 	}
 
 	const stream = createAgentStream();
@@ -99,12 +136,58 @@ export function agentLoopContinue(
 			{
 				contextMessages: context.messages.length,
 				lastMessageRole: context.messages[context.messages.length - 1].role,
+				hasResolvedToolCall: !!resolvedToolCall,
 			},
 			"agentLoopContinue started",
 		);
 
 		stream.push({ type: "agent_start" });
 		stream.push({ type: "turn_start" });
+
+		// Inject pre-resolved tool result before the loop starts
+		if (resolvedToolCall) {
+			const lastAssistant = [...currentContext.messages]
+				.reverse()
+				.find((m) => m.role === "assistant") as AssistantMessage;
+			const toolCalls = lastAssistant.content.filter((c) => c.type === "toolCall");
+			const lastToolCall = toolCalls[toolCalls.length - 1];
+
+			stream.push({
+				type: "tool_execution_start",
+				toolCallId: resolvedToolCall.toolCallId,
+				toolName: lastToolCall.name,
+				args: lastToolCall.arguments,
+			});
+
+			stream.push({
+				type: "tool_execution_end",
+				toolCallId: resolvedToolCall.toolCallId,
+				toolName: lastToolCall.name,
+				result: resolvedToolCall.result,
+				isError: false,
+			});
+
+			const toolResultMessage: ToolResultMessage = {
+				role: "toolResult",
+				toolCallId: resolvedToolCall.toolCallId,
+				toolName: lastToolCall.name,
+				content: resolvedToolCall.result.content,
+				details: resolvedToolCall.result.details,
+				isError: false,
+				timestamp: Date.now(),
+			};
+
+			stream.push({ type: "message_start", message: toolResultMessage });
+			stream.push({ type: "message_end", message: toolResultMessage });
+
+			currentContext.messages.push(toolResultMessage);
+			newMessages.push(toolResultMessage);
+
+			log.info(
+				{ toolCallId: resolvedToolCall.toolCallId, toolName: lastToolCall.name },
+				"injected resolved tool call result",
+			);
+		}
 
 		await runLoop(currentContext, newMessages, config, signal, stream, streamFn);
 	})();
