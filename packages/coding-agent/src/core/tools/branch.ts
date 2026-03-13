@@ -85,11 +85,6 @@ export function createBranchTool(state: BranchState): AgentTool<typeof branchSch
 		description:
 			"An attention mechanism: temporarily narrow your focus to a specific concern " +
 			"by forking into a branch. The branch inherits the full conversation history. " +
-			"This tool returns twice:\n" +
-			'- First return: "Entered branch". Do whatever is needed, ' +
-			"then call return() when done.\n" +
-			"- Second return: the result you passed to return(). The intermediate steps " +
-			"are gone — you already did the work, you just don't carry the details anymore.\n" +
 			"Branches can nest.",
 		parameters: branchSchema,
 		execute: async (toolCallId, params, _signal, _onUpdate, context) => {
@@ -106,7 +101,7 @@ export function createBranchTool(state: BranchState): AgentTool<typeof branchSch
 			});
 
 			return {
-				content: [{ type: "text", text: "[First return] Entered branch" }],
+				content: [{ type: "text", text: "Entered branch" }],
 				details: {},
 			};
 		},

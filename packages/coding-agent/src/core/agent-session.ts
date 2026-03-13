@@ -798,7 +798,14 @@ export class AgentSession {
 					resolvedToolCall: {
 						toolCallId: frame.branchToolCallId,
 						result: {
-							content: [{ type: "text", text: `[Second return] ${result}` }],
+							content: [
+								{
+									type: "text",
+									text:
+										`You branched to "${frame.title}" and have returned.\n` +
+										`<branch-return-result>\n${result}\n</branch-return-result>`,
+								},
+							],
 							details: {},
 						},
 					},
