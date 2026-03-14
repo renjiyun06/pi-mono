@@ -272,7 +272,10 @@ async function runLoop(
 
 			const toolResults: ToolResultMessage[] = [];
 			if (hasMoreToolCalls) {
-				log.debug({ toolCallCount: toolCalls.length }, "executing tool calls");
+				log.debug(
+					{ toolCallCount: toolCalls.length, toolNames: toolCalls.map((tc) => tc.name) },
+					"executing tool calls",
+				);
 				const toolExecution = await executeToolCalls(
 					currentContext.tools,
 					message,
@@ -282,6 +285,11 @@ async function runLoop(
 				);
 				toolResults.push(...toolExecution.toolResults);
 				steeringAfterTools = toolExecution.steeringMessages ?? null;
+
+				if (toolExecution.stopLoop) {
+					log.info("tool requested loop stop, ending after this turn");
+					hasMoreToolCalls = false;
+				}
 
 				for (const result of toolResults) {
 					currentContext.messages.push(result);
@@ -442,10 +450,11 @@ async function executeToolCalls(
 	signal: AbortSignal | undefined,
 	stream: EventStream<AgentEvent, AgentMessage[]>,
 	getSteeringMessages?: AgentLoopConfig["getSteeringMessages"],
-): Promise<{ toolResults: ToolResultMessage[]; steeringMessages?: AgentMessage[] }> {
+): Promise<{ toolResults: ToolResultMessage[]; steeringMessages?: AgentMessage[]; stopLoop?: boolean }> {
 	const toolCalls = assistantMessage.content.filter((c) => c.type === "toolCall");
 	const results: ToolResultMessage[] = [];
 	let steeringMessages: AgentMessage[] | undefined;
+	let stopLoop = false;
 
 	for (let index = 0; index < toolCalls.length; index++) {
 		const toolCall = toolCalls[index];
@@ -529,6 +538,12 @@ async function executeToolCalls(
 		stream.push({ type: "message_start", message: toolResultMessage });
 		stream.push({ type: "message_end", message: toolResultMessage });
 
+		// Check if tool requested stopping the loop
+		if (result.stopLoop) {
+			log.info({ tool: toolCall.name, toolCallId: toolCall.id }, "tool requested loop stop");
+			stopLoop = true;
+		}
+
 		// Check if tool requested skipping remaining calls
 		if (skipAfterThis) {
 			const remainingCalls = toolCalls.slice(index + 1);
@@ -563,7 +578,7 @@ async function executeToolCalls(
 		}
 	}
 
-	return { toolResults: results, steeringMessages };
+	return { toolResults: results, steeringMessages, stopLoop };
 }
 
 function skipToolCall(

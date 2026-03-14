@@ -148,6 +148,8 @@ export interface AgentToolResult<T> {
 	content: (TextContent | ImageContent)[];
 	// Details to be displayed in a UI or logged
 	details: T;
+	// If true, the agent loop will stop after this tool execution (no further LLM calls)
+	stopLoop?: boolean;
 }
 
 /**
