@@ -352,7 +352,7 @@ export function rebuildBranchState(path: SessionEntry[]): {
 				task: args?.task ?? "",
 				pendingReturn: null,
 			});
-		} else if (msg.toolName === "return" && text === "Return proposed.") {
+		} else if (msg.toolName === "propose-branch-result-and-wait" && text === "Waiting for confirmation.") {
 			// Record pending return on the current (top) frame — overwrites any previous one
 			if (stack.length > 0) {
 				const args = findToolCallArguments(path, msg.toolCallId);

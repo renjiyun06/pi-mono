@@ -14,7 +14,7 @@ export {
 	createBranchStatusTool,
 	createBranchTool,
 	createBranchTools,
-	createReturnTool,
+	createProposeTool,
 } from "./branch.js";
 export {
 	createEditTool,
@@ -104,7 +104,7 @@ export const allTools = {
 };
 
 export type BaseToolName = keyof typeof allTools;
-export type ToolName = BaseToolName | "branch" | "return" | "branch-status";
+export type ToolName = BaseToolName | "branch" | "propose-branch-result-and-wait" | "branch-status";
 
 export interface ToolsOptions {
 	/** Options for the read tool */

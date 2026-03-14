@@ -802,8 +802,8 @@ export class AgentSession {
 								{
 									type: "text",
 									text:
-										`You branched to "${frame.title}" and have returned.\n` +
-										`<branch-return-result>\n${result}\n</branch-return-result>`,
+										`You have returned from branch "${frame.title}".\n` +
+										`<branch-result>\n${result}\n</branch-result>`,
 								},
 							],
 							details: {},
@@ -2324,7 +2324,7 @@ export class AgentSession {
 
 		const defaultActiveToolNames = this._baseToolsOverride
 			? Object.keys(this._baseToolsOverride)
-			: ["read", "bash", "edit", "write", "branch", "return", "branch-status"];
+			: ["read", "bash", "edit", "write", "branch", "propose-branch-result-and-wait", "branch-status"];
 		const baseActiveToolNames = options.activeToolNames ?? defaultActiveToolNames;
 		this._refreshToolRegistry({
 			activeToolNames: baseActiveToolNames,

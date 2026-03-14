@@ -31,24 +31,13 @@ const branchSchema = Type.Object({
 		description: "Short label for the branch. Keep it to a few words.",
 	}),
 	task: Type.String({
-		description:
-			"What to focus on. The branch inherits the full conversation history, " +
-			"so there is no need to re-explain background. Just state the concern: " +
-			'"check if the API paginates correctly", ' +
-			'"figure out why the test fails", ' +
-			'"decide between migration strategies".',
+		description: "What to focus on. Just state the concern.",
 	}),
 });
 
 const returnSchema = Type.Object({
 	result: Type.String({
-		description:
-			"The value to carry back to the calling context. Everything else from this branch " +
-			"is discarded. What you write here depends on what the branch was for: " +
-			'a finding ("API needs an offset parameter"), ' +
-			'a status ("fixed the bug, test passes"), ' +
-			"a detailed report, a decision, or just an acknowledgment. " +
-			"No required format — write whatever the calling context needs to continue.",
+		description: "The value to carry back to the calling context.",
 	}),
 });
 
@@ -82,10 +71,7 @@ export function createBranchTool(state: BranchState): AgentTool<typeof branchSch
 	return {
 		name: "branch",
 		label: "branch",
-		description:
-			"An attention mechanism: temporarily narrow your focus to a specific concern " +
-			"by forking into a branch. The branch inherits the full conversation history. " +
-			"Branches can nest.",
+		description: "Fork into a branch to focus on a specific concern.",
 		parameters: branchSchema,
 		execute: async (toolCallId, params, _signal, _onUpdate, context) => {
 			const validationError = validateBranchCall(context);
@@ -109,24 +95,42 @@ export function createBranchTool(state: BranchState): AgentTool<typeof branchSch
 }
 
 /**
- * Create the return tool.
+ * Validate that the propose-branch-result-and-wait tool call is well-formed within its batch.
+ * Returns an error message if invalid, undefined if ok.
+ */
+function validateProposeCall(context?: AgentToolExecutionContext): string | undefined {
+	if (!context) return undefined;
+
+	const proposeCount = context.toolCalls.filter((tc) => tc.name === "propose-branch-result-and-wait").length;
+	if (proposeCount > 1) {
+		return "Multiple propose-branch-result-and-wait calls in one message. Only one proposal per message is allowed.";
+	}
+
+	if (context.index !== context.toolCalls.length - 1) {
+		return "propose-branch-result-and-wait must be the last tool call in the message.";
+	}
+
+	return undefined;
+}
+
+/**
+ * Create the propose-branch-result-and-wait tool.
  *
- * Proposes ending the current branch and returning a result to the calling context.
+ * Proposes a result to carry back to the calling context and waits for confirmation.
  * Only works inside a branch (stack depth > 0).
  */
-export function createReturnTool(state: BranchState): AgentTool<typeof returnSchema> {
+export function createProposeTool(state: BranchState): AgentTool<typeof returnSchema> {
 	return {
-		name: "return",
-		label: "return",
-		description:
-			"Propose ending the current branch and going back to the calling context. " +
-			"The result you provide is the only thing that carries over — " +
-			"all intermediate messages from this branch are discarded. " +
-			"There is no required format or length — write whatever the calling context " +
-			"needs to continue its work. " +
-			"The actual return will only happen when the user or the system executes the confirm-return command.",
+		name: "propose-branch-result-and-wait",
+		label: "propose-branch-result-and-wait",
+		description: "Propose a result to carry back to the calling context and wait for confirmation.",
 		parameters: returnSchema,
-		execute: async (toolCallId, params) => {
+		execute: async (toolCallId, params, _signal, _onUpdate, context) => {
+			const validationError = validateProposeCall(context);
+			if (validationError) {
+				throw new SkipRemainingToolCallsError(validationError);
+			}
+
 			if (state.stack.length === 0) {
 				return {
 					content: [{ type: "text", text: "Not in a branch. Nothing to return from." }],
@@ -142,8 +146,14 @@ export function createReturnTool(state: BranchState): AgentTool<typeof returnSch
 			}
 			currentFrame.pendingReturn = { result: params.result, toolCallId };
 			return {
-				content: [{ type: "text", text: "Return proposed. Wait for confirmation before continuing." }],
+				content: [
+					{
+						type: "text",
+						text: "Waiting for confirmation.",
+					},
+				],
 				details: {},
+				stopLoop: true,
 			};
 		},
 	};
@@ -159,11 +169,7 @@ export function createBranchStatusTool(state: BranchState): AgentTool {
 	return {
 		name: "branch-status",
 		label: "branch-status",
-		description:
-			"Check your current position in the branch structure. " +
-			"Returns the full branch stack: which branches are active, their titles and tasks, " +
-			"and which one you are currently in. Useful when you need to reorient yourself " +
-			"after a long sequence of work, or after context compaction.",
+		description: "Check your current position in the branch structure.",
 		parameters: Type.Object({}),
 		execute: async () => {
 			let text: string;
@@ -192,7 +198,7 @@ export function createBranchStatusTool(state: BranchState): AgentTool {
 export function createBranchTools(state: BranchState): Record<string, AgentTool<any>> {
 	return {
 		branch: createBranchTool(state),
-		return: createReturnTool(state),
+		"propose-branch-result-and-wait": createProposeTool(state),
 		"branch-status": createBranchStatusTool(state),
 	};
 }
