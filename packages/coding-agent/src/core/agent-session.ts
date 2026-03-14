@@ -278,6 +278,7 @@ export class AgentSession {
 
 	// Base system prompt (without extension appends) - used to apply fresh appends each turn
 	private _branchState: BranchState = { stack: [] };
+	private _autoConfirmReturn = false;
 	private _baseSystemPrompt = "";
 
 	constructor(config: AgentSessionConfig) {
@@ -460,7 +461,16 @@ export class AgentSession {
 			// Check for retryable errors first (overloaded, rate limit, server errors)
 			if (this._isRetryableError(msg)) {
 				const didRetry = await this._handleRetryableError(msg);
-				if (didRetry) return; // Retry was initiated, don't proceed to compaction
+				if (didRetry) return; // Retry was initiated, don't proceed to compaction or auto-confirm
+			}
+
+			// Auto-confirm branch return if enabled and pending
+			if (this._autoConfirmReturn && this._branchState.stack.length > 0) {
+				const frame = this._branchState.stack[this._branchState.stack.length - 1];
+				if (frame.pendingReturn) {
+					this.confirmReturn();
+					return; // Branch switched, skip compaction
+				}
 			}
 
 			await this._checkCompaction(msg);
@@ -735,6 +745,14 @@ export class AgentSession {
 	/** Current branch state (stack + pending return) */
 	get branchState(): BranchState {
 		return this._branchState;
+	}
+
+	get autoConfirmReturn(): boolean {
+		return this._autoConfirmReturn;
+	}
+
+	set autoConfirmReturn(value: boolean) {
+		this._autoConfirmReturn = value;
 	}
 
 	/**

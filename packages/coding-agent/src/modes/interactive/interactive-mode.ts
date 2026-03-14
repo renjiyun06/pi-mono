@@ -2017,6 +2017,12 @@ export class InteractiveMode {
 				this.handleBranchStatusCommand();
 				return;
 			}
+			if (text === "/auto-confirm") {
+				this.editor.setText("");
+				this.session.autoConfirmReturn = !this.session.autoConfirmReturn;
+				this.ui.requestRender();
+				return;
+			}
 			if (text === "/compact" || text.startsWith("/compact ")) {
 				const customInstructions = text.startsWith("/compact ") ? text.slice(9).trim() : undefined;
 				this.editor.setText("");

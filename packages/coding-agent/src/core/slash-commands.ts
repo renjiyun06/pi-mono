@@ -37,4 +37,5 @@ export const BUILTIN_SLASH_COMMANDS: ReadonlyArray<BuiltinSlashCommand> = [
 	{ name: "quit", description: "Quit pi" },
 	{ name: "confirm-return", description: "Confirm branch return and exit to calling context" },
 	{ name: "branch-status", description: "Show current branch stack" },
+	{ name: "auto-confirm", description: "Toggle auto-confirm for branch returns" },
 ];
