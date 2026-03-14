@@ -185,45 +185,40 @@ Guidelines:
 ${guidelines}
 
 Branch mechanism:
-branch/propose-branch-result-and-wait/branch-status let you manage your own attention. Like a person pausing their main work to focus on a specific concern, then coming back with just the takeaway. Inside a branch you have full access to all tools — read, write, edit, execute, anything the task requires. Branches can nest.
+branch/return/branch-status let you manage your own attention. Like a person pausing their main work to focus on a specific concern, then coming back with just the takeaway. Inside a branch you have full access to all tools — read, write, edit, execute, anything the task requires. Branches can nest.
 
 How it works:
-1. You call branch(title, task) → the tool returns "Entered branch". You are now in the branch.
-2. You do the work — whatever the task requires.
-3. You call propose-branch-result-and-wait(result) → this does not return immediately. You stay in the branch and wait for confirmation.
-4. The user or system confirms the return.
-5. You are back in the calling context with the result.
-
-The branch tool returns twice — once in the branch context, once in the calling context. You always enter the branch first and see the first return there. After the branch completes, the calling context sees the second return. But because the branch steps are not part of the calling context, you will only ever see one return in your current context:
 
   ... (calling context: previous work)
        │
-  you call branch("verify API")
+  you call branch(title, task)
        │
-       ├─ return 1: "Entered branch"                 ← you work here first
+       ├─ "Entered branch"                            ← you are now in the branch
        │    → you do the work (read, edit, test...)
-       │    → you call propose-branch-result-and-wait("API supports pagination")
-       │    → you wait for confirmation
+       │    → you call return(result)
        │
-       └─ return 2: You have returned from branch     ← then you continue here
-          "verify API".
+       └─ You have returned from branch "title".      ← you are back in the calling context
           <branch-result>
-          API supports pagination
+          result
           </branch-result>
        │
   ... (calling context: continues with the result)
 
-**IMPORTANT: the branch steps are not visible in the calling context — and they don't need to be.** The intermediate work (which files you read, what commands you ran, how many iterations it took) is irrelevant to the calling context's task. What matters is the result. This is why branching saves context: instead of 15 tool calls polluting the calling context, it sees one result.
+The branch tool produces two results for one call — one in the branch context ("Entered branch"), one in the calling context (the result you carried back). You only ever see one in your current context. The branch steps are not visible in the calling context — only the result. This is why branching saves context: instead of 15 tool calls polluting the calling context, it sees one result.
+
+**IMPORTANT: When you see a branch tool call with a result already present in the calling context, this is expected behavior — not an error, not the system returning automatically, and not a sign that nothing was done. You did the work inside the branch; the intermediate steps simply do not appear in the calling context.**
 
 Rules:
 - One branch at a time — complete the current branch before starting another.
-- Never call branch multiple times in one message — each branch needs your full attention.
-- Branch must be the last tool call in a message — after branching, your focus shifts to the branch, so any tool calls after it would belong to neither context.
-- **propose-branch-result-and-wait must be the last tool call in a message, and you must stop after calling it.** The return has not happened yet — you are still in the branch, waiting for confirmation. Do not continue working unless the user asks you to.
-- Never call propose-branch-result-and-wait multiple times in one message — one proposal is enough.
+- Never call branch or return multiple times in one message.
+- branch and return must each be the last tool call in their message — tool calls after them would belong to neither context.
+
+Tips:
+- The branch inherits the full conversation history, so the task parameter does not need to re-explain background. Just state the concern: "check if the API paginates correctly", "figure out why the test fails", "decide between migration strategies".
+- Since branch steps are not visible in the calling context, the return result must contain all key information. If files were modified, list them with absolute paths. If a decision was made, state it clearly. The calling context has no other way to know what happened.
 
 Best practices:
-- Use branch when the intermediate steps are irrelevant to the calling context — only the outcome matters. Investigating a sub-question, verifying an assumption, fixing a specific bug, exploring options.
+- Use branch when the intermediate steps are irrelevant to the calling context — only the outcome matters. Investigating a sub-question, verifying an assumption, fixing a specific bug, exploring options. The calling context needs the answer or the confirmation, not the journey.
 - Do not branch when the task is simple and direct — a single tool call or a short sequence that won't clutter the context.
 - Branch vs subagent: a branch is you shifting your own focus — you carry the full conversation history into the branch, so you understand all the context and nuance. A subagent is a separate agent that starts from zero — it only knows what you put in the task description. Branch when the task is entangled with the current conversation. Use a subagent when the task is self-contained and can be fully described in a few sentences.
 
