@@ -238,15 +238,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 		thinkingLevel = "off";
 	}
 
-	const defaultActiveToolNames: ToolName[] = [
-		"read",
-		"bash",
-		"edit",
-		"write",
-		"branch",
-		"propose-branch-result-and-wait",
-		"branch-status",
-	];
+	const defaultActiveToolNames: ToolName[] = ["read", "bash", "edit", "write", "branch", "return", "branch-status"];
 	const initialActiveToolNames: ToolName[] = options.tools
 		? options.tools.map((t) => t.name).filter((n): n is ToolName => n in allTools)
 		: defaultActiveToolNames;

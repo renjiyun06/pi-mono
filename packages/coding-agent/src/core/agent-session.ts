@@ -278,7 +278,7 @@ export class AgentSession {
 
 	// Base system prompt (without extension appends) - used to apply fresh appends each turn
 	private _branchState: BranchState = { stack: [] };
-	private _autoConfirmReturn = false;
+	private _autoConfirmReturn = true;
 	private _baseSystemPrompt = "";
 
 	constructor(config: AgentSessionConfig) {
@@ -765,16 +765,10 @@ export class AgentSession {
 		}
 		const frame = this._branchState.stack[this._branchState.stack.length - 1];
 		if (!frame.pendingReturn) {
-			return "No pending return. The agent has not proposed a return yet.";
+			return "No pending return.";
 		}
 
 		const result = frame.pendingReturn.result;
-
-		// Record the return in session file
-		this.sessionManager.appendCustomEntry("confirm-return", {
-			branchToolCallId: frame.branchToolCallId,
-			result,
-		});
 
 		// Derive branch point: find the "Entered branch" toolResult entry
 		const branchEntry = this.sessionManager
@@ -2342,7 +2336,7 @@ export class AgentSession {
 
 		const defaultActiveToolNames = this._baseToolsOverride
 			? Object.keys(this._baseToolsOverride)
-			: ["read", "bash", "edit", "write", "branch", "propose-branch-result-and-wait", "branch-status"];
+			: ["read", "bash", "edit", "write", "branch", "return", "branch-status"];
 		const baseActiveToolNames = options.activeToolNames ?? defaultActiveToolNames;
 		this._refreshToolRegistry({
 			activeToolNames: baseActiveToolNames,

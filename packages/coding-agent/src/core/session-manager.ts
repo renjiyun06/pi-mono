@@ -329,7 +329,7 @@ function findToolCallArguments(path: SessionEntry[], toolCallId: string): Record
 
 /**
  * Rebuild the branch state from a root-to-leaf session path.
- * Scans for branch tool results ("Entered branch") and return tool results ("Return proposed.")
+ * Scans for branch tool results ("Entered branch") and return tool results
  * to reconstruct the branch stack and pending return.
  */
 export function rebuildBranchState(path: SessionEntry[]): {
@@ -352,7 +352,7 @@ export function rebuildBranchState(path: SessionEntry[]): {
 				task: args?.task ?? "",
 				pendingReturn: null,
 			});
-		} else if (msg.toolName === "propose-branch-result-and-wait" && text === "Waiting for confirmation.") {
+		} else if (msg.toolName === "return") {
 			// Record pending return on the current (top) frame — overwrites any previous one
 			if (stack.length > 0) {
 				const args = findToolCallArguments(path, msg.toolCallId);
