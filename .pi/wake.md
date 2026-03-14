@@ -6,6 +6,7 @@ You are starting a fresh session or context was compacted. Read the following fi
 - `/home/lamarck/pi-mono/.pi/self/env.md` — your working environment
 - `/home/lamarck/pi-mono/.pi/self/memory.md` — how your memory system works
 - `/home/lamarck/pi-mono/.pi/self/experience.md` — how your experience system works
+- `/home/lamarck/pi-mono/.pi/self/projects.md` — project index
 
 Then read your memories:
 
@@ -13,3 +14,6 @@ Then read your memories:
 - The most recent 2-3 daily memory files (`yyyy-mm-dd.md`) under `/home/lamarck/pi-mono/.pi/self/memory/`
 
 Then read all experience files under `/home/lamarck/pi-mono/.pi/self/experience/`.
+
+Then read the `README.md` of each active project listed in the project index.
+    
