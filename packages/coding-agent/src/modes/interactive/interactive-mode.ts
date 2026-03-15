@@ -4082,12 +4082,15 @@ export class InteractiveMode {
 			info = `Branch Stack (depth: ${stack.length})\n\n`;
 			for (let i = 0; i < stack.length; i++) {
 				const frame = stack[i];
-				const prefix = i === stack.length - 1 ? "→" : " ";
-				info += `${prefix} [${i + 1}] ${frame.title}`;
+				const isTop = i === stack.length - 1;
+				const title = `[${i + 1}] ${frame.title}`;
+				info += `${isTop ? theme.fg("accent", title) : title}\n`;
 				if (frame.task) {
-					info += ` — ${frame.task}`;
+					info += `${isTop ? theme.fg("accent", frame.task) : frame.task}\n`;
 				}
-				info += "\n";
+				if (i < stack.length - 1) {
+					info += "\n";
+				}
 			}
 			const top = stack[stack.length - 1];
 			if (top.pendingReturn) {
