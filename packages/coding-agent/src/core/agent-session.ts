@@ -477,6 +477,11 @@ export class AgentSession {
 				}
 			}
 
+			// Handle checkpoint: replace messages with summary
+			if (this._handleCheckpoint(msg)) {
+				return; // Checkpoint performed, skip compaction
+			}
+
 			await this._checkCompaction(msg);
 		}
 	}
@@ -1822,6 +1827,34 @@ export class AgentSession {
 	 * @param assistantMessage The assistant message to check
 	 * @param skipAbortedCheck If false, include aborted messages (for pre-prompt check). Default: true
 	 */
+	/**
+	 * Check if the assistant message contains a successful checkpoint tool call.
+	 * If so, replace the message list with just the checkpoint summary.
+	 * Returns true if checkpoint was handled.
+	 */
+	private _handleCheckpoint(msg: AssistantMessage): boolean {
+		// Find checkpoint tool call in the assistant message
+		const checkpointCall = msg.content.find((c) => c.type === "toolCall" && c.name === "checkpoint");
+		if (!checkpointCall || checkpointCall.type !== "toolCall") return false;
+
+		// Verify the tool result exists and is not an error
+		const messages = this.agent.state.messages;
+		const toolResult = messages.find(
+			(m) =>
+				(m as Message).role === "toolResult" && (m as any).toolCallId === checkpointCall.id && !(m as any).isError,
+		);
+		if (!toolResult) return false;
+
+		// Replace messages with just the checkpoint assistant message and its tool result
+		this.agent.replaceMessages([msg, toolResult as AgentMessage]);
+		log.info(
+			{ summary: checkpointCall.arguments.summary },
+			"Checkpoint: cleared context, kept checkpoint call and result",
+		);
+
+		return true;
+	}
+
 	private async _checkCompaction(assistantMessage: AssistantMessage, skipAbortedCheck = true): Promise<void> {
 		const settings = this.settingsManager.getCompactionSettings();
 		if (!settings.enabled) return;

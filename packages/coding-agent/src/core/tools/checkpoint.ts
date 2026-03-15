@@ -35,10 +35,10 @@ export function createCheckpointTool(): AgentTool<typeof checkpointSchema> {
 				throw new SkipRemainingToolCallsError(validationError);
 			}
 
-			// TODO: Implement context replacement and agent loop interruption
 			return {
 				content: [],
 				details: {},
+				stopLoop: true,
 			};
 		},
 	};
