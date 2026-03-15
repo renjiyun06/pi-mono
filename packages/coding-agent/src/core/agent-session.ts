@@ -83,6 +83,7 @@ import { BUILTIN_SLASH_COMMANDS, type SlashCommandInfo, type SlashCommandLocatio
 import { buildSystemPrompt } from "./system-prompt.js";
 import type { BashOperations } from "./tools/bash.js";
 import { type BranchState, createBranchTools } from "./tools/branch.js";
+import { createCheckpointTool } from "./tools/checkpoint.js";
 import { createAllTools } from "./tools/index.js";
 
 const log = getLogger("agent-session");
@@ -2328,9 +2329,11 @@ export class AgentSession {
 				});
 
 		const branchTools = createBranchTools(this._branchState);
+		const checkpointTool = createCheckpointTool();
 		this._baseToolRegistry = new Map([
 			...Object.entries(baseTools).map(([name, tool]) => [name, tool as AgentTool] as const),
 			...Object.entries(branchTools).map(([name, tool]) => [name, tool as AgentTool] as const),
+			["checkpoint", checkpointTool as AgentTool<any>],
 		]);
 
 		const extensionsResult = this._resourceLoader.getExtensions();

@@ -16,6 +16,7 @@ export {
 	createBranchTools,
 	createReturnTool,
 } from "./branch.js";
+export { createCheckpointTool } from "./checkpoint.js";
 export {
 	createEditTool,
 	type EditOperations,
@@ -104,7 +105,7 @@ export const allTools = {
 };
 
 export type BaseToolName = keyof typeof allTools;
-export type ToolName = BaseToolName | "branch" | "return" | "branch-status";
+export type ToolName = BaseToolName | "branch" | "return" | "branch-status" | "checkpoint";
 
 export interface ToolsOptions {
 	/** Options for the read tool */
