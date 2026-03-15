@@ -295,6 +295,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 
 	const extensionRunnerRef: { current?: ExtensionRunner } = {};
 	const branchStateRef: { current?: BranchState } = {};
+	const sessionRef: { current?: AgentSession } = {};
 
 	// Register current time as a system context provider
 	registerSystemContextProvider({
@@ -303,6 +304,15 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 			const pad = (n: number) => String(n).padStart(2, "0");
 			const time = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
 			return [`Time: ${time}`];
+		},
+	});
+
+	// Register autonomous mode as a system context provider
+	registerSystemContextProvider({
+		getStatus() {
+			const state = sessionRef.current?.autonomousState;
+			if (!state || state === "off") return undefined;
+			return [`Autonomous: ${state}`];
 		},
 	});
 
@@ -418,6 +428,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 		extensionRunnerRef,
 	});
 	branchStateRef.current = session.branchState;
+	sessionRef.current = session;
 	const extensionsResult = resourceLoader.getExtensions();
 
 	return {
