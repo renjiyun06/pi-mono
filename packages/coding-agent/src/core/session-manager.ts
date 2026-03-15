@@ -1,5 +1,6 @@
 import type { AgentMessage } from "@mariozechner/pi-agent-core";
 import type { ImageContent, Message, TextContent } from "@mariozechner/pi-ai";
+import { getLogger } from "@mariozechner/pi-logger";
 import { randomUUID } from "crypto";
 import {
 	appendFileSync,
@@ -367,6 +368,8 @@ export function rebuildBranchState(path: SessionEntry[]): {
 	return { stack };
 }
 
+const log = getLogger("session-manager");
+
 export function buildSessionContext(
 	entries: SessionEntry[],
 	leafId?: string | null,
@@ -406,18 +409,42 @@ export function buildSessionContext(
 		current = current.parentId ? byId.get(current.parentId) : undefined;
 	}
 
-	// Extract settings and find compaction
+	// Extract settings, find compaction and checkpoint
 	let thinkingLevel = "off";
 	let model: { provider: string; modelId: string } | null = null;
 	let compaction: CompactionEntry | null = null;
+	let checkpointIdx = -1;
 
-	for (const entry of path) {
+	for (let i = 0; i < path.length; i++) {
+		const entry = path[i];
 		if (entry.type === "thinking_level_change") {
 			thinkingLevel = entry.thinkingLevel;
 		} else if (entry.type === "model_change") {
 			model = { provider: entry.provider, modelId: entry.modelId };
 		} else if (entry.type === "message" && entry.message.role === "assistant") {
 			model = { provider: entry.message.provider, modelId: entry.message.model };
+			// Check if this assistant message contains a successful checkpoint call
+			const hasCheckpointCall = entry.message.content.some(
+				(c: any) => c.type === "toolCall" && c.name === "checkpoint",
+			);
+			if (hasCheckpointCall) {
+				// Verify there's a successful tool result for this checkpoint
+				const checkpointCall = entry.message.content.find(
+					(c: any) => c.type === "toolCall" && c.name === "checkpoint",
+				);
+				if (checkpointCall) {
+					const hasSuccessfulResult = path.some(
+						(e) =>
+							e.type === "message" &&
+							e.message.role === "toolResult" &&
+							(e.message as any).toolCallId === (checkpointCall as any).id &&
+							!(e.message as any).isError,
+					);
+					if (hasSuccessfulResult) {
+						checkpointIdx = i;
+					}
+				}
+			}
 		} else if (entry.type === "compaction") {
 			compaction = entry;
 		}
@@ -442,12 +469,22 @@ export function buildSessionContext(
 		}
 	};
 
-	if (compaction) {
-		// Emit summary first
-		messages.push(createCompactionSummaryMessage(compaction.summary, compaction.tokensBefore, compaction.timestamp));
+	// Determine the recovery point: use whichever is later (closer to leaf)
+	const compactionIdx = compaction ? path.findIndex((e) => e.type === "compaction" && e.id === compaction.id) : -1;
+	const useCheckpoint = checkpointIdx > compactionIdx;
 
-		// Find compaction index in path
-		const compactionIdx = path.findIndex((e) => e.type === "compaction" && e.id === compaction.id);
+	if (useCheckpoint) {
+		// Checkpoint recovery: emit messages from checkpoint assistant message onwards
+		log.info(
+			{ checkpointIdx, totalEntries: path.length, messagesAfter: path.length - checkpointIdx },
+			"recovering from checkpoint",
+		);
+		for (let i = checkpointIdx; i < path.length; i++) {
+			appendMessage(path[i]);
+		}
+	} else if (compaction) {
+		// Compaction recovery
+		messages.push(createCompactionSummaryMessage(compaction.summary, compaction.tokensBefore, compaction.timestamp));
 
 		// Emit kept messages (before compaction, starting from firstKeptEntryId)
 		let foundFirstKept = false;
@@ -463,11 +500,10 @@ export function buildSessionContext(
 
 		// Emit messages after compaction
 		for (let i = compactionIdx + 1; i < path.length; i++) {
-			const entry = path[i];
-			appendMessage(entry);
+			appendMessage(path[i]);
 		}
 	} else {
-		// No compaction - emit all messages, handle branch summaries and custom messages
+		// No compaction or checkpoint - emit all messages
 		for (const entry of path) {
 			appendMessage(entry);
 		}
