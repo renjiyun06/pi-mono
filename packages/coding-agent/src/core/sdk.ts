@@ -339,7 +339,8 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 				result = await runner.emitContext(result);
 			}
 
-			const systemContext = buildSystemContext();
+			const extensionProviders = runner?.getContextProviders();
+			const systemContext = buildSystemContext(extensionProviders);
 			if (systemContext) {
 				result = [
 					...result,

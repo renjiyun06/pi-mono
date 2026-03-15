@@ -26,7 +26,7 @@ import * as _bundledPiCodingAgent from "../../index.js";
 import { createEventBus, type EventBus } from "../event-bus.js";
 import type { ExecOptions } from "../exec.js";
 import { execCommand } from "../exec.js";
-import { registerSystemContextProvider, unregisterSystemContextProvider } from "../system-context.js";
+
 import type {
 	Extension,
 	ExtensionAPI,
@@ -280,11 +280,14 @@ function createExtensionAPI(
 		},
 
 		registerContextProvider(provider) {
-			registerSystemContextProvider(provider);
+			extension.contextProviders.push(provider);
 		},
 
 		unregisterContextProvider(provider) {
-			unregisterSystemContextProvider(provider);
+			const index = extension.contextProviders.indexOf(provider);
+			if (index !== -1) {
+				extension.contextProviders.splice(index, 1);
+			}
 		},
 
 		events: eventBus,
@@ -320,6 +323,7 @@ function createExtension(extensionPath: string, resolvedPath: string): Extension
 		commands: new Map(),
 		flags: new Map(),
 		shortcuts: new Map(),
+		contextProviders: [],
 	};
 }
 

@@ -34,13 +34,15 @@ export function unregisterSystemContextProvider(provider: SystemContextProvider)
 
 /**
  * Build the system context message text from all registered providers.
+ * Optionally accepts additional providers (e.g. from extensions).
  * Returns undefined if no providers contribute any content.
  */
-export function buildSystemContext(): string | undefined {
+export function buildSystemContext(extraProviders?: SystemContextProvider[]): string | undefined {
 	const statuses: string[] = [];
 	const reminders: string[] = [];
 
-	for (const p of providers) {
+	const allProviders = extraProviders ? [...providers, ...extraProviders] : providers;
+	for (const p of allProviders) {
 		const s = p.getStatus?.();
 		if (s) statuses.push(...s);
 		const r = p.getReminders?.();

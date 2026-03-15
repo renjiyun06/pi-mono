@@ -1417,6 +1417,7 @@ export interface Extension {
 	commands: Map<string, RegisteredCommand>;
 	flags: Map<string, ExtensionFlag>;
 	shortcuts: Map<KeyId, ExtensionShortcut>;
+	contextProviders: SystemContextProvider[];
 }
 
 /** Result of loading extensions. */

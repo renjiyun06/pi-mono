@@ -310,6 +310,15 @@ export class ExtensionRunner {
 	}
 
 	/** Get all registered tools from all extensions (first registration per name wins). */
+	/** Get all context providers from all extensions. */
+	getContextProviders(): import("../system-context.js").SystemContextProvider[] {
+		const providers: import("../system-context.js").SystemContextProvider[] = [];
+		for (const ext of this.extensions) {
+			providers.push(...ext.contextProviders);
+		}
+		return providers;
+	}
+
 	getAllRegisteredTools(): RegisteredTool[] {
 		const toolsByName = new Map<string, RegisteredTool>();
 		for (const ext of this.extensions) {
