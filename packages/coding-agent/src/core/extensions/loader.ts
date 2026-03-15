@@ -26,6 +26,7 @@ import * as _bundledPiCodingAgent from "../../index.js";
 import { createEventBus, type EventBus } from "../event-bus.js";
 import type { ExecOptions } from "../exec.js";
 import { execCommand } from "../exec.js";
+import { registerSystemContextProvider, unregisterSystemContextProvider } from "../system-context.js";
 import type {
 	Extension,
 	ExtensionAPI,
@@ -276,6 +277,14 @@ function createExtensionAPI(
 
 		unregisterProvider(name: string) {
 			runtime.unregisterProvider(name);
+		},
+
+		registerContextProvider(provider) {
+			registerSystemContextProvider(provider);
+		},
+
+		unregisterContextProvider(provider) {
+			unregisterSystemContextProvider(provider);
 		},
 
 		events: eventBus,

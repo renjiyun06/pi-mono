@@ -13,6 +13,7 @@ import type { ResourceLoader } from "./resource-loader.js";
 import { DefaultResourceLoader } from "./resource-loader.js";
 import { SessionManager } from "./session-manager.js";
 import { SettingsManager } from "./settings-manager.js";
+import { buildSystemContext, registerSystemContextProvider } from "./system-context.js";
 import { time } from "./timings.js";
 import type { BranchState } from "./tools/branch.js";
 import {
@@ -295,6 +296,26 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 	const extensionRunnerRef: { current?: ExtensionRunner } = {};
 	const branchStateRef: { current?: BranchState } = {};
 
+	// Register current time as a system context provider
+	registerSystemContextProvider({
+		getStatus() {
+			const now = new Date();
+			const pad = (n: number) => String(n).padStart(2, "0");
+			const time = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+			return [`Time: ${time}`];
+		},
+	});
+
+	// Register branch state as a system context provider
+	registerSystemContextProvider({
+		getStatus() {
+			const bs = branchStateRef.current;
+			if (!bs || bs.stack.length === 0) return undefined;
+			const path = bs.stack.map((f) => `"${f.title}"`).join(" > ");
+			return [`Branch: depth ${bs.stack.length}, path: ${path}. Use branch-status tool for full details.`];
+		},
+	});
+
 	agent = new Agent({
 		initialState: {
 			systemPrompt: "",
@@ -318,9 +339,8 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 				result = await runner.emitContext(result);
 			}
 
-			const bs = branchStateRef.current;
-			if (bs && bs.stack.length > 0) {
-				const path = bs.stack.map((f) => `"${f.title}"`).join(" > ");
+			const systemContext = buildSystemContext();
+			if (systemContext) {
 				result = [
 					...result,
 					{
@@ -328,7 +348,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 						content: [
 							{
 								type: "text" as const,
-								text: `[System] You are currently inside a branch. Depth: ${bs.stack.length}, path: ${path}. This is an automatic reminder injected by the system, not a user message. If you need full details about the branch stack, use the branch-status tool.`,
+								text: systemContext,
 							},
 						],
 						timestamp: Date.now(),

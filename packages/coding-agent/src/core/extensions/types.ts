@@ -56,6 +56,7 @@ import type {
 	SessionManager,
 } from "../session-manager.js";
 import type { SlashCommandInfo } from "../slash-commands.js";
+import type { SystemContextProvider } from "../system-context.js";
 import type { BashOperations } from "../tools/bash.js";
 import type { EditToolDetails } from "../tools/edit.js";
 import type {
@@ -1172,6 +1173,31 @@ export interface ExtensionAPI {
 	 * pi.unregisterProvider("my-proxy");
 	 */
 	unregisterProvider(name: string): void;
+
+	// =========================================================================
+	// System Context
+	// =========================================================================
+
+	/**
+	 * Register a system context provider.
+	 *
+	 * Providers contribute status items (objective facts) and/or reminders (guidance)
+	 * that are injected into the LLM context before each call.
+	 *
+	 * @example
+	 * pi.registerContextProvider({
+	 *   getStatus() {
+	 *     return ["Deployment: staging"];
+	 *   },
+	 *   getReminders() {
+	 *     return ["Check test results before committing"];
+	 *   },
+	 * });
+	 */
+	registerContextProvider(provider: SystemContextProvider): void;
+
+	/** Unregister a previously registered system context provider. */
+	unregisterContextProvider(provider: SystemContextProvider): void;
 
 	/** Shared event bus for extension communication. */
 	events: EventBus;
