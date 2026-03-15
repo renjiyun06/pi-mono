@@ -4,6 +4,7 @@ import type { Message, Model } from "@mariozechner/pi-ai";
 import { getAgentDir, getDocsPath } from "../config.js";
 import { AgentSession } from "./agent-session.js";
 import { AuthStorage } from "./auth-storage.js";
+import { AUTONOMOUS_CONTEXT_THRESHOLD } from "./autonomous.js";
 import { DEFAULT_THINKING_LEVEL } from "./defaults.js";
 import type { ExtensionRunner, LoadExtensionsResult, ToolDefinition } from "./extensions/index.js";
 import { convertToLlm } from "./messages.js";
@@ -368,6 +369,22 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 			}
 
 			return result;
+		},
+		onBeforeSteering: async () => {
+			const session = sessionRef.current;
+			if (session?.autonomousState === "working") {
+				const usage = session.getContextUsage();
+				if (
+					usage?.percent !== null &&
+					usage?.percent !== undefined &&
+					usage.percent >= AUTONOMOUS_CONTEXT_THRESHOLD * 100
+				) {
+					session.setAutonomousState("wrapping-up");
+					await session.steer(
+						"[System - Autonomous Mode] Context usage has reached the threshold. Wrap up your current work: commit code, write to memory, then call the checkpoint tool to save your progress.",
+					);
+				}
+			}
 		},
 		onBeforeIdle: () => {
 			const session = sessionRef.current;

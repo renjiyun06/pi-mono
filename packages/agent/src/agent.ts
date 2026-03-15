@@ -99,6 +99,13 @@ export interface AgentOptions {
 	maxRetryDelayMs?: number;
 
 	/**
+	 * Called before polling the steering queue (after each tool execution).
+	 * Use this to dynamically inject steering messages based on runtime conditions
+	 * (e.g., context threshold checks in autonomous mode).
+	 */
+	onBeforeSteering?: () => void | Promise<void>;
+
+	/**
 	 * Called when the agent is about to become idle (no queued follow-up messages).
 	 * Return messages to keep the agent running, or an empty array to let it stop.
 	 * Use this for autonomous mode or other continuous operation patterns.
@@ -136,6 +143,7 @@ export class Agent {
 	private _thinkingBudgets?: ThinkingBudgets;
 	private _transport: Transport;
 	private _maxRetryDelayMs?: number;
+	private _onBeforeSteering?: () => void | Promise<void>;
 	private _onBeforeIdle?: () => AgentMessage[] | Promise<AgentMessage[]>;
 
 	constructor(opts: AgentOptions = {}) {
@@ -151,6 +159,7 @@ export class Agent {
 		this._thinkingBudgets = opts.thinkingBudgets;
 		this._transport = opts.transport ?? "sse";
 		this._maxRetryDelayMs = opts.maxRetryDelayMs;
+		this._onBeforeSteering = opts.onBeforeSteering;
 		this._onBeforeIdle = opts.onBeforeIdle;
 	}
 
@@ -471,6 +480,7 @@ export class Agent {
 					skipInitialSteeringPoll = false;
 					return [];
 				}
+				await this._onBeforeSteering?.();
 				return this.dequeueSteeringMessages();
 			},
 			getFollowUpMessages: async () => {
