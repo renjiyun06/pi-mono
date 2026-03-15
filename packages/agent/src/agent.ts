@@ -97,6 +97,13 @@ export interface AgentOptions {
 	 * Default: 60000 (60 seconds). Set to 0 to disable the cap.
 	 */
 	maxRetryDelayMs?: number;
+
+	/**
+	 * Called when the agent is about to become idle (no queued follow-up messages).
+	 * Return messages to keep the agent running, or an empty array to let it stop.
+	 * Use this for autonomous mode or other continuous operation patterns.
+	 */
+	onBeforeIdle?: () => AgentMessage[] | Promise<AgentMessage[]>;
 }
 
 export class Agent {
@@ -129,6 +136,7 @@ export class Agent {
 	private _thinkingBudgets?: ThinkingBudgets;
 	private _transport: Transport;
 	private _maxRetryDelayMs?: number;
+	private _onBeforeIdle?: () => AgentMessage[] | Promise<AgentMessage[]>;
 
 	constructor(opts: AgentOptions = {}) {
 		this._state = { ...this._state, ...opts.initialState };
@@ -143,6 +151,7 @@ export class Agent {
 		this._thinkingBudgets = opts.thinkingBudgets;
 		this._transport = opts.transport ?? "sse";
 		this._maxRetryDelayMs = opts.maxRetryDelayMs;
+		this._onBeforeIdle = opts.onBeforeIdle;
 	}
 
 	/**
@@ -464,7 +473,11 @@ export class Agent {
 				}
 				return this.dequeueSteeringMessages();
 			},
-			getFollowUpMessages: async () => this.dequeueFollowUpMessages(),
+			getFollowUpMessages: async () => {
+				const queued = this.dequeueFollowUpMessages();
+				if (queued.length > 0) return queued;
+				return (await this._onBeforeIdle?.()) || [];
+			},
 		};
 
 		let partial: AgentMessage | null = null;

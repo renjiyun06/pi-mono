@@ -369,6 +369,19 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 
 			return result;
 		},
+		onBeforeIdle: () => {
+			const session = sessionRef.current;
+			if (session?.autonomousState === "working") {
+				return [
+					{
+						role: "user" as const,
+						content: [{ type: "text" as const, text: "[System - Autonomous Mode] continue" }],
+						timestamp: Date.now(),
+					},
+				];
+			}
+			return [];
+		},
 		steeringMode: settingsManager.getSteeringMode(),
 		followUpMode: settingsManager.getFollowUpMode(),
 		transport: settingsManager.getTransport(),
