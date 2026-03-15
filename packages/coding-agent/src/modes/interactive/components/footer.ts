@@ -200,8 +200,9 @@ export class FooterComponent implements Component {
 		// Build first line: pwd on left, branch indicator on right
 		const branchStack = this.session.branchState.stack;
 		const autoConfirmLabel = this.session.autoConfirmReturn ? "auto-confirm:on" : "auto-confirm:off";
+		const autonomousLabel = `auto:${this.session.autonomousState}`;
 		const branchName = branchStack.length > 0 ? branchStack[branchStack.length - 1].title : "main";
-		const branchLabel = `branch:[${branchName}] ${autoConfirmLabel}`;
+		const branchLabel = `branch:[${branchName}] ${autoConfirmLabel} ${autonomousLabel}`;
 		const dimBranchLabel = theme.fg("dim", branchLabel);
 		const branchLabelWidth = visibleWidth(branchLabel);
 		const pwdWidth = visibleWidth(pwd);

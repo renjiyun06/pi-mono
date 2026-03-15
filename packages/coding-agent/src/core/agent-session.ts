@@ -30,6 +30,8 @@ import { getDocsPath } from "../config.js";
 import { theme } from "../modes/interactive/theme/theme.js";
 import { stripFrontmatter } from "../utils/frontmatter.js";
 import { sleep } from "../utils/sleep.js";
+import type { AutonomousState } from "./autonomous.js";
+import { AUTONOMOUS_CONTEXT_THRESHOLD } from "./autonomous.js";
 import { type BashResult, executeBash as executeBashCommand, executeBashWithOperations } from "./bash-executor.js";
 import {
 	type CompactionResult,
@@ -279,6 +281,7 @@ export class AgentSession {
 	// Base system prompt (without extension appends) - used to apply fresh appends each turn
 	private _branchState: BranchState = { stack: [] };
 	private _autoConfirmReturn = true;
+	private _autonomousState: AutonomousState = "off";
 	private _baseSystemPrompt = "";
 
 	constructor(config: AgentSessionConfig) {
@@ -753,6 +756,29 @@ export class AgentSession {
 
 	set autoConfirmReturn(value: boolean) {
 		this._autoConfirmReturn = value;
+	}
+
+	get autonomousState(): AutonomousState {
+		return this._autonomousState;
+	}
+
+	setAutonomousState(state: AutonomousState): { ok: boolean; error?: string } {
+		if (state !== "off" && this._autonomousState === "off") {
+			// Turning on - check conditions
+			if (this.isStreaming) {
+				return { ok: false, error: "Cannot enter autonomous mode: agent is busy" };
+			}
+			const usage = this.getContextUsage();
+			if (
+				usage?.percent !== null &&
+				usage?.percent !== undefined &&
+				usage.percent >= AUTONOMOUS_CONTEXT_THRESHOLD * 100
+			) {
+				return { ok: false, error: "Cannot enter autonomous mode: context usage too high, compact first" };
+			}
+		}
+		this._autonomousState = state;
+		return { ok: true };
 	}
 
 	/**

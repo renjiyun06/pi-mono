@@ -2023,6 +2023,20 @@ export class InteractiveMode {
 				this.ui.requestRender();
 				return;
 			}
+			if (text === "/autonomous") {
+				this.editor.setText("");
+				if (this.session.autonomousState !== "off") {
+					this.session.setAutonomousState("off");
+				} else {
+					const result = this.session.setAutonomousState("working");
+					if (!result.ok) {
+						this.showWarning(result.error!);
+						return;
+					}
+				}
+				this.ui.requestRender();
+				return;
+			}
 			if (text === "/compact" || text.startsWith("/compact ")) {
 				const customInstructions = text.startsWith("/compact ") ? text.slice(9).trim() : undefined;
 				this.editor.setText("");
