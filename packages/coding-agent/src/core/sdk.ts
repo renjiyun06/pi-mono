@@ -14,6 +14,7 @@ import { DefaultResourceLoader } from "./resource-loader.js";
 import { SessionManager } from "./session-manager.js";
 import { SettingsManager } from "./settings-manager.js";
 import { time } from "./timings.js";
+import type { BranchState } from "./tools/branch.js";
 import {
 	allTools,
 	bashTool,
@@ -283,6 +284,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 	};
 
 	const extensionRunnerRef: { current?: ExtensionRunner } = {};
+	const branchStateRef: { current?: BranchState } = {};
 
 	agent = new Agent({
 		initialState: {
@@ -301,9 +303,31 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 		},
 		sessionId: sessionManager.getSessionId(),
 		transformContext: async (messages) => {
+			let result = messages;
 			const runner = extensionRunnerRef.current;
-			if (!runner) return messages;
-			return runner.emitContext(messages);
+			if (runner) {
+				result = await runner.emitContext(result);
+			}
+
+			const bs = branchStateRef.current;
+			if (bs && bs.stack.length > 0) {
+				const path = bs.stack.map((f) => `"${f.title}"`).join(" > ");
+				result = [
+					...result,
+					{
+						role: "user" as const,
+						content: [
+							{
+								type: "text" as const,
+								text: `[System] You are currently inside a branch. Depth: ${bs.stack.length}, path: ${path}. This is an automatic reminder injected by the system, not a user message. If you need full details about the branch stack, use the branch-status tool.`,
+							},
+						],
+						timestamp: Date.now(),
+					},
+				];
+			}
+
+			return result;
 		},
 		steeringMode: settingsManager.getSteeringMode(),
 		followUpMode: settingsManager.getFollowUpMode(),
@@ -363,6 +387,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 		initialActiveToolNames,
 		extensionRunnerRef,
 	});
+	branchStateRef.current = session.branchState;
 	const extensionsResult = resourceLoader.getExtensions();
 
 	return {
