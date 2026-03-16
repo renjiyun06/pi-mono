@@ -23,7 +23,15 @@ import type {
 	AgentTool,
 	ThinkingLevel,
 } from "@mariozechner/pi-agent-core";
-import type { AssistantMessage, ImageContent, Message, Model, TextContent } from "@mariozechner/pi-ai";
+import type {
+	AssistantMessage,
+	ImageContent,
+	Message,
+	Model,
+	TextContent,
+	ToolCall,
+	ToolResultMessage,
+} from "@mariozechner/pi-ai";
 import { isContextOverflow, modelsAreEqual, resetApiProviders, supportsXhigh } from "@mariozechner/pi-ai";
 import { getLogger } from "@mariozechner/pi-logger";
 import { getDocsPath } from "../config.js";
@@ -3166,6 +3174,34 @@ export class AgentSession {
 
 			if (!hasPostCompactionUsage) {
 				return { tokens: null, contextWindow, percent: null };
+			}
+		}
+
+		// After checkpoint, the kept assistant message carries pre-checkpoint usage
+		// which no longer reflects the actual (nearly empty) context. Same logic as
+		// compaction: treat usage as unknown until the next LLM response.
+		const messages = this.messages;
+		let lastAssistant: AssistantMessage | undefined;
+		for (let i = messages.length - 1; i >= 0; i--) {
+			if (messages[i].role === "assistant") {
+				lastAssistant = messages[i] as AssistantMessage;
+				break;
+			}
+		}
+		if (lastAssistant) {
+			const checkpointCall = lastAssistant.content.find((c) => c.type === "toolCall" && c.name === "checkpoint") as
+				| ToolCall
+				| undefined;
+			if (checkpointCall) {
+				const hasSuccessfulResult = messages.some(
+					(m) =>
+						m.role === "toolResult" &&
+						(m as ToolResultMessage).toolCallId === checkpointCall.id &&
+						!(m as ToolResultMessage).isError,
+				);
+				if (hasSuccessfulResult) {
+					return { tokens: null, contextWindow, percent: null };
+				}
 			}
 		}
 
