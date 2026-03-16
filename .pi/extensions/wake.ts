@@ -28,7 +28,7 @@ export default function (pi: ExtensionAPI) {
 
 		const entries = ctx.sessionManager.getBranch();
 
-		// Scan from tail: wake found → skip, compaction found → need wake, neither → need wake
+		// Scan from tail: wake found → skip, compaction/checkpoint found → need wake, neither → need wake
 		let needsWake = true;
 		for (let i = entries.length - 1; i >= 0; i--) {
 			const e = entries[i];
@@ -39,6 +39,26 @@ export default function (pi: ExtensionAPI) {
 			if (e.type === "compaction") {
 				needsWake = true;
 				break;
+			}
+			// Detect successful checkpoint: assistant message with a checkpoint tool call
+			// that has a matching non-error tool result
+			if (e.type === "message" && e.message.role === "assistant") {
+				const checkpointCall = (e.message.content as any[]).find(
+					(c: any) => c.type === "toolCall" && c.name === "checkpoint",
+				);
+				if (checkpointCall) {
+					const hasSuccessfulResult = entries.some(
+						(r) =>
+							r.type === "message" &&
+							r.message.role === "toolResult" &&
+							(r.message as any).toolCallId === checkpointCall.id &&
+							!(r.message as any).isError,
+					);
+					if (hasSuccessfulResult) {
+						needsWake = true;
+						break;
+					}
+				}
 			}
 		}
 
