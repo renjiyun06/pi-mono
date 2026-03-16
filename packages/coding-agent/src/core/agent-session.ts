@@ -1852,6 +1852,12 @@ export class AgentSession {
 			"Checkpoint: cleared context, kept checkpoint call and result",
 		);
 
+		// If in autonomous mode, transition back to working for the next cycle
+		if (this._autonomousState !== "off") {
+			this._autonomousState = "working";
+			log.info("Autonomous mode: checkpoint complete, transitioning back to working");
+		}
+
 		return true;
 	}
 
