@@ -1858,10 +1858,25 @@ export class AgentSession {
 			"Checkpoint: cleared context, kept checkpoint call and result",
 		);
 
-		// If in autonomous mode, transition back to working for the next cycle
+		// If in autonomous mode, transition back to working and restart the autonomous loop
 		if (this._autonomousState === "checkpointing") {
 			this._autonomousState = "working";
 			log.info("Autonomous mode: checkpoint complete, transitioning back to working");
+
+			// Restart the agent loop with a "continue" message.
+			// After checkpoint, the loop has exited (agent_end fired), so onBeforeIdle
+			// can no longer inject messages. We need to explicitly start a new loop.
+			setTimeout(() => {
+				this.agent
+					.prompt([
+						{
+							role: "user",
+							content: [{ type: "text", text: "[System - Autonomous Mode] continue" }],
+							timestamp: Date.now(),
+						},
+					])
+					.catch(() => {});
+			}, 0);
 		}
 
 		return true;
