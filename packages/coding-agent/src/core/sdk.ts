@@ -312,7 +312,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 	registerSystemContextProvider({
 		getStatus() {
 			const state = sessionRef.current?.autonomousState;
-			if (!state || state === "off") return undefined;
+			if (!state) return undefined;
 			return [`Autonomous: ${state}`];
 		},
 	});
