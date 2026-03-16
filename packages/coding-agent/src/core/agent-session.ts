@@ -1845,6 +1845,12 @@ export class AgentSession {
 		);
 		if (!toolResult) return false;
 
+		// If in autonomous mode, transition to checkpointing before replacing messages
+		if (this._autonomousState !== "off") {
+			this._autonomousState = "checkpointing";
+			log.info("Autonomous mode: entering checkpointing state");
+		}
+
 		// Replace messages with just the checkpoint assistant message and its tool result
 		this.agent.replaceMessages([msg, toolResult as AgentMessage]);
 		log.info(
@@ -1853,7 +1859,7 @@ export class AgentSession {
 		);
 
 		// If in autonomous mode, transition back to working for the next cycle
-		if (this._autonomousState !== "off") {
+		if (this._autonomousState === "checkpointing") {
 			this._autonomousState = "working";
 			log.info("Autonomous mode: checkpoint complete, transitioning back to working");
 		}
