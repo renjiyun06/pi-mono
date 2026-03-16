@@ -1836,6 +1836,12 @@ export class InteractiveMode {
 		// Set up handlers on defaultEditor - they use this.editor for text access
 		// so they work correctly regardless of which editor is active
 		this.defaultEditor.onEscape = () => {
+			if (this.session.autonomousState !== "off" && this.session.autonomousState !== "checkpointing") {
+				this.session.setAutonomousState("off");
+				this.restoreQueuedMessagesToEditor({ abort: true });
+				this.ui.requestRender();
+				return;
+			}
 			if (this.loadingAnimation) {
 				this.restoreQueuedMessagesToEditor({ abort: true });
 			} else if (this.session.isBashRunning) {
@@ -2025,9 +2031,10 @@ export class InteractiveMode {
 			}
 			if (text === "/autonomous") {
 				this.editor.setText("");
-				if (this.session.autonomousState !== "off") {
+				if (this.session.autonomousState !== "off" && this.session.autonomousState !== "checkpointing") {
 					this.session.setAutonomousState("off");
-				} else {
+					this.agent.abort();
+				} else if (this.session.autonomousState === "off") {
 					const result = this.session.setAutonomousState("working");
 					if (!result.ok) {
 						this.showWarning(result.error!);
