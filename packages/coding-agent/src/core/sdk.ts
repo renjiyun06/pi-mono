@@ -372,7 +372,14 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 		},
 		onBeforeSteering: async () => {
 			const session = sessionRef.current;
-			if (session?.autonomousState === "working") {
+			if (!session) return;
+
+			// Don't inject messages if there's a pending branch return.
+			// Let the agent exit so agent_end fires and auto-confirm processes the return.
+			const stack = session.branchState.stack;
+			if (stack.length > 0 && stack[stack.length - 1].pendingReturn) return;
+
+			if (session.autonomousState === "working") {
 				const usage = session.getContextUsage();
 				if (
 					usage?.percent !== null &&
@@ -388,7 +395,14 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 		},
 		onBeforeIdle: () => {
 			const session = sessionRef.current;
-			if (session?.autonomousState === "working") {
+			if (!session) return [];
+
+			// Don't inject messages if there's a pending branch return.
+			// Let the agent exit so agent_end fires and auto-confirm processes the return.
+			const stack = session.branchState.stack;
+			if (stack.length > 0 && stack[stack.length - 1].pendingReturn) return [];
+
+			if (session.autonomousState === "working") {
 				return [
 					{
 						role: "user" as const,
