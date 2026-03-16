@@ -2109,6 +2109,11 @@ export class InteractiveMode {
 			// If streaming, use prompt() with steer behavior
 			// This handles extension commands (execute immediately), prompt template expansion, and queueing
 			if (this.session.isStreaming) {
+				// User message during autonomous mode exits autonomous mode (except during checkpointing)
+				const autoState = this.session.autonomousState;
+				if (autoState !== "off" && autoState !== "checkpointing") {
+					this.session.setAutonomousState("off");
+				}
 				this.editor.addToHistory?.(text);
 				this.editor.setText("");
 				await this.session.prompt(text, { streamingBehavior: "steer" });
