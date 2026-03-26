@@ -1,6 +1,6 @@
 import { join } from "node:path";
 import { Agent, type AgentMessage, type ThinkingLevel } from "@mariozechner/pi-agent-core";
-import type { Message, Model } from "@mariozechner/pi-ai";
+import type { Message, Model, ToolResultMessage } from "@mariozechner/pi-ai";
 import { getAgentDir, getDocsPath } from "../config.js";
 import { AgentSession } from "./agent-session.js";
 import { AuthStorage } from "./auth-storage.js";
@@ -11,7 +11,7 @@ import { ModelRegistry } from "./model-registry.js";
 import { findInitialModel } from "./model-resolver.js";
 import type { ResourceLoader } from "./resource-loader.js";
 import { DefaultResourceLoader } from "./resource-loader.js";
-import { getDefaultSessionDir, SessionManager } from "./session-manager.js";
+import { getDefaultSessionDir, SessionManager, type SessionMessageEntry } from "./session-manager.js";
 import { SettingsManager } from "./settings-manager.js";
 import { time } from "./timings.js";
 import {
@@ -239,7 +239,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 		thinkingLevel = "off";
 	}
 
-	const defaultActiveToolNames: ToolName[] = ["read", "bash", "edit", "write"];
+	const defaultActiveToolNames: ToolName[] = ["read", "bash", "edit", "write", "branch", "return", "reenter"];
 	const initialActiveToolNames: ToolName[] = options.tools
 		? options.tools.map((t) => t.name).filter((n): n is ToolName => n in allTools)
 		: defaultActiveToolNames;
@@ -284,6 +284,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 	};
 
 	const extensionRunnerRef: { current?: ExtensionRunner } = {};
+	const agentSessionRef: { current?: AgentSession } = {};
 
 	agent = new Agent({
 		initialState: {
@@ -311,6 +312,146 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 		transport: settingsManager.getTransport(),
 		thinkingBudgets: settingsManager.getThinkingBudgets(),
 		maxRetryDelayMs: settingsManager.getRetrySettings().maxDelayMs,
+		flushEvents: async () => {
+			await agentSessionRef.current?.flushEventQueue();
+		},
+		onBranchReenter: async (branchId, instruction, toolCallId) => {
+			// The current leafId points to the last entry in the calling context.
+			// This is the return point — where we'll come back to when the branch returns.
+			const returnEntryId = sessionManager.getLeafId();
+
+			// Find the branch tool result entry (the branch's entry point) by branchId
+			const entries = sessionManager.getEntries();
+			const branchEntry = entries.find(
+				(e) =>
+					e.type === "message" &&
+					e.message.role === "toolResult" &&
+					e.message.toolName === "branch" &&
+					(e.message as ToolResultMessage).details?.branchId === branchId,
+			);
+			if (!branchEntry) return undefined;
+
+			// Walk the tree from branch entry to find the actual latest leaf.
+			// At each node: if multiple children, skip branch first returns
+			// (sub-branch entries that have branchId but no branchLeafId).
+			let leafId = branchEntry.id;
+			while (true) {
+				const children = sessionManager.getChildren(leafId);
+				if (children.length === 0) break;
+				if (children.length === 1) {
+					leafId = children[0].id;
+				} else {
+					// Multiple children — skip sub-branch entry points (first returns)
+					const nonSubBranch = children.filter((c) => {
+						if (
+							c.type === "message" &&
+							c.message.role === "toolResult" &&
+							c.message.toolName === "branch" &&
+							(c.message as ToolResultMessage).details?.branchId &&
+							!(c.message as ToolResultMessage).details?.branchLeafId
+						) {
+							return false; // This is a sub-branch first return, skip it
+						}
+						return true;
+					});
+					// Follow the last remaining child (most recent path)
+					leafId = (
+						nonSubBranch.length > 0 ? nonSubBranch[nonSubBranch.length - 1] : children[children.length - 1]
+					).id;
+				}
+			}
+
+			// Move leafId to the branch's actual latest position
+			sessionManager.branch(leafId);
+
+			// Append re-entry notification as custom message with return point in details
+			sessionManager.appendCustomMessageEntry(
+				"branch_reentry",
+				`Branch re-entered. New instruction: ${instruction}`,
+				false,
+				{ returnEntryId, toolCallId },
+			);
+
+			// Rebuild and return the message sequence, sync agent state
+			const context = sessionManager.buildSessionContext();
+			agent.replaceMessages(context.messages);
+			return context.messages;
+		},
+		onBranchReturn: async (value) => {
+			// Find the current branch by walking the session path from leaf to root.
+			// Look for the branch tool result entry (the entry point of this branch).
+			const branch = sessionManager.getBranch();
+			let branchEntry: SessionMessageEntry | null = null;
+			let lastReentryDetails: { returnEntryId: string; toolCallId: string } | null = null;
+
+			// Walk from leaf toward root, looking for branch entry point and reentry markers
+			for (let i = branch.length - 1; i >= 0; i--) {
+				const entry = branch[i];
+
+				// Check for branch_reentry custom message (most recent reenter)
+				if (
+					!lastReentryDetails &&
+					entry.type === "custom_message" &&
+					entry.customType === "branch_reentry" &&
+					entry.details
+				) {
+					lastReentryDetails = entry.details as { returnEntryId: string; toolCallId: string };
+				}
+
+				// Check for the original branch tool result (first return only — no branchLeafId).
+				// Skip second returns (completed sub-branches) which have branchLeafId.
+				if (
+					entry.type === "message" &&
+					entry.message.role === "toolResult" &&
+					entry.message.toolName === "branch" &&
+					(entry.message as ToolResultMessage).details?.branchId &&
+					!(entry.message as ToolResultMessage).details?.branchLeafId
+				) {
+					branchEntry = entry as SessionMessageEntry;
+					break;
+				}
+			}
+
+			if (!branchEntry) return undefined;
+
+			const branchId = (branchEntry.message as ToolResultMessage).details?.branchId as string;
+
+			// Determine the return point
+			let returnPointId: string;
+			if (lastReentryDetails?.returnEntryId) {
+				// Entered via reenter — return to the reenter call site
+				returnPointId = lastReentryDetails.returnEntryId;
+			} else {
+				// Entered via original branch — return to the parent of the branch tool result
+				if (!branchEntry.parentId) return undefined;
+				returnPointId = branchEntry.parentId;
+			}
+
+			// Record the current branch leaf before switching (for future reenter)
+			const branchLeafId = sessionManager.getLeafId();
+
+			// Move leaf to the return point
+			sessionManager.branch(returnPointId);
+
+			// Write the return value as the branch/reenter tool result
+			// This tool result pairs with the original branch or reenter tool call
+			const toolCallId = lastReentryDetails?.toolCallId ?? (branchEntry.message as ToolResultMessage).toolCallId;
+
+			sessionManager.appendMessage({
+				role: "toolResult",
+				toolCallId,
+				toolName: lastReentryDetails ? "reenter" : "branch",
+				content: [{ type: "text", text: `[branch ${branchId} returned] ${value}` }],
+				details: { branchId, branchLeafId },
+				isError: false,
+				timestamp: Date.now(),
+			} as ToolResultMessage);
+
+			// Rebuild and return the calling context's message sequence, sync agent state
+			const context = sessionManager.buildSessionContext();
+			agent.replaceMessages(context.messages);
+			return { messages: context.messages, branchId };
+		},
 		getApiKey: async (provider) => {
 			// Use the provider argument from the in-flight request;
 			// agent.state.model may already be switched mid-turn.
@@ -364,6 +505,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 		initialActiveToolNames,
 		extensionRunnerRef,
 	});
+	agentSessionRef.current = session;
 	const extensionsResult = resourceLoader.getExtensions();
 
 	return {

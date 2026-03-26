@@ -211,6 +211,38 @@ export interface AgentLoopConfig extends SimpleStreamOptions {
 	 * The hook receives the agent abort signal and is responsible for honoring it.
 	 */
 	afterToolCall?: (context: AfterToolCallContext, signal?: AbortSignal) => Promise<AfterToolCallResult | undefined>;
+
+	/**
+	 * Flush pending events before branch context switches.
+	 * Called before onBranchReenter/onBranchReturn to ensure all queued events
+	 * (e.g., message persistence) have been processed before the session state changes.
+	 */
+	flushEvents?: () => Promise<void>;
+
+	/**
+	 * Called when the agent invokes the reenter tool to re-enter an existing branch.
+	 *
+	 * The implementation should:
+	 * 1. Find the target branch's leaf in the session tree using branchId
+	 * 2. Append a re-entry notification message (e.g., custom message type)
+	 * 3. Rebuild and return the message sequence for the target branch context
+	 *
+	 * Returns the rebuilt messages for the branch context, or undefined if the branch was not found.
+	 */
+	onBranchReenter?: (branchId: string, instruction: string, toolCallId: string) => Promise<AgentMessage[] | undefined>;
+
+	/**
+	 * Called when the agent invokes the return tool to yield a value from the current branch.
+	 *
+	 * The implementation should:
+	 * 1. Determine which branch we're in and where to return to
+	 * 2. Move the session leaf to the return point
+	 * 3. Write the return value as the branch/reenter tool result in the calling context
+	 * 4. Rebuild and return the calling context's message sequence
+	 *
+	 * Returns the rebuilt messages and branchId, or undefined if not in a branch.
+	 */
+	onBranchReturn?: (value: string) => Promise<{ messages: AgentMessage[]; branchId: string } | undefined>;
 }
 
 /**
@@ -307,4 +339,9 @@ export type AgentEvent =
 	// Tool execution lifecycle
 	| { type: "tool_execution_start"; toolCallId: string; toolName: string; args: any }
 	| { type: "tool_execution_update"; toolCallId: string; toolName: string; args: any; partialResult: any }
-	| { type: "tool_execution_end"; toolCallId: string; toolName: string; result: any; isError: boolean };
+	| { type: "tool_execution_end"; toolCallId: string; toolName: string; result: any; isError: boolean }
+	// Branch lifecycle
+	| { type: "branch_enter"; branchId: string; isNew: boolean; instruction: string }
+	| { type: "branch_return_proposed"; branchId: string; value: string }
+	| { type: "branch_return_confirmed"; branchId: string; value: string }
+	| { type: "branch_result"; branchId: string; value: string };

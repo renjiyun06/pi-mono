@@ -1295,6 +1295,14 @@ export class AgentSession {
 	}
 
 	/**
+	 * Wait for all pending agent events to be processed.
+	 * Used before branch context switches to ensure session persistence is complete.
+	 */
+	async flushEventQueue(): Promise<void> {
+		await this._agentEventQueue;
+	}
+
+	/**
 	 * Abort current operation and wait for agent to become idle.
 	 */
 	async abort(): Promise<void> {

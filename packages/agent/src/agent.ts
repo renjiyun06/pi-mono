@@ -111,6 +111,15 @@ export interface AgentOptions {
 
 	/** Called after a tool finishes executing, before final tool events are emitted. */
 	afterToolCall?: (context: AfterToolCallContext, signal?: AbortSignal) => Promise<AfterToolCallResult | undefined>;
+
+	/** Flush pending events before branch context switches. */
+	flushEvents?: () => Promise<void>;
+
+	/** Called when the agent invokes the reenter tool to re-enter an existing branch. */
+	onBranchReenter?: (branchId: string, instruction: string, toolCallId: string) => Promise<AgentMessage[] | undefined>;
+
+	/** Called when the agent invokes the return tool to yield a value from the current branch. */
+	onBranchReturn?: (value: string) => Promise<{ messages: AgentMessage[]; branchId: string } | undefined>;
 }
 
 export class Agent {
@@ -152,6 +161,13 @@ export class Agent {
 		context: AfterToolCallContext,
 		signal?: AbortSignal,
 	) => Promise<AfterToolCallResult | undefined>;
+	private _flushEvents?: () => Promise<void>;
+	private _onBranchReenter?: (
+		branchId: string,
+		instruction: string,
+		toolCallId: string,
+	) => Promise<AgentMessage[] | undefined>;
+	private _onBranchReturn?: (value: string) => Promise<{ messages: AgentMessage[]; branchId: string } | undefined>;
 
 	constructor(opts: AgentOptions = {}) {
 		this._state = { ...this._state, ...opts.initialState };
@@ -169,6 +185,9 @@ export class Agent {
 		this._toolExecution = opts.toolExecution ?? "parallel";
 		this._beforeToolCall = opts.beforeToolCall;
 		this._afterToolCall = opts.afterToolCall;
+		this._flushEvents = opts.flushEvents;
+		this._onBranchReenter = opts.onBranchReenter;
+		this._onBranchReturn = opts.onBranchReturn;
 	}
 
 	/**
@@ -550,6 +569,9 @@ export class Agent {
 				return this.dequeueSteeringMessages();
 			},
 			getFollowUpMessages: async () => this.dequeueFollowUpMessages(),
+			flushEvents: this._flushEvents,
+			onBranchReenter: this._onBranchReenter,
+			onBranchReturn: this._onBranchReturn,
 		};
 
 		try {

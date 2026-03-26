@@ -11,6 +11,7 @@ import {
 	type ToolResultMessage,
 	validateToolArguments,
 } from "@mariozechner/pi-ai";
+import { randomUUID } from "crypto";
 import type {
 	AgentContext,
 	AgentEvent,
@@ -23,6 +24,9 @@ import type {
 } from "./types.js";
 
 export type AgentEventSink = (event: AgentEvent) => Promise<void> | void;
+
+/** Tool names that are handled directly by the agent loop, not through normal tool execution. */
+const BRANCH_TOOL_NAMES = new Set(["branch", "return", "reenter"]);
 
 /**
  * Start an agent loop with a new prompt message.
@@ -198,12 +202,81 @@ async function runLoop(
 			}
 
 			// Check for tool calls
-			const toolCalls = message.content.filter((c) => c.type === "toolCall");
+			const toolCalls = message.content.filter((c) => c.type === "toolCall") as AgentToolCall[];
 			hasMoreToolCalls = toolCalls.length > 0;
 
 			const toolResults: ToolResultMessage[] = [];
+			let pendingBranchSwitch: BranchSwitchSuccess | null = null;
+
 			if (hasMoreToolCalls) {
-				toolResults.push(...(await executeToolCalls(currentContext, message, config, signal, emit)));
+				// Check for branch/return/reenter tool calls
+				const specialToolCalls = toolCalls.filter((tc) => BRANCH_TOOL_NAMES.has(tc.name));
+
+				if (specialToolCalls.length > 0) {
+					const specialIndex = toolCalls.indexOf(specialToolCalls[0]);
+					const specialToolCall = specialToolCalls[0];
+					const normalToolCalls = toolCalls.slice(0, specialIndex);
+					const afterSpecialToolCalls = toolCalls.slice(specialIndex + 1);
+
+					if (specialToolCalls.length > 1 || afterSpecialToolCalls.length > 0) {
+						// Validation failed: multiple special tools or special tool is not last
+						if (normalToolCalls.length > 0) {
+							toolResults.push(
+								...(await executeToolCalls(currentContext, message, config, signal, emit, normalToolCalls)),
+							);
+						}
+
+						if (specialToolCalls.length > 1) {
+							for (const tc of toolCalls.slice(specialIndex)) {
+								const errorMsg = BRANCH_TOOL_NAMES.has(tc.name)
+									? "Only one branch/return/reenter tool call is allowed per message"
+									: "Cancelled: invalid branch tool call in message";
+								toolResults.push(await emitBranchErrorResult(tc, errorMsg, emit));
+							}
+						} else {
+							toolResults.push(
+								await emitBranchErrorResult(
+									specialToolCall,
+									`${specialToolCall.name} must be the last tool call in the message`,
+									emit,
+								),
+							);
+							for (const tc of afterSpecialToolCalls) {
+								toolResults.push(
+									await emitBranchErrorResult(tc, "Cancelled: preceding branch tool call was invalid", emit),
+								);
+							}
+						}
+					} else {
+						// Special tool is last and only one — valid
+						if (normalToolCalls.length > 0) {
+							toolResults.push(
+								...(await executeToolCalls(currentContext, message, config, signal, emit, normalToolCalls)),
+							);
+						}
+
+						if (specialToolCall.name === "branch") {
+							toolResults.push(await handleBranchToolCall(specialToolCall, emit));
+						} else if (specialToolCall.name === "reenter") {
+							const reenterResult = await handleReenterToolCall(specialToolCall, config, emit);
+							if (reenterResult.type === "error") {
+								toolResults.push(reenterResult.toolResult);
+							} else {
+								pendingBranchSwitch = reenterResult;
+							}
+						} else if (specialToolCall.name === "return") {
+							const returnResult = await handleReturnToolCall(specialToolCall, config, emit);
+							if (returnResult.type === "error") {
+								toolResults.push(returnResult.toolResult);
+							} else {
+								pendingBranchSwitch = returnResult;
+							}
+						}
+					}
+				} else {
+					// No special tools — normal execution
+					toolResults.push(...(await executeToolCalls(currentContext, message, config, signal, emit)));
+				}
 
 				for (const result of toolResults) {
 					currentContext.messages.push(result);
@@ -212,6 +285,39 @@ async function runLoop(
 			}
 
 			await emit({ type: "turn_end", message, toolResults });
+
+			// Context switch happens after turn_end — the old turn is cleanly closed
+			if (pendingBranchSwitch) {
+				currentContext.messages.length = 0;
+				currentContext.messages.push(...pendingBranchSwitch.messages);
+				newMessages.length = 0;
+
+				if (pendingBranchSwitch.switchType === "reenter") {
+					await emit({
+						type: "branch_enter",
+						branchId: pendingBranchSwitch.branchId,
+						isNew: false,
+						instruction: pendingBranchSwitch.value,
+					});
+				} else {
+					// return — auto-confirm
+					await emit({
+						type: "branch_return_proposed",
+						branchId: pendingBranchSwitch.branchId,
+						value: pendingBranchSwitch.value,
+					});
+					await emit({
+						type: "branch_return_confirmed",
+						branchId: pendingBranchSwitch.branchId,
+						value: pendingBranchSwitch.value,
+					});
+					await emit({
+						type: "branch_result",
+						branchId: pendingBranchSwitch.branchId,
+						value: pendingBranchSwitch.value,
+					});
+				}
+			}
 
 			pendingMessages = (await config.getSteeringMessages?.()) || [];
 		}
@@ -339,8 +445,9 @@ async function executeToolCalls(
 	config: AgentLoopConfig,
 	signal: AbortSignal | undefined,
 	emit: AgentEventSink,
+	filteredToolCalls?: AgentToolCall[],
 ): Promise<ToolResultMessage[]> {
-	const toolCalls = assistantMessage.content.filter((c) => c.type === "toolCall");
+	const toolCalls = filteredToolCalls ?? assistantMessage.content.filter((c) => c.type === "toolCall");
 	if (config.toolExecution === "sequential") {
 		return executeToolCallsSequential(currentContext, assistantMessage, toolCalls, config, signal, emit);
 	}
@@ -612,5 +719,159 @@ async function emitToolCallOutcome(
 
 	await emit({ type: "message_start", message: toolResultMessage });
 	await emit({ type: "message_end", message: toolResultMessage });
+	return toolResultMessage;
+}
+
+// =========================================================================
+// Branch tool handling
+// =========================================================================
+
+async function handleBranchToolCall(toolCall: AgentToolCall, emit: AgentEventSink): Promise<ToolResultMessage> {
+	const instruction = (toolCall.arguments as Record<string, any>)?.instruction ?? "";
+	const branchId = randomUUID().slice(0, 8);
+
+	const toolResultMessage: ToolResultMessage = {
+		role: "toolResult",
+		toolCallId: toolCall.id,
+		toolName: toolCall.name,
+		content: [{ type: "text", text: "Entered branch." }],
+		details: { branchId },
+		isError: false,
+		timestamp: Date.now(),
+	};
+
+	await emit({ type: "message_start", message: toolResultMessage });
+	await emit({ type: "message_end", message: toolResultMessage });
+	await emit({ type: "branch_enter", branchId, isNew: true, instruction });
+
+	return toolResultMessage;
+}
+
+interface BranchSwitchSuccess {
+	type: "success";
+	switchType: "reenter" | "return";
+	messages: AgentMessage[];
+	branchId: string;
+	/** For reenter: the instruction. For return: the return value. */
+	value: string;
+}
+
+interface BranchSwitchError {
+	type: "error";
+	toolResult: ToolResultMessage;
+}
+
+type BranchSwitchResult = BranchSwitchSuccess | BranchSwitchError;
+
+/**
+ * Handle reenter tool call. Returns either a success result with the new branch messages,
+ * or an error result with a ToolResultMessage to add to the current context.
+ *
+ * Does NOT switch context — the caller handles that after emitting turn_end.
+ */
+async function handleReenterToolCall(
+	toolCall: AgentToolCall,
+	config: AgentLoopConfig,
+	emit: AgentEventSink,
+): Promise<BranchSwitchResult> {
+	const args = toolCall.arguments as Record<string, any>;
+	const branchId = args?.branchId ?? "";
+	const instruction = args?.instruction ?? "";
+
+	if (!branchId) {
+		return { type: "error", toolResult: await emitBranchErrorResult(toolCall, "reenter requires a branchId", emit) };
+	}
+
+	if (!config.onBranchReenter) {
+		return {
+			type: "error",
+			toolResult: await emitBranchErrorResult(
+				toolCall,
+				"Branch reenter is not supported in this configuration",
+				emit,
+			),
+		};
+	}
+
+	await config.flushEvents?.();
+	const branchMessages = await config.onBranchReenter(branchId, instruction, toolCall.id);
+
+	if (!branchMessages) {
+		return {
+			type: "error",
+			toolResult: await emitBranchErrorResult(toolCall, `Branch ${branchId} not found`, emit),
+		};
+	}
+
+	return { type: "success", switchType: "reenter", messages: branchMessages, branchId, value: instruction };
+}
+
+async function handleReturnToolCall(
+	toolCall: AgentToolCall,
+	config: AgentLoopConfig,
+	emit: AgentEventSink,
+): Promise<BranchSwitchResult> {
+	const args = toolCall.arguments as Record<string, any>;
+	const value = args?.value ?? "";
+
+	if (!config.onBranchReturn) {
+		return {
+			type: "error",
+			toolResult: await emitBranchErrorResult(
+				toolCall,
+				"Branch return is not supported in this configuration",
+				emit,
+			),
+		};
+	}
+
+	// Write tool result in the branch BEFORE switching context.
+	// This leaves a complete record of the return in the branch's session path.
+	const returnToolResult: ToolResultMessage = {
+		role: "toolResult",
+		toolCallId: toolCall.id,
+		toolName: toolCall.name,
+		content: [],
+		details: {},
+		isError: false,
+		timestamp: Date.now(),
+	};
+	await emit({ type: "message_start", message: returnToolResult });
+	await emit({ type: "message_end", message: returnToolResult });
+
+	// Flush events to ensure return tool result is persisted before context switch
+	await config.flushEvents?.();
+
+	// Now switch to upstream context
+	const result = await config.onBranchReturn(value);
+
+	if (!result) {
+		return {
+			type: "error",
+			toolResult: await emitBranchErrorResult(toolCall, "Not currently in a branch", emit),
+		};
+	}
+
+	return { type: "success", switchType: "return", messages: result.messages, branchId: result.branchId, value };
+}
+
+async function emitBranchErrorResult(
+	toolCall: AgentToolCall,
+	errorMessage: string,
+	emit: AgentEventSink,
+): Promise<ToolResultMessage> {
+	const toolResultMessage: ToolResultMessage = {
+		role: "toolResult",
+		toolCallId: toolCall.id,
+		toolName: toolCall.name,
+		content: [{ type: "text", text: errorMessage }],
+		details: {},
+		isError: true,
+		timestamp: Date.now(),
+	};
+
+	await emit({ type: "message_start", message: toolResultMessage });
+	await emit({ type: "message_end", message: toolResultMessage });
+
 	return toolResultMessage;
 }

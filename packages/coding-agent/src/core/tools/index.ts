@@ -12,6 +12,17 @@ export {
 	createLocalBashOperations,
 } from "./bash.js";
 export {
+	branchTool,
+	branchToolDefinition,
+	createBranchToolDefinition,
+	createReenterToolDefinition,
+	createReturnToolDefinition,
+	reenterTool,
+	reenterToolDefinition,
+	returnTool,
+	returnToolDefinition,
+} from "./branch.js";
+export {
 	createEditTool,
 	createEditToolDefinition,
 	type EditOperations,
@@ -91,6 +102,17 @@ import {
 	createBashTool,
 	createBashToolDefinition,
 } from "./bash.js";
+import {
+	branchTool,
+	branchToolDefinition,
+	createBranchToolDefinition,
+	createReenterToolDefinition,
+	createReturnToolDefinition,
+	reenterTool,
+	reenterToolDefinition,
+	returnTool,
+	returnToolDefinition,
+} from "./branch.js";
 import { createEditTool, createEditToolDefinition, editTool, editToolDefinition } from "./edit.js";
 import { createFindTool, createFindToolDefinition, findTool, findToolDefinition } from "./find.js";
 import { createGrepTool, createGrepToolDefinition, grepTool, grepToolDefinition } from "./grep.js";
@@ -118,6 +140,9 @@ export const allTools = {
 	grep: grepTool,
 	find: findTool,
 	ls: lsTool,
+	branch: branchTool,
+	return: returnTool,
+	reenter: reenterTool,
 };
 
 export const allToolDefinitions = {
@@ -128,6 +153,9 @@ export const allToolDefinitions = {
 	grep: grepToolDefinition,
 	find: findToolDefinition,
 	ls: lsToolDefinition,
+	branch: branchToolDefinition,
+	return: returnToolDefinition,
+	reenter: reenterToolDefinition,
 };
 
 export type ToolName = keyof typeof allTools;
@@ -164,6 +192,9 @@ export function createAllToolDefinitions(cwd: string, options?: ToolsOptions): R
 		grep: createGrepToolDefinition(cwd),
 		find: createFindToolDefinition(cwd),
 		ls: createLsToolDefinition(cwd),
+		branch: createBranchToolDefinition(),
+		return: createReturnToolDefinition(),
+		reenter: createReenterToolDefinition(),
 	};
 }
 
@@ -189,5 +220,8 @@ export function createAllTools(cwd: string, options?: ToolsOptions): Record<Tool
 		grep: createGrepTool(cwd),
 		find: createFindTool(cwd),
 		ls: createLsTool(cwd),
+		branch: branchTool,
+		return: returnTool,
+		reenter: reenterTool,
 	};
 }
