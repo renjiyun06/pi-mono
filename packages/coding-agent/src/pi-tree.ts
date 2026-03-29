@@ -21,14 +21,14 @@ import {
 
 interface TreeArgs {
 	session?: string;
-	branchesOnly: boolean;
+	compact: boolean;
 	help: boolean;
 	cwd: string;
 }
 
 function parseTreeArgs(args: string[]): TreeArgs {
 	const result: TreeArgs = {
-		branchesOnly: false,
+		compact: false,
 		help: false,
 		cwd: process.cwd(),
 	};
@@ -37,8 +37,8 @@ function parseTreeArgs(args: string[]): TreeArgs {
 		const arg = args[i];
 		if (arg === "--help" || arg === "-h") {
 			result.help = true;
-		} else if (arg === "--branches-only" || arg === "-b") {
-			result.branchesOnly = true;
+		} else if (arg === "--compact" || arg === "-c") {
+			result.compact = true;
 		} else if (arg === "--session" || arg === "-s") {
 			result.session = args[++i];
 		} else if (arg === "--cwd") {
@@ -58,13 +58,13 @@ Usage: pi-tree [options] [session-path]
 
 Options:
   -s, --session <path>   Session file path or ID
-  -b, --branches-only    Only show branch nodes, hide regular messages
+  -c, --compact          Truncate branch instructions for compact view
   --cwd <dir>            Working directory (default: current)
   -h, --help             Show this help
 
 Examples:
   pi-tree                         Show tree for most recent session
-  pi-tree -b                      Show only branch structure
+  pi-tree -c                      Compact branch structure
   pi-tree --session /path/to.jsonl  Show tree for specific session`);
 }
 
@@ -240,92 +240,109 @@ function truncate(text: string, maxLen: number): string {
 	return `${oneLine.slice(0, maxLen - 3)}...`;
 }
 
-function describeEntry(entry: SessionEntry): string | null {
-	if (entry.type !== "message") {
-		if (entry.type === "compaction") return "\x1b[2m[compaction]\x1b[0m";
-		if (entry.type === "branch_summary") return "\x1b[2m[branch summary]\x1b[0m";
-		if (entry.type === "model_change") return null;
-		if (entry.type === "thinking_level_change") return null;
-		if (entry.type === "custom_message") return null;
-		if (entry.type === "custom") return null;
-		if (entry.type === "label") return null;
-		if (entry.type === "session_info") return null;
-		return null;
-	}
+/** Strip ANSI escape sequences and return the plain text */
+function stripAnsiText(str: string): string {
+	return str.replace(/\x1b\[[0-9;]*m/g, "");
+}
 
-	const msg = (entry as SessionMessageEntry).message;
-
-	if (msg.role === "user") {
-		const content = msg.content;
-		let text: string;
-		if (typeof content === "string") {
-			text = content;
+/** Get the visible display width of a string, accounting for CJK double-width characters */
+function visibleWidth(str: string): number {
+	const plain = stripAnsiText(str);
+	let width = 0;
+	for (const char of plain) {
+		const code = char.codePointAt(0)!;
+		// CJK Unified Ideographs, CJK symbols, Hiragana, Katakana, Hangul, fullwidth forms, etc.
+		if (
+			(code >= 0x2e80 && code <= 0x9fff) || // CJK radicals, kangxi, ideographs
+			(code >= 0xac00 && code <= 0xd7af) || // Hangul syllables
+			(code >= 0xf900 && code <= 0xfaff) || // CJK compatibility ideographs
+			(code >= 0xfe30 && code <= 0xfe4f) || // CJK compatibility forms
+			(code >= 0xff01 && code <= 0xff60) || // Fullwidth forms
+			(code >= 0xffe0 && code <= 0xffe6) || // Fullwidth signs
+			(code >= 0x20000 && code <= 0x2fa1f) // CJK extension B-F
+		) {
+			width += 2;
 		} else {
-			text = (content as any[])
-				.filter((c: any) => c.type === "text")
-				.map((c: any) => c.text)
-				.join(" ");
+			width += 1;
 		}
-		return `\x1b[36muser:\x1b[0m ${truncate(text, 80)}`;
+	}
+	return width;
+}
+
+/**
+ * Wrap long text with proper alignment.
+ * @param linePrefix - The tree prefix (e.g. "│  │  ")
+ * @param labelPart - The part before the quote (e.g. "⎇ branch [abc123] " with ANSI codes)
+ * @param text - The instruction text to wrap
+ * @param termWidth - Terminal width
+ * @returns Formatted string with aligned wrapped lines
+ */
+function wrapAligned(linePrefix: string, labelPart: string, text: string, termWidth: number): string {
+	const oneLine = text.replace(/\n/g, " ").trim();
+	const prefixVisWidth = visibleWidth(linePrefix);
+	const labelVisWidth = visibleWidth(labelPart);
+	// +1 for the opening quote
+	const contentStart = prefixVisWidth + labelVisWidth + 1;
+	const availWidth = termWidth - contentStart - 1; // -1 for closing quote
+
+	if (availWidth < 20) {
+		return `${linePrefix}${labelPart}\x1b[34m"${oneLine}"\x1b[0m`;
 	}
 
-	if (msg.role === "assistant") {
-		const am = msg as AssistantMessage;
-		const texts = am.content.filter((c): c is TextContent => c.type === "text").map((c) => c.text);
-		const toolCalls = am.content.filter((c): c is ToolCall => c.type === "toolCall");
-
-		const parts: string[] = [];
-		if (texts.length > 0) {
-			parts.push(truncate(texts.join(" "), 80));
-		}
-		for (const tc of toolCalls) {
-			if (tc.name === "branch") {
-				// Branch tool call is rendered as part of branch node
-				continue;
-			}
-			if (tc.name === "return") {
-				continue;
-			}
-			if (tc.name === "reenter") {
-				continue;
-			}
-			parts.push(`\x1b[33m${tc.name}\x1b[0m(${truncate(JSON.stringify(tc.arguments), 50)})`);
-		}
-
-		if (parts.length === 0) return null;
-		return `\x1b[32massistant:\x1b[0m ${parts.join(" | ")}`;
+	if (visibleWidth(oneLine) <= availWidth) {
+		return `${linePrefix}${labelPart}\x1b[34m"${oneLine}"\x1b[0m`;
 	}
 
-	if (msg.role === "toolResult") {
-		const tr = msg as ToolResultMessage;
+	// Word wrap respecting visible width
+	const words = oneLine.split(/\s+/);
+	const lines: string[] = [];
+	let currentLine = "";
+	let currentWidth = 0;
 
-		// Branch first return — skip, it's handled by branch rendering
-		if (tr.toolName === "branch" || tr.toolName === "reenter") {
-			const textContent = tr.content.find((c): c is TextContent => c.type === "text");
-			if (textContent?.text === "Entered branch.") return null;
-			// Second return
-			if ((tr.details as any)?.branchLeafId) return null;
+	for (const word of words) {
+		const wordWidth = visibleWidth(word);
+		if (currentLine.length === 0) {
+			currentLine = word;
+			currentWidth = wordWidth;
+		} else if (currentWidth + 1 + wordWidth <= availWidth) {
+			currentLine += ` ${word}`;
+			currentWidth += 1 + wordWidth;
+		} else {
+			lines.push(currentLine);
+			currentLine = word;
+			currentWidth = wordWidth;
 		}
-
-		if (tr.toolName === "return") {
-			return null; // Handled by branch rendering
-		}
-
-		const textContent = tr.content.find((c): c is TextContent => c.type === "text");
-		const text = textContent?.text || "";
-		if (tr.isError) {
-			return `\x1b[31m${tr.toolName} error:\x1b[0m ${truncate(text, 60)}`;
-		}
-		return `\x1b[2m${tr.toolName}:\x1b[0m ${truncate(text, 60)}`;
+	}
+	if (currentLine.length > 0) {
+		lines.push(currentLine);
 	}
 
-	return null;
+	// Build the padding for continuation lines
+	const padLen = contentStart - prefixVisWidth;
+	const continuationPrefix = `${linePrefix}${" ".repeat(padLen)}`;
+
+	const result: string[] = [];
+	for (let i = 0; i < lines.length; i++) {
+		if (i === 0) {
+			result.push(`${linePrefix}${labelPart}\x1b[34m"${lines[i]}`);
+		} else if (i === lines.length - 1) {
+			result.push(`\x1b[34m${continuationPrefix}${lines[i]}"\x1b[0m`);
+		} else {
+			result.push(`\x1b[34m${continuationPrefix}${lines[i]}`);
+		}
+	}
+
+	if (lines.length === 1) {
+		return `${linePrefix}${labelPart}\x1b[34m"${lines[0]}"\x1b[0m`;
+	}
+
+	return result.join("\n");
 }
 
 interface RenderContext {
 	branchEntries: Map<string, { entryId: string; instruction: string }>;
 	currentBranch: string | null;
-	branchesOnly: boolean;
+	compact: boolean;
 	leafEntryId: string | null;
 }
 
@@ -364,10 +381,20 @@ function renderLinear(node: SessionTreeNode, prefix: string, ctx: RenderContext)
 
 			const branchLabel = isCurrent ? "\x1b[1;35m⎇ branch\x1b[0m" : "\x1b[35m⎇ branch\x1b[0m";
 			const idStr = `\x1b[2m[${branchId}]\x1b[0m`;
-			const instrStr = info?.instruction ? ` \x1b[34m"${info.instruction}"\x1b[0m` : "";
 			const currentMarker = isCurrent ? " \x1b[1;35m◀ current\x1b[0m" : "";
 
-			console.log(`${prefix}${branchLabel} ${idStr}${instrStr}${currentMarker}`);
+			if (!info?.instruction) {
+				console.log(`${prefix}${branchLabel} ${idStr}${currentMarker}`);
+			} else if (ctx.compact) {
+				console.log(
+					`${prefix}${branchLabel} ${idStr} \x1b[34m"${truncate(info.instruction, 60)}"\x1b[0m${currentMarker}`,
+				);
+			} else {
+				const labelPart = `${branchLabel} ${idStr} `;
+				const termWidth = process.stdout.columns || 120;
+				const wrapped = wrapAligned(prefix, labelPart, info.instruction, termWidth);
+				console.log(`${wrapped}${currentMarker}`);
+			}
 
 			// Render branch content indented
 			const branchPrefix = `${prefix}│  `;
@@ -377,15 +404,8 @@ function renderLinear(node: SessionTreeNode, prefix: string, ctx: RenderContext)
 			return;
 		}
 
-		// Regular entry
-		const isVisible = !ctx.branchesOnly && describeEntry(current.entry) !== null;
-
-		if (isVisible) {
-			const desc = describeEntry(current.entry)!;
-			const isLeaf = current.entry.id === ctx.leafEntryId;
-			const leafMarker = isLeaf && ctx.currentBranch === null ? " \x1b[1;35m◀ current\x1b[0m" : "";
-			console.log(`${prefix}${desc}${leafMarker}`);
-		}
+		// Regular entry — skip non-branch messages
+		// (only branch nodes are displayed)
 
 		// Decide how to proceed with children
 		const children: SessionTreeNode[] = current.children;
@@ -424,10 +444,20 @@ function renderLinear(node: SessionTreeNode, prefix: string, ctx: RenderContext)
 
 				const branchLabel = isCurr ? "\x1b[1;35m⎇ branch\x1b[0m" : "\x1b[35m⎇ branch\x1b[0m";
 				const idStr = `\x1b[2m[${childBranchId}]\x1b[0m`;
-				const instrStr = info?.instruction ? ` \x1b[34m"${info.instruction}"\x1b[0m` : "";
 				const currentMarker = isCurr ? " \x1b[1;35m◀ current\x1b[0m" : "";
 
-				console.log(`${prefix}${branchLabel} ${idStr}${instrStr}${currentMarker}`);
+				if (!info?.instruction) {
+					console.log(`${prefix}${branchLabel} ${idStr}${currentMarker}`);
+				} else if (ctx.compact) {
+					console.log(
+						`${prefix}${branchLabel} ${idStr} \x1b[34m"${truncate(info.instruction, 60)}"\x1b[0m${currentMarker}`,
+					);
+				} else {
+					const labelPart = `${branchLabel} ${idStr} `;
+					const termWidth = process.stdout.columns || 120;
+					const wrapped = wrapAligned(prefix, labelPart, info.instruction, termWidth);
+					console.log(`${wrapped}${currentMarker}`);
+				}
 
 				const branchContentPrefix = `${prefix}│  `;
 				for (const grandChild of child.children) {
@@ -483,17 +513,6 @@ export function piTree(args: string[]) {
 
 	if (branchEntries.size === 0) {
 		console.log("No branches in this session.");
-		if (!parsed.branchesOnly) {
-			console.log();
-			const tree = buildTree(entries);
-			renderTree(tree, {
-				branchEntries,
-
-				currentBranch,
-				branchesOnly: false,
-				leafEntryId,
-			});
-		}
 		return;
 	}
 
@@ -504,7 +523,7 @@ export function piTree(args: string[]) {
 	renderTree(tree, {
 		branchEntries,
 		currentBranch,
-		branchesOnly: parsed.branchesOnly,
+		compact: parsed.compact,
 		leafEntryId,
 	});
 }
