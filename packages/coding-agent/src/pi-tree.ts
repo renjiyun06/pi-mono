@@ -1,4 +1,5 @@
 import type { AssistantMessage, TextContent, ToolCall, ToolResultMessage } from "@mariozechner/pi-ai";
+import { execSync } from "child_process";
 import { existsSync } from "fs";
 import { join } from "path";
 import { getSessionsDir } from "./config.js";
@@ -21,14 +22,14 @@ import {
 
 interface TreeArgs {
 	session?: string;
-	compact: boolean;
+	full: boolean;
 	help: boolean;
 	cwd: string;
 }
 
 function parseTreeArgs(args: string[]): TreeArgs {
 	const result: TreeArgs = {
-		compact: false,
+		full: false,
 		help: false,
 		cwd: process.cwd(),
 	};
@@ -37,8 +38,8 @@ function parseTreeArgs(args: string[]): TreeArgs {
 		const arg = args[i];
 		if (arg === "--help" || arg === "-h") {
 			result.help = true;
-		} else if (arg === "--compact" || arg === "-c") {
-			result.compact = true;
+		} else if (arg === "--full" || arg === "-f") {
+			result.full = true;
 		} else if (arg === "--session" || arg === "-s") {
 			result.session = args[++i];
 		} else if (arg === "--cwd") {
@@ -58,13 +59,13 @@ Usage: pi-tree [options] [session-path]
 
 Options:
   -s, --session <path>   Session file path or ID
-  -c, --compact          Truncate branch instructions for compact view
+  -f, --full             Show full branch instructions (default: compact summary)
   --cwd <dir>            Working directory (default: current)
   -h, --help             Show this help
 
 Examples:
-  pi-tree                         Show tree for most recent session
-  pi-tree -c                      Compact branch structure
+  pi-tree                         Show compact tree (default)
+  pi-tree -f                      Show full branch instructions
   pi-tree --session /path/to.jsonl  Show tree for specific session`);
 }
 
@@ -234,12 +235,6 @@ function getCurrentBranch(entries: SessionEntry[]): string | null {
 // Rendering
 // =========================================================================
 
-function truncate(text: string, maxLen: number): string {
-	const oneLine = text.replace(/\n/g, " ").trim();
-	if (oneLine.length <= maxLen) return oneLine;
-	return `${oneLine.slice(0, maxLen - 3)}...`;
-}
-
 /** Strip ANSI escape sequences and return the plain text */
 function stripAnsiText(str: string): string {
 	return str.replace(/\x1b\[[0-9;]*m/g, "");
@@ -293,25 +288,43 @@ function wrapAligned(linePrefix: string, labelPart: string, text: string, termWi
 		return `${linePrefix}${labelPart}\x1b[34m"${oneLine}"\x1b[0m`;
 	}
 
-	// Word wrap respecting visible width
-	const words = oneLine.split(/\s+/);
+	// Character-aware wrap: CJK characters can break anywhere,
+	// non-CJK (latin words) break at spaces
 	const lines: string[] = [];
 	let currentLine = "";
 	let currentWidth = 0;
 
-	for (const word of words) {
-		const wordWidth = visibleWidth(word);
-		if (currentLine.length === 0) {
-			currentLine = word;
-			currentWidth = wordWidth;
-		} else if (currentWidth + 1 + wordWidth <= availWidth) {
-			currentLine += ` ${word}`;
-			currentWidth += 1 + wordWidth;
-		} else {
+	const chars = [...oneLine];
+	let i = 0;
+	while (i < chars.length) {
+		const char = chars[i];
+		const code = char.codePointAt(0)!;
+		const isCJK =
+			(code >= 0x2e80 && code <= 0x9fff) ||
+			(code >= 0xac00 && code <= 0xd7af) ||
+			(code >= 0xf900 && code <= 0xfaff) ||
+			(code >= 0xfe30 && code <= 0xfe4f) ||
+			(code >= 0xff01 && code <= 0xff60) ||
+			(code >= 0xffe0 && code <= 0xffe6) ||
+			(code >= 0x20000 && code <= 0x2fa1f);
+		const charWidth = isCJK ? 2 : 1;
+
+		if (currentWidth + charWidth > availWidth && currentLine.length > 0) {
 			lines.push(currentLine);
-			currentLine = word;
-			currentWidth = wordWidth;
+			currentLine = "";
+			currentWidth = 0;
+			// Don't advance i — re-process this character on the new line
+			// But skip leading spaces on new line
+			if (char === " ") {
+				i++;
+				continue;
+			}
+			continue;
 		}
+
+		currentLine += char;
+		currentWidth += charWidth;
+		i++;
 	}
 	if (currentLine.length > 0) {
 		lines.push(currentLine);
@@ -342,8 +355,8 @@ function wrapAligned(linePrefix: string, labelPart: string, text: string, termWi
 interface RenderContext {
 	branchEntries: Map<string, { entryId: string; instruction: string }>;
 	currentBranch: string | null;
-	compact: boolean;
 	leafEntryId: string | null;
+	output: string[];
 }
 
 function isBranchFirstReturn(entry: SessionEntry): string | null {
@@ -357,11 +370,12 @@ function isBranchFirstReturn(entry: SessionEntry): string | null {
 	return (tr.details as any)?.branchId || null;
 }
 
-function renderTree(roots: SessionTreeNode[], ctx: RenderContext) {
+function renderTree(roots: SessionTreeNode[], ctx: RenderContext): string[] {
 	// Flatten each root into a linear sequence, only branching at fork points
 	for (const root of roots) {
 		renderLinear(root, "", ctx);
 	}
+	return ctx.output;
 }
 
 /**
@@ -384,16 +398,12 @@ function renderLinear(node: SessionTreeNode, prefix: string, ctx: RenderContext)
 			const currentMarker = isCurrent ? " \x1b[1;35m◀ current\x1b[0m" : "";
 
 			if (!info?.instruction) {
-				console.log(`${prefix}${branchLabel} ${idStr}${currentMarker}`);
-			} else if (ctx.compact) {
-				console.log(
-					`${prefix}${branchLabel} ${idStr} \x1b[34m"${truncate(info.instruction, 60)}"\x1b[0m${currentMarker}`,
-				);
+				ctx.output.push(`${prefix}${branchLabel} ${idStr}${currentMarker}`);
 			} else {
 				const labelPart = `${branchLabel} ${idStr} `;
 				const termWidth = process.stdout.columns || 120;
 				const wrapped = wrapAligned(prefix, labelPart, info.instruction, termWidth);
-				console.log(`${wrapped}${currentMarker}`);
+				ctx.output.push(`${wrapped}${currentMarker}`);
 			}
 
 			// Render branch content indented
@@ -447,16 +457,12 @@ function renderLinear(node: SessionTreeNode, prefix: string, ctx: RenderContext)
 				const currentMarker = isCurr ? " \x1b[1;35m◀ current\x1b[0m" : "";
 
 				if (!info?.instruction) {
-					console.log(`${prefix}${branchLabel} ${idStr}${currentMarker}`);
-				} else if (ctx.compact) {
-					console.log(
-						`${prefix}${branchLabel} ${idStr} \x1b[34m"${truncate(info.instruction, 60)}"\x1b[0m${currentMarker}`,
-					);
+					ctx.output.push(`${prefix}${branchLabel} ${idStr}${currentMarker}`);
 				} else {
 					const labelPart = `${branchLabel} ${idStr} `;
 					const termWidth = process.stdout.columns || 120;
 					const wrapped = wrapAligned(prefix, labelPart, info.instruction, termWidth);
-					console.log(`${wrapped}${currentMarker}`);
+					ctx.output.push(`${wrapped}${currentMarker}`);
 				}
 
 				const branchContentPrefix = `${prefix}│  `;
@@ -516,14 +522,41 @@ export function piTree(args: string[]) {
 		return;
 	}
 
-	console.log(`Branches: ${branchEntries.size} | Current: ${currentBranch ? `branch [${currentBranch}]` : "Main"}`);
+	const header = `Branches: ${branchEntries.size} | Current: ${currentBranch ? `branch [${currentBranch}]` : "Main"}`;
+	console.log(header);
 	console.log();
 
 	const tree = buildTree(entries);
-	renderTree(tree, {
+	const lines = renderTree(tree, {
 		branchEntries,
 		currentBranch,
-		compact: parsed.compact,
 		leafEntryId,
+		output: [],
 	});
+
+	const fullOutput = lines.join("\n");
+
+	if (!parsed.full) {
+		// Use Claude to intelligently compress branch instructions
+		try {
+			// Strip ANSI codes for Claude input, then let it produce clean output
+			const plainOutput = fullOutput.replace(/\x1b\[[0-9;]*m/g, "");
+			const prompt = `You are given a branch tree visualization. Each branch has an instruction in quotes.
+Your task: reproduce the EXACT same tree structure (keep all ⎇ branch labels, [branchId], indentation with │, and ◀ current markers), but replace each long instruction with a short summary (max 60 chars). Keep the summary in the same quotes and language as the original.
+Output ONLY the tree lines, no code fences, no explanation, no blank lines before or after.
+
+${plainOutput}`;
+			const result = execSync(`claude -p --no-session-persistence`, {
+				input: prompt,
+				encoding: "utf-8",
+				maxBuffer: 1024 * 1024,
+			});
+			console.log(result.trimEnd());
+		} catch {
+			// Fallback: just print the full output
+			console.log(fullOutput);
+		}
+	} else {
+		console.log(fullOutput);
+	}
 }
