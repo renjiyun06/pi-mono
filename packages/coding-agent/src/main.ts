@@ -18,6 +18,7 @@ import { APP_NAME, getAgentDir, getModelsPath, VERSION } from "./config.js";
 import { AuthStorage } from "./core/auth-storage.js";
 import { exportFromFile } from "./core/export-html/index.js";
 import type { LoadExtensionsResult } from "./core/extensions/index.js";
+import { GitSessionManager } from "./core/git-session-manager.js";
 import { migrateKeybindingsConfigFile } from "./core/keybindings.js";
 import { ModelRegistry } from "./core/model-registry.js";
 import { resolveCliModel, resolveModelScope, type ScopedModel } from "./core/model-resolver.js";
@@ -25,7 +26,7 @@ import { restoreStdout, takeOverStdout } from "./core/output-guard.js";
 import { DefaultPackageManager } from "./core/package-manager.js";
 import { DefaultResourceLoader } from "./core/resource-loader.js";
 import { type CreateAgentSessionOptions, createAgentSession } from "./core/sdk.js";
-import { SessionManager } from "./core/session-manager.js";
+import type { SessionManager } from "./core/session-manager.js";
 import { SettingsManager } from "./core/settings-manager.js";
 import { printTimings, resetTimings, time } from "./core/timings.js";
 import { allTools } from "./core/tools/index.js";
@@ -349,7 +350,7 @@ async function resolveSessionPath(sessionArg: string, cwd: string, sessionDir?: 
 	}
 
 	// Try to match as session ID in current project first
-	const localSessions = await SessionManager.list(cwd, sessionDir);
+	const localSessions = await GitSessionManager.list(cwd, sessionDir);
 	const localMatches = localSessions.filter((s) => s.id.startsWith(sessionArg));
 
 	if (localMatches.length >= 1) {
@@ -357,7 +358,7 @@ async function resolveSessionPath(sessionArg: string, cwd: string, sessionDir?: 
 	}
 
 	// Try global search across all projects
-	const allSessions = await SessionManager.listAll();
+	const allSessions = await GitSessionManager.listAll();
 	const globalMatches = allSessions.filter((s) => s.id.startsWith(sessionArg));
 
 	if (globalMatches.length >= 1) {
@@ -425,9 +426,9 @@ function validateForkFlags(parsed: Args): void {
 	}
 }
 
-function forkSessionOrExit(sourcePath: string, cwd: string, sessionDir?: string): SessionManager {
+function forkSessionOrExit(sourcePath: string, cwd: string, sessionDir?: string): GitSessionManager {
 	try {
-		return SessionManager.forkFrom(sourcePath, cwd, sessionDir);
+		return GitSessionManager.forkFrom(sourcePath, cwd, sessionDir);
 	} catch (error: unknown) {
 		const message = error instanceof Error ? error.message : String(error);
 		console.error(chalk.red(`Error: ${message}`));
@@ -440,9 +441,9 @@ async function createSessionManager(
 	cwd: string,
 	extensions: LoadExtensionsResult,
 	settingsManager: SettingsManager,
-): Promise<SessionManager | undefined> {
+): Promise<GitSessionManager | undefined> {
 	if (parsed.noSession) {
-		return SessionManager.inMemory();
+		return GitSessionManager.inMemory();
 	}
 
 	// Priority: CLI flag > settings.json > extension hook
@@ -470,7 +471,7 @@ async function createSessionManager(
 		switch (resolved.type) {
 			case "path":
 			case "local":
-				return SessionManager.open(resolved.path, effectiveSessionDir);
+				return GitSessionManager.open(resolved.path, effectiveSessionDir);
 
 			case "global": {
 				// Session found in different project - ask user if they want to fork
@@ -489,12 +490,12 @@ async function createSessionManager(
 		}
 	}
 	if (parsed.continue) {
-		return SessionManager.continueRecent(cwd, effectiveSessionDir);
+		return GitSessionManager.continueRecent(cwd, effectiveSessionDir);
 	}
 	// --resume is handled separately (needs picker UI)
 	// If effective session dir is set, create new session there
 	if (effectiveSessionDir) {
-		return SessionManager.create(cwd, effectiveSessionDir);
+		return GitSessionManager.create(cwd, effectiveSessionDir);
 	}
 	// Default case (new session) returns undefined, SDK will create one
 	return undefined;
@@ -788,7 +789,9 @@ export async function main(args: string[]) {
 	time("resolveModelScope");
 
 	// Create session manager based on CLI flags
-	let sessionManager = await createSessionManager(parsed, cwd, extensionsResult, settingsManager);
+	let sessionManager = (await createSessionManager(parsed, cwd, extensionsResult, settingsManager)) as
+		| SessionManager
+		| undefined;
 	time("createSessionManager");
 
 	// Handle --resume: show session picker
@@ -800,15 +803,15 @@ export async function main(args: string[]) {
 			(await callSessionDirectoryHook(extensionsResult, cwd));
 
 		const selectedPath = await selectSession(
-			(onProgress) => SessionManager.list(cwd, effectiveSessionDir, onProgress),
-			SessionManager.listAll,
+			(onProgress) => GitSessionManager.list(cwd, effectiveSessionDir, onProgress),
+			GitSessionManager.listAll,
 		);
 		if (!selectedPath) {
 			console.log(chalk.dim("No session selected"));
 			stopThemeWatcher();
 			process.exit(0);
 		}
-		sessionManager = SessionManager.open(selectedPath, effectiveSessionDir);
+		sessionManager = GitSessionManager.open(selectedPath, effectiveSessionDir) as unknown as SessionManager;
 	}
 
 	const { options: sessionOptions, cliThinkingFromModel } = buildSessionOptions(
