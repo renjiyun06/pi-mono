@@ -505,6 +505,69 @@ export class GitSessionManager {
 		throw new Error("GitSessionManager does not support branch().");
 	}
 
+	// =========================================================================
+	// Git branch operations (checkout/merge)
+	// =========================================================================
+
+	/**
+	 * Get the current Git branch name.
+	 */
+	getCurrentBranch(): string {
+		return this.git("rev-parse --abbrev-ref HEAD");
+	}
+
+	/**
+	 * Create a new Git branch from the current position and switch to it.
+	 */
+	gitCreateBranch(branchId: string): void {
+		this.git(`checkout -b ${branchId}`);
+	}
+
+	/**
+	 * Switch to an existing Git branch.
+	 */
+	gitCheckoutBranch(branchId: string): void {
+		this.git(`checkout ${branchId}`);
+	}
+
+	/**
+	 * Perform a merge --no-ff from sourceBranch into the current branch.
+	 */
+	gitMergeNoFf(sourceBranch: string, message: string): void {
+		this.git(`merge --no-ff ${sourceBranch} --no-edit`);
+		this.gitWithStdin("commit --amend -F -", message);
+	}
+
+	/**
+	 * Reload entries from the current Git branch's commit history.
+	 * This is needed after switching branches, as the commit history changes.
+	 */
+	reloadEntries(): void {
+		this.entries = [];
+		this.byId.clear();
+		this.leafId = null;
+
+		let commitHashes: string[];
+		try {
+			const output = this.git('log --first-parent --reverse --format="%H"');
+			commitHashes = output.split("\n").filter((h) => h.length > 0);
+		} catch {
+			return;
+		}
+
+		for (const hash of commitHashes) {
+			try {
+				const noteJson = this.git(`notes --ref=session-meta show ${hash}`);
+				const entry = JSON.parse(noteJson) as SessionEntry;
+				this.entries.push(entry);
+				this.byId.set(entry.id, entry);
+				this.leafId = entry.id;
+			} catch {
+				// Skip commits without notes (e.g. merge commits)
+			}
+		}
+	}
+
 	resetLeaf(): void {
 		this.leafId = null;
 	}

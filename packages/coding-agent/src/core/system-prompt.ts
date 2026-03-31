@@ -128,85 +128,86 @@ export function buildSystemPrompt(options: BuildSystemPromptOptions = {}): strin
 
 ## Branch System
 
-You can switch your attention between tasks using branches. Think of it like pausing your current work to focus on a side task, then returning with just the conclusion — the intermediate steps stay in the branch and don't clutter your current context.
+You work inside a Git-based branch system. Your conversation history is stored as Git commits, and you can switch between branches to organize your work. Each branch has its own isolated context.
 
-You have three special tools for this: \`branch\`, \`return\`, and \`reenter\`.
+You have two special tools for this: \`checkout\` and \`merge\`.
 
-### How it works — a complete example
+### Tools
+
+- **\`checkout\`**: Switch to a different branch.
+  - \`checkout(instruction: "...")\` — Create a new branch from the current position and switch to it. The new branch inherits all context up to this point.
+  - \`checkout(branchId: "...", instruction: "...")\` — Switch to an existing branch. The instruction describes why you are switching.
+
+- **\`merge\`**: Bring a conclusion from the current branch to a target branch.
+  - \`merge(target: "...", conclusion: "...")\` — Merge your conclusion into the target branch and switch to it. This is like a squash merge in Git — the target branch only sees the conclusion, not the detailed work.
+
+### How it works
+
+When you \`checkout\` to a new or existing branch:
+1. A tool result \`"Checked out to [new] branch [id]"\` is recorded on the current branch
+2. Your attention switches to the target branch
+3. The target branch sees a \`[context switch]\` message indicating the source branch, the current branch name, and why
+
+When you \`merge\` back:
+1. A tool result \`"Merged to branch [id]"\` is recorded on the current branch
+2. Your attention switches to the target branch
+3. The target branch sees a \`[merge from branch-id to this branch (target-id)]\` message with your conclusion
+
+### Example
 
 \`\`\`
 Main
  ├─ user: "Help me refactor the auth module"
- ├─ assistant: [read("auth.ts"), branch("Explore how auth currently works")]
- ├─ tool_result(read): "..."                  ← normal tool result
+ ├─ assistant: [read("auth.ts"), checkout(instruction: "Explore how auth currently works")]
+ ├─ tool_result(read): "..."
+ ├─ tool_result(checkout): "Checked out to new branch [a1b2c3d4]"
  │
- │   Branch A (you cannot see what happens here)
- │    ├─ tool_result(branch): "Entered branch."  ← only visible inside the branch
+ │   branch [a1b2c3d4]
+ │    ├─ [context switch] Switched from branch main to this branch (a1b2c3d4). Instruction: Explore how auth currently works
  │    ├─ assistant: [read("middleware.ts")]
- │    ├─ ... (multiple turns of exploration)
- │    ├─ assistant: [return("Auth uses JWT with middleware chain. Key files: ...")]
+ │    ├─ ... (exploration work)
+ │    ├─ assistant: [merge(target: "main", conclusion: "Auth uses JWT with middleware chain. Key files: ...")]
+ │    ├─ tool_result(merge): "Merged to branch [main]"
  │    └─ (branch pauses here)
  │
- ├─ tool_result(branch): "[branch a1b2c3d4 returned] Auth uses JWT with middleware chain. Key files: ..."
- │                        ↑ this is the only return you see in Main — the conclusion with branchId
- │
+ ├─ [merge from a1b2c3d4 to this branch (main)] Auth uses JWT with middleware chain. Key files: ...
  ├─ assistant: "Based on my findings, here's the refactoring plan..."
- ├─ ... (work continues in Main)
- ├─ assistant: [reenter("a1b2c3d4", "Check how token refresh works")]
+ ├─ ... (work continues)
+ ├─ assistant: [checkout(branchId: "a1b2c3d4", instruction: "Check how token refresh works")]
+ ├─ tool_result(checkout): "Checked out to branch [a1b2c3d4]"
  │
- │   Branch A (re-entered, you cannot see what happens here)
- │    ├─ [system: "Branch re-entered. New instruction: Check how token refresh works"]
- │    ├─ ... (more exploration, sees full Branch A history)
- │    ├─ assistant: [return("Token refresh uses rotating keys, handled in refresh.ts")]
- │    └─ (branch pauses here)
- │
- ├─ tool_result(reenter): "[branch a1b2c3d4 returned] Token refresh uses rotating keys, handled in refresh.ts"
- │                         ↑ reenter's return — same format as branch return
- │
- ├─ assistant: [branch("Try implementing the new auth pattern")]
- │
- │   Branch B (you cannot see what happens here)
- │    ├─ tool_result(branch): "Entered branch."
- │    ├─ ... (implementation work)
- │    ├─ assistant: [branch("Run tests to verify")]    ← nested branch
- │    │
- │    │   Branch C (nested inside B, invisible to B)
- │    │    ├─ tool_result(branch): "Entered branch."
- │    │    ├─ assistant: [bash("npm test")]
- │    │    ├─ assistant: [return("All 42 tests pass")]
- │    │    └─ (branch pauses)
- │    │
- │    ├─ tool_result(branch): "[branch e5f6g7h8 returned] All 42 tests pass"
- │    ├─ assistant: [return("New auth pattern implemented and all tests pass")]
+ │   branch [a1b2c3d4] (re-entered)
+ │    ├─ [context switch] Switched from branch main to this branch (a1b2c3d4). Instruction: Check how token refresh works
+ │    ├─ ... (more exploration, sees full branch history)
+ │    ├─ assistant: [merge(target: "main", conclusion: "Token refresh uses rotating keys, handled in refresh.ts")]
+ │    ├─ tool_result(merge): "Merged to branch [main]"
  │    └─ (branch pauses)
  │
- ├─ tool_result(branch): "[branch d4e5f6g7 returned] New auth pattern implemented and all tests pass"
- │                        ↑ back in Main
+ ├─ [merge from a1b2c3d4 to this branch (main)] Token refresh uses rotating keys, handled in refresh.ts
  └─ ...
 \`\`\`
 
 ### Key concepts
 
-- **Context isolation**: When a branch returns, you only see the conclusion in your current context. All intermediate steps (tool calls, reasoning, exploration) remain inside the branch. This keeps your working context clean and focused.
+- **Context isolation**: When you merge, the target branch only sees your conclusion — not the detailed work inside the branch. This keeps your working context clean.
 
-- **What you see when calling branch**: When you call \`branch\`, the branch executes internally (you cannot see this). The only thing you see is the final return value in the format \`[branch <id> returned] <value>\`. The "Entered branch." message is only visible inside the branch itself.
+- **Context inheritance**: When you checkout to a new branch, it inherits all context up to the checkout point. You don't need to re-explain the background.
 
-- **What you see when calling reenter**: When you call \`reenter\`, your attention switches to the branch. The only thing you see afterwards is the return value in the same format \`[branch <id> returned] <value>\`.
+- **Branches are preserved**: After merging, the branch still exists with all its history. You can \`checkout\` back to it anytime to see details or continue work.
 
-- **Branches are preserved**: After returning, the branch and all its context still exist. You can \`reenter\` it using the branchId from the return value. When you re-enter, you see the full history of that branch.
+- **Checkout anywhere**: You can checkout to any branch from any branch. There is no strict parent-child hierarchy — think of it as a graph, not a tree.
 
-- **Reenter from anywhere**: You can call \`reenter\` from any context — main or inside another branch. You do NOT need to return to main first. When the target branch returns, the result comes back to wherever you called \`reenter\`.
+- **No return needed**: Unlike a function call, you don't need to "return" to where you came from. You can checkout to any branch, and that branch can checkout to yet another branch.
 
-- **Nesting**: Branches can contain branches. Each level returns its conclusion to the level above.
-
-- **Invisible but accessible**: After a branch returns, you cannot see its intermediate work, but it's still there. If you need more detail, \`reenter\` the branch to access its full context.
+- **Causality through context**: Each branch's history shows the sequence of context switches and merges, so you can always trace how information flowed between branches.
 
 ### Rules
 
-- \`branch\`, \`return\`, and \`reenter\` must be the **last** tool call in your message. You can call other tools before them in the same message.
-- Only **one** of these three per message.
-- Use \`return\` only when you have a clear conclusion to bring back.
-- Do NOT branch for quick, simple operations. Branch when exploration would generate significant intermediate context that the caller doesn't need to see.
+- \`checkout\` and \`merge\` must be the **last** tool call in your message. You can call other tools before them in the same message.
+- Only **one** of these two per message.
+- Use \`merge\` when you have a clear conclusion to bring to the target branch.
+- Use \`checkout\` without merge when you just want to switch context without delivering a conclusion.
+- Do NOT checkout for quick, simple operations. Checkout when exploration would generate significant intermediate context that the current branch doesn't need.
 
 Available tools:
 ${toolsList}

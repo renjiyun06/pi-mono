@@ -23,6 +23,14 @@ export {
 	returnToolDefinition,
 } from "./branch.js";
 export {
+	checkoutTool,
+	checkoutToolDefinition,
+	createCheckoutToolDefinition,
+	createMergeToolDefinition,
+	mergeTool,
+	mergeToolDefinition,
+} from "./checkout.js";
+export {
 	createEditTool,
 	createEditToolDefinition,
 	type EditOperations,
@@ -113,6 +121,14 @@ import {
 	returnTool,
 	returnToolDefinition,
 } from "./branch.js";
+import {
+	checkoutTool,
+	checkoutToolDefinition,
+	createCheckoutToolDefinition,
+	createMergeToolDefinition,
+	mergeTool,
+	mergeToolDefinition,
+} from "./checkout.js";
 import { createEditTool, createEditToolDefinition, editTool, editToolDefinition } from "./edit.js";
 import { createFindTool, createFindToolDefinition, findTool, findToolDefinition } from "./find.js";
 import { createGrepTool, createGrepToolDefinition, grepTool, grepToolDefinition } from "./grep.js";
@@ -143,6 +159,8 @@ export const allTools = {
 	branch: branchTool,
 	return: returnTool,
 	reenter: reenterTool,
+	checkout: checkoutTool,
+	merge: mergeTool,
 };
 
 export const allToolDefinitions = {
@@ -156,6 +174,8 @@ export const allToolDefinitions = {
 	branch: branchToolDefinition,
 	return: returnToolDefinition,
 	reenter: reenterToolDefinition,
+	checkout: checkoutToolDefinition,
+	merge: mergeToolDefinition,
 };
 
 export type ToolName = keyof typeof allTools;
@@ -195,6 +215,8 @@ export function createAllToolDefinitions(cwd: string, options?: ToolsOptions): R
 		branch: createBranchToolDefinition(),
 		return: createReturnToolDefinition(),
 		reenter: createReenterToolDefinition(),
+		checkout: createCheckoutToolDefinition(),
+		merge: createMergeToolDefinition(),
 	};
 }
 
@@ -223,5 +245,7 @@ export function createAllTools(cwd: string, options?: ToolsOptions): Record<Tool
 		branch: branchTool,
 		return: returnTool,
 		reenter: reenterTool,
+		checkout: checkoutTool,
+		merge: mergeTool,
 	};
 }

@@ -26,7 +26,8 @@ import type {
 export type AgentEventSink = (event: AgentEvent) => Promise<void> | void;
 
 /** Tool names that are handled directly by the agent loop, not through normal tool execution. */
-const BRANCH_TOOL_NAMES = new Set(["branch", "return", "reenter"]);
+const _BRANCH_TOOL_NAMES = new Set(["branch", "return", "reenter"]);
+const CHECKOUT_TOOL_NAMES = new Set(["checkout", "merge"]);
 
 /**
  * Start an agent loop with a new prompt message.
@@ -206,19 +207,19 @@ async function runLoop(
 			hasMoreToolCalls = toolCalls.length > 0;
 
 			const toolResults: ToolResultMessage[] = [];
-			let pendingBranchSwitch: BranchSwitchSuccess | null = null;
+			let pendingCheckoutSwitch: CheckoutSwitchSuccess | null = null;
 
 			if (hasMoreToolCalls) {
-				// Check for branch/return/reenter tool calls
-				const specialToolCalls = toolCalls.filter((tc) => BRANCH_TOOL_NAMES.has(tc.name));
+				// Check for checkout/merge tool calls
+				const checkoutToolCalls = toolCalls.filter((tc) => CHECKOUT_TOOL_NAMES.has(tc.name));
 
-				if (specialToolCalls.length > 0) {
-					const specialIndex = toolCalls.indexOf(specialToolCalls[0]);
-					const specialToolCall = specialToolCalls[0];
+				if (checkoutToolCalls.length > 0) {
+					const firstSpecial = checkoutToolCalls[0];
+					const specialIndex = toolCalls.indexOf(firstSpecial);
 					const normalToolCalls = toolCalls.slice(0, specialIndex);
 					const afterSpecialToolCalls = toolCalls.slice(specialIndex + 1);
 
-					if (specialToolCalls.length > 1 || afterSpecialToolCalls.length > 0) {
+					if (checkoutToolCalls.length > 1 || afterSpecialToolCalls.length > 0) {
 						// Validation failed: multiple special tools or special tool is not last
 						if (normalToolCalls.length > 0) {
 							toolResults.push(
@@ -226,24 +227,28 @@ async function runLoop(
 							);
 						}
 
-						if (specialToolCalls.length > 1) {
+						if (checkoutToolCalls.length > 1) {
 							for (const tc of toolCalls.slice(specialIndex)) {
-								const errorMsg = BRANCH_TOOL_NAMES.has(tc.name)
-									? "Only one branch/return/reenter tool call is allowed per message"
-									: "Cancelled: invalid branch tool call in message";
+								const errorMsg = CHECKOUT_TOOL_NAMES.has(tc.name)
+									? "Only one checkout/merge tool call is allowed per message"
+									: "Cancelled: invalid checkout/merge tool call in message";
 								toolResults.push(await emitBranchErrorResult(tc, errorMsg, emit));
 							}
 						} else {
 							toolResults.push(
 								await emitBranchErrorResult(
-									specialToolCall,
-									`${specialToolCall.name} must be the last tool call in the message`,
+									firstSpecial,
+									`${firstSpecial.name} must be the last tool call in the message`,
 									emit,
 								),
 							);
 							for (const tc of afterSpecialToolCalls) {
 								toolResults.push(
-									await emitBranchErrorResult(tc, "Cancelled: preceding branch tool call was invalid", emit),
+									await emitBranchErrorResult(
+										tc,
+										"Cancelled: preceding checkout/merge tool call was invalid",
+										emit,
+									),
 								);
 							}
 						}
@@ -255,21 +260,19 @@ async function runLoop(
 							);
 						}
 
-						if (specialToolCall.name === "branch") {
-							toolResults.push(await handleBranchToolCall(specialToolCall, emit));
-						} else if (specialToolCall.name === "reenter") {
-							const reenterResult = await handleReenterToolCall(specialToolCall, config, emit);
-							if (reenterResult.type === "error") {
-								toolResults.push(reenterResult.toolResult);
+						if (firstSpecial.name === "checkout") {
+							const checkoutResult = await handleCheckoutToolCall(firstSpecial, config, emit);
+							if (checkoutResult.type === "error") {
+								toolResults.push(checkoutResult.toolResult);
 							} else {
-								pendingBranchSwitch = reenterResult;
+								pendingCheckoutSwitch = checkoutResult;
 							}
-						} else if (specialToolCall.name === "return") {
-							const returnResult = await handleReturnToolCall(specialToolCall, config, emit);
-							if (returnResult.type === "error") {
-								toolResults.push(returnResult.toolResult);
+						} else if (firstSpecial.name === "merge") {
+							const mergeResult = await handleMergeToolCall(firstSpecial, config, emit);
+							if (mergeResult.type === "error") {
+								toolResults.push(mergeResult.toolResult);
 							} else {
-								pendingBranchSwitch = returnResult;
+								pendingCheckoutSwitch = mergeResult;
 							}
 						}
 					}
@@ -286,37 +289,20 @@ async function runLoop(
 
 			await emit({ type: "turn_end", message, toolResults });
 
-			// Context switch happens after turn_end — the old turn is cleanly closed
-			if (pendingBranchSwitch) {
+			// Checkout/merge context switch happens after turn_end — the old turn is cleanly closed
+			if (pendingCheckoutSwitch) {
 				currentContext.messages.length = 0;
-				currentContext.messages.push(...pendingBranchSwitch.messages);
+				currentContext.messages.push(...pendingCheckoutSwitch.messages);
 				newMessages.length = 0;
 
-				if (pendingBranchSwitch.switchType === "reenter") {
-					await emit({
-						type: "branch_enter",
-						branchId: pendingBranchSwitch.branchId,
-						isNew: false,
-						instruction: pendingBranchSwitch.value,
-					});
-				} else {
-					// return — auto-confirm
-					await emit({
-						type: "branch_return_proposed",
-						branchId: pendingBranchSwitch.branchId,
-						value: pendingBranchSwitch.value,
-					});
-					await emit({
-						type: "branch_return_confirmed",
-						branchId: pendingBranchSwitch.branchId,
-						value: pendingBranchSwitch.value,
-					});
-					await emit({
-						type: "branch_result",
-						branchId: pendingBranchSwitch.branchId,
-						value: pendingBranchSwitch.value,
-					});
-				}
+				await emit({
+					type: "checkout_switch",
+					branchId: pendingCheckoutSwitch.branchId,
+					isNew: pendingCheckoutSwitch.isNew,
+					isMerge: pendingCheckoutSwitch.isMerge,
+					instruction: pendingCheckoutSwitch.instruction,
+					conclusion: pendingCheckoutSwitch.conclusion,
+				});
 			}
 
 			pendingMessages = (await config.getSteeringMessages?.()) || [];
@@ -741,7 +727,7 @@ async function emitToolCallOutcome(
 // Branch tool handling
 // =========================================================================
 
-async function handleBranchToolCall(toolCall: AgentToolCall, emit: AgentEventSink): Promise<ToolResultMessage> {
+async function _handleBranchToolCall(toolCall: AgentToolCall, emit: AgentEventSink): Promise<ToolResultMessage> {
 	const instruction = (toolCall.arguments as Record<string, any>)?.instruction ?? "";
 	const branchId = randomUUID().slice(0, 8);
 
@@ -784,7 +770,7 @@ type BranchSwitchResult = BranchSwitchSuccess | BranchSwitchError;
  *
  * Does NOT switch context — the caller handles that after emitting turn_end.
  */
-async function handleReenterToolCall(
+async function _handleReenterToolCall(
 	toolCall: AgentToolCall,
 	config: AgentLoopConfig,
 	emit: AgentEventSink,
@@ -821,7 +807,7 @@ async function handleReenterToolCall(
 	return { type: "success", switchType: "reenter", messages: branchMessages, branchId, value: instruction };
 }
 
-async function handleReturnToolCall(
+async function _handleReturnToolCall(
 	toolCall: AgentToolCall,
 	config: AgentLoopConfig,
 	emit: AgentEventSink,
@@ -868,6 +854,160 @@ async function handleReturnToolCall(
 	}
 
 	return { type: "success", switchType: "return", messages: result.messages, branchId: result.branchId, value };
+}
+
+// =========================================================================
+// Checkout/merge tool handling
+// =========================================================================
+
+interface CheckoutSwitchSuccess {
+	type: "success";
+	messages: AgentMessage[];
+	branchId: string;
+	isNew: boolean;
+	isMerge: boolean;
+	instruction?: string;
+	conclusion?: string;
+	toolResult: ToolResultMessage;
+}
+
+interface CheckoutSwitchError {
+	type: "error";
+	toolResult: ToolResultMessage;
+}
+
+type CheckoutSwitchResult = CheckoutSwitchSuccess | CheckoutSwitchError;
+
+async function handleCheckoutToolCall(
+	toolCall: AgentToolCall,
+	config: AgentLoopConfig,
+	emit: AgentEventSink,
+): Promise<CheckoutSwitchResult> {
+	const args = toolCall.arguments as Record<string, any>;
+	const branchId = args?.branchId as string | undefined;
+	const instruction = args?.instruction as string | undefined;
+
+	if (!config.onCheckout) {
+		return {
+			type: "error",
+			toolResult: await emitBranchErrorResult(toolCall, "Checkout is not supported in this configuration", emit),
+		};
+	}
+
+	// Generate branchId here if new, so we can emit tool result BEFORE switching
+	const isNew = !branchId;
+	const targetBranchId = branchId ?? randomUUID().slice(0, 8);
+
+	// Build and emit tool result on the CURRENT branch BEFORE switching
+	const resultText = isNew
+		? `Checked out to new branch [${targetBranchId}]`
+		: `Checked out to branch [${targetBranchId}]`;
+	const toolResultMessage: ToolResultMessage = {
+		role: "toolResult",
+		toolCallId: toolCall.id,
+		toolName: toolCall.name,
+		content: [{ type: "text", text: resultText }],
+		details: { branchId: targetBranchId, isNew },
+		isError: false,
+		timestamp: Date.now(),
+	};
+
+	await emit({ type: "message_start", message: toolResultMessage });
+	await emit({ type: "message_end", message: toolResultMessage });
+
+	// Flush to ensure tool result is persisted on current branch before switch
+	await config.flushEvents?.();
+
+	// Now switch branches — onCheckout receives the pre-determined branchId
+	const result = await config.onCheckout(targetBranchId, instruction, isNew);
+
+	if (!result) {
+		return {
+			type: "error",
+			toolResult: await emitBranchErrorResult(
+				toolCall,
+				branchId ? `Branch ${branchId} not found` : "Failed to create new branch",
+				emit,
+			),
+		};
+	}
+
+	return {
+		type: "success",
+		messages: result.messages,
+		branchId: result.branchId,
+		isNew,
+		isMerge: false,
+		instruction,
+		toolResult: toolResultMessage,
+	};
+}
+
+async function handleMergeToolCall(
+	toolCall: AgentToolCall,
+	config: AgentLoopConfig,
+	emit: AgentEventSink,
+): Promise<CheckoutSwitchResult> {
+	const args = toolCall.arguments as Record<string, any>;
+	const target = args?.target as string | undefined;
+	const conclusion = args?.conclusion as string | undefined;
+
+	if (!target) {
+		return {
+			type: "error",
+			toolResult: await emitBranchErrorResult(toolCall, "merge requires a target branch ID", emit),
+		};
+	}
+
+	if (!conclusion) {
+		return {
+			type: "error",
+			toolResult: await emitBranchErrorResult(toolCall, "merge requires a conclusion", emit),
+		};
+	}
+
+	if (!config.onMerge) {
+		return {
+			type: "error",
+			toolResult: await emitBranchErrorResult(toolCall, "Merge is not supported in this configuration", emit),
+		};
+	}
+
+	// Write tool result on the current branch BEFORE switching context
+	const toolResultMessage: ToolResultMessage = {
+		role: "toolResult",
+		toolCallId: toolCall.id,
+		toolName: toolCall.name,
+		content: [{ type: "text", text: `Merged to branch [${target}]` }],
+		details: { targetBranchId: target },
+		isError: false,
+		timestamp: Date.now(),
+	};
+
+	await emit({ type: "message_start", message: toolResultMessage });
+	await emit({ type: "message_end", message: toolResultMessage });
+
+	// Flush events to ensure merge tool result is persisted before context switch
+	await config.flushEvents?.();
+
+	const result = await config.onMerge(target, conclusion);
+
+	if (!result) {
+		return {
+			type: "error",
+			toolResult: await emitBranchErrorResult(toolCall, `Failed to merge into branch ${target}`, emit),
+		};
+	}
+
+	return {
+		type: "success",
+		messages: result.messages,
+		branchId: result.branchId,
+		isNew: false,
+		isMerge: true,
+		conclusion,
+		toolResult: toolResultMessage,
+	};
 }
 
 async function emitBranchErrorResult(

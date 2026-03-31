@@ -243,6 +243,39 @@ export interface AgentLoopConfig extends SimpleStreamOptions {
 	 * Returns the rebuilt messages and branchId, or undefined if not in a branch.
 	 */
 	onBranchReturn?: (value: string) => Promise<{ messages: AgentMessage[]; branchId: string } | undefined>;
+
+	/**
+	 * Called when the agent invokes the checkout tool to switch to a new or existing branch.
+	 *
+	 * The implementation should:
+	 * 1. If branchId is not provided, create a new Git branch from the current position
+	 * 2. If branchId is provided, switch to the existing Git branch
+	 * 3. Append a context switch message on the target branch
+	 * 4. Rebuild and return the message sequence for the target branch context
+	 *
+	 * Returns the rebuilt messages and the target branchId, or undefined on failure.
+	 */
+	onCheckout?: (
+		branchId: string,
+		instruction: string | undefined,
+		isNew: boolean,
+	) => Promise<{ messages: AgentMessage[]; branchId: string } | undefined>;
+
+	/**
+	 * Called when the agent invokes the merge tool to bring a conclusion to a target branch.
+	 *
+	 * The implementation should:
+	 * 1. Perform a squash merge (git merge --no-ff) from the current branch into the target
+	 * 2. Append a merge message with the conclusion on the target branch
+	 * 3. Switch to the target branch
+	 * 4. Rebuild and return the message sequence for the target branch context
+	 *
+	 * Returns the rebuilt messages and the target branchId, or undefined on failure.
+	 */
+	onMerge?: (
+		targetBranchId: string,
+		conclusion: string,
+	) => Promise<{ messages: AgentMessage[]; branchId: string } | undefined>;
 }
 
 /**
@@ -375,4 +408,13 @@ export type AgentEvent =
 	| { type: "branch_enter"; branchId: string; isNew: boolean; instruction: string }
 	| { type: "branch_return_proposed"; branchId: string; value: string }
 	| { type: "branch_return_confirmed"; branchId: string; value: string }
-	| { type: "branch_result"; branchId: string; value: string };
+	| { type: "branch_result"; branchId: string; value: string }
+	// Checkout/merge lifecycle
+	| {
+			type: "checkout_switch";
+			branchId: string;
+			isNew: boolean;
+			isMerge: boolean;
+			instruction?: string;
+			conclusion?: string;
+	  };

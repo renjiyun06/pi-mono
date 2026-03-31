@@ -116,6 +116,19 @@ export interface AgentOptions {
 
 	/** Called when the agent invokes the return tool to return from the current branch. */
 	onBranchReturn?: (value: string) => Promise<{ messages: AgentMessage[]; branchId: string } | undefined>;
+
+	/** Called when the agent invokes the checkout tool to switch branches. */
+	onCheckout?: (
+		branchId: string,
+		instruction: string | undefined,
+		isNew: boolean,
+	) => Promise<{ messages: AgentMessage[]; branchId: string } | undefined>;
+
+	/** Called when the agent invokes the merge tool to bring a conclusion to a target branch. */
+	onMerge?: (
+		targetBranchId: string,
+		conclusion: string,
+	) => Promise<{ messages: AgentMessage[]; branchId: string } | undefined>;
 }
 
 class PendingMessageQueue {
@@ -204,6 +217,17 @@ export class Agent {
 	) => Promise<AgentMessage[] | undefined>;
 	/** Called when the agent invokes the return tool. */
 	public onBranchReturn?: (value: string) => Promise<{ messages: AgentMessage[]; branchId: string } | undefined>;
+	/** Called when the agent invokes the checkout tool. */
+	public onCheckout?: (
+		branchId: string,
+		instruction: string | undefined,
+		isNew: boolean,
+	) => Promise<{ messages: AgentMessage[]; branchId: string } | undefined>;
+	/** Called when the agent invokes the merge tool. */
+	public onMerge?: (
+		targetBranchId: string,
+		conclusion: string,
+	) => Promise<{ messages: AgentMessage[]; branchId: string } | undefined>;
 
 	constructor(options: AgentOptions = {}) {
 		this._state = createMutableAgentState(options.initialState);
@@ -224,6 +248,8 @@ export class Agent {
 		this.flushEvents = options.flushEvents;
 		this.onBranchReenter = options.onBranchReenter;
 		this.onBranchReturn = options.onBranchReturn;
+		this.onCheckout = options.onCheckout;
+		this.onMerge = options.onMerge;
 	}
 
 	/**
@@ -443,6 +469,8 @@ export class Agent {
 			flushEvents: this.flushEvents,
 			onBranchReenter: this.onBranchReenter,
 			onBranchReturn: this.onBranchReturn,
+			onCheckout: this.onCheckout,
+			onMerge: this.onMerge,
 			convertToLlm: this.convertToLlm,
 			transformContext: this.transformContext,
 			getApiKey: this.getApiKey,

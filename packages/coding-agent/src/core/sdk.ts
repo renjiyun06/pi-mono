@@ -241,7 +241,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 		thinkingLevel = "off";
 	}
 
-	const defaultActiveToolNames: ToolName[] = ["read", "bash", "edit", "write", "branch", "return", "reenter"];
+	const defaultActiveToolNames: ToolName[] = ["read", "bash", "edit", "write", "checkout", "merge"];
 	const initialActiveToolNames: ToolName[] = options.tools
 		? options.tools.map((t) => t.name).filter((n): n is ToolName => n in allTools)
 		: defaultActiveToolNames;
@@ -464,6 +464,84 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 			const context = sessionManager.buildSessionContext();
 			agent.state.messages = context.messages;
 			return { messages: context.messages, branchId };
+		},
+		onCheckout: async (branchId, instruction, isNew) => {
+			await agentSessionRef.current?.flushEventQueue();
+
+			const gitSessionManager = sessionManager as any;
+			if (!gitSessionManager.gitCreateBranch) return undefined;
+
+			const sourceBranch = gitSessionManager.getCurrentBranch();
+
+			if (isNew) {
+				// New branch: create and switch
+				gitSessionManager.gitCreateBranch(branchId);
+			} else {
+				// Existing branch: switch to it
+				try {
+					gitSessionManager.gitCheckoutBranch(branchId);
+				} catch {
+					return undefined;
+				}
+				// Reload entries from the target branch
+				gitSessionManager.reloadEntries();
+			}
+
+			// Append context switch message on the target branch
+			const switchMessage = instruction
+				? `[context switch] Switched from branch ${sourceBranch} to this branch (${branchId}). Instruction: ${instruction}`
+				: `[context switch] Switched from branch ${sourceBranch} to this branch (${branchId})`;
+			sessionManager.appendCustomMessageEntry("context_switch", switchMessage, false, {
+				sourceBranch,
+				instruction,
+			});
+
+			// Rebuild and return the message sequence
+			const context = sessionManager.buildSessionContext();
+			agent.state.messages = context.messages;
+			return { messages: context.messages, branchId };
+		},
+		onMerge: async (targetBranchId, conclusion) => {
+			await agentSessionRef.current?.flushEventQueue();
+
+			const gitSessionManager = sessionManager as any;
+			if (!gitSessionManager.gitMergeNoFf) return undefined;
+
+			const sourceBranch = gitSessionManager.getCurrentBranch();
+
+			// Switch to target branch
+			try {
+				gitSessionManager.gitCheckoutBranch(targetBranchId);
+			} catch {
+				return undefined;
+			}
+
+			// Perform merge --no-ff
+			const mergeMessage = `[merge from ${sourceBranch} to this branch (${targetBranchId})] ${conclusion}`;
+			try {
+				gitSessionManager.gitMergeNoFf(sourceBranch, mergeMessage);
+			} catch {
+				return undefined;
+			}
+
+			// Reload entries from the target branch (now includes merge commit)
+			gitSessionManager.reloadEntries();
+
+			// Append merge message on the target branch
+			sessionManager.appendCustomMessageEntry(
+				"merge",
+				`[merge from ${sourceBranch} to this branch (${targetBranchId})] ${conclusion}`,
+				false,
+				{
+					sourceBranch,
+					conclusion,
+				},
+			);
+
+			// Rebuild and return the message sequence
+			const context = sessionManager.buildSessionContext();
+			agent.state.messages = context.messages;
+			return { messages: context.messages, branchId: targetBranchId };
 		},
 		getApiKey: async (provider) => {
 			// Use the provider argument from the in-flight request;
