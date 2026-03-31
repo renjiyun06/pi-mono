@@ -385,7 +385,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 
 			// Rebuild and return the message sequence, sync agent state
 			const context = sessionManager.buildSessionContext();
-			agent.replaceMessages(context.messages);
+			agent.state.messages = context.messages;
 			return context.messages;
 		},
 		onBranchReturn: async (value) => {
@@ -460,7 +460,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 
 			// Rebuild and return the calling context's message sequence, sync agent state
 			const context = sessionManager.buildSessionContext();
-			agent.replaceMessages(context.messages);
+			agent.state.messages = context.messages;
 			return { messages: context.messages, branchId };
 		},
 		getApiKey: async (provider) => {
@@ -492,7 +492,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 
 	// Restore messages if session has existing data
 	if (hasExistingSession) {
-		agent.replaceMessages(existingSession.messages);
+		agent.state.messages = existingSession.messages;
 		if (!hasThinkingEntry) {
 			sessionManager.appendThinkingLevelChange(thinkingLevel);
 		}
