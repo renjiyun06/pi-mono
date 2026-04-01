@@ -75,6 +75,7 @@ export class GitSessionManager {
 				cwd: this.gitRepoPath,
 				encoding: "utf8",
 				stdio: ["pipe", "pipe", "pipe"],
+				maxBuffer: 500 * 1024 * 1024,
 			}).trim();
 		} catch (error: unknown) {
 			const message = error instanceof Error ? error.message : String(error);
@@ -779,6 +780,7 @@ export class GitSessionManager {
 					cwd: repoPath,
 					encoding: "utf8",
 					stdio: ["pipe", "pipe", "pipe"],
+					maxBuffer: 500 * 1024 * 1024,
 				}).trim();
 
 				const blocks = gitOutput.split("\0").filter((b) => b.trim().length > 0);
