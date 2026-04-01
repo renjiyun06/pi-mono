@@ -547,24 +547,11 @@ export class GitSessionManager {
 		this.byId.clear();
 		this.leafId = null;
 
-		let commitHashes: string[];
-		try {
-			const output = this.git('log --first-parent --reverse --format="%H"');
-			commitHashes = output.split("\n").filter((h) => h.length > 0);
-		} catch {
-			return;
-		}
-
-		for (const hash of commitHashes) {
-			try {
-				const noteJson = this.git(`notes --ref=session-meta show ${hash}`);
-				const entry = JSON.parse(noteJson) as SessionEntry;
-				this.entries.push(entry);
-				this.byId.set(entry.id, entry);
-				this.leafId = entry.id;
-			} catch {
-				// Skip commits without notes (e.g. merge commits)
-			}
+		const parsed = this.loadEntriesFromGitLog("--first-parent");
+		for (const entry of parsed) {
+			this.entries.push(entry);
+			this.byId.set(entry.id, entry);
+			this.leafId = entry.id;
 		}
 	}
 
@@ -685,27 +672,40 @@ export class GitSessionManager {
 			this.sessionId = idMatch[1];
 		}
 
-		// Get all commit hashes in chronological order
-		let commitHashes: string[];
-		try {
-			const output = this.git('log --reverse --format="%H"');
-			commitHashes = output.split("\n").filter((h) => h.length > 0);
-		} catch {
-			return; // Empty repo or error
+		// Load all entries in one git command using --notes
+		const parsed = this.loadEntriesFromGitLog();
+		for (const entry of parsed) {
+			this.entries.push(entry);
+			this.byId.set(entry.id, entry);
+			this.leafId = entry.id;
 		}
+	}
 
-		// Load each entry from git notes
-		for (const hash of commitHashes) {
-			try {
-				const noteJson = this.git(`notes --ref=session-meta show ${hash}`);
-				const entry = JSON.parse(noteJson) as SessionEntry;
-				this.entries.push(entry);
-				this.byId.set(entry.id, entry);
-				this.leafId = entry.id;
-			} catch {
-				// Skip commits without notes
+	/**
+	 * Load all session entries from git log with notes in a single command.
+	 * Uses --notes=session-meta to embed note content directly in log output,
+	 * avoiding N separate `git notes show` calls.
+	 */
+	private loadEntriesFromGitLog(extraFlags?: string): SessionEntry[] {
+		const entries: SessionEntry[] = [];
+		try {
+			const flags = extraFlags ? `${extraFlags} ` : "";
+			const output = this.git(`log ${flags}--reverse --format="<<<ENTRY>>>%n%N" --notes=session-meta`);
+			const blocks = output.split("<<<ENTRY>>>").filter((b) => b.trim().length > 0);
+			for (const block of blocks) {
+				const trimmed = block.trim();
+				if (!trimmed) continue;
+				try {
+					const entry = JSON.parse(trimmed) as SessionEntry;
+					entries.push(entry);
+				} catch {
+					// Skip commits without valid notes
+				}
 			}
+		} catch {
+			// Empty repo or error
 		}
+		return entries;
 	}
 
 	/**
@@ -774,22 +774,20 @@ export class GitSessionManager {
 			let name: string | undefined;
 
 			try {
-				const gitOutput = execSync('git log --reverse --format="%H"', {
+				// Load all entries in one git command using --notes
+				const gitOutput = execSync('git log --reverse --format="<<<ENTRY>>>%n%N" --notes=session-meta', {
 					cwd: repoPath,
 					encoding: "utf8",
 					stdio: ["pipe", "pipe", "pipe"],
 				}).trim();
 
-				const hashes = gitOutput.split("\n").filter((h) => h.length > 0);
+				const blocks = gitOutput.split("<<<ENTRY>>>").filter((b) => b.trim().length > 0);
 
-				for (const hash of hashes) {
+				for (const block of blocks) {
+					const trimmed = block.trim();
+					if (!trimmed) continue;
 					try {
-						const noteJson = execSync(`git notes --ref=session-meta show ${hash}`, {
-							cwd: repoPath,
-							encoding: "utf8",
-							stdio: ["pipe", "pipe", "pipe"],
-						}).trim();
-						const entry = JSON.parse(noteJson) as SessionEntry;
+						const entry = JSON.parse(trimmed) as SessionEntry;
 
 						if (entry.type === "session_info") {
 							name = (entry as SessionInfoEntry).name?.trim() || undefined;
@@ -822,7 +820,7 @@ export class GitSessionManager {
 						if (entryTime < created) created = entryTime;
 						if (entryTime > modified) modified = entryTime;
 					} catch {
-						// Skip commits without notes
+						// Skip commits without valid notes
 					}
 				}
 			} catch {
