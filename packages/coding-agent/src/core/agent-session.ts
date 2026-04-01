@@ -910,6 +910,7 @@ export class AgentSession {
 			selectedTools: validToolNames,
 			toolSnippets,
 			promptGuidelines,
+			sessionFile: this.sessionManager.getSessionFile(),
 		});
 	}
 

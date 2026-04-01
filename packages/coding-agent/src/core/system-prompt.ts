@@ -22,6 +22,8 @@ export interface BuildSystemPromptOptions {
 	contextFiles?: Array<{ path: string; content: string }>;
 	/** Pre-loaded skills. */
 	skills?: Skill[];
+	/** Session file path (Git repository). */
+	sessionFile?: string;
 }
 
 /** Build the system prompt with tools, guidelines, and context */
@@ -35,6 +37,7 @@ export function buildSystemPrompt(options: BuildSystemPromptOptions = {}): strin
 		cwd,
 		contextFiles: providedContextFiles,
 		skills: providedSkills,
+		sessionFile,
 	} = options;
 	const resolvedCwd = cwd ?? process.cwd();
 	const promptCwd = resolvedCwd.replace(/\\/g, "/");
@@ -71,6 +74,9 @@ export function buildSystemPrompt(options: BuildSystemPromptOptions = {}): strin
 		// Add date and working directory last
 		prompt += `\nCurrent date: ${date}`;
 		prompt += `\nCurrent working directory: ${promptCwd}`;
+		if (sessionFile) {
+			prompt += `\nCurrent session repository: ${sessionFile}`;
+		}
 
 		return prompt;
 	}
@@ -270,6 +276,9 @@ Pi documentation (read only when the user asks about pi itself, its SDK, extensi
 	// Add date and working directory last
 	prompt += `\nCurrent date: ${date}`;
 	prompt += `\nCurrent working directory: ${promptCwd}`;
+	if (sessionFile) {
+		prompt += `\nCurrent session repository: ${sessionFile}`;
+	}
 
 	return prompt;
 }
