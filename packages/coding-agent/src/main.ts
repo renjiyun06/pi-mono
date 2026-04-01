@@ -5,7 +5,8 @@
  * createAgentSession() options. The SDK does the heavy lifting.
  */
 
-import { resolve } from "node:path";
+import { existsSync } from "node:fs";
+import { isAbsolute, join, resolve } from "node:path";
 import { type ImageContent, modelsAreEqual, supportsXhigh } from "@mariozechner/pi-ai";
 import chalk from "chalk";
 import { createInterface } from "readline";
@@ -455,6 +456,29 @@ async function createSessionManager(
 	// Priority: CLI flag > settings.json > extension hook
 	const effectiveSessionDir =
 		parsed.sessionDir ?? settingsManager.getSessionDir() ?? (await callSessionDirectoryHook(extensions, cwd));
+
+	if (parsed.sessionRepo) {
+		let repoPath = parsed.sessionRepo;
+		if (!isAbsolute(repoPath)) {
+			// Resolve short name: find the most recent session repo and look for a worktree
+			const { getDefaultSessionDir } = await import("./core/session-manager.js");
+			const sessionDir = effectiveSessionDir ?? getDefaultSessionDir(cwd);
+			const mainRepo = GitSessionManager.findMostRecentGitRepo(sessionDir);
+			if (mainRepo) {
+				const worktreePath = join(`${mainRepo}.worktrees`, repoPath);
+				if (existsSync(worktreePath)) {
+					repoPath = worktreePath;
+				} else {
+					console.error(chalk.red(`Worktree not found: ${worktreePath}`));
+					process.exit(1);
+				}
+			} else {
+				console.error(chalk.red(`No session found to resolve worktree name '${repoPath}'`));
+				process.exit(1);
+			}
+		}
+		return GitSessionManager.open(repoPath);
+	}
 
 	if (parsed.fork) {
 		const resolved = await resolveSessionPath(parsed.fork, cwd, effectiveSessionDir);

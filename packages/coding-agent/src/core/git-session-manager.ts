@@ -712,7 +712,7 @@ export class GitSessionManager {
 	/**
 	 * Find the most recent Git repo in a session directory.
 	 */
-	private static findMostRecentGitRepo(sessionDir: string): string | null {
+	static findMostRecentGitRepo(sessionDir: string): string | null {
 		try {
 			const entries = readdirSync(sessionDir);
 			const gitRepos = entries

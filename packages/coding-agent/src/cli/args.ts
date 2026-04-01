@@ -25,6 +25,7 @@ export interface Args {
 	session?: string;
 	fork?: string;
 	sessionDir?: string;
+	sessionRepo?: string;
 	models?: string[];
 	tools?: ToolName[];
 	noTools?: boolean;
@@ -94,6 +95,8 @@ export function parseArgs(args: string[], extensionFlags?: Map<string, { type: "
 			result.fork = args[++i];
 		} else if (arg === "--session-dir" && i + 1 < args.length) {
 			result.sessionDir = args[++i];
+		} else if (arg === "--session-repo" && i + 1 < args.length) {
+			result.sessionRepo = args[++i];
 		} else if (arg === "--models" && i + 1 < args.length) {
 			result.models = args[++i].split(",").map((s) => s.trim());
 		} else if (arg === "--no-tools") {
@@ -207,6 +210,7 @@ ${chalk.bold("Options:")}
   --session <path>               Use specific session file
   --fork <path>                  Fork specific session file or partial UUID into a new session
   --session-dir <dir>            Directory for session storage and lookup
+  --session-repo <path>          Use specific session repository (e.g. a git worktree)
   --no-session                   Don't save session (ephemeral)
   --models <patterns>            Comma-separated model patterns for Ctrl+P cycling
                                  Supports globs (anthropic/*, *sonnet*) and fuzzy matching
