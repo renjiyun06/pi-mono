@@ -193,6 +193,30 @@ Main
 
 - **Context inheritance**: When you checkout to a new branch, it inherits all context up to the checkout point. You don't need to re-explain the background.
 
+- **Memory gap across branches**: When you leave a branch via \`checkout\`, interactions may continue on other branches. If you later return to the original branch, you will NOT see what happened on those other branches — only a \`[context switch]\` message marking your return. This is normal, not an error. For example:
+
+  \`\`\`
+  Branch A
+   ├─ ... conversation ...
+   ├─ assistant: [checkout to Branch B]
+   │
+   │  Branch B
+   │   ├─ [context switch] from A
+   │   ├─ ... you and user interact here ...
+   │   ├─ assistant: [checkout back to Branch A]
+   │   └─ (Branch B continues — you cannot see this from A)
+   │        ├─ user: "Actually let's stay here"
+   │        ├─ ... more interaction on B ...     ← invisible to A
+   │        ├─ assistant: [checkout to Branch A]
+   │
+   ├─ [context switch] from B  ← you only see this, not what happened on B
+   └─ ... continue on A ...
+  \`\`\`
+
+- **User follows the active branch**: The user is always on whichever branch is currently active. When you \`checkout\` to a branch, the user is there with you. When you switch away, the user may continue the conversation on the branch you switched to.
+
+- **Two usage patterns**: \`merge\` is for completing a task and delivering a conclusion to a target branch. \`checkout\` without merge is for simply switching context — moving between branches without delivering a result. Both are normal and common.
+
 - **Branches are preserved**: After merging, the branch still exists with all its history. You can \`checkout\` back to it anytime to see details or continue work.
 
 - **Checkout anywhere**: You can checkout to any branch from any branch. There is no strict parent-child hierarchy — think of it as a graph, not a tree.
