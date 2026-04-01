@@ -5,7 +5,7 @@ import { getAgentDir, getDocsPath } from "../config.js";
 import { AgentSession } from "./agent-session.js";
 import { AuthStorage } from "./auth-storage.js";
 import { DEFAULT_THINKING_LEVEL } from "./defaults.js";
-import type { ExtensionRunner, LoadExtensionsResult, ToolDefinition } from "./extensions/index.js";
+import type { ExtensionRunner, LoadExtensionsResult, SessionStartEvent, ToolDefinition } from "./extensions/index.js";
 import { GitSessionManager } from "./git-session-manager.js";
 import { convertToLlm } from "./messages.js";
 import { ModelRegistry } from "./model-registry.js";
@@ -71,6 +71,8 @@ export interface CreateAgentSessionOptions {
 
 	/** Settings manager. Default: SettingsManager.create(cwd, agentDir) */
 	settingsManager?: SettingsManager;
+	/** Session start event metadata for extension runtime startup. */
+	sessionStartEvent?: SessionStartEvent;
 }
 
 /** Result from createAgentSession */
@@ -85,6 +87,12 @@ export interface CreateAgentSessionResult {
 
 // Re-exports
 
+export {
+	type AgentSessionRuntimeBootstrap,
+	AgentSessionRuntimeHost,
+	type CreateAgentSessionRuntimeOptions,
+	createAgentSessionRuntime,
+} from "./agent-session-runtime.js";
 export type {
 	ExtensionAPI,
 	ExtensionCommandContext,
@@ -595,6 +603,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 		modelRegistry,
 		initialActiveToolNames,
 		extensionRunnerRef,
+		sessionStartEvent: options.sessionStartEvent,
 	});
 	agentSessionRef.current = session;
 	const extensionsResult = resourceLoader.getExtensions();
