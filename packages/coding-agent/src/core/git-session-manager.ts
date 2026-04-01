@@ -690,8 +690,8 @@ export class GitSessionManager {
 		const entries: SessionEntry[] = [];
 		try {
 			const flags = extraFlags ? `${extraFlags} ` : "";
-			const output = this.git(`log ${flags}--reverse --format="<<<ENTRY>>>%n%N" --notes=session-meta`);
-			const blocks = output.split("<<<ENTRY>>>").filter((b) => b.trim().length > 0);
+			const output = this.git(`log ${flags}--reverse --format="%x00%N" --notes=session-meta`);
+			const blocks = output.split("\0").filter((b) => b.trim().length > 0);
 			for (const block of blocks) {
 				const trimmed = block.trim();
 				if (!trimmed) continue;
@@ -775,13 +775,13 @@ export class GitSessionManager {
 
 			try {
 				// Load all entries in one git command using --notes
-				const gitOutput = execSync('git log --reverse --format="<<<ENTRY>>>%n%N" --notes=session-meta', {
+				const gitOutput = execSync('git log --reverse --format="%x00%N" --notes=session-meta', {
 					cwd: repoPath,
 					encoding: "utf8",
 					stdio: ["pipe", "pipe", "pipe"],
 				}).trim();
 
-				const blocks = gitOutput.split("<<<ENTRY>>>").filter((b) => b.trim().length > 0);
+				const blocks = gitOutput.split("\0").filter((b) => b.trim().length > 0);
 
 				for (const block of blocks) {
 					const trimmed = block.trim();
