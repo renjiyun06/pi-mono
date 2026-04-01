@@ -674,7 +674,7 @@ export class GitSessionManager {
 		}
 
 		// Load all entries in one git command using --notes
-		const parsed = this.loadEntriesFromGitLog();
+		const parsed = this.loadEntriesFromGitLog("--first-parent");
 		for (const entry of parsed) {
 			this.entries.push(entry);
 			this.byId.set(entry.id, entry);
