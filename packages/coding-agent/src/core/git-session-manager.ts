@@ -13,6 +13,7 @@ import {
 	CURRENT_SESSION_VERSION,
 	type CustomEntry,
 	type CustomMessageEntry,
+	getDefaultSessionDir,
 	type LabelEntry,
 	type ModelChangeEntry,
 	type NewSessionOptions,
@@ -586,7 +587,7 @@ export class GitSessionManager {
 	// =========================================================================
 
 	static create(cwd: string, sessionDir?: string): GitSessionManager {
-		const dir = sessionDir ?? join(cwd, ".pi", "sessions");
+		const dir = sessionDir ?? getDefaultSessionDir(cwd);
 		if (!existsSync(dir)) {
 			mkdirSync(dir, { recursive: true });
 		}
@@ -601,7 +602,7 @@ export class GitSessionManager {
 	}
 
 	static continueRecent(cwd: string, sessionDir?: string): GitSessionManager {
-		const dir = sessionDir ?? join(cwd, ".pi", "sessions");
+		const dir = sessionDir ?? getDefaultSessionDir(cwd);
 		if (!existsSync(dir)) {
 			return new GitSessionManager(cwd, dir);
 		}
