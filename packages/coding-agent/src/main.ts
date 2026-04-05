@@ -29,7 +29,7 @@ import type { ModelRegistry } from "./core/model-registry.js";
 import { resolveCliModel, resolveModelScope, type ScopedModel } from "./core/model-resolver.js";
 import { restoreStdout, takeOverStdout } from "./core/output-guard.js";
 import type { CreateAgentSessionOptions } from "./core/sdk.js";
-import { SessionManager } from "./core/session-manager.js";
+import type { SessionManager } from "./core/session-manager.js";
 import { SettingsManager } from "./core/settings-manager.js";
 import { printTimings, resetTimings, time } from "./core/timings.js";
 import { allTools } from "./core/tools/index.js";
@@ -256,7 +256,7 @@ async function createSessionManager(
 		switch (resolved.type) {
 			case "path":
 			case "local":
-				return SessionManager.open(resolved.path, sessionDir);
+				return GitSessionManager.open(resolved.path, sessionDir) as unknown as SessionManager;
 
 			case "global": {
 				console.log(chalk.yellow(`Session found in different project: ${resolved.cwd}`));
@@ -278,24 +278,24 @@ async function createSessionManager(
 		initTheme(settingsManager.getTheme(), true);
 		try {
 			const selectedPath = await selectSession(
-				(onProgress) => SessionManager.list(cwd, sessionDir, onProgress),
-				SessionManager.listAll,
+				(onProgress) => GitSessionManager.list(cwd, sessionDir, onProgress),
+				GitSessionManager.listAll,
 			);
 			if (!selectedPath) {
 				console.log(chalk.dim("No session selected"));
 				process.exit(0);
 			}
-			return SessionManager.open(selectedPath, sessionDir);
+			return GitSessionManager.open(selectedPath, sessionDir) as unknown as SessionManager;
 		} finally {
 			stopThemeWatcher();
 		}
 	}
 
 	if (parsed.continue) {
-		return SessionManager.continueRecent(cwd, sessionDir);
+		return GitSessionManager.continueRecent(cwd, sessionDir) as unknown as SessionManager;
 	}
 
-	return SessionManager.create(cwd, sessionDir);
+	return GitSessionManager.create(cwd, sessionDir) as unknown as SessionManager;
 }
 
 function buildSessionOptions(
