@@ -276,6 +276,14 @@ export interface AgentLoopConfig extends SimpleStreamOptions {
 		targetBranchId: string,
 		conclusion: string,
 	) => Promise<{ messages: AgentMessage[]; branchId: string } | undefined>;
+
+	/**
+	 * Called before checkout/merge to validate that the target branch is accessible.
+	 * Used to enforce parallel agent subtree constraints when multiple worktrees are active.
+	 *
+	 * Returns undefined if access is allowed, or an error message string if denied.
+	 */
+	validateBranchAccess?: (targetBranchId: string) => Promise<string | undefined>;
 }
 
 /**

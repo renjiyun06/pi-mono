@@ -129,6 +129,9 @@ export interface AgentOptions {
 		targetBranchId: string,
 		conclusion: string,
 	) => Promise<{ messages: AgentMessage[]; branchId: string } | undefined>;
+
+	/** Called before checkout/merge to validate branch access in parallel agent scenarios. */
+	validateBranchAccess?: (targetBranchId: string) => Promise<string | undefined>;
 }
 
 class PendingMessageQueue {
@@ -228,6 +231,8 @@ export class Agent {
 		targetBranchId: string,
 		conclusion: string,
 	) => Promise<{ messages: AgentMessage[]; branchId: string } | undefined>;
+	/** Called before checkout/merge to validate branch access. */
+	public validateBranchAccess?: (targetBranchId: string) => Promise<string | undefined>;
 
 	constructor(options: AgentOptions = {}) {
 		this._state = createMutableAgentState(options.initialState);
@@ -250,6 +255,7 @@ export class Agent {
 		this.onBranchReturn = options.onBranchReturn;
 		this.onCheckout = options.onCheckout;
 		this.onMerge = options.onMerge;
+		this.validateBranchAccess = options.validateBranchAccess;
 	}
 
 	/**
@@ -471,6 +477,7 @@ export class Agent {
 			onBranchReturn: this.onBranchReturn,
 			onCheckout: this.onCheckout,
 			onMerge: this.onMerge,
+			validateBranchAccess: this.validateBranchAccess,
 			convertToLlm: this.convertToLlm,
 			transformContext: this.transformContext,
 			getApiKey: this.getApiKey,

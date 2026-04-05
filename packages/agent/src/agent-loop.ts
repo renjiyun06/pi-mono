@@ -898,6 +898,17 @@ async function handleCheckoutToolCall(
 	const isNew = !branchId;
 	const targetBranchId = branchId ?? randomUUID().slice(0, 8);
 
+	// Validate branch access for existing branches (new branches are always in subtree)
+	if (!isNew && config.validateBranchAccess) {
+		const error = await config.validateBranchAccess(targetBranchId);
+		if (error) {
+			return {
+				type: "error",
+				toolResult: await emitBranchErrorResult(toolCall, error, emit),
+			};
+		}
+	}
+
 	// Build and emit tool result on the CURRENT branch BEFORE switching
 	const resultText = isNew
 		? `Checked out to new branch [${targetBranchId}]`
@@ -971,6 +982,17 @@ async function handleMergeToolCall(
 			type: "error",
 			toolResult: await emitBranchErrorResult(toolCall, "Merge is not supported in this configuration", emit),
 		};
+	}
+
+	// Validate branch access for merge target
+	if (config.validateBranchAccess) {
+		const error = await config.validateBranchAccess(target);
+		if (error) {
+			return {
+				type: "error",
+				toolResult: await emitBranchErrorResult(toolCall, error, emit),
+			};
+		}
 	}
 
 	// Write tool result on the current branch BEFORE switching context

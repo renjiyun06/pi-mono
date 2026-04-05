@@ -2200,6 +2200,12 @@ export class InteractiveMode {
 				this.editor.setText("");
 				return;
 			}
+			if (text === "/parallel" || text.startsWith("/parallel ")) {
+				const args = text.slice(10).trim();
+				this.editor.setText("");
+				await this.handleParallelCommand(args);
+				return;
+			}
 			if (text === "/quit") {
 				this.editor.setText("");
 				await this.shutdown();
@@ -4445,6 +4451,115 @@ export class InteractiveMode {
 		this.chatContainer.addChild(new Markdown(hotkeys.trim(), 1, 1, this.getMarkdownThemeWithSettings()));
 		this.chatContainer.addChild(new DynamicBorder());
 		this.ui.requestRender();
+	}
+
+	private async handleParallelCommand(args: string): Promise<void> {
+		const gitSessionManager = this.sessionManager as any;
+		const sessionFile = this.sessionManager.getSessionFile();
+
+		if (!sessionFile || !gitSessionManager.getCurrentBranch) {
+			this.showWarning("Parallel branches require a Git-based session.");
+			return;
+		}
+
+		// Parse arguments: /parallel [run] <branchId> [message]
+		const isRun = args.startsWith("run ");
+		const rest = isRun ? args.slice(4).trim() : args;
+		const spaceIdx = rest.indexOf(" ");
+		const branchId = spaceIdx === -1 ? rest : rest.slice(0, spaceIdx);
+		const message = spaceIdx === -1 ? undefined : rest.slice(spaceIdx + 1).trim();
+
+		if (!branchId) {
+			this.showWarning("Usage: /parallel <branchId> or /parallel run <branchId> [message]");
+			return;
+		}
+
+		// Check branch exists
+		try {
+			gitSessionManager.git(`rev-parse --verify ${branchId}`);
+		} catch {
+			this.showWarning(`Branch '${branchId}' does not exist.`);
+			return;
+		}
+
+		// Check not current branch
+		const currentBranch = gitSessionManager.getCurrentBranch();
+		if (branchId === currentBranch) {
+			this.showWarning("Cannot parallelize the current branch.");
+			return;
+		}
+
+		// Check worktree not already occupied
+		try {
+			const worktreeList = gitSessionManager.git("worktree list --porcelain");
+			const lines = worktreeList.split("\n");
+			for (const line of lines) {
+				if (line.startsWith("branch ") && line.endsWith(`/${branchId}`)) {
+					this.showWarning(`Branch '${branchId}' is already checked out by another worktree.`);
+					return;
+				}
+			}
+		} catch {
+			// Ignore errors checking worktrees
+		}
+
+		// Write parallel_entry_branch record on the target branch
+		try {
+			gitSessionManager.gitCheckoutBranch(branchId);
+			gitSessionManager.reloadEntries();
+			const commitHash = gitSessionManager.git("rev-parse HEAD");
+			this.sessionManager.appendCustomEntry("parallel_entry_branch", { commitHash });
+			gitSessionManager.gitCheckoutBranch(currentBranch);
+			gitSessionManager.reloadEntries();
+		} catch (error: unknown) {
+			const msg = error instanceof Error ? error.message : String(error);
+			this.showWarning(`Failed to mark parallel entry branch: ${msg}`);
+			// Try to recover back to current branch
+			try {
+				gitSessionManager.gitCheckoutBranch(currentBranch);
+				gitSessionManager.reloadEntries();
+			} catch {
+				/* best effort */
+			}
+			return;
+		}
+
+		// Create worktree
+		const worktreeName = branchId;
+		const worktreePath = `${sessionFile}.worktrees/${worktreeName}`;
+		try {
+			gitSessionManager.git(`worktree add ${worktreePath} ${branchId}`);
+		} catch (error: unknown) {
+			const msg = error instanceof Error ? error.message : String(error);
+			this.showWarning(`Failed to create worktree: ${msg}`);
+			return;
+		}
+
+		if (isRun) {
+			// Launch via tmux
+			const tmuxSession = `parallel-${branchId}`;
+			const piCmd = message
+				? `pi --session-repo ${worktreeName} "${message.replace(/"/g, '\\"')}"`
+				: `pi --session-repo ${worktreeName}`;
+			try {
+				spawnSync("tmux", ["new-session", "-d", "-s", tmuxSession, piCmd]);
+				this.chatContainer.addChild(new Spacer(1));
+				this.chatContainer.addChild(
+					new Text(theme.fg("accent", `✓ Parallel agent launched in tmux session '${tmuxSession}'`), 1, 0),
+				);
+				this.chatContainer.addChild(new Text(theme.fg("muted", `  Attach: tmux attach -t ${tmuxSession}`), 1, 0));
+				this.ui.requestRender();
+			} catch (error: unknown) {
+				const msg = error instanceof Error ? error.message : String(error);
+				this.showWarning(`Failed to launch tmux session: ${msg}`);
+			}
+		} else {
+			// Just show instructions
+			this.chatContainer.addChild(new Spacer(1));
+			this.chatContainer.addChild(new Text(theme.fg("accent", `✓ Parallel branch '${branchId}' ready`), 1, 0));
+			this.chatContainer.addChild(new Text(theme.fg("muted", `  Start: pi --session-repo ${worktreeName}`), 1, 0));
+			this.ui.requestRender();
+		}
 	}
 
 	private async handleClearCommand(): Promise<void> {

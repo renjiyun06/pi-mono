@@ -468,6 +468,39 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 			agent.state.messages = context.messages;
 			return { messages: context.messages, branchId };
 		},
+		validateBranchAccess: async (targetBranchId) => {
+			const gitSessionManager = sessionManager as any;
+			if (!gitSessionManager.getCurrentBranch) return undefined;
+
+			// Check if there are multiple worktrees (parallel agents)
+			try {
+				const worktreeList = gitSessionManager.git("worktree list --porcelain");
+				const worktreeCount = (worktreeList.match(/^worktree /gm) || []).length;
+				if (worktreeCount <= 1) return undefined; // No parallel agents, no restriction
+			} catch {
+				return undefined; // Can't check, allow
+			}
+
+			// Find the last parallel_entry_branch record
+			const entries = gitSessionManager.getEntries?.() ?? [];
+			let entryCommitHash: string | undefined;
+			for (const entry of entries) {
+				if (entry.type === "custom" && entry.customType === "parallel_entry_branch") {
+					entryCommitHash = entry.data?.commitHash;
+				}
+			}
+			if (!entryCommitHash) return undefined; // No entry branch recorded, allow
+
+			// Check if target is within the entry branch subtree
+			// The stored commit hash is fixed at the time of marking, so all branches
+			// created from the entry branch or its descendants will have it as ancestor.
+			try {
+				gitSessionManager.git(`merge-base --is-ancestor ${entryCommitHash} ${targetBranchId}`);
+				return undefined; // Entry commit is ancestor of target, access allowed
+			} catch {
+				return `Cannot access branch ${targetBranchId}: outside parallel entry subtree`;
+			}
+		},
 		onCheckout: async (branchId, instruction, isNew) => {
 			await agentSessionRef.current?.flushEventQueue();
 
